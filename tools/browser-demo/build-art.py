@@ -142,7 +142,7 @@ def main():
         png, clips, count = decode_dva(data)
         filename = f'forms/{ident}.png'
         (output / filename).write_bytes(png)
-        forms.append({'id': ident, 'name': entry['name'], 'file': filename, 'bytes': len(png), 'sha256': digest(png),
+        forms.append({'id': ident, 'name': production[ident], 'file': filename, 'bytes': len(png), 'sha256': digest(png),
                       'sourceDvaSha256': digest(data), 'nativeFacing': facing(ident), 'frameWidth': 32, 'frameHeight': 32,
                       'atlasFrames': count, 'animations': clips})
     scenes = []
