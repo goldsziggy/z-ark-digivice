@@ -91,3 +91,9 @@ node tools/browser-demo/test-static.mjs
 The extractor reads but never modifies that source. It verifies DVA hashes, CRCs, staged-file identity, native facing and the installed `171cda7` scene blobs. It performs no download or hardware access. Original sheets and import packs are not outputs; the existing sanitized attribution files must remain beside generated assets.
 
 Fresh/reset browser adventures apply native Auto mode immediately after hatch, because the native egg snapshot has a fixed Tactical invariant. Existing saved mode selections are restored unchanged. The browser's default does not alter the firmware or WASM rules. Auto still waits for a fresh manual capture input.
+
+## Round-screen touch preview
+
+`docs/play/device-touch-input.js` adapts Pointer Events to the installed `firmware/runtime/device_ui.cpp` gesture contract. Register it before the unchanged shared capture helper so a screen contact has one owner. The shared helper remains responsible for the optional HTML capture button and keyboard D; its `canArm` callback excludes active screen contacts. `device-view.js` maps a bounded set of native-layout screens to ordinary WASM commands, retaining review intent and selected member identity. It is browser presentation, not a second implementation of game rules.
+
+Run `node tools/browser-demo/test-device-touch-input.mjs` and `node tools/browser-demo/test-device-view.mjs`, plus the existing controller/save/static checks. The native input baseline is 171cda7; coordinate forthcoming larger Back targets and gameplay changes with the firmware owner before changing that baseline.

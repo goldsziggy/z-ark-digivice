@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
+import { createDeviceView } from '../../docs/play/device-view.js';
 import createDemoCore from '../../docs/play/runtime/demo-core.js';
 import { validParty } from '../../docs/play/shared/party.js';
 import { validateStarterCatalog } from '../../docs/play/shared/starter-onboarding.js';
@@ -44,6 +45,7 @@ async function fixture(initialRaw) {
     localStorage:{getItem(key){assert.equal(key,SAVE_KEY);return stored;},setItem(key,value){assert.equal(key,SAVE_KEY);stored=value;writes++;}},
     validParty,validateStarterCatalog,
     loadGameArt:async()=>({prepare:async()=>{},drawForm:()=>false,drawBackground:()=>false,formStatus:()=>'missing'}),
+    createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
     createCaptureRingInput:()=>({refresh(){},cancel(){}}),
     runtimeFactory:async()=>{
       const module=await createDemoCore();

@@ -27,20 +27,22 @@
           <div class="stage-top"><span class="live-badge"><i></i> BROWSER DEMO</span><span id="phase-label">STARTING UP</span></div>
           <div class="device-frame">
             <span class="shell-notch notch-left" aria-hidden="true"></span><span class="shell-notch notch-right" aria-hidden="true"></span>
-            <canvas id="screen" width="824" height="824" role="img" aria-label="The game is loading." tabindex="0"></canvas>
+            <canvas id="screen" width="824" height="824" role="img" aria-label="The game is loading." aria-describedby="touch-hint touch-state" tabindex="0"></canvas>
           </div>
           <div class="stage-bottom"><span>SHARED NATIVE RULES</span><span>TOUCH · MOUSE · KEYBOARD</span></div>
         </div>
-        <p class="art-note"><span class="small-sigil">◇</span> <span id="art-status">In-game sprite art &amp; scenery.</span><br>Auto battles · your timing decides each capture. <a href="../#hardware">See the actual device footage ↗</a></p>
+        <p id="touch-hint" class="touch-hint">Swipe or drag across the round screen. Tap its left/right edges to browse, then tap a labeled screen button.</p><p id="touch-state" class="touch-state" aria-live="polite">Loading touch controls…</p><button id="touch-encounter" class="button secondary full-width" hidden>Simulate walking · find an encounter →</button><p class="art-note"><span class="small-sigil">◇</span> <span id="art-status">In-game sprite art &amp; scenery.</span><br>Auto battles · your timing decides each capture. <a href="../#hardware">See the actual device footage ↗</a></p>
         <div class="save-line"><span id="save-status"><i class="status-dot"></i> Starting local game…</span><button id="reset-open" class="quiet-button" disabled>Reset demo</button></div>
       </div>
       <div class="control-column" id="play-controls">
+        <div class="touch-guide"><p class="eyebrow red">PLAY ON THE ROUND SCREEN</p><h2>Your finger is the controller.</h2><p>On a phone, use taps and swipes. With a mouse, click and drag on the same screen.</p><p>Browse eggs, Home panels, companions and evolution paths with a left/right swipe or edge tap. Use the labeled screen buttons to choose and go back.</p><p>In Manual battles, choose a move left/right, then swipe up to use it. During capture, a fresh tap in the main area commits the timing immediately.</p><p class="small-copy">Touch behavior follows installed firmware 171cda7. These are adapted browser screens. Physical walking, nearby radio play and hardware settings remain device-only.</p></div>
+        <div id="game-status" class="game-message" role="status" aria-live="polite" aria-atomic="true">Loading the game engine…</div>
+        <details id="browser-controls" class="browser-controls"><summary>Optional browser buttons &amp; detailed stats</summary><p class="small-copy">These accessible web controls operate the same save. They are separate from the handheld touch layout.</p>
         <div class="tabs" role="tablist" aria-label="Game views">
           <button id="tab-play" role="tab" aria-selected="true" aria-controls="panel-play" tabindex="0" data-tab="play">01 <span>Play</span></button>
           <button id="tab-box" role="tab" aria-selected="false" aria-controls="panel-box" tabindex="-1" data-tab="box">02 <span>Box</span><span id="box-count" class="tab-count">0</span></button>
           <button id="tab-evolve" role="tab" aria-selected="false" aria-controls="panel-evolve" tabindex="-1" data-tab="evolve">03 <span>Evolve</span></button>
         </div>
-        <div id="game-status" class="game-message" role="status" aria-live="polite" aria-atomic="true">Loading the game engine…</div>
         <section id="panel-play" class="panel" role="tabpanel" aria-labelledby="tab-play">
           <div id="loading"><div class="loader" aria-hidden="true"></div><h2>A world is waking up.</h2><p class="body-copy">Loading the shared game engine. No account or device connection needed.</p></div>
           <div id="egg-controls" hidden>
@@ -69,6 +71,7 @@
         </section>
         <section id="panel-box" class="panel" role="tabpanel" aria-labelledby="tab-box" hidden><p class="eyebrow red">A LITTLE COMPANY</p><div class="title-line"><h2>Your Digimon box.</h2><span id="box-capacity" class="level-badge">0 / 60</span></div><p id="box-help" class="body-copy">Hatch your egg to meet your first partner.</p><div id="party-summary" class="party-summary"></div><div id="collection" class="collection"></div></section>
         <section id="panel-evolve" class="panel" role="tabpanel" aria-labelledby="tab-evolve" hidden><p class="eyebrow red">GROW TOGETHER</p><h2>The next chapter.</h2><p id="evolution-help" class="body-copy">Hatch your egg to discover its evolution paths.</p><div id="evolution-progress" class="evolution-progress"></div><div id="evolution-options" class="evolution-options"></div><p class="small-copy">Win battles or capture wild Digimon to earn XP. Useful care builds bond. Evolution is a choice when the native level and bond requirements are met.</p></section>
+        </details>
         <details id="journal" class="journal"><summary>Recent adventure <span aria-hidden="true">＋</span></summary><ol id="event-log"></ol></details>
       </div>
     </section>

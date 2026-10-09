@@ -3,6 +3,8 @@ import { createCaptureRingInput } from './shared/capture-ring-input.js';
 import { orderedMembers, partyChoice, validParty } from './shared/party.js';
 import { validateStarterCatalog, paintStarterEgg } from './shared/starter-onboarding.js';
 import { loadGameArt } from './game-art.js';
+import { createDeviceTouchInput } from './device-touch-input.js';
+import { createDeviceView } from './device-view.js';
 
 // Presentation only. All game decisions, random draws and saved state belong to
 // the unchanged native C++ core. No service API, account or device is involved.
@@ -20,12 +22,15 @@ let releaseIntendedState = null, resetIntent = null;
 let lastFrame = 0, lastActionAt = 0, displayMessage = '', logs = [];
 const eggCanvases = new Map();
 let gameArt = null, memberThumbs = [];
+let deviceView, touchInput;
+let lastCaptureInputAt = -Infinity;
 const gameScenes = ['meadow','forest','beach','ruins','cavern','snow','volcanic','digital'];
 const sceneId = () => isEncounter() ? gameScenes[Math.max(0,(state.encounters || 1)-1)%gameScenes.length] : 'meadow';
 function prepareArt() {
   if (!gameArt || !state) return;
   const ids = state.phase === 'egg' ? [] : [state.formId, ...(isEncounter() ? [state.wildFormId] : [])];
   if (currentTab === 'box') ids.push(...state.collection.map(member => member.formId));
+  ids.push(...(deviceView?.artIds() || []));
   void gameArt.prepare([...new Set(ids)],sceneId());
 }
 function artChanged() {
@@ -166,12 +171,20 @@ async function command(name, value = 0) {
       log(message);
     });
   } catch (error) { status(error.message || 'The action could not be completed.', true); }
-  finally { busy = false; render(); }
+  finally {
+    busy = false;
+    deviceView?.sync();
+    // Like the installed touch UI, Auto opens its manual timing screen as soon
+    // as the shared core pauses at the capture opportunity.
+    if (state?.phase === 'encounter' && state.autoCapture === 1 && ['auto-fight','ring-capture'].includes(name)) openCapture(false);
+    render();
+  }
 }
 
 function setTab(tab, focus = false) {
   if (!['play','box','evolve'].includes(tab)) return;
   currentTab = tab;
+  deviceView?.selectTab(tab);
   if (tab !== 'play') closeCapture();
   for (const name of ['play','box','evolve']) {
     $(`tab-${name}`).setAttribute('aria-selected', String(name === tab));
@@ -288,6 +301,7 @@ function renderEvolution() {
 }
 function render() {
   if (!state) return;
+  deviceView?.sync();
   show('loading',false);
   show('egg-controls',state.phase === 'egg'); show('home-controls',isHome()); show('battle-controls',isEncounter());
   $('phase-label').textContent = captureMode ? 'CAPTURE TIMING' : state.phase === 'egg' ? 'CHOOSE YOUR EGG' : isHome() ? 'PARTNER / HOME' : 'WILD / BATTLE';
@@ -297,18 +311,32 @@ function render() {
   prepareArt();
   renderBox(); renderEvolution();
   $('reset-open').disabled = !core || busy;
+  $('touch-encounter').hidden = !isHome();
+  $('touch-encounter').disabled = !canPlay();
+  if (deviceView) {
+    $('touch-state').textContent = deviceView.description();
+    $('screen').dataset.touchScreen = deviceView.page();
+  }
   $('screen').setAttribute('aria-label',state.phase === 'egg' ? `Selected egg: ${starters.find(s=>s.id===selectedStarter)?.name || 'starter'}. Choose a starter and hatch using the controls.` : isEncounter() ? `${state.creature}: ${state.hp} of ${state.combat.maxHp} health. Wild ${state.wildName}: ${state.wildHp} of ${state.wildMaxHp} health.${captureMode ? ' Capture timing ring is active. Press D or use the capture button.' : ''}` : `${state.creature}, level ${state.level}. Health ${state.hp}, energy ${state.energy}, fullness ${state.fullness}, mood ${state.mood}, bond ${state.bond}.`);
-  ringInput?.refresh();
+  if (deviceView) $('screen').setAttribute('aria-label',deviceView.description());
+  touchInput?.refresh(); ringInput?.refresh();
   paint(performance.now());
 }
 
 function closeCapture() { captureMode = false; captureRevision++; ringInput?.refresh(); }
-function openCapture() {
+function openCapture(focus = true) {
   if (!canCapture()) return;
+  if (currentTab !== 'play') setTab('play');
   captureMode = true; captureEpoch = performance.now(); captureRevision++; render();
-  $('capture-press').focus({preventScroll:true});
+  if (focus) $('capture-press').focus({preventScroll:true});
 }
 function ringSample(time) { return sampleCaptureRing(Math.max(0,Math.floor(time-captureEpoch)),state.wildFormId); }
+function submitCapture(sample, time = performance.now()) {
+  // One repeat guard across the screen, keyboard and optional HTML button.
+  if (!captureMode || !canCapture() || time < lastCaptureInputAt || time-lastCaptureInputAt < 450) return;
+  lastCaptureInputAt=time;
+  return command('ring-capture',sample.phaseMs);
+}
 
 // Sprite pixels, scene images, facing and framing come from the installed game.
 // This browser HUD and its controls are presentation; the C++ core owns all rules.
@@ -330,6 +358,10 @@ function paint(time) {
     ctx.fillStyle='#0006';ctx.fillRect(0,0,412,412);
   }
   if(!state){text('z-ark',206,188,38,'#e2ecdb',700);text('A LITTLE WORLD IS WAKING UP',206,222,10,'#c6d7c3');return;}
+  if (deviceView && !captureMode) {
+    deviceView.paint(ctx,{art:gameArt,eggs:eggCanvases,time,reducedMotion:reducedMotion.matches});
+    return;
+  }
   const egg = state.phase === 'egg';
   badge(egg?'CHOOSE YOUR PARTNER':captureMode?'CAPTURE / TIMING':isEncounter()?(state.battleMode==='auto'?'AUTO BATTLE':'MANUAL BATTLE'):'YOUR LITTLE ADVENTURE',206,65,10,'#a4ddbc');
   if(egg){
@@ -345,7 +377,8 @@ function paint(time) {
     ctx.strokeStyle=tint;ctx.lineWidth=5;ctx.beginPath();ctx.arc(x,y,sample.radiusQ8/256,0,Math.PI*2);ctx.stroke();
     badge(state.wildName,206,306,19,'#f5f3df',258);
     badge(`${sample.grade.toUpperCase()} · ${captureRingChance(state.wildCaptureChance,sample.grade)}% CHANCE`,206,339,11,tint,244);
-    badge('TAP THE SCREEN / PRESS D',206,364,9,'#c6d7c3',226);
+    if (deviceView) deviceView.paintTargets(ctx);
+    else badge('TAP THE SCREEN / PRESS D',206,364,9,'#c6d7c3',226);
     // This live mirror keeps the same timing visible beside mobile controls.
     capturePreview.clearRect(0,0,412,310);capturePreview.imageSmoothingEnabled=false;
     capturePreview.drawImage($('screen'),0,94,824,620,0,0,412,310);
@@ -381,12 +414,13 @@ document.querySelectorAll('[data-tab]').forEach(button=>{
 });
 $('starter-grid').addEventListener('click',event=>{
   const button=event.target.closest('[data-starter]');if(!button||!canPlay())return;
-  selectedStarter=Number(button.dataset.starter);renderStarters();document.querySelector(`[data-starter="${selectedStarter}"]`)?.focus({preventScroll:true});paint(performance.now());
+  selectedStarter=Number(button.dataset.starter);render();document.querySelector(`[data-starter="${selectedStarter}"]`)?.focus({preventScroll:true});paint(performance.now());
 });
 $('hatch').addEventListener('click',()=>command('hatch',selectedStarter));
 document.querySelectorAll('[data-command]').forEach(button=>button.addEventListener('click',()=>command(button.dataset.command)));
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>command('mode',Number(button.dataset.mode))));
 $('encounter').addEventListener('click',()=>command('demo-encounter'));
+$('touch-encounter').addEventListener('click',()=>command('demo-encounter'));
 $('auto-fight').addEventListener('click',()=>command('auto-fight'));
 $('auto-resume').addEventListener('click',()=>command('auto-resume'));
 $('capture-open').addEventListener('click',openCapture);
@@ -419,6 +453,17 @@ window.addEventListener('storage',event=>{
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&captureMode){closeCapture();render();}});
 window.addEventListener('pagehide',()=>ringInput?.cancel('pagehide'));
+$('screen').addEventListener('keydown',event=>{
+  if(!deviceView||!canPlay()||captureMode||event.repeat||event.altKey||event.ctrlKey||event.metaKey
+    ||$('reset-dialog').open||$('release-dialog').open)return;
+  if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();deviceView.horizontal(event.key==='ArrowRight');}
+  else if(event.key==='ArrowUp'&&deviceView.mode()==='battle'){event.preventDefault();deviceView.battleCommit();}
+  else if(event.key==='Escape'){event.preventDefault();deviceView.activate('back');}
+  else if(['Enter',' '].includes(event.key)){
+    const primary=deviceView.targets().find(t=>t.enabled&&!['back','previous','next'].includes(t.id));
+    if(primary){event.preventDefault();deviceView.activate(primary.id);}
+  }
+});
 
 async function init() {
   requestAnimationFrame(frame);
@@ -437,12 +482,28 @@ async function init() {
     if(persistent&&!needsReset)$('save-status').innerHTML='<i class="status-dot"></i> Saved in this browser';
     status(needsReset?'Use Reset demo to replace the unreadable save.':state.phase==='egg'?'Choose an egg and hatch your first partner.':state.message);
     log(state.phase==='egg'?'Your browser adventure begins.':'Continued your saved browser adventure.');
+    deviceView=createDeviceView({
+      getState:()=>state,getStarters:()=>starters,getStarter:()=>selectedStarter,
+      setStarter:id=>{selectedStarter=id;renderStarters();},canPlay,canCapture,command,
+      isCapture:()=>captureMode,openCapture:()=>openCapture(false),closeCapture,
+      notify:message=>status(message),changed:()=>render(),
+    });
+    // Registered first: round-screen pointers use native device geometry.
+    // The unchanged shared helper below still owns D and accessible capture.
+    touchInput=createDeviceTouchInput($('screen'),{
+      canInteract:()=>canPlay()&&!$('reset-dialog').open&&!$('release-dialog').open,
+      getContext:()=>`${state?.sequence}/${deviceView.context()}/${captureRevision}/${busy}/${needsReset}`,
+      getMode:()=>deviceView.mode(),getTargets:()=>deviceView.targets(),getBrowseBand:()=>deviceView.browseBand(),
+      onTarget:id=>deviceView.activate(id),onHorizontal:delta=>deviceView.horizontal(delta>0),
+      onBattleCommit:()=>deviceView.battleCommit(),onCapture:({time})=>submitCapture(ringSample(time),time),
+    });
     ringInput=createCaptureRingInput($('screen'),{
-      actionButton:$('capture-press'),canArm:()=>captureMode&&currentTab==='play'&&canCapture(),
+      actionButton:$('capture-press'),canArm:()=>captureMode&&currentTab==='play'&&canCapture()&&!touchInput?.contactActive(),
       getRevision:()=>captureRevision,sample:ringSample,
-      onPress:({sample})=>command('ring-capture',sample.phaseMs),
+      onPress:({sample})=>submitCapture(sample),
       onCancel:reason=>{if(['blur','hidden','resize'].includes(reason)&&captureMode){closeCapture();render();}},
     });
+    if(state.phase==='encounter'&&state.autoCapture===1)openCapture(false);
     render();
     try { gameArt=await loadGameArt({onChange:artChanged});prepareArt(); }
     catch { $('art-status').textContent='In-game art could not load. Reload to try again.'; }

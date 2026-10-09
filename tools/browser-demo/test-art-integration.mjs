@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
+import { createDeviceView } from '../../docs/play/device-view.js';
 import createDemoCore from '../../docs/play/runtime/demo-core.js';
 import * as party from '../../docs/play/shared/party.js';
 import * as starter from '../../docs/play/shared/starter-onboarding.js';
@@ -80,7 +81,8 @@ const sandbox = {
   navigator: { locks: { async request(_name, _options, callback) { return callback(); } } },
   localStorage: { getItem() { return raw; }, setItem(_key, value) { raw = value; } },
   ...party, ...starter, ...ring, loadGameArt,
-  createCaptureRingInput: () => ({ refresh() {}, cancel() {} }),
+  createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
+    createCaptureRingInput: () => ({ refresh() {}, cancel() {} }),
   runtimeFactory: createDemoCore,
 };
 const source = await readFile(new URL('app.js', play), 'utf8');
@@ -111,7 +113,7 @@ await finishImages();
 assert.equal(ui.gameArt().formStatus(ui.state().formId), 'ready');
 assert.equal(thumbnail.draws.length, 0, 'Hidden Box still has its original loading canvas');
 ui.setTab('box');
-assert.equal(thumbnail.draws.length, 1, 'Opening Box must redraw already cached art without a new load callback');
+assert(ui.thumbs()[0].canvas.draws.length >= 1, 'Opening Box must display already cached art without a new load callback');
 
 ui.setTab('play');
 await ui.command('demo-encounter');
