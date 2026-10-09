@@ -9,7 +9,7 @@ Open `index.html` through the GitHub Pages site or a local HTTP server. The brow
 - Choose one of the eight fixed starter eggs and hatch a partner.
 - Feed, play, and rest using ordinary native care actions.
 - Use **Find a demo encounter** to supply a bounded set of synthetic steps through native `Explore` events. The UI reports the actual simulated step count. This does not read a pedometer or change native encounter randomness.
-- Use physical, heavy, or magic attacks, or select auto battle before an encounter. Native auto battle can pause for manual capture.
+- New and reset adventures default to **Auto** on hatch. Auto runs native battle logic and pauses for eligible manual timing capture. Existing saved mode choices are preserved. Switch to Manual before an encounter to use physical, heavy, or magic attacks.
 - Aim a graded capture ring. Green uses the eligible native capture odds, orange half, and red one tenth (with the native positive minimum). Every attempt and random result is decided by the core; a green attempt can fail.
 - Manage the 60-member collection, choose an active partner, and select up to three XP companions. Useful care builds bond; battle rewards supply XP. Evolve only when the native conditions are met.
 
@@ -17,11 +17,15 @@ The browser has no physical walking sensor, nearby radio play, trading, or music
 
 ## Visual provenance
 
-The original egg and deliberately generic buddy drawings are reused from `web/starter-onboarding.js`. The buddy drawing visibly says **ARTWORK PENDING**; it is not presented as the appearance of the named Digimon. Type colors, layout, and procedural scenery are original presentation. No third-party character sprites, screenshots repurposed as sprites, private footage, or external art downloads are included in this demo.
+Sprite atlases are lossless RGBA conversions of the current installed game’s indexed RGB565 device pixels. Background JPEGs are the actual in-game scenes. The renderer uses exact form IDs, audited native facing, opaque clip bounds and integer nearest-neighbor scaling, with the native Home, battle and capture actor positions on a 412 × 412 canvas. The browser HUD and surrounding controls are adapted for the web. Original starter eggs remain the existing game helper’s drawing.
+
+Only the clips needed here are included, loaded for visible forms; original source sheets and import packs are not offered as asset downloads. Missing exact forms are explicitly labeled unavailable. [Source credits and rights notices](ART_SOURCES.md) accompany the [per-asset hash manifest](art/manifest.json).
 
 `shared/capture-ring.js`, `shared/capture-ring-input.js`, `shared/party.js`, and `shared/starter-onboarding.js` are copied from the installed source. The capture timing sampler and input guards are the existing browser implementations. All other JavaScript is presentation, input, or local persistence; it does not recreate game rules.
 
 ## Save and reset
+
+The native egg state requires its original mode invariant. The browser applies Auto immediately after successful hatch using the ordinary native Mode action, then saves both changes together. It does not rewrite existing partners’ settings.
 
 Canonical native snapshots are stored under the isolated key `zark.browser-demo.v1.rules15`, in an envelope identifying rules 15 and schema 22. Native decoding checks integrity and state validity. **Reset demo** replaces only this key after confirmation. It does not clear other site storage or access hardware saves.
 

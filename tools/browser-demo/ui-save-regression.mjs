@@ -43,6 +43,7 @@ async function fixture(initialRaw) {
     }}},
     localStorage:{getItem(key){assert.equal(key,SAVE_KEY);return stored;},setItem(key,value){assert.equal(key,SAVE_KEY);stored=value;writes++;}},
     validParty,validateStarterCatalog,
+    loadGameArt:async()=>({prepare:async()=>{},drawForm:()=>false,drawBackground:()=>false,formStatus:()=>'missing'}),
     createCaptureRingInput:()=>({refresh(){},cancel(){}}),
     runtimeFactory:async()=>{
       const module=await createDemoCore();
@@ -144,6 +145,26 @@ assert.equal(fresh.writes(),1);
 await fresh.ui.command('hatch',1);
 assert.equal(fresh.ui.state().phase,'home');
 assert.equal(fresh.ui.state().creature,'Impmon');
+assert.equal(fresh.ui.state().battleMode,'auto','New browser partners default to Auto');
 assert.equal(fresh.writes(),2);
-assert.equal(fresh.calls.filter(c=>c.name==='demo_command').length,1);
-console.log('PASS: stale queued intents and modal confirmations rejected; corrupt saves preserved until explicit reset; capture disarmed during reset; fresh save and hatch persisted.');
+assert.equal(fresh.calls.filter(c=>c.name==='demo_command').length,2);
+const autoRestored=await fixture(fresh.raw());
+assert.equal(autoRestored.ui.state().battleMode,'auto');
+assert.equal(autoRestored.writes(),0,'Loading an existing save does not rewrite it');
+await fresh.ui.command('mode',0);
+const manualRestored=await fixture(fresh.raw());
+assert.equal(manualRestored.ui.state().battleMode,'tactical','Explicit Manual choice survives reload');
+assert.equal(manualRestored.writes(),0);
+manualRestored.elements.get('reset-open').listeners.get('click')();
+await manualRestored.elements.get('reset-confirm').listeners.get('click')();
+await manualRestored.ui.command('hatch',8);
+assert.equal(manualRestored.ui.state().battleMode,'auto','Reset adventures default to Auto at hatch');
+await autoRestored.ui.command('demo-encounter');
+await autoRestored.ui.command('auto-fight');
+assert.equal(autoRestored.ui.state().autoCapture,1,'Default Auto stops for manual timing capture');
+const pendingCapture=autoRestored.ui.snapshot();
+autoRestored.ui.openCapture();
+assert.equal(autoRestored.ui.snapshot(),pendingCapture,'Opening the ring cannot consume capture RNG');
+await autoRestored.ui.command('ring-capture',0);
+assert.notEqual(autoRestored.ui.snapshot(),pendingCapture,'Timing input executes a native capture attempt');
+console.log('PASS: save races and corrupt-save recovery; new/reset adventures default Auto; saved Auto/Manual choices persist; Auto waits for manual timing capture.');

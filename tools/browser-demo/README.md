@@ -72,3 +72,22 @@ Native smoke verification on this baseline covered a fresh egg, Impmon hatch, or
 ## Runtime notices
 
 Emscripten's emitted runtime is available under MIT or University of Illinois/NCSA terms. Its linked musl C library uses MIT terms; LLVM compiler support and C++ libraries use their respective Apache 2.0 with LLVM exceptions notices. Preserve the build's `runtime/NOTICES.txt` alongside the browser files. The notices retain the full license text with trailing whitespace normalized, copied from the pinned SDK's `LICENSE`, `system/lib/libc/musl/COPYRIGHT`, and linked LLVM library license files. They apply to those components only and do not grant rights to third-party Digimon artwork or establish a project-wide license for game source.
+
+
+## In-game artwork for the public demo
+
+The browser presentation now uses the authorized current runtime art, with scoped [credits and provenance](../../docs/play/ART_SOURCES.md). It includes only deduplicated native idle frames and the eight device scene JPEGs. The normal service and device download catalogs remain unchanged.
+
+To reproduce the compact atlases from an authorized local source checkout with its separately supplied audited artwork and staged SD index:
+
+```sh
+python3 tools/browser-demo/build-art.py --source /path/to/authorized/game-source
+node tools/browser-demo/test-art.mjs
+node tools/browser-demo/test-art-integration.mjs
+node tools/browser-demo/ui-save-regression.mjs
+node tools/browser-demo/test-static.mjs
+```
+
+The extractor reads but never modifies that source. It verifies DVA hashes, CRCs, staged-file identity, native facing and the installed `171cda7` scene blobs. It performs no download or hardware access. Original sheets and import packs are not outputs; the existing sanitized attribution files must remain beside generated assets.
+
+Fresh/reset browser adventures apply native Auto mode immediately after hatch, because the native egg snapshot has a fixed Tactical invariant. Existing saved mode selections are restored unchanged. The browser's default does not alter the firmware or WASM rules. Auto still waits for a fresh manual capture input.

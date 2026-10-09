@@ -11,3 +11,6 @@ This independent fan-made z-ark Digivice showcase pairs real device recordings, 
 Digimon names and character artwork belong to their respective rights holders. No affiliation or endorsement is claimed. The recorded and rendered demonstrations do not grant reuse rights to third-party artwork. The website does not offer raw third-party sprite/scenery packs or vendor reference meshes for download. Existing repository notices and scoped licenses continue to apply; no project-wide license is added.
 
 [Source, firmware and CAD repository](https://github.com/goldsziggy/z-ark-digivice) · [Machine-readable provenance](provenance.json)
+
+
+The `/play/` interactive demo separately uses optimized current in-game sprite pixels and device scenery, under the owner’s explicit showcase request. Its [artwork credits and scope](play/ART_SOURCES.md) and [per-file manifest](play/art/manifest.json) identify that material. This addition does not change the recorded simulator baseline, hardware clips, or CAD provenance above, and does not grant rights to reuse third-party artwork.

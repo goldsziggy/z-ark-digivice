@@ -2,6 +2,8 @@
 
 This curated public export is prepared for **goldsziggy/z-ark-digivice**, preserving public history through `3293352c81f92e22db7c750613d64f0ea5252c75`. Game and firmware source is frozen at **`171cda7e698cf2915b50aa46bc766d8d1d0ee50d`**. Development Git history stays local.
 
+The later `/play/` showcase update adds only browser-optimized in-game artwork with [scoped credits and provenance](docs/play/ART_SOURCES.md). The frozen firmware/source export boundaries below describe release `4466aa1`; its service catalogs and original import packs remain unchanged.
+
 ## Included
 
 - The deterministic C++ game core, frozen replay executors, ESP firmware adapters, native touch UI, TypeScript service and browser simulator.

@@ -31,7 +31,7 @@
           </div>
           <div class="stage-bottom"><span>SHARED NATIVE RULES</span><span>TOUCH · MOUSE · KEYBOARD</span></div>
         </div>
-        <p class="art-note"><span class="small-sigil">◇</span> Original placeholder art &amp; procedural scenery.<br>Character names and game rules are real. <a href="../#hardware">See the actual device footage ↗</a></p>
+        <p class="art-note"><span class="small-sigil">◇</span> <span id="art-status">In-game sprite art &amp; scenery.</span><br>Auto battles · your timing decides each capture. <a href="../#hardware">See the actual device footage ↗</a></p>
         <div class="save-line"><span id="save-status"><i class="status-dot"></i> Starting local game…</span><button id="reset-open" class="quiet-button" disabled>Reset demo</button></div>
       </div>
       <div class="control-column" id="play-controls">
@@ -44,7 +44,7 @@
         <section id="panel-play" class="panel" role="tabpanel" aria-labelledby="tab-play">
           <div id="loading"><div class="loader" aria-hidden="true"></div><h2>A world is waking up.</h2><p class="body-copy">Loading the shared game engine. No account or device connection needed.</p></div>
           <div id="egg-controls" hidden>
-            <p class="eyebrow red">START WITH A PARTNER</p><h2>Pick your first egg.</h2><p class="body-copy">Eight familiar starters. Each has its own type, skills, and evolution paths.</p>
+            <p class="eyebrow red">START WITH A PARTNER</p><h2>Pick your first egg.</h2><p class="body-copy">Eight familiar starters. Auto battles are selected when you hatch; every capture is still yours to time.</p>
             <div id="starter-grid" class="starter-grid" role="group" aria-label="Choose a starter egg"></div>
             <div id="starter-detail" class="selection-detail"></div>
             <button id="hatch" class="button primary full-width">Hatch my partner <span>↗</span></button>
@@ -55,7 +55,7 @@
             <div id="care-stats" class="care-stats"></div>
             <div class="care-buttons"><button data-command="feed"><span aria-hidden="true">◒</span>Feed</button><button data-command="play"><span aria-hidden="true">✧</span>Play</button><button data-command="rest"><span aria-hidden="true">☾</span>Rest</button></div>
             <div class="explore-card"><p class="eyebrow">GO A LITTLE FURTHER</p><h3>A wild encounter awaits.</h3><p>The handheld finds encounters as you walk. Here, a demo button supplies simulated steps to the same game rules.</p><button id="encounter" class="button primary full-width">Find a demo encounter <span>→</span></button></div>
-            <div class="mode-row"><span>Next battle</span><div class="segmented" role="group" aria-label="Battle mode"><button id="mode-manual" data-mode="0" aria-pressed="true">Manual</button><button id="mode-auto" data-mode="1" aria-pressed="false">Auto</button></div></div>
+            <div class="mode-row"><span>Next battle</span><div class="segmented" role="group" aria-label="Battle mode"><button id="mode-manual" data-mode="0" aria-pressed="false">Manual</button><button id="mode-auto" data-mode="1" aria-pressed="true">Auto</button></div></div>
           </div>
           <div id="battle-controls" hidden>
             <p class="eyebrow red" id="battle-eyebrow">WILD ENCOUNTER</p><h2 id="wild-name"></h2><p id="wild-meta" class="body-copy"></p>
@@ -74,7 +74,7 @@
     </section>
     <section class="demo-notes" aria-label="About this demo"><div><span class="note-index">01 / REAL RULES</span><h3>Small screen. Real decisions.</h3><p>Battles, capture odds, care, evolution, a 60-member box, and up to three XP companions run in the shared C++ game core.</p></div><div><span class="note-index">02 / YOUR BROWSER</span><h3>A save of its own.</h3><p>Progress stays in this browser on this site. It is separate from your handheld and can be cleared with Reset demo.</p></div><div><span class="note-index">03 / THE HANDHELD</span><h3>There’s more outside.</h3><p>Physical walking and nearby device play belong to the hardware. This sample uses a simulated-step button and has no radio or pedometer connection.</p></div></section>
   </main>
-  <footer class="wrap"><a href="../">← Explore the z-ark build</a><p>DEMO · <span id="version-label">171cda7 / RULES 15</span> · <a href="./README.md">How this works</a></p></footer>
+  <footer class="wrap"><a href="../">← Explore the z-ark build</a><p>DEMO · <span id="version-label">171cda7 / RULES 15</span> · <a href="./README.md">How this works</a> · <a href="./ART_SOURCES.md">Art credits</a></p></footer>
   <dialog id="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">A fresh little adventure?</h2><p>This clears only your browser demo save and returns to the egg selection. Your handheld is unaffected.</p><div class="dialog-actions"><button id="reset-cancel" class="button secondary">Keep playing</button><button id="reset-confirm" class="button primary">Reset demo</button></div></dialog>
   <dialog id="release-dialog" aria-labelledby="release-title"><h2 id="release-title">Let this Digimon roam?</h2><p id="release-description"></p><div class="dialog-actions"><button id="release-cancel" class="button secondary">Keep companion</button><button id="release-confirm" class="button primary">Release</button></div></dialog>
   <noscript><p class="notice error wrap">This interactive demo needs JavaScript and WebAssembly. You can still <a href="../">watch the device and simulator samples</a>.</p></noscript>

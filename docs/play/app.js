@@ -1,7 +1,8 @@
 import { CAPTURE_RING, sampleCaptureRing, captureRingChance } from './shared/capture-ring.js';
 import { createCaptureRingInput } from './shared/capture-ring-input.js';
 import { orderedMembers, partyChoice, validParty } from './shared/party.js';
-import { validateStarterCatalog, paintStarterEgg, paintRookiePlaceholder } from './shared/starter-onboarding.js';
+import { validateStarterCatalog, paintStarterEgg } from './shared/starter-onboarding.js';
+import { loadGameArt } from './game-art.js';
 
 // Presentation only. All game decisions, random draws and saved state belong to
 // the unchanged native C++ core. No service API, account or device is involved.
@@ -18,6 +19,20 @@ let persistent = !!navigator.locks?.request, lastSavedRaw = null, releaseId = 0;
 let releaseIntendedState = null, resetIntent = null;
 let lastFrame = 0, lastActionAt = 0, displayMessage = '', logs = [];
 const eggCanvases = new Map();
+let gameArt = null, memberThumbs = [];
+const gameScenes = ['meadow','forest','beach','ruins','cavern','snow','volcanic','digital'];
+const sceneId = () => isEncounter() ? gameScenes[Math.max(0,(state.encounters || 1)-1)%gameScenes.length] : 'meadow';
+function prepareArt() {
+  if (!gameArt || !state) return;
+  const ids = state.phase === 'egg' ? [] : [state.formId, ...(isEncounter() ? [state.wildFormId] : [])];
+  if (currentTab === 'box') ids.push(...state.collection.map(member => member.formId));
+  void gameArt.prepare([...new Set(ids)],sceneId());
+}
+function artChanged() {
+  if (!state) return;
+  if (currentTab === 'box') for (const {canvas,member} of memberThumbs) paintMemberThumb(canvas,member);
+  paint(performance.now());
+}
 const color = { grove:'#91c896', tide:'#75cbd5', ember:'#efa878', neutral:'#bca0e1' };
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = value => Number(value || 0).toLocaleString();
@@ -127,6 +142,13 @@ async function command(name, value = 0) {
       } catch (error) { damagedSave(error); return; }
       const result = accept(native('demo_command', ['string','number'], [name, value]));
       if (!result.ok) { status(result.error || 'That action is unavailable right now.', true); return; }
+      // Native egg snapshots deliberately have no selectable battle preference.
+      // Apply this browser demo's default at hatch, through the real Mode action.
+      // Restored partners keep their saved choice, including Manual.
+      if (name === 'hatch') {
+        const mode = accept(native('demo_command', ['string','number'], ['mode', 1]));
+        if (!mode.ok) throw new Error(mode.error || 'The default battle mode could not be selected.');
+      }
       persist();
       lastActionAt = performance.now();
       let message = state.message || 'Ready for your next move.';
@@ -157,6 +179,8 @@ function setTab(tab, focus = false) {
     show(`panel-${name}`, name === tab);
   }
   if (focus) $(`tab-${tab}`).focus();
+  prepareArt();
+  if (tab === 'box') for (const {canvas,member} of memberThumbs) paintMemberThumb(canvas,member);
   ringInput?.refresh();
 }
 function stat(label, value, max, css = '') {
@@ -217,9 +241,13 @@ function renderBattle() {
 }
 function paintMemberThumb(canvas, member) {
   const c = canvas.getContext('2d'); c.clearRect(0,0,canvas.width,canvas.height);
-  paintRookiePlaceholder(c,canvas.width/2,canvas.height*.36,canvas.width*.85,member.combat?.type);
+  if (!gameArt?.drawForm(c,member.formId,{x:canvas.width/2,y:canvas.height/2,maxSide:110,time:0,animation:'idle'})) {
+    const unavailable=['missing','error'].includes(gameArt?.formStatus(member.formId));
+    c.fillStyle='#6d706a';c.font='10px Arial';c.textAlign='center';c.fillText(unavailable?'Art unavailable':'Loading art…',canvas.width/2,canvas.height/2);
+  }
 }
 function renderBox() {
+  memberThumbs = [];
   const members = orderedMembers(state);
   $('box-count').textContent = String(members.length);
   $('box-capacity').textContent = `${members.length} / ${state.collectionCapacity}`;
@@ -229,7 +257,7 @@ function renderBox() {
     const active = member.id === state.activeCreatureId;
     const choice = partyChoice(state,member.id);
     const article = document.createElement('article'); article.className = `member${active ? ' active' : ''}`;
-    const canvas = document.createElement('canvas'); canvas.width = 124; canvas.height = 136; canvas.setAttribute('aria-hidden','true'); paintMemberThumb(canvas,member);
+    const canvas = document.createElement('canvas'); canvas.width = 124; canvas.height = 136; canvas.setAttribute('aria-hidden','true'); paintMemberThumb(canvas,member);memberThumbs.push({canvas,member});
     const details = document.createElement('div');
     details.innerHTML = `<h3>${escapeHTML(member.name)}${active ? '<span>PARTNER</span>' : choice.slot ? `<span>XP ${choice.slot}</span>` : ''}</h3><p>LV ${member.level} · ${escapeHTML(member.stage || 'Partner')} · ${escapeHTML(member.combat.type)}<br>HP ${member.hp}/${member.combat.maxHp} · bond ${member.bond} · ${member.xp} XP</p>`;
     const actions = document.createElement('div'); actions.className = 'member-actions';
@@ -266,6 +294,7 @@ function render() {
   if (state.phase === 'egg') renderStarters();
   if (isHome()) renderHome();
   if (isEncounter()) renderBattle();
+  prepareArt();
   renderBox(); renderEvolution();
   $('reset-open').disabled = !core || busy;
   $('screen').setAttribute('aria-label',state.phase === 'egg' ? `Selected egg: ${starters.find(s=>s.id===selectedStarter)?.name || 'starter'}. Choose a starter and hatch using the controls.` : isEncounter() ? `${state.creature}: ${state.hp} of ${state.combat.maxHp} health. Wild ${state.wildName}: ${state.wildHp} of ${state.wildMaxHp} health.${captureMode ? ' Capture timing ring is active. Press D or use the capture button.' : ''}` : `${state.creature}, level ${state.level}. Health ${state.hp}, energy ${state.energy}, fullness ${state.fullness}, mood ${state.mood}, bond ${state.bond}.`);
@@ -281,64 +310,62 @@ function openCapture() {
 }
 function ringSample(time) { return sampleCaptureRing(Math.max(0,Math.floor(time-captureEpoch)),state.wildFormId); }
 
-// The scenery, lighting and movement below are presentation only, drawn here.
+// Sprite pixels, scene images, facing and framing come from the installed game.
+// This browser HUD and its controls are presentation; the C++ core owns all rules.
 function rounded(x,y,w,h,r,fill) { ctx.fillStyle=fill; ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); }
-function text(value,x,y,size=12,fill='#284337',weight=500) { ctx.fillStyle=fill;ctx.font=`${weight} ${size}px Arial`;ctx.textAlign='center';ctx.fillText(value,x,y); }
-function healthBar(x,y,w,value,max,tint='#48734d') { rounded(x,y,w,5,2,'#16372a20');rounded(x,y,w*Math.max(0,Math.min(1,value/Math.max(1,max))),5,2,tint); }
-function scenery(time) {
-  const sky=ctx.createLinearGradient(0,0,0,412);sky.addColorStop(0,'#dce8ce');sky.addColorStop(.63,'#eef0d7');sky.addColorStop(1,'#bdcca5');ctx.fillStyle=sky;ctx.fillRect(0,0,412,412);
-  ctx.fillStyle='#fffce075';ctx.beginPath();ctx.arc(301,111,33,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#c4d3ae';ctx.beginPath();ctx.moveTo(0,265);ctx.quadraticCurveTo(96,144,229,264);ctx.quadraticCurveTo(335,185,412,250);ctx.lineTo(412,412);ctx.lineTo(0,412);ctx.fill();
-  ctx.fillStyle='#aac294';ctx.beginPath();ctx.moveTo(0,319);ctx.quadraticCurveTo(124,208,265,311);ctx.quadraticCurveTo(346,261,412,289);ctx.lineTo(412,412);ctx.lineTo(0,412);ctx.fill();
-  ctx.strokeStyle='#eef0cf50';ctx.lineWidth=1;
-  for(let i=0;i<9;i++){ctx.beginPath();ctx.moveTo(i*65-50,412);ctx.lineTo(206+(i-4)*25,278);ctx.stroke();}
-  for(const y of [321,356,399]){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(412,y);ctx.stroke();}
-  ctx.fillStyle='#789661';for(let i=0;i<11;i++){const x=(i*137+23)%412,y=291+(i*43)%86;ctx.fillRect(x,y,3,5);ctx.fillRect(x+4,y+3,3,4);}
-  if(!reducedMotion.matches){ctx.fillStyle='#f9f4cf88';for(let i=0;i<7;i++){const x=(i*67+time*.006)%412,y=110+(i*51)%180+Math.sin(time*.001+i)*6;ctx.fillRect(x,y,2,2);}}
-}
-function buddy(x,y,size,type,time) {
-  const bob=reducedMotion.matches?0:Math.sin(time*.0025)*2;
-  ctx.fillStyle='#4a674628';ctx.beginPath();ctx.ellipse(x,y+size*.36,size*.3,size*.075,0,0,Math.PI*2);ctx.fill();
-  paintRookiePlaceholder(ctx,x,y+bob,size,type);
+function text(value,x,y,size=12,fill='#f5f3df',weight=500) { ctx.fillStyle=fill;ctx.font=`${weight} ${size}px Arial`;ctx.textAlign='center';ctx.fillText(value,x,y); }
+function healthBar(x,y,w,value,max,tint='#a4ddbc') { rounded(x,y,w,5,2,'#102824a8');rounded(x,y,w*Math.max(0,Math.min(1,value/Math.max(1,max))),5,2,tint); }
+function badge(value,x,y,size=11,tint='#f5f3df',width=224) { rounded(x-width/2,y-size-6,width,size+15,5,'#132b2ae8');text(value,x,y,size,tint,600); }
+function actor(formId,x,y,maxSide,time,facing) {
+  if (gameArt?.drawForm(ctx,formId,{x,y,maxSide,time:reducedMotion.matches?0:time,animation:'idle',facing})) return;
+  const status=gameArt?.formStatus(formId);
+  badge(status==='missing'?'EXACT ART UNAVAILABLE':status==='error'?'ART COULD NOT LOAD':'LOADING ART…',x,y,8,'#eadcb4',maxSide+22);
 }
 function paint(time) {
-  ctx.setTransform(2,0,0,2,0,0); ctx.clearRect(0,0,412,412); scenery(time);
-  if(!state){text('z-ark',206,188,38,'#284337',700);text('A LITTLE WORLD IS WAKING UP',206,222,10,'#607356');return;}
+  ctx.setTransform(2,0,0,2,0,0);ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,412,412);
+  ctx.fillStyle='#183331';ctx.fillRect(0,0,412,412);
+  const scene=state?sceneId():'meadow';
+  if (gameArt?.drawBackground(ctx,scene,0,0,412,412)) {
+    // Native scene rendering dims its JPEG to 60% beneath the UI and sprites.
+    ctx.fillStyle='#0006';ctx.fillRect(0,0,412,412);
+  }
+  if(!state){text('z-ark',206,188,38,'#e2ecdb',700);text('A LITTLE WORLD IS WAKING UP',206,222,10,'#c6d7c3');return;}
   const egg = state.phase === 'egg';
-  rounded(94,34,224,31,15,'#f8f9e6b5');
-  text(egg?'CHOOSE YOUR PARTNER':captureMode?'CAPTURE / TIMING':isEncounter()?'WILD ENCOUNTER':'YOUR LITTLE ADVENTURE',206,54,10,'#3f5844',600);
+  badge(egg?'CHOOSE YOUR PARTNER':captureMode?'CAPTURE / TIMING':isEncounter()?(state.battleMode==='auto'?'AUTO BATTLE':'MANUAL BATTLE'):'YOUR LITTLE ADVENTURE',206,65,10,'#a4ddbc');
   if(egg){
     const starter=starters.find(s=>s.id===selectedStarter);const image=eggCanvases.get(selectedStarter);
     if(image){const bob=reducedMotion.matches?0:Math.sin(time*.0018)*3;ctx.drawImage(image,116,102+bob,180,180);}
-    text(starter?.name||'Choose an egg',206,312,25,'#284337',600);text('A NEW ADVENTURE STARTS HERE',206,340,9,'#55704c');
+    badge(starter?.name||'Choose an egg',206,314,22,'#f5f3df',254);badge('AUTO BATTLES · MANUAL CAPTURE',206,348,9,'#c6d7c3',236);
   }else if(captureMode){
-    const sample=ringSample(time);const tint={green:'#367548',orange:'#bf7920',red:'#d24935'}[sample.grade];
-    const x=206,y=185;
-    ctx.fillStyle='#f5f6dd65';ctx.beginPath();ctx.arc(x,y,112,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='#53755022';ctx.lineWidth=CAPTURE_RING.bandHalfWidth*2;ctx.beginPath();ctx.arc(x,y,sample.targetRadius,0,Math.PI*2);ctx.stroke();
-    ctx.strokeStyle='#375b4075';ctx.lineWidth=2;ctx.setLineDash([4,5]);ctx.beginPath();ctx.arc(x,y,sample.targetRadius,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
-    buddy(x,y-3,73,state.wildCombat.type,time);
+    const sample=ringSample(time);const tint={green:'#9ee2a9',orange:'#ffbd66',red:'#ff806b'}[sample.grade];
+    const x=206,y=176;
+    actor(state.wildFormId,x,y,176,time);
+    ctx.strokeStyle='#162c2adb';ctx.lineWidth=CAPTURE_RING.bandHalfWidth*2;ctx.beginPath();ctx.arc(x,y,sample.targetRadius,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle='#e4f4de';ctx.lineWidth=2;ctx.setLineDash([4,5]);ctx.beginPath();ctx.arc(x,y,sample.targetRadius,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
     ctx.strokeStyle=tint;ctx.lineWidth=5;ctx.beginPath();ctx.arc(x,y,sample.radiusQ8/256,0,Math.PI*2);ctx.stroke();
-    text(state.wildName,206,313,20,'#284337',600);
-    text(`${sample.grade.toUpperCase()} · ${captureRingChance(state.wildCaptureChance,sample.grade)}% CHANCE`,206,340,11,tint,700);
-    text('TAP THE SCREEN / PRESS D',206,361,9,'#55704c');
-    // A cropped live mirror keeps the timing visible beside the capture button
-    // on a narrow screen. It samples no new timing and introduces no game rules.
-    capturePreview.clearRect(0,0,412,310);
-    capturePreview.drawImage($('screen'),0,110,824,620,0,0,412,310);
+    badge(state.wildName,206,306,19,'#f5f3df',258);
+    badge(`${sample.grade.toUpperCase()} · ${captureRingChance(state.wildCaptureChance,sample.grade)}% CHANCE`,206,339,11,tint,244);
+    badge('TAP THE SCREEN / PRESS D',206,364,9,'#c6d7c3',226);
+    // This live mirror keeps the same timing visible beside mobile controls.
+    capturePreview.clearRect(0,0,412,310);capturePreview.imageSmoothingEnabled=false;
+    capturePreview.drawImage($('screen'),0,94,824,620,0,0,412,310);
   }else if(isEncounter()){
-    const pulse=!reducedMotion.matches && time-lastActionAt<280?Math.sin((time-lastActionAt)/280*Math.PI)*8:0;
-    text(state.wildName,250,95,17,'#284337',600);text(`LV ${state.wildLevel} · ${state.wildCombat.type.toUpperCase()}`,250,112,9,'#55704c');healthBar(185,121,130,state.wildHp,state.wildMaxHp,'#cd5b42');
-    buddy(268-pulse,182,105,state.wildCombat.type,time+700);
-    buddy(145+pulse,269,110,state.combat.type,time);
-    text(state.creature,148,356,17,'#284337',600);healthBar(83,367,130,state.hp,state.combat.maxHp);
-    text(`${state.hp} / ${state.combat.maxHp}`,270,370,10,'#3d593e');
+    badge(state.creature,118,95,12,'#a4ddbc',155);badge(state.wildName,294,95,12,'#ffd387',155);
+    badge(`HP ${state.hp} / ${state.combat.maxHp}`,118,114,9,'#d8e6d7',114);badge(`HP ${state.wildHp} / ${state.wildMaxHp}`,294,114,9,'#d8e6d7',114);
+    healthBar(64,120,108,state.hp,state.combat.maxHp);healthBar(240,120,108,state.wildHp,state.wildMaxHp,'#ffd387');
+    actor(state.formId,118,185,112,time,'right');actor(state.wildFormId,294,185,112,time,'left');
+    badge(state.autoCapture===1?'YOUR TURN TO CAPTURE':'READY FOR THE NEXT EXCHANGE',206,291,12,'#a4ddbc',282);
+    badge(`LV ${state.level}  /  WILD LV ${state.wildLevel}`,206,321,10,'#d8e6d7',212);
+    badge(state.battleMode==='auto'?'AUTO FIGHTS · YOU AIM THE CAPTURE':'CHOOSE A MOVE IN THE CONTROLS',206,350,9,'#d8e6d7',264);
   }else{
-    text(state.creature,206,108,27,'#284337',600);text(`LV ${state.level} · ${(state.stage||'PARTNER').toUpperCase()} · ${state.combat.type.toUpperCase()}`,206,130,9,'#55704c');
-    buddy(206,229,165,state.combat.type,time);
-    rounded(119,334,174,29,14,'#f8f9e6b5');text(`${state.collection.length} IN BOX  /  ${state.partyMemberIds.length} XP COMPANIONS`,206,353,8,'#3f5844',600);
+    badge(state.creature,206,97,22,'#f5f3df',258);
+    actor(state.formId,206,196,176,time);
+    badge(`LV ${state.level} · ${(state.stage||'PARTNER').toUpperCase()} · ${state.combat.type.toUpperCase()}`,206,306,10,'#a4ddbc',248);
+    badge(`${state.collection.length} IN BOX  /  ${state.partyMemberIds.length} XP COMPANIONS`,206,339,9,'#d8e6d7',242);
+    badge(`${state.battleMode==='auto'?'AUTO':'MANUAL'} BATTLES · MANUAL CAPTURE`,206,364,8,'#d8e6d7',224);
   }
 }
+
 function frame(time) {
   if(!document.hidden && (time-lastFrame>32 || captureMode)){paint(time);lastFrame=time;}
   requestAnimationFrame(frame);
@@ -417,6 +444,8 @@ async function init() {
       onCancel:reason=>{if(['blur','hidden','resize'].includes(reason)&&captureMode){closeCapture();render();}},
     });
     render();
+    try { gameArt=await loadGameArt({onChange:artChanged});prepareArt(); }
+    catch { $('art-status').textContent='In-game art could not load. Reload to try again.'; }
   } catch(error) {
     show('loading',false);
     $('fatal').textContent=`The playable engine could not start. ${error.message} Reload to try again, or return to the showcase for the recorded samples.`;
