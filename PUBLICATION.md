@@ -1,6 +1,6 @@
 # Source publication contents
 
-This is a separate source export prepared for the approved **private `goldsziggy/z-ark-digivice` repository**. The original development history stays local. Its game and firmware source is frozen at **`f74ee4c132b4b9bc6407d99bbc20b13af9dfd962`**, the last verified installed firmware. Later volume, music and trading work is excluded.
+This is a separate source export prepared for the approved **`goldsziggy/z-ark-digivice` repository**. The original development history stays local. Its game and firmware source is frozen at **`f74ee4c132b4b9bc6407d99bbc20b13af9dfd962`**, the last verified installed firmware. Later volume, music and trading work is excluded.
 
 ## Included
 
@@ -29,3 +29,11 @@ Run `npm run test:publication`. This builds the shared C++ core, runs host CTest
 The bundled ESP images were built using official ESP-IDF 5.3.6 before export. This export does not claim a second ESP build or physical acceptance. Prior installation verified the same f74 app on both units, cleared NVS under then-current authorization, verified fresh saves and existing SD assets, and verified reboot persistence. The earlier Unit 2 USB silence did not recur during that bounded check. Physical touch, battle playback, walking, audio, motion wake and real two-device RF acceptance remain open. No reset or flash is part of this publication.
 
 The hardware payload is unchanged from the approved C14-P19 export. ZIP CRCs/member hashes and source/guide hashes are rechecked; CAD generation and slicing are not rerun. See [hardware/README.md](hardware/README.md).
+
+## Public showcase
+
+The static website in `docs/index.html` adds inspected hardware screen close-ups, seeded native simulator samples from the same f74 baseline, and renders of the exact C14-P19 touch-only meshes. The original development repository, original camera videos/audio, source-upload identifiers and local authoring paths are not included. Hardware footage is cropped around the display with surrounding pixels masked, silent and stripped of source metadata; anonymous fingertips remain where they demonstrate touch input.
+
+Recorded and simulated media are labeled separately. The filmed capture is Auto capture; manual flick capture is illustrated by seeded simulator states. The footage does not establish its firmware commit, a walking trial, or a physical two-device radio exchange. Later firmware changes are outside the showcased baseline. The public showcase does not add downloadable third-party sprite/scenery packs or vendor reference meshes. See [showcase sources and notices](docs/SHOWCASE_SOURCES.md).
+
+The initial publication manifest continues to describe the frozen source export at commit `7799b77a585b9c27e02e538fe8cf76c3b1ef5c0b`; verify that historical manifest against that commit. Showcase files and updated publication wording are described separately by [showcase provenance](docs/provenance.json); existing game, firmware, CAD and print payloads are preserved.

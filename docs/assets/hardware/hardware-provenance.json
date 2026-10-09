@@ -1,0 +1,156 @@
+{
+  "kind": "Hardware footage",
+  "version": "public-crops-1",
+  "clips": [
+    {
+      "file": "hardware-navigation.mp4",
+      "title": "Touch navigation and care",
+      "sourceRecording": "A",
+      "sourceStartSeconds": 11.5,
+      "sourceEndSeconds": 23.8,
+      "durationSeconds": 12.333333,
+      "width": 720,
+      "height": 720,
+      "fps": 30,
+      "codec": "H.264",
+      "pixelFormat": "yuv420p",
+      "audioStreams": 0,
+      "bytes": 1296192,
+      "sha256": "0aa06465607d348c6a78f622ed1d2be185330b8f967c1c31e0bca378287268b5",
+      "poster": "hardware-navigation-poster.jpg",
+      "posterTimeInClipSeconds": 5.7
+    },
+    {
+      "file": "hardware-partners.mp4",
+      "title": "Owned partner browsing",
+      "sourceRecording": "A",
+      "sourceStartSeconds": 24,
+      "sourceEndSeconds": 33.4,
+      "durationSeconds": 9.433333,
+      "width": 720,
+      "height": 720,
+      "fps": 30,
+      "codec": "H.264",
+      "pixelFormat": "yuv420p",
+      "audioStreams": 0,
+      "bytes": 914332,
+      "sha256": "795b674eafb33657884e98fcd4fd119900e9d48b5e06d6f6a37811909f9e64a2",
+      "poster": "hardware-partners-poster.jpg",
+      "posterTimeInClipSeconds": 6.2
+    },
+    {
+      "file": "hardware-auto-battle-capture.mp4",
+      "title": "Auto battle and saved capture",
+      "sourceRecording": "B",
+      "sourceStartSeconds": 0,
+      "sourceEndSeconds": 28.8,
+      "durationSeconds": 28.833333,
+      "width": 720,
+      "height": 720,
+      "fps": 30,
+      "codec": "H.264",
+      "pixelFormat": "yuv420p",
+      "audioStreams": 0,
+      "bytes": 2828442,
+      "sha256": "c5620750f94bd1e4286f9e11f7b072eddc642806fda4cd528e5581f2ea942521",
+      "poster": "hardware-auto-battle-capture-poster.jpg",
+      "posterTimeInClipSeconds": 10
+    },
+    {
+      "file": "hardware-capture-result.mp4",
+      "title": "Auto capture and saved result",
+      "sourceRecording": "B",
+      "sourceStartSeconds": 22,
+      "sourceEndSeconds": 28.8,
+      "durationSeconds": 6.833333,
+      "width": 720,
+      "height": 720,
+      "fps": 30,
+      "codec": "H.264",
+      "pixelFormat": "yuv420p",
+      "audioStreams": 0,
+      "bytes": 709621,
+      "sha256": "ef2c42806514f7855af5c617f946880dbfc9c0eb20e1630619c7575b1538c7fa",
+      "poster": "hardware-capture-result-poster.jpg",
+      "posterTimeInClipSeconds": 3
+    }
+  ],
+  "processing": [
+    "Tracked tight crop around the physical display and a narrow part of the red bezel.",
+    "Dark circular matte removes areas outside the selected display framing.",
+    "Real touching fingertips remain where they overlap the display.",
+    "Original-speed continuous playback, 30 fps; endpoint duration may round by up to one output frame.",
+    "SDR BT.709 source conversion retained. No generated imagery, screen replacement, or synthetic sharpening.",
+    "All audio, source capture metadata, chapters and identifying metadata removed. Only generic codec/container tags remain."
+  ],
+  "limits": [
+    "Firmware version is not established by these pixels; the recorded simulator baseline is separate project evidence.",
+    "The actual video shows Auto battle/capture; manual flick capture is a separate simulator sample.",
+    "Camera movement and original motion blur remain; brief tracking movement is visible during reframing.",
+    "No physical walking accuracy or successful Nearby radio exchange is demonstrated."
+  ],
+  "privacyReview": {
+    "observedHumanContent": "Anonymous touching fingertips only; no faces or bodies appear in reviewed public crops.",
+    "identifyingVisualData": "No personal names, contact details, location labels, device/network identifiers or other identifying content observed.",
+    "coverage": "Complete timelines sampled every 0.5 seconds; first and final frames of all clips; 8 fps review of the rapid navigation-camera reframe.",
+    "sampledFrames": 116,
+    "endpointFrames": 8,
+    "rapidReframeFrames": 12,
+    "audio": "All four files contain exactly one video stream and zero audio streams.",
+    "metadata": "No original capture timestamps, location, camera model, owner, private URLs or filesystem paths. Public JPEG posters contain no EXIF block.",
+    "decode": "All final MP4s decoded fully without errors.",
+    "status": "Public derivatives reviewed before publication."
+  },
+  "contactSheet": {
+    "file": "hardware-contact-sheet.png",
+    "width": 1920,
+    "height": 780
+  },
+  "files": [
+    {
+      "file": "hardware-auto-battle-capture-poster.jpg",
+      "bytes": 78973,
+      "sha256": "3970e5e6b717b0b58a08e9cbe98e42527919cf83660bca67a405282510544fbd"
+    },
+    {
+      "file": "hardware-auto-battle-capture.mp4",
+      "bytes": 2828442,
+      "sha256": "c5620750f94bd1e4286f9e11f7b072eddc642806fda4cd528e5581f2ea942521"
+    },
+    {
+      "file": "hardware-capture-result-poster.jpg",
+      "bytes": 72682,
+      "sha256": "357c3793cf2a9d498be67d39ce0ca50ba911ae960d9e2f9cd2f66007ea6a2351"
+    },
+    {
+      "file": "hardware-capture-result.mp4",
+      "bytes": 709621,
+      "sha256": "ef2c42806514f7855af5c617f946880dbfc9c0eb20e1630619c7575b1538c7fa"
+    },
+    {
+      "file": "hardware-contact-sheet.png",
+      "bytes": 1187964,
+      "sha256": "3a628af4a5cf5ba75b97d3e7f40c7c78436c93adc847d9f312d5b6d92570df2c"
+    },
+    {
+      "file": "hardware-navigation-poster.jpg",
+      "bytes": 66055,
+      "sha256": "ebd9582adb63861f76b7d3ef3cc943dcae5c6cc11ea94cc7361c905b3361f9be"
+    },
+    {
+      "file": "hardware-navigation.mp4",
+      "bytes": 1296192,
+      "sha256": "0aa06465607d348c6a78f622ed1d2be185330b8f967c1c31e0bca378287268b5"
+    },
+    {
+      "file": "hardware-partners-poster.jpg",
+      "bytes": 58017,
+      "sha256": "44ae4d328ab8ce0a43cba542b7267090f6927b6a5fca250607600147a89482fd"
+    },
+    {
+      "file": "hardware-partners.mp4",
+      "bytes": 914332,
+      "sha256": "795b674eafb33657884e98fcd4fd119900e9d48b5e06d6f6a37811909f9e64a2"
+    }
+  ]
+}

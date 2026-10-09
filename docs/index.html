@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Explore the z-ark Digivice: native simulator samples, hardware footage, and the C14-P19 enclosure.">
+  <title>z-ark — A partner. A pocket world.</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="showcase.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar wrap">
+    <a class="brand" href="#" aria-label="z-ark Digivice home"><span class="brand-mark" aria-hidden="true">z</span> z-ark<span class="brand-divider"></span><span class="brand-sub">DIGIVICE</span></a>
+    <nav aria-label="Main navigation"><a href="#samples">The game</a><a href="#hardware">In hand</a><a href="#enclosure">Inside the build</a></nav>
+    <a class="repo-link" href="https://github.com/goldsziggy/z-ark-digivice" target="_blank" rel="noopener">View on GitHub ↗</a>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dash"></span> SMALL DEVICE. BIG ADVENTURE.</p>
+        <h1 id="hero-title">A partner.<br>A pocket<br><span>world.</span></h1>
+        <p class="lead">Choose an egg. Raise a partner.<br>Take the next encounter with you.</p>
+        <div class="hero-actions"><a class="button dark" href="#samples">Explore the game <span aria-hidden="true">↘</span></a><a class="text-link" href="https://github.com/goldsziggy/z-ark-digivice" target="_blank" rel="noopener">Source, firmware &amp; CAD ↗</a></div>
+        <p class="hero-note">A working build, told through its screens and parts.</p>
+      </div>
+      <figure class="hero-visual">
+        <div class="hero-coordinate" aria-hidden="true">01 / THE OBJECT</div>
+        <div class="hero-orbit" aria-hidden="true"></div>
+        <img src="assets/cad/assembled.webp" alt="CAD render of the C14-P19 touch-only enclosure with a white front, black rear and red accents" width="1200" height="1600" fetchpriority="high">
+        <figcaption><span><strong>C14 · P19</strong><br>Touch-only enclosure</span><span>ACTUAL CAD<br>REVIEW RENDER</span></figcaption>
+      </figure>
+    </section>
+    <div class="build-strip"><div class="wrap"><span><b>01</b> A companion you raise</span><span><b>02</b> Encounters on the move</span><span><b>03</b> A build you can open</span></div></div>
+
+    <section id="samples" class="samples section-pad" aria-labelledby="samples-title">
+      <div class="wrap">
+        <div class="section-heading"><div><p class="eyebrow">01 / THE GAME</p><h2 id="samples-title">A little world.<br>Plenty to do.</h2></div><p class="section-intro">A guided look at the showcased firmware, rendered from its own UI. Every screen below is a simulator sample.</p></div>
+        <div class="simulator">
+          <div class="sim-stage">
+            <div class="stage-heading"><span class="badge red">SIMULATOR</span><span>NATIVE UI · 412 × 412</span></div>
+            <button id="screen-enlarge" class="screen-enlarge" aria-label="Enlarge current simulator screen"><img id="sim-screen" src="assets/simulator/simulator-egg.png" alt="Simulator egg selection screen" width="412" height="412"><span class="zoom-mark" aria-hidden="true">↗</span></button>
+            <div class="screen-footer"><span id="screen-counter" role="status" aria-live="polite">01 / 11</span><span>SEEDED DEMO STATE</span><div class="arrows"><button id="previous-screen" aria-label="Previous simulator screen">←</button><button id="next-screen" aria-label="Next simulator screen">→</button></div></div>
+          </div>
+          <div class="sim-story">
+            <p id="screen-kicker" class="eyebrow">BEGIN THE JOURNEY</p>
+            <h3 id="screen-title" aria-live="polite">Every partner<br>starts somewhere.</h3>
+            <p id="screen-description">Browse the egg choices and meet the partner that begins your adventure.</p>
+            <div id="screen-tabs" class="screen-tabs" aria-label="Simulator chapters"></div>
+            <p class="fineprint">Re-rendered from recorded baseline <code>f74ee4c</code>. Demo states are prepared for review. These are host renders, not photographs of the display.</p>
+          </div>
+        </div>
+        <details class="motion-panel"><summary><span><span class="play-icon" aria-hidden="true">▶</span> Watch the simulator replays</span><span class="muted">SEEDED STATES · NOT HARDWARE FOOTAGE</span></summary><div class="motion-inner"><video id="sim-video" controls playsinline preload="metadata" poster="assets/simulator/simulator-home.png"><source src="assets/simulator/simulator-battle-replay.mp4" type="video/mp4"></video><div><h3 id="replay-title">Battle, frame by frame.</h3><p id="replay-description">A native Tactical battle replay from a seeded state. It shows the core-resolved exchange, rendered on the host. It does not measure live device frame timing.</p><div class="replay-switch"><button data-replay="battle" aria-pressed="true">Battle · 14.4s</button><button data-replay="capture" aria-pressed="false">Capture · 5.4s</button><button data-replay="nearby" aria-pressed="false">Nearby · 6.8s</button></div></div></div></details>
+      </div>
+    </section>
+
+    <section id="hardware" class="hardware section-pad wrap" aria-labelledby="hardware-title">
+      <div class="section-heading"><div><p class="eyebrow">02 / IN HAND</p><h2 id="hardware-title">The real thing,<br>in motion.</h2></div><p class="section-intro">Touch navigation, care, an Auto battle and a new companion — captured on the actual device in the two supplied videos.</p></div>
+      <div class="footage-note"><span class="badge red">HARDWARE FOOTAGE</span><p>Real device. Original speed. Short, silent screen close-ups.<br><span>Framed around the device display; incidental surroundings are masked.</span></p></div>
+      <div class="hardware-grid">
+        <article class="hardware-card" data-hardware-group="navigation">
+          <div class="hardware-media"><video id="hardware-navigation-video" controls playsinline preload="metadata" poster="assets/hardware/hardware-navigation-poster.jpg" aria-label="Real device: touch navigation and care"><source src="assets/hardware/hardware-navigation.mp4" type="video/mp4"></video></div>
+          <div class="hardware-caption"><p class="eyebrow">HARDWARE FOOTAGE / DEVICE RECORDING 1</p><h3 id="hardware-navigation-title">Touch. Care. Repeat.</h3><p id="hardware-navigation-description">Move through Home and open the care controls. A short look at the companion loop on the physical screen.</p><div class="hardware-clip-switch"><button data-hardware-clip="navigation" aria-pressed="true">Home &amp; care · 12.3s</button><button data-hardware-clip="partners" aria-pressed="false">Partners · 9.4s</button></div><p class="clip-range" id="hardware-navigation-range">Original 00:11.5–00:23.8 · cropped hardware footage</p></div>
+        </article>
+        <article class="hardware-card" data-hardware-group="battle">
+          <div class="hardware-media"><video id="hardware-battle-video" controls playsinline preload="metadata" poster="assets/hardware/hardware-auto-battle-capture-poster.jpg" aria-label="Real device: Auto battle and successful capture"><source src="assets/hardware/hardware-auto-battle-capture.mp4" type="video/mp4"></video></div>
+          <div class="hardware-caption"><p class="eyebrow">HARDWARE FOOTAGE / DEVICE RECORDING 2</p><h3 id="hardware-battle-title">Battle. A new friend.</h3><p id="hardware-battle-description">Hagurumon faces Tentomon in Auto mode. The capture playback ends with “NEW FRIEND!” and “PARTNER SAVED” on the device.</p><div class="hardware-clip-switch"><button data-hardware-clip="auto-battle-capture" aria-pressed="true">Battle + capture · 28.8s</button><button data-hardware-clip="capture-result" aria-pressed="false">Result · 6.8s</button></div><p class="clip-range" id="hardware-battle-range">Original 00:00.0–00:28.8 · cropped hardware footage</p></div>
+        </article>
+      </div>
+      <div class="hardware-bottom"><p class="fineprint">The filmed capture is automatic. Manual flick capture is shown in the simulator above. A Nearby discovery screen appears in the source footage; no two-device radio exchange or walking trial is demonstrated.</p><a class="text-link" href="assets/hardware/hardware-contact-sheet.png" target="_blank" rel="noopener">Open the hardware contact sheet ↗</a></div>
+    </section>
+
+    <section id="enclosure" class="enclosure section-pad" aria-labelledby="enclosure-title"><div class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">03 / INSIDE THE BUILD</p><h2 id="enclosure-title">Every piece<br>has a place.</h2></div><p class="section-intro">An exploded view of the current C14-P19 touch-only enclosure. The geometry comes from the actual exported parts.</p></div>
+      <div class="cad-view"><div class="cad-top"><span class="badge">ACTUAL CAD · C14-P19</span><div class="cad-switch" aria-label="Enclosure view"><button id="view-exploded" aria-pressed="true">Exploded</button><button id="view-assembled" aria-pressed="false">Assembled</button></div></div><button class="cad-enlarge" id="cad-enlarge" aria-label="Enlarge enclosure render"><img id="cad-image" src="assets/cad/exploded.webp" alt="Exploded C14-P19 touch-only enclosure with current printed parts and electronics reference geometry" width="2000" height="1500" loading="lazy"><span class="zoom-mark" aria-hidden="true">↗</span></button><div class="cad-bottom"><span id="cad-view-caption">EXPLODED VIEW / PARTS SEPARATED FOR CLARITY</span><span>BLACK · WHITE · RED</span></div></div>
+      <div class="parts-grid"><div><span>01 / ENCLOSURE</span><h3>A shell with character.</h3><p>White front, black rear, red accents. Current touch-only geometry, including the C14-P19 receiving pilots.</p></div><div><span>02 / ELECTRONICS</span><h3>The core of the build.</h3><p>Waveshare 1.46-inch display/board reference, battery envelope and the relevant supports. Electronics are design references, not scans of installed parts.</p></div><div><span>03 / ASSEMBLY</span><h3>Designed to come together.</h3><p>Mounts come from the current geometry. Nominal fastener profiles, the 17-screw schedule and optional NFC pieces have their own detail view.</p></div></div>
+      <div class="cad-note"><p>Exploded spacing is illustrative. The battery is a 36 × 67 × 10 mm design envelope. Optional modules are not evidence of installed hardware.</p><a class="text-link" href="assets/cad/annotated-exploded.png" target="_blank" rel="noopener">Open the annotated parts view ↗</a><a class="text-link" href="assets/cad/components-and-fasteners.png" target="_blank" rel="noopener">Mounts, fasteners &amp; optional NFC ↗</a></div>
+    </div></section>
+    <section class="review-notes wrap" aria-labelledby="review-title"><div><p class="eyebrow">SHOWCASE EDITION / 09 OCT 2026</p><h2 id="review-title">A clear view of<br>where the build is.</h2></div><div class="review-list"><p><b>Hardware footage</b><span>Four continuous screen close-ups from two originals. Anonymous fingertips remain where they overlap the touch display. Surroundings and audio are excluded. The footage itself does not identify its firmware commit.</span></p><p><b>Simulator</b><span>Native UI from firmware <code>f74ee4c</code>, with prepared sample states. Nearby screens simulate discovery and exchange; they do not verify a radio connection.</span></p><p><b>Enclosure</b><span>C14-P19 touch-only parts, with electronics reference geometry and optional items distinguished.</span></p><a class="text-link" href="provenance.json" target="_blank" rel="noopener">View asset provenance ↗</a></div></section>
+  <p class="rights-note wrap">Independent fan project. Digimon names and artwork belong to their respective owners; this project is not affiliated with or endorsed by them. The showcase presents recorded gameplay and rendered screens. No third-party sprite or scenery packs are offered for download. <a href="SHOWCASE_SOURCES.md">Sources and notices ↗</a></p>
+  </main>
+  <footer class="wrap"><a class="brand" href="#"><span class="brand-mark" aria-hidden="true">z</span> z-ark</a><p>DIGIVICE / BUILD SHOWCASE</p><a href="#main">Back to top ↑</a></footer>
+  <dialog id="image-dialog" aria-labelledby="dialog-caption"><form method="dialog"><button class="dialog-close" aria-label="Close image">×</button></form><img id="dialog-image" alt="Enlarged showcase image"><p id="dialog-caption"></p></dialog>
+</body>
+</html>
