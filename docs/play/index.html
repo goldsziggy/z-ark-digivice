@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#191c1b">
+  <meta name="description" content="Play a small z-ark Digivice adventure in your browser, powered by the same native game rules as the handheld.">
+  <title>Play a little adventure · z-ark</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip" href="#play-controls">Skip to game controls</a>
+  <header class="topbar wrap">
+    <a class="brand" href="../" aria-label="z-ark showcase"><span class="brand-mark">z</span>z-ark<span class="brand-sub">DIGIVICE</span></a>
+    <a class="back-link" href="../">↗ Back to the build</a>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow"><span></span> THE PLAYABLE BROWSER DEMO</p><h1 id="page-title">A little adventure.<br><em>Your next partner.</em></h1></div>
+      <p class="intro-copy">Choose an egg, meet a wild Digimon, and time your capture. The handheld’s game rules run right here in your browser.</p>
+    </section>
+    <div id="fatal" class="notice error" role="alert" hidden></div>
+    <div id="storage-notice" class="notice" role="status" hidden></div>
+    <section class="playground" aria-label="Playable Digivice demo">
+      <div class="device-column">
+        <div class="device-stage">
+          <div class="stage-top"><span class="live-badge"><i></i> BROWSER DEMO</span><span id="phase-label">STARTING UP</span></div>
+          <div class="device-frame">
+            <span class="shell-notch notch-left" aria-hidden="true"></span><span class="shell-notch notch-right" aria-hidden="true"></span>
+            <canvas id="screen" width="824" height="824" role="img" aria-label="The game is loading." tabindex="0"></canvas>
+          </div>
+          <div class="stage-bottom"><span>SHARED NATIVE RULES</span><span>TOUCH · MOUSE · KEYBOARD</span></div>
+        </div>
+        <p class="art-note"><span class="small-sigil">◇</span> Original placeholder art &amp; procedural scenery.<br>Character names and game rules are real. <a href="../#hardware">See the actual device footage ↗</a></p>
+        <div class="save-line"><span id="save-status"><i class="status-dot"></i> Starting local game…</span><button id="reset-open" class="quiet-button" disabled>Reset demo</button></div>
+      </div>
+      <div class="control-column" id="play-controls">
+        <div class="tabs" role="tablist" aria-label="Game views">
+          <button id="tab-play" role="tab" aria-selected="true" aria-controls="panel-play" tabindex="0" data-tab="play">01 <span>Play</span></button>
+          <button id="tab-box" role="tab" aria-selected="false" aria-controls="panel-box" tabindex="-1" data-tab="box">02 <span>Box</span><span id="box-count" class="tab-count">0</span></button>
+          <button id="tab-evolve" role="tab" aria-selected="false" aria-controls="panel-evolve" tabindex="-1" data-tab="evolve">03 <span>Evolve</span></button>
+        </div>
+        <div id="game-status" class="game-message" role="status" aria-live="polite" aria-atomic="true">Loading the game engine…</div>
+        <section id="panel-play" class="panel" role="tabpanel" aria-labelledby="tab-play">
+          <div id="loading"><div class="loader" aria-hidden="true"></div><h2>A world is waking up.</h2><p class="body-copy">Loading the shared game engine. No account or device connection needed.</p></div>
+          <div id="egg-controls" hidden>
+            <p class="eyebrow red">START WITH A PARTNER</p><h2>Pick your first egg.</h2><p class="body-copy">Eight familiar starters. Each has its own type, skills, and evolution paths.</p>
+            <div id="starter-grid" class="starter-grid" role="group" aria-label="Choose a starter egg"></div>
+            <div id="starter-detail" class="selection-detail"></div>
+            <button id="hatch" class="button primary full-width">Hatch my partner <span>↗</span></button>
+          </div>
+          <div id="home-controls" hidden>
+            <div class="title-line"><div><p class="eyebrow red">YOUR ACTIVE PARTNER</p><h2 id="partner-name"></h2></div><span id="partner-level" class="level-badge"></span></div>
+            <p id="partner-meta" class="body-copy"></p>
+            <div id="care-stats" class="care-stats"></div>
+            <div class="care-buttons"><button data-command="feed"><span aria-hidden="true">◒</span>Feed</button><button data-command="play"><span aria-hidden="true">✧</span>Play</button><button data-command="rest"><span aria-hidden="true">☾</span>Rest</button></div>
+            <div class="explore-card"><p class="eyebrow">GO A LITTLE FURTHER</p><h3>A wild encounter awaits.</h3><p>The handheld finds encounters as you walk. Here, a demo button supplies simulated steps to the same game rules.</p><button id="encounter" class="button primary full-width">Find a demo encounter <span>→</span></button></div>
+            <div class="mode-row"><span>Next battle</span><div class="segmented" role="group" aria-label="Battle mode"><button id="mode-manual" data-mode="0" aria-pressed="true">Manual</button><button id="mode-auto" data-mode="1" aria-pressed="false">Auto</button></div></div>
+          </div>
+          <div id="battle-controls" hidden>
+            <p class="eyebrow red" id="battle-eyebrow">WILD ENCOUNTER</p><h2 id="wild-name"></h2><p id="wild-meta" class="body-copy"></p>
+            <div id="battle-stats" class="battle-stats"></div>
+            <div id="manual-actions" class="battle-actions"><button data-command="attack"><b>Physical</b><small id="physical-skill"></small></button><button data-command="heavy"><b>Heavy</b><small id="heavy-skill"></small></button><button data-command="magic"><b>Magic</b><small id="magic-skill"></small></button></div>
+            <div id="auto-actions" hidden><button id="auto-fight" class="button primary full-width">Run auto battle <span>→</span></button><p class="small-copy">Auto fights with the native battle logic and can pause for your manual capture.</p></div>
+            <div id="capture-card" class="capture-card"><div class="title-line"><h3>Make the connection.</h3><span id="attempts" class="mono"></span></div><p id="capture-help"></p><button id="capture-open" class="button primary full-width">Aim capture ring <span>◎</span></button></div>
+            <div id="capture-controls" hidden><div class="timing-guide"><span class="grade-green">Green: full odds</span><span class="grade-orange">Orange: half</span><span class="grade-red">Red: one tenth</span></div><div class="capture-mobile-preview" aria-hidden="true"><canvas id="capture-preview" width="412" height="310"></canvas><span>WATCH THE RING · TAP THE BUTTON BELOW</span></div><button id="capture-press" class="button capture-button full-width">Tap when the rings align <kbd>D</kbd></button><p class="small-copy">Tap the round screen or this button. Keyboard: D, or focus this button and press Space. Timing improves the chance; capture is never guaranteed.</p><button id="capture-cancel" class="quiet-button">Back to battle</button></div>
+            <button id="auto-resume" class="button secondary full-width" hidden>Skip capture &amp; finish battle →</button>
+          </div>
+        </section>
+        <section id="panel-box" class="panel" role="tabpanel" aria-labelledby="tab-box" hidden><p class="eyebrow red">A LITTLE COMPANY</p><div class="title-line"><h2>Your Digimon box.</h2><span id="box-capacity" class="level-badge">0 / 60</span></div><p id="box-help" class="body-copy">Hatch your egg to meet your first partner.</p><div id="party-summary" class="party-summary"></div><div id="collection" class="collection"></div></section>
+        <section id="panel-evolve" class="panel" role="tabpanel" aria-labelledby="tab-evolve" hidden><p class="eyebrow red">GROW TOGETHER</p><h2>The next chapter.</h2><p id="evolution-help" class="body-copy">Hatch your egg to discover its evolution paths.</p><div id="evolution-progress" class="evolution-progress"></div><div id="evolution-options" class="evolution-options"></div><p class="small-copy">Win battles or capture wild Digimon to earn XP. Useful care builds bond. Evolution is a choice when the native level and bond requirements are met.</p></section>
+        <details id="journal" class="journal"><summary>Recent adventure <span aria-hidden="true">＋</span></summary><ol id="event-log"></ol></details>
+      </div>
+    </section>
+    <section class="demo-notes" aria-label="About this demo"><div><span class="note-index">01 / REAL RULES</span><h3>Small screen. Real decisions.</h3><p>Battles, capture odds, care, evolution, a 60-member box, and up to three XP companions run in the shared C++ game core.</p></div><div><span class="note-index">02 / YOUR BROWSER</span><h3>A save of its own.</h3><p>Progress stays in this browser on this site. It is separate from your handheld and can be cleared with Reset demo.</p></div><div><span class="note-index">03 / THE HANDHELD</span><h3>There’s more outside.</h3><p>Physical walking and nearby device play belong to the hardware. This sample uses a simulated-step button and has no radio or pedometer connection.</p></div></section>
+  </main>
+  <footer class="wrap"><a href="../">← Explore the z-ark build</a><p>DEMO · <span id="version-label">171cda7 / RULES 15</span> · <a href="./README.md">How this works</a></p></footer>
+  <dialog id="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">A fresh little adventure?</h2><p>This clears only your browser demo save and returns to the egg selection. Your handheld is unaffected.</p><div class="dialog-actions"><button id="reset-cancel" class="button secondary">Keep playing</button><button id="reset-confirm" class="button primary">Reset demo</button></div></dialog>
+  <dialog id="release-dialog" aria-labelledby="release-title"><h2 id="release-title">Let this Digimon roam?</h2><p id="release-description"></p><div class="dialog-actions"><button id="release-cancel" class="button secondary">Keep companion</button><button id="release-confirm" class="button primary">Release</button></div></dialog>
+  <noscript><p class="notice error wrap">This interactive demo needs JavaScript and WebAssembly. You can still <a href="../">watch the device and simulator samples</a>.</p></noscript>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
