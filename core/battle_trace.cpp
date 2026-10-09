@@ -44,9 +44,19 @@ std::size_t writeJson(const Trace& t, char* output, std::size_t capacity) {
             (t.combatRulesVersion == 4 || t.combatRulesVersion == 12) && forms::validForLineage(formId, species) && combat::validFormProfile(formId, level);
     };
     if (!t.count || t.count > kMaxTraceSteps || static_cast<unsigned>(t.kind) > 1 ||
-        t.outcome == Outcome::None || static_cast<unsigned>(t.outcome) > 5 || t.endSequence <= t.startSequence ||
+        static_cast<unsigned>(t.outcome) > 5 || t.endSequence <= t.startSequence ||
         !valid(t.playerSpecies, t.playerFormId, t.playerLevel) || !valid(t.enemySpecies, t.enemyFormId, t.enemyLevel))
         return 0;
+    if(t.outcome==Outcome::None) {
+        if(t.kind!=Kind::Wild || t.endSequence-t.startSequence!=1)return 0;
+        for(std::size_t i=0;i<t.count;++i){
+            const auto& s=t.steps[i];
+            if((s.action!=Move::Physical&&s.action!=Move::Magic&&s.action!=Move::Heavy)||s.defending||s.captured||
+               s.captureAttempt||s.captureChance||s.captureResult||!s.playerHpBefore||!s.playerHpAfter||!s.enemyHpBefore||!s.enemyHpAfter||
+               s.playerHpAfter>s.playerHpBefore||s.enemyHpAfter>s.enemyHpBefore||
+               (i&&(t.steps[i-1].playerHpAfter!=s.playerHpBefore||t.steps[i-1].enemyHpAfter!=s.enemyHpBefore)))return 0;
+        }
+    }
     if (t.combatRulesVersion == 12 && (!combat::validCareBonus({t.playerOffenseBonus,t.playerProtectionBonus}) ||
         !combat::validCareBonus({t.enemyOffenseBonus,t.enemyProtectionBonus}))) return 0;
     std::size_t used = 0; bool ok = true;

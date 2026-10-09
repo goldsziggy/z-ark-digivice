@@ -35,22 +35,31 @@ deviceui::Model HandheldRuntime::interfaceModel() const {
     model.starterCount = starter_.choiceCount();
     model.starterFormId = starterForm(state_, starter_.selectedId());
     model.sleepTimeoutSeconds = static_cast<std::uint16_t>(idle_.timeoutSeconds());
-    model.writable = saves_.writable() && (state_.onboardingComplete || state_.starterOfferSeed);
-    model.encounterRecoveryRequired = encounterRecoveryRequired_;
+    model.writable = !tradeSession_.blocksForeground() && saves_.writable() && (state_.onboardingComplete || state_.starterOfferSeed);
+    model.partyEditable = allowsCareAction(Action::PartyAdd) && allowsCareAction(Action::PartyRemove);
+    model.encounterRecoveryRequired = encounterRecoveryRequired_ || !tradeSession_.healthy();
     model.inputEnabled = !powerFrozen() && !interfacePaused_ && !setup_.active() && !encounterRecoveryRequired_;
     model.motionAvailable = imu_.ready(); model.gyroEnabled = gyroEnabled_;
     const auto now = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
     model.stepsAvailable = physicalStepsReady(now);
+    model.stepsRecovering = imu_.recovering();
     model.lifetimeSteps = usage_.total(); model.sessionSteps = usage_.session();
     model.stepStatus = usage_.writable() && !walkingFault_ ? motion::stepStatusText(imu_.stepReading().status) : "STEP SAVE RECOVERY";
     model.encounterReady = model.stepsAvailable && state_.phase == Phase::Home &&
         state_.encounterRate != EncounterRate::Off && !battle_.locked() && !setup_.active() && !nearbyBusy();
     model.battle = battle_.locked() ? &battle_.view() : nullptr;
-    model.nearby = &nearby_.view(); model.nearbyStatus = nearbyStatus_;
+    model.trade = &tradeWire_.view();
+    model.tradeWritable = tradeSession_.healthy() && saves_.writable();
+    model.tradeStatus = tradeSession_.blocksForeground() ? tradeSession_.diagnostic() : tradeStatus_;
+    model.nearby = &nearby_.view(); model.nearbyLocalFighter = nearbyFighter_; model.nearbyStatus = nearbyStatus_;
     if (nearbyPhase_ == NearbyPhase::Active && nearbyShownSequence_ &&
         nearbyShownSession_ == nearby_.view().session && nearbyShownSequence_ == nearby_.view().match.sequence)
         model.nearbyTurnElapsedMs = static_cast<std::uint32_t>(std::min<std::uint64_t>(UINT32_MAX - 1, now - nearbyTurnAt_));
     model.muted = audio_.muted();
+    model.volumePercent = static_cast<std::uint8_t>(audio_.volume());
+    model.musicEnabled = audio_.musicEnabled();
+    model.audioPreferencesWritable = audio_.preferencesWritable();
+    model.audioAvailable = audio_.ready();
     const auto& sample = imu_.reading();
     if (gyroEnabled_ && sample.valid && sample.calibrated) {
         model.tiltX = static_cast<std::int16_t>(std::clamp(sample.tiltX, -1.0F, 1.0F) * 8);
@@ -64,6 +73,7 @@ void HandheldRuntime::beginInterface() {
     frame_ = static_cast<std::uint16_t*>(heap_caps_malloc(deviceui::kPixels * sizeof(*frame_),
                                                         MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
     const auto panel = frame_ ? display::initialize() : display::Status{};
+    audio_.setMusicScene(device::MusicScene::Quiet);
     const auto sound = audio_.begin();
     const auto usageNvs = usageBackend_.initialize();
     const auto now = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
@@ -74,7 +84,11 @@ void HandheldRuntime::beginInterface() {
     const bool usageReady = usage_.restore(now); lastWalkingSaveMs_ = now;
     std::printf("Lifetime steps: %s (%s); %s\n", usageReady ? "ready" : "recovery", esp_err_to_name(usageNvs), usage_.diagnostic());
     const auto motion = imu_.begin();
-    if (!encounterRecoveryRequired_) (void)battle_.startSavedCapture(state_, now); // Read-only reveal; never reapply a throw.
+    // Completed captures already belong to the collection. Reboot returns Home
+    // without reopening their acknowledgement screen; the receipt stays saved.
+    // An unfinished encounter can still reveal its last committed throw.
+    if (state_.phase == Phase::Encounter && !encounterRecoveryRequired_ && !tradeSession_.blocksForeground())
+        (void)battle_.startSavedCapture(state_, now); // Read-only reveal; never reapply a throw.
     uiSequence_ = state_.sequence;
     ui_.update(state_, interfaceModel());
     if (!saves_.writable()) ui_.notice("SAVE RECOVERY - USB STATUS");
@@ -97,9 +111,11 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
     case K::GameAction: {
         // Touch proposals use exactly the same copy -> apply -> verified save ->
         // publish order as USB. Never publish a write whose durability is uncertain.
+        if (tradeSession_.blocksForeground()) { notice = "RECONNECT TRADE PEER TO FINISH"; break; }
         if (battle_.locked()) { notice = "WAIT FOR THE TURN"; break; }
         if (nearbyBusy()) { notice = "CLOSE NEARBY FIRST"; break; }
         if (!saves_.writable()) { notice = "SAVE RECOVERY - USB STATUS"; break; }
+        if (state_.onboardingComplete && !state_.worldSeed) { notice = "WAIT FOR WORLD SAVE"; break; }
         if (!practice_.allowsCareAction(intent.action)) { notice = "FINISH ACTIVE PRACTICE FIRST"; break; }
         if (intent.action == Action::Hatch) { notice = "USE STARTER CONFIRMATION"; break; }
         if (intent.action == Action::EncounterRate &&
@@ -107,11 +123,14 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
             notice = "STEP SAVE RECOVERY"; break;
         }
         State candidate = state_;
-        const auto error = intent.action == Action::Auto ? applyAuto(candidate, &battleTrace_) : apply(candidate, intent.action, intent.value);
+        const bool automatic = intent.action == Action::Auto || intent.action == Action::AutoFight || intent.action == Action::AutoResume;
+        const auto error = intent.action == Action::Auto ? applyAuto(candidate, &battleTrace_) :
+            intent.action == Action::AutoFight ? applyAutoFight(candidate, &battleTrace_) :
+            intent.action == Action::AutoResume ? applyAutoResume(candidate, &battleTrace_) : apply(candidate, intent.action, intent.value);
         if (error != Error::None) { notice = errorText(error); audio_.play(device::AudioCue::Error); break; }
         if (!saves_.checkpoint(candidate)) { notice = "SAVE UNCERTAIN - REBOOT TO RECOVER"; audio_.play(device::AudioCue::Error); break; }
         const auto now = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
-        const bool playback = intent.action == Action::Auto ? battle_.startAuto(battleTrace_, now) :
+        const bool playback = automatic ? battle_.startAuto(battleTrace_, now) :
             battle_.startTactical(state_, candidate, intent.action, intent.value, now);
         state_ = candidate;
         if (playback) uiSequence_ = state_.sequence; // Sequencer owns readable, ordered cues.
@@ -126,7 +145,17 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
     case K::StarterConfirm: starterInput(onboarding::Input::Confirm); audio_.play(device::AudioCue::Navigate); break;
     case K::StarterBack: starterInput(onboarding::Input::HoldBack); audio_.play(device::AudioCue::Back); break;
     case K::ToggleMute:
-        audio_.setMuted(!audio_.muted()); if (!audio_.muted()) audio_.play(device::AudioCue::Navigate); break;
+        if (audio_.setMuted(!audio_.muted()) != ESP_OK) notice = "SETTINGS NOT SAVED";
+        if (!audio_.muted()) audio_.play(device::AudioCue::Navigate);
+        break;
+    case K::Volume:
+        if (intent.value > 100 || audio_.setVolume(static_cast<std::uint8_t>(intent.value)) != ESP_OK)
+            notice = "SETTINGS NOT SAVED";
+        else audio_.play(device::AudioCue::Navigate);
+        break;
+    case K::ToggleMusic:
+        if (audio_.setMusicEnabled(!audio_.musicEnabled()) != ESP_OK) notice = "SETTINGS NOT SAVED";
+        break;
     case K::ToggleGyro:
         gyroEnabled_ = !gyroEnabled_ && imu_.ready();
         if (gyroEnabled_) { imu_.recenter(); notice = "HOLD STILL TO CENTER TILT"; }
@@ -146,6 +175,9 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
     case K::OpenNearby: case K::CloseNearby: case K::NearbyChallenge:
     case K::NearbyAccept: case K::NearbyChoose: case K::NearbyCancel:
         nearbyIntent(intent); break;
+    case K::TradeInvite: case K::TradeOffer: case K::TradeConfirm:
+    case K::TradeCancel: case K::TradeClose:
+        tradeIntent(intent); break;
     case K::None: break;
     }
     ui_.resolve(notice);
@@ -167,7 +199,7 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
         uiSequence_ = state_.sequence; interfaceDirty_ = true;
         audio_.play(cueFor(state_.message));
     }
-    if (frame_ && display::displayReady() && display::touchReady() && now - lastTouchMs_ >= 20) {
+    if (frame_ && display::displayReady() && display::touchReady() && now - lastTouchMs_ >= (captureFrameActive_ ? 5u : 20u)) {
         lastTouchMs_ = now;
         display::TouchPoint point;
         const auto read = display::pollTouch(point);
@@ -181,7 +213,13 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
             ui_.cancelTouch(); setup_.cancelTouch();
             touchPressed_ = false; touchNeedsRelease_ = true;
         } else if (touchNeedsRelease_) {
-            if (point.fresh && !point.pressed) touchNeedsRelease_ = false;
+            if (point.fresh && !point.pressed) {
+                // This is an observed release, not a cancellation or guessed Up.
+                // Clear the capture contact latch without proposing an action.
+                ui_.acknowledgeContactReleased();
+                touchPressed_ = false;
+                touchNeedsRelease_ = false;
+            }
         } else if (point.pressed || touchPressed_) {
             if (point.fresh && point.pressed) interfaceActivity(now);
             deviceui::Touch event{deviceui::TouchKind::Move, touchX_, touchY_, now};
@@ -195,45 +233,92 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
                 setup_.touch(event);
                 if (!setup_.active()) { ui_.cancelTouch(); touchNeedsRelease_ = true; }
             } else interfaceIntent(ui_.touch(state_, model, event));
-            interfaceDirty_ = true;
+            // Capture has no pressed-button visual. Real intents already mark
+            // dirty; ignored held/dragged contacts keep the partial-frame path.
+            if (!captureFrameActive_) interfaceDirty_ = true;
         }
     }
     pollIdle(now);
-    // Full frames are capped near12Hz; ordinary serial polling never flushes
-    // repeatedly while draining a command. DMA consumes one internal stripe.
-    if (!idle_.blanked() && frame_ && display::displayReady() && now - lastFrameMs_ >= 80 &&
-        (interfaceDirty_ || now - lastFrameMs_ >= 160)) {
+    updateMusicScene();
+    // Full frames remain the fallback for entry, state changes and other screens.
+    // Capture redraws only the bounded creature/ring region at a 33 ms start-to-
+    // start cadence. The same framebuffer and existing rotated DMA stripe are
+    // reused; there is no second frame or saved-background allocation.
+    model = interfaceModel(); ui_.update(state_, model);
+    const bool artReady = assetStorageReady_ && !assetStorageFailed_ && sd_.mounted();
+    const bool canDraw = !idle_.blanked() && frame_ && display::displayReady();
+    captureFrameActive_ = canDraw && !setup_.active() && ui_.captureAnimating(state_, model);
+    const bool captureInvalid = !captureFrameValid_ || lastFrameSequence_ != state_.sequence ||
+                                lastArtStorageReady_ != artReady || interfaceDirty_;
+    const bool captureDue = captureFrameActive_ && (captureInvalid || now < captureFrameStartedMs_ ||
+                                                   now - captureFrameStartedMs_ >= 33);
+    const bool ordinaryDue = !captureFrameActive_ && (captureFrameValid_ ||
+        (now >= lastFrameMs_ && now - lastFrameMs_ >= 80 &&
+         (interfaceDirty_ || now - lastFrameMs_ >= 160)));
+    if (canDraw && (captureDue || ordinaryDue)) {
         const auto started = esp_timer_get_time();
-        model = interfaceModel(); ui_.update(state_, model);
+        bool partial = captureFrameActive_ && !captureInvalid;
+        if (captureFrameActive_) captureFrameStartedMs_ = static_cast<std::uint64_t>(started / 1000);
         if (!setup_.active()) {
-            const bool artReady = assetStorageReady_ && !assetStorageFailed_ && sd_.mounted();
+            // prepare returns cached animation-frame views for a stable request.
+            // Entry/form/scene/storage changes may load artwork once, and always
+            // use a full frame. Never retain Artwork views across another prepare.
             model.artwork = art_.prepare(ui_.artRequest(state_, model, now), artReady);
             const auto partnerRequest = ui_.partnerArtRequest(state_, model, now);
             if (partnerRequest.formId) model.partnerArtwork = partnerArt_.prepare(partnerRequest, artReady).sprite;
         }
-        const bool drawnFrame = setup_.active() ? setup_.render(frame_, deviceui::kPixels) :
-                                                ui_.render(state_, model, frame_, deviceui::kPixels, now);
+        bool drawnFrame = setup_.active() ? setup_.render(frame_, deviceui::kPixels) :
+            partial ? ui_.renderCaptureRegion(state_, model, frame_, deviceui::kPixels, now) :
+                      ui_.render(state_, model, frame_, deviceui::kPixels, now);
+        if (!drawnFrame && partial) {
+            // A short-lived overlay or controller guard may need pixels beyond
+            // the region. Reconstruct the full frame before transferring it.
+            partial = false;
+            drawnFrame = ui_.render(state_, model, frame_, deviceui::kPixels, now);
+        }
+        bool completed = false;
         if (drawnFrame) {
             const auto drawn = esp_timer_get_time();
-            maxRenderUs_ = std::max(maxRenderUs_, static_cast<std::uint32_t>(drawn - started));
-            const auto result = display::flushRgb565(0, 0, deviceui::kSize, deviceui::kSize, frame_, deviceui::kSize);
-            maxFlushUs_ = std::max(maxFlushUs_, static_cast<std::uint32_t>(esp_timer_get_time() - drawn));
-            if (result == ESP_OK) ++renderedFrames_;
-            else { ui_.cancelTouch(); setup_.cancelTouch(); touchNeedsRelease_ = true; std::printf("Display flush stopped: %s; USB/save remain available.\n", esp_err_to_name(result)); }
+            const auto renderUs = static_cast<std::uint32_t>(drawn - started);
+            maxRenderUs_ = std::max(maxRenderUs_, renderUs);
+            const int x = partial ? deviceui::Controller::kCaptureX : 0;
+            const int y = partial ? deviceui::Controller::kCaptureY : 0;
+            const int width = partial ? deviceui::Controller::kCaptureWidth : deviceui::kSize;
+            const int height = partial ? deviceui::Controller::kCaptureHeight : deviceui::kSize;
+            const auto result = display::flushRgb565(x, y, width, height,
+                frame_ + y * deviceui::kSize + x, deviceui::kSize);
+            const auto flushUs = static_cast<std::uint32_t>(esp_timer_get_time() - drawn);
+            maxFlushUs_ = std::max(maxFlushUs_, flushUs);
+            if (result == ESP_OK) {
+                ++renderedFrames_; completed = true;
+                if (partial) {
+                    ++captureFrames_;
+                    maxCaptureRenderUs_ = std::max(maxCaptureRenderUs_, renderUs);
+                    maxCaptureFlushUs_ = std::max(maxCaptureFlushUs_, flushUs);
+                }
+            } else {
+                ui_.cancelTouch(); setup_.cancelTouch(); touchNeedsRelease_ = true;
+                std::printf("Display flush stopped: %s; USB/save remain available.\n", esp_err_to_name(result));
+            }
         }
         const auto elapsed = static_cast<std::uint32_t>(esp_timer_get_time() - started);
         maxFrameUs_ = std::max(maxFrameUs_, elapsed);
         lastFrameMs_ = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
+        captureFrameValid_ = completed && captureFrameActive_;
+        lastFrameSequence_ = state_.sequence; lastArtStorageReady_ = artReady;
         interfaceDirty_ = false;
-    }
+    } else if (!canDraw) captureFrameValid_ = false;
+
 }
 
 void HandheldRuntime::pauseInterface(bool paused) {
     interfaceActivity(static_cast<std::uint64_t>(esp_timer_get_time() / 1000));
     interfacePaused_ = paused;
     if (paused) { setup_.suspend(); battle_.cancel(); }
+    captureFrameActive_ = captureFrameValid_ = false;
     ui_.cancelTouch(); touchPressed_ = false; touchNeedsRelease_ = true;
     art_.pause(paused); partnerArt_.pause(paused);
+    if (paused) audio_.setMusicScene(device::MusicScene::Quiet);
     audio_.pause(paused);
     const auto motion = imu_.pause(paused);
     const auto panel = display::setSuspended(paused);
@@ -256,6 +341,9 @@ void HandheldRuntime::printInterface() const {
         static_cast<unsigned long>(maxFrameUs_), interfacePaused_);
     std::printf("device timing maxRenderUs=%lu maxFlushUs=%lu\n",
         static_cast<unsigned long>(maxRenderUs_), static_cast<unsigned long>(maxFlushUs_));
+    std::printf("device capture partialFrames=%lu region=%ux%u cadenceMs=33 maxRenderUs=%lu maxFlushUs=%lu; cadence is requested, not measured FPS\n",
+        static_cast<unsigned long>(captureFrames_), static_cast<unsigned>(deviceui::Controller::kCaptureWidth), static_cast<unsigned>(deviceui::Controller::kCaptureHeight),
+        static_cast<unsigned long>(maxCaptureRenderUs_), static_cast<unsigned long>(maxCaptureFlushUs_));
     std::printf("device idle blanked=%d backlightOff=%d timeoutSeconds=%lu settingWritable=%d; mode=screen-only\n",
         idle_.blanked(), panel.idleBlanked, static_cast<unsigned long>(idle_.timeoutSeconds()), idleSettings_.writable());
     std::printf("device artwork allocated=%u sprite=%s scene=%s\n",
@@ -272,6 +360,8 @@ void HandheldRuntime::printInterface() const {
     std::printf("device audio ready=%d muted=%d volume=%u error=%s; imu ready=%d revision=0x%02x valid=%d calibrated=%d tilt=%d error=%s\n",
         audio_.ready(), audio_.muted(), audio_.volume(), esp_err_to_name(audio_.lastError()),
         imu_.ready(), imu_.revision(), sample.valid, sample.calibrated, gyroEnabled_, esp_err_to_name(imu_.lastError()));
+    std::printf("device sound music=%d settingsWritable=%d settingsError=%s\n", audio_.musicEnabled(),
+        audio_.preferencesWritable(), esp_err_to_name(audio_.preferencesError()));
     std::printf("device accelG=%.3f,%.3f,%.3f gyroDps=%.2f,%.2f,%.2f sampleMs=%llu\n",
         static_cast<double>(sample.accelerationG.x), static_cast<double>(sample.accelerationG.y), static_cast<double>(sample.accelerationG.z),
         static_cast<double>(sample.gyroDps.x), static_cast<double>(sample.gyroDps.y), static_cast<double>(sample.gyroDps.z),
@@ -292,8 +382,8 @@ bool HandheldRuntime::interfaceCommand(const char* line) {
     if (!std::strcmp(line, "device wake")) { interfaceActivity(static_cast<std::uint64_t>(esp_timer_get_time() / 1000)); pollIdle(static_cast<std::uint64_t>(esp_timer_get_time() / 1000)); }
     else if (!std::strcmp(line, "device sound")) audio_.play(device::AudioCue::Boot);
     else if (!std::strcmp(line, "device setup")) { setup_.open(); ui_.cancelTouch(); touchNeedsRelease_ = true; }
-    else if (!std::strcmp(line, "device mute")) audio_.setMuted(true);
-    else if (!std::strcmp(line, "device unmute")) audio_.setMuted(false);
+    else if (!std::strcmp(line, "device mute")) { if (audio_.setMuted(true) != ESP_OK) std::puts("Sound changed; SETTINGS NOT SAVED."); }
+    else if (!std::strcmp(line, "device unmute")) { if (audio_.setMuted(false) != ESP_OK) std::puts("Sound changed; SETTINGS NOT SAVED."); }
     else if (!std::strcmp(line, "device recenter")) { imu_.recenter(); ui_.notice("HOLD STILL TO CENTER TILT"); }
     else if (!std::strcmp(line, "device art-retry")) art_.retry();
     else std::puts("device status | wake | sound | mute | unmute | recenter | art-retry | setup");

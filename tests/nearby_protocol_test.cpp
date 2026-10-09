@@ -149,6 +149,102 @@ void autoPacing(){
  CHECK(p.a.view().stage==Stage::Finished&&same(p.a.view().match,p.b.view().match));
  const auto terminal=p.a.view().match;p.b.close();p.tick(30001,0xffffffffu);CHECK(p.a.view().stage==Stage::Finished&&same(terminal,p.a.view().match));
 }
+void autoModeConsent(){
+ Pair p;p.open();CHECK(p.a.challenge(0,Mode::Auto,901,42,p.now));Datagram challenge;CHECK(p.a.pop(challenge)&&challenge.bytes[5]==2);
+ CHECK(p.b.receive(ma,challenge.bytes,challenge.length,p.now));CHECK(p.b.view().offeredMode==Mode::Auto&&p.b.view().stage==Stage::Incoming);
+ CHECK(!p.a.challenge(0,Mode::Tactical,902,42,p.now)&&!p.b.challenge(0,Mode::Tactical,903,42,p.now));
+ auto changed=challenge;changed.bytes[34+40]=static_cast<unsigned>(Mode::Tactical);reseal(changed);
+ CHECK(!p.b.receive(ma,changed.bytes,changed.length,p.now)&&p.b.view().offeredMode==Mode::Auto);
+ CHECK(p.b.receive(ma,challenge.bytes,challenge.length,p.now));p.tick(2500);
+ CHECK(p.a.view().stage==Stage::Outgoing&&p.b.view().stage==Stage::Incoming&&!valid(p.a.view().match)&&!valid(p.b.view().match));
+ CHECK(p.b.accept(p.now));Datagram accept;CHECK(p.b.pop(accept)&&accept.bytes[5]==3);
+ changed=accept;changed.bytes[34+40]=static_cast<unsigned>(Mode::Tactical);reseal(changed);
+ CHECK(!p.a.receive(mb,changed.bytes,changed.length,p.now)&&p.a.view().stage==Stage::Outgoing);
+ CHECK(p.a.receive(mb,accept.bytes,accept.length,p.now));Datagram initial;CHECK(p.a.pop(initial)&&initial.bytes[5]==4);
+ changed=initial;put(changed.bytes+34+60,static_cast<unsigned>(Mode::Tactical));reseal(changed);
+ CHECK(!p.b.receive(ma,changed.bytes,changed.length,p.now)&&p.b.view().stage==Stage::Accepting);
+ CHECK(p.b.receive(ma,initial.bytes,initial.length,p.now));p.pump();
+ CHECK(p.a.view().match.mode==Mode::Auto&&same(p.a.view().match,p.b.view().match));
+ CHECK(!p.a.choose(Choice::Physical,p.now)&&!p.b.choose(Choice::Magic,p.now));
+ // A mode change is a new invitation with fresh consent, never a live toggle.
+ p.a.cancel(p.now);p.pump();CHECK(p.b.view().stage==Stage::Cancelled);
+ CHECK(p.a.open(ma,fa,++p.now,101)&&p.b.open(mb,fb,p.now,201));p.pump();CHECK(p.a.challenge(0,Mode::Tactical,904,43,p.now));p.pump();
+ CHECK(p.b.view().offeredMode==Mode::Tactical&&p.b.view().stage==Stage::Incoming);
+ CHECK(!p.a.receive(mb,accept.bytes,accept.length,p.now)&&!valid(p.a.view().match));
+ CHECK(!p.b.receive(ma,initial.bytes,initial.length,p.now)&&p.b.view().stage==Stage::Incoming);
+ CHECK(p.b.accept(p.now));p.pump();CHECK(p.a.view().match.mode==Mode::Tactical&&same(p.a.view().match,p.b.view().match));
+ // Crossing invitations with different modes choose one offer, not consent.
+ for(const auto hostMode:{Mode::Tactical,Mode::Auto}){
+  Pair crossed;crossed.open();const auto other=hostMode==Mode::Auto?Mode::Tactical:Mode::Auto;
+  CHECK(crossed.a.challenge(0,hostMode,501,7,crossed.now));CHECK(crossed.b.challenge(0,other,502,8,crossed.now));crossed.pump(0,true);
+  CHECK(crossed.a.view().stage==Stage::Outgoing&&crossed.b.view().stage==Stage::Incoming&&crossed.b.view().offeredMode==hostMode);
+  CHECK(!valid(crossed.a.view().match)&&!valid(crossed.b.view().match));crossed.tick(1000);
+  CHECK(crossed.b.view().stage==Stage::Incoming);CHECK(crossed.b.accept(crossed.now));crossed.pump(0,true);
+  CHECK(crossed.a.view().match.mode==hostMode&&same(crossed.a.view().match,crossed.b.view().match));
+ }
+}
+void autoRandomAlternation(){
+ // A CRC-valid, legal but non-random host result is not the agreed Auto turn.
+ Pair checked;checked.start(Mode::Auto);const auto baseline=checked.b.view().match;checked.now+=kAutoPaceMs;checked.a.tick(checked.now);Datagram frame;CHECK(checked.a.pop(frame)&&frame.bytes[5]==4);
+ const auto actual=checked.a.view().match;auto strategic=baseline;const auto alternative=actual.lastAttack==Choice::Physical?Choice::Magic:Choice::Physical;
+ CHECK(resolve(strategic,baseline.sequence,alternative,actual.lastDefense));strategic.rng=actual.rng;CHECK(valid(strategic));auto forged=frame;CHECK(encode(strategic,forged.bytes+34,kMatchBytes));reseal(forged);
+ CHECK(!checked.b.receive(ma,forged.bytes,forged.length,checked.now)&&same(baseline,checked.b.view().match));CHECK(checked.b.receive(ma,frame.bytes,frame.length,checked.now)&&same(actual,checked.b.view().match));
+ unsigned seen[2][2]{};
+ for(unsigned seed=1;seed<=256;++seed){
+  Match ordinary,differentStats;CHECK(begin(fa,fb,Mode::Auto,seed,ordinary));
+  CHECK(begin({90,22,19,5,0},{91,22,19,0,5},Mode::Auto,seed,differentStats));
+  while(ordinary.status==Status::Active&&differentStats.status==Status::Active){
+   const auto actor=ordinary.attacker;const auto sequence=ordinary.sequence;
+   CHECK(resolveAuto(ordinary,sequence)&&resolveAuto(differentStats,sequence));
+   // Identical seeds choose identical moves despite radically different stats
+   // and care bonuses. Auto is random, not a matchup optimizer.
+   CHECK(ordinary.lastAttack==differentStats.lastAttack&&ordinary.lastDefense==differentStats.lastDefense&&ordinary.rng==differentStats.rng);
+   CHECK(ordinary.lastAttack==Choice::Physical||ordinary.lastAttack==Choice::Magic);
+   CHECK(ordinary.lastAttacker==actor&&ordinary.attacker==1u-actor&&ordinary.attacker==ordinary.sequence%2);
+   CHECK(differentStats.lastAttacker==actor&&differentStats.attacker==ordinary.attacker);
+   ++seen[actor][ordinary.lastAttack==Choice::Magic?1:0];
+  }
+ }
+ CHECK(seen[0][0]&&seen[0][1]&&seen[1][0]&&seen[1][1]);
+ // Either radio identity can initiate; both still view the same host/guest
+ // ordering and alternating sequence, independent of their local screen side.
+ for(unsigned initiator=0;initiator<2;++initiator){Pair p;p.open();auto& host=initiator?p.b:p.a;auto& guest=initiator?p.a:p.b;
+  CHECK(host.challenge(0,Mode::Auto,700+initiator,42,p.now));p.pump();CHECK(guest.accept(p.now));p.pump();CHECK(host.view().host&&!guest.view().host);
+  while(host.view().stage==Stage::Playing){const auto previous=host.view().match;p.tick(kAutoPaceMs,0,true);CHECK(host.view().match.sequence==previous.sequence+1);CHECK(host.view().match.lastAttacker==previous.attacker);CHECK(same(host.view().match,guest.view().match));}
+  CHECK(host.view().stage==Stage::Finished&&guest.view().stage==Stage::Finished);
+ }
+}
+void autoReconnectAndReboot(){
+ for(const unsigned lost:{2u,3u,4u,6u,8u}){
+  Pair p;p.open();CHECK(p.a.challenge(0,Mode::Auto,800+lost,42,p.now));p.pump(1u<<lost,true);p.tick(500,0,true);
+  CHECK(p.b.view().stage==Stage::Incoming&&!valid(p.b.view().match));CHECK(p.b.accept(p.now));p.pump(1u<<lost,true);p.tick(500,0,true);
+  CHECK(p.a.view().stage==Stage::Playing&&p.b.view().stage==Stage::Playing&&same(p.a.view().match,p.b.view().match));
+  p.tick(kAutoPaceMs,1u<<lost,true);p.tick(500,0,true);const auto checkpoint=p.a.view().match;
+  CHECK(checkpoint.sequence==1&&same(checkpoint,p.b.view().match));
+  p.tick(kReconnectMs+1,0xffffffffu);CHECK(p.a.view().stage==Stage::Reconnecting&&p.b.view().stage==Stage::Reconnecting&&same(checkpoint,p.a.view().match));
+  p.tick(500,0,true);CHECK(p.a.view().stage==Stage::Playing&&p.b.view().stage==Stage::Playing&&same(p.a.view().match,p.b.view().match));
+  // An already acknowledged frame may resume after the disconnected hold;
+  // stop-and-wait still permits at most one new, shared exchange.
+  CHECK(p.a.view().match.sequence<=checkpoint.sequence+1);
+  for(unsigned turn=0;turn<kMaxExchanges&&p.a.view().stage==Stage::Playing;++turn)p.tick(kAutoPaceMs,0,true);
+  CHECK(p.a.view().stage==Stage::Finished&&same(p.a.view().match,p.b.view().match));
+ }
+ Pair unacked;unacked.start(Mode::Auto);unacked.now+=kAutoPaceMs;unacked.a.tick(unacked.now);Datagram frame;CHECK(unacked.a.pop(frame)&&frame.bytes[5]==4);const auto committed=unacked.a.view().match;
+ unacked.tick(kReconnectMs+1,0xffffffffu);CHECK(unacked.a.view().stage==Stage::Reconnecting&&unacked.b.view().stage==Stage::Reconnecting);
+ unacked.tick(500,0,true);CHECK(same(committed,unacked.a.view().match)&&same(committed,unacked.b.view().match));
+ unacked.tick(kAutoPaceMs-1);CHECK(same(committed,unacked.a.view().match));unacked.tick(1);CHECK(unacked.a.view().match.sequence==committed.sequence+1);
+ const auto newer=unacked.b.view().match;CHECK(unacked.b.receive(ma,frame.bytes,frame.length,unacked.now));unacked.pump(0,true);CHECK(same(newer,unacked.b.view().match));
+ // Reboot/close deliberately drops an ephemeral duel. Old state/consent cannot
+ // resurrect it; the remaining device times out without rewards or captures.
+ for(unsigned rebooted=0;rebooted<2;++rebooted){Pair p;p.start(Mode::Auto);p.tick(kAutoPaceMs);const auto before=p.a.view().match;
+  p.now+=500;p.a.tick(p.now);Datagram old;CHECK(p.a.pop(old)&&old.bytes[5]==4);
+  auto& reset=rebooted?p.b:p.a;reset.close();CHECK(reset.open(rebooted?mb:ma,rebooted?fb:fa,p.now,900+rebooted));
+  CHECK(!reset.receive(rebooted?ma:mb,old.bytes,old.length,p.now)&&reset.view().stage==Stage::Discovering);
+  p.tick(kSessionTimeoutMs,0xffffffffu);const auto& survivor=rebooted?p.a:p.b;
+  CHECK(survivor.view().stage==Stage::TimedOut&&same(before,survivor.view().match)&&!valid(reset.view().match));
+ }
+ Pair clockReset;clockReset.start(Mode::Auto);clockReset.a.tick(0);CHECK(clockReset.a.view().stage==Stage::Cancelled);
+}
 void careBonusHandshake(){
  constexpr Fighter host{17,11,1,3,4},guest{23,18,1,5,1};
  CHECK(kRules==12&&kMatchBytes==116&&sizeof(Fighter)==20);
@@ -221,4 +317,4 @@ void previousRulesHandshake(){
  state.bytes[14]=11;reseal(state);CHECK(!p.b.receive(ma,state.bytes,state.length,p.now)&&p.b.view().stage==Stage::Incompatible&&same(before,p.b.view().match));
 }
 }
-int main(){core();consentAndLoss();recoverAndTimeout();simultaneous();wireGuards();boundedQueuesAndReordering();reviewedRegressions();autoPacing();careBonusHandshake();previousRulesHandshake();std::printf("%u nearby checks, %u failures; Fighter%zuB / Match%zuB / Protocol%zuB / max packet%zuB\n",checks,failures,sizeof(Fighter),sizeof(Match),sizeof(Protocol),34+kMatchBytes+4);return failures?1:0;}
+int main(){core();consentAndLoss();recoverAndTimeout();simultaneous();wireGuards();boundedQueuesAndReordering();reviewedRegressions();autoPacing();autoModeConsent();autoRandomAlternation();autoReconnectAndReboot();careBonusHandshake();previousRulesHandshake();std::printf("%u nearby checks, %u failures; Fighter%zuB / Match%zuB / Protocol%zuB / max packet%zuB\n",checks,failures,sizeof(Fighter),sizeof(Match),sizeof(Protocol),34+kMatchBytes+4);return failures?1:0;}

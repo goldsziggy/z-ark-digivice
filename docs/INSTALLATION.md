@@ -1,8 +1,12 @@
+**Current source package:** `171cda7`, schema 22/rules 15. Read the [current package instructions](../releases/firmware-171cda7/README.md) and [publication validation](../PUBLICATION_VALIDATION.json). Retained checkpoints below are historical.
+
 # Install Digivice development firmware
 
-> Publication checkpoint: source and previously installed firmware are f74ee4c (schema 17 / rules 13). Both units passed bounded installation/save/SD/reboot checks; older entries below are historical. No hardware was accessed for this export. See [verified images and remaining acceptance](../releases/firmware-f74ee4c/README.md).
+> Current exported source: `66ceaaf` (schema21/rules14, 60 Digimon). [Current build and migration guide](ROSTER60.md) · [Publication validation](../PUBLICATION_VALIDATION.json). Installation statements below describe their named historical checkpoints; this export preparation does not assert a new physical installation.
 
-> This retained runbook documents the older `6e058e1` installer and checkpoints. Its historical packaging/flash commands do not install the bundled f74 release. Follow the [f74 installation boundary](../releases/firmware-f74ee4c/README.md) and review a release-specific installer before any update.
+> Historical publication checkpoint: source and previously installed firmware were f74ee4c (schema 17 / rules 13). Both units passed bounded installation/save/SD/reboot checks; older entries below are historical. No hardware was accessed for this export. See [verified images and remaining acceptance](../releases/firmware-f74ee4c/README.md).
+
+> This retained runbook documents the older `6e058e1` installer and checkpoints. Its historical packaging/flash commands do not install either the historical f74 package or the current 66ceaaf raw build images. Follow the [f74 installation boundary](../releases/firmware-f74ee4c/README.md) and review a release-specific installer before any update.
 
 **Historical installed release:** **`6e058e1`** uses **schema 15 / rules 12 / 636-byte saves**, service container 14, saved starter offers, care bonuses, carousel controls, capture-result playback and screen idle. The pinned build (historical local evidence omitted) passed app-only installation and the bounded device checks below on both units. [Historical feature/run guide](CARE_CAPTURE_RELEASE.md). The older **`2d9f1ed`** schema-14/rules-11 checkpoint remains historical evidence. Preserve each device’s own backup before any further migration or downgrade.
 
@@ -191,7 +195,7 @@ cp docs/INSTALLATION.md ../deliverables/my-digivice-install/INSTALLATION.md
 
 The package command refuses to overwrite an existing output directory. It checks against `docs/evidence/esp-build-physical-playtest.json`; only the four allowlisted firmware binaries and package metadata are copied. Source, SDK, credentials, NVS dumps, SD caches and private art are not swept into the package.
 
-**Package and preserve the reviewed binaries before rebuilding.** A fresh rebuild can change binary bytes, including its embedded version. Packaging deliberately refuses a changed build until a maintainer refreshes and reviews build evidence and the release pins. Do not change hashes merely to silence a mismatch. This historical helper only packages its pinned older artifacts; it cannot install the bundled f74 images. A later release needs its own reviewed installer.
+**Package and preserve the reviewed binaries before rebuilding.** A fresh rebuild can change binary bytes, including its embedded version. Packaging deliberately refuses a changed build until a maintainer refreshes and reviews build evidence and the release pins. Do not change hashes merely to silence a mismatch. This historical helper only packages its pinned older artifacts; it cannot install the bundled f74 or 66ceaaf images. A later release needs its own reviewed installer.
 
 For source development, after preserving that package, this optional command rebuilds with the already-installed official SDK and never flashes:
 

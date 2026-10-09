@@ -10,11 +10,12 @@ std::uint64_t clockMs() { return static_cast<std::uint64_t>(esp_timer_get_time()
 std::uint32_t randomNonzero() { auto value = esp_random(); return value ? value : 1; }
 }
 void HandheldRuntime::beginNearby() {
-    if (nearbyBusy() || battle_.locked() || state_.phase != Phase::Home || !saves_.writable() ||
+    const bool recovery = tradeSession_.healthy() && tradeSession_.record() && !tradePeerTerminal_;
+    if (!tradeSession_.healthy() || nearbyBusy() || (!recovery && (battle_.locked() || state_.phase != Phase::Home)) || !saves_.writable() ||
         !practice_.allowsCareAction(Action::Explore) || !network_.ready() || network_.recoveryRequired()) {
         nearbyStatus_ = "Finish battle / check radio"; return;
     }
-    if (!pollUsage(clockMs(), true) || state_.phase != Phase::Home) {
+    if (!pollUsage(clockMs(), true) || (!recovery && state_.phase != Phase::Home)) {
         nearbyStatus_ = "Finish walking encounter first"; return;
     }
     const auto* member = activeMember(state_);
@@ -32,7 +33,7 @@ void HandheldRuntime::closeNearby() {
     if (!nearbyBusy() || nearbyPhase_ == NearbyPhase::Stopping) return;
     // Results carry no game rewards or care writes. Ending a radio session can
     // never replay a capture, restore duel HP into care, or clone a companion.
-    nearby_.close(); nearbyPhase_ = NearbyPhase::Stopping;
+    nearby_.close(); tradeWire_.close(); nearbyPhase_ = NearbyPhase::Stopping;
     nearbyDeadline_ = clockMs() + 5000;
     nearbyStatus_ = "Closing nearby / restoring Wi-Fi";
     ui_.cancelTouch(); touchNeedsRelease_ = true; interfaceDirty_ = true;
@@ -49,7 +50,8 @@ void HandheldRuntime::pollNearby(std::uint64_t now) {
         if (nearbyRadio_.begin() != ESP_OK) { nearbyStatus_ = "Nearby radio start failed"; closeNearby(); return; }
         nearby::Mac mac; std::memcpy(mac.bytes, nearbyRadio_.identity(), sizeof(mac.bytes));
         if (!nearby_.open(mac, nearbyFighter_, now, randomNonzero())) { closeNearby(); return; }
-        nearbyPhase_ = NearbyPhase::Active; nearbyStatus_ = "Wi-Fi paused - friendly duel";
+        if (!openTradeRadio(now)) tradeStatus_ = "Trade unavailable / recovery required";
+        nearbyPhase_ = NearbyPhase::Active; nearbyStatus_ = "Wi-Fi paused - nearby play";
     }
     if (nearbyPhase_ == NearbyPhase::Stopping || nearbyPhase_ == NearbyPhase::Fault) {
         if (nearbyRadio_.end() != ESP_OK || !nearbyRadio_.quiescent()) {
@@ -71,22 +73,47 @@ void HandheldRuntime::pollNearby(std::uint64_t now) {
     nearby::RadioPacket received;
     for (unsigned n = 0; n < 8 && nearbyRadio_.receive(received); ++n) {
         nearby::Mac source; std::memcpy(source.bytes, received.source, sizeof(source.bytes));
-        nearby_.receive(source, received.bytes, received.size, now);
+        if (received.size >= 4 && !std::memcmp(received.bytes, "DGT1", 4)) {
+            const auto stage = nearby_.view().stage;
+            const bool duel = stage == nearby::Stage::Outgoing || stage == nearby::Stage::Incoming ||
+                stage == nearby::Stage::Accepting || stage == nearby::Stage::Playing || stage == nearby::Stage::Reconnecting;
+            if (!duel) {
+                trade::Identity peer; std::memcpy(peer.bytes, received.source, sizeof(peer.bytes));
+                (void)tradeWire_.receive(peer, received.bytes, received.size, now);
+            }
+        } else if (!tradeNegotiating() && state_.phase == Phase::Home && !battle_.locked())
+            nearby_.receive(source, received.bytes, received.size, now);
         interfaceDirty_ = true;
     }
-    nearby_.tick(now);
+    nearby_.tick(now); tradeWire_.tick(now);
+    pollTradePersistence(now);
     nearby::RadioSendResult receipt;
     (void)nearbyRadio_.sendResult(receipt); // MAC receipt is not a protocol ACK.
     if (!nearbyRadio_.status().sending) {
-        nearby::Datagram packet;
-        if (nearby_.pop(packet)) {
+        nearby::Datagram battlePacket;
+        tradewire::Datagram tradePacket;
+        const std::uint8_t* destination = nullptr;
+        const std::uint8_t* bytes = nullptr;
+        std::size_t length = 0;
+        bool selected = false;
+        // Fair draining prevents periodic discovery packets starving the other
+        // protocol. Both protocols retain their own retry-stable decisions.
+        for (unsigned pass = 0; pass < 2 && !selected; ++pass) {
+            const bool tradeTurn = pass ? !tradeTxTurn_ : tradeTxTurn_;
+            if (tradeTurn && tradeWire_.pop(tradePacket)) {
+                destination = tradePacket.destination.bytes; bytes = tradePacket.bytes; length = tradePacket.length; selected = true;
+            } else if (!tradeTurn && nearby_.pop(battlePacket)) {
+                destination = battlePacket.destination.bytes; bytes = battlePacket.bytes; length = battlePacket.length; selected = true;
+            }
+        }
+        if (selected) {
+            tradeTxTurn_ = !tradeTxTurn_;
             bool broadcast = true;
-            for (const auto byte : packet.destination.bytes) broadcast &= byte == 0xff;
+            for (unsigned i = 0; i < 6; ++i) broadcast &= destination[i] == 0xff;
             if (++nearbyTxToken_ == 0) ++nearbyTxToken_;
-            if (broadcast) (void)nearbyRadio_.sendBroadcast(packet.bytes, packet.length, nearbyTxToken_);
-            else if (nearbyRadio_.selectPeer(packet.destination.bytes) == ESP_OK)
-                (void)nearbyRadio_.sendPeer(packet.bytes, packet.length, nearbyTxToken_);
-            // Protocol retains retry-stable decisions if this send is refused.
+            if (broadcast) (void)nearbyRadio_.sendBroadcast(bytes, length, nearbyTxToken_);
+            else if (nearbyRadio_.selectPeer(destination) == ESP_OK)
+                (void)nearbyRadio_.sendPeer(bytes, length, nearbyTxToken_);
         }
     }
     const auto& view = nearby_.view();
@@ -123,12 +150,27 @@ void HandheldRuntime::nearbyIntent(deviceui::Intent intent) {
     if (intent.kind == K::OpenNearby) beginNearby();
     else if (intent.kind == K::CloseNearby) closeNearby();
     else if (nearbyPhase_ != NearbyPhase::Active) nearbyStatus_ = "Wait for the radio";
+    else if (state_.phase != Phase::Home || battle_.locked()) nearbyStatus_ = "Finish the wild battle first";
+    else if (tradeNegotiating()) nearbyStatus_ = "Finish pending trade first";
     else if (intent.kind == K::NearbyChallenge) {
-        const auto session = (std::uint64_t(randomNonzero()) << 32) | randomNonzero();
-        if (!nearby_.challenge(intent.value, state_.battleMode == BattleMode::Auto ? nearby::Mode::Auto : nearby::Mode::Tactical,
-                              session, randomNonzero(), now)) nearbyStatus_ = "Peer changed - choose again";
+        const auto& view=nearby_.view();
+        const auto* peer=intent.value<view.peerCount && intent.value<nearby::kMaxPeers ? &view.peers[intent.value] : nullptr;
+        const bool reviewed=view.stage==nearby::Stage::Discovering && peer && peer->available && peer->compatible &&
+            std::memcmp(peer->mac.bytes,intent.peer.bytes,sizeof(peer->mac.bytes))==0 && peer->openNonce==intent.nearbyOpenNonce &&
+            nearby::sameFighter(peer->fighter,intent.nearbyFighters[1]) && nearby::sameFighter(nearbyFighter_,intent.nearbyFighters[0]) &&
+            (intent.nearbyMode==nearby::Mode::Tactical || intent.nearbyMode==nearby::Mode::Auto);
+        if (!reviewed) nearbyStatus_ = "Peer changed - review again";
+        else {
+            const auto session = (std::uint64_t(randomNonzero()) << 32) | randomNonzero();
+            if (!nearby_.challenge(intent.value,intent.nearbyMode,session,randomNonzero(),now))
+                nearbyStatus_ = "Peer changed - choose again";
+        }
     } else if (intent.kind == K::NearbyAccept) {
-        if (!nearby_.accept(now)) nearbyStatus_ = "Offer changed - choose again";
+        const auto& view=nearby_.view();
+        const bool reviewed=view.stage==nearby::Stage::Incoming && view.session==intent.nearbySession &&
+            std::memcmp(view.opponent.bytes,intent.peer.bytes,sizeof(view.opponent.bytes))==0 && view.offeredMode==intent.nearbyMode &&
+            nearby::sameFighter(view.offered[0],intent.nearbyFighters[0]) && nearby::sameFighter(view.offered[1],intent.nearbyFighters[1]);
+        if (!reviewed || !nearby_.accept(now)) nearbyStatus_ = "Offer changed - review again";
     } else if (intent.kind == K::NearbyChoose) {
         if (!nearby_.choose(static_cast<nearby::Choice>(intent.value), now)) nearbyStatus_ = "Waiting for the other player";
     } else if (intent.kind == K::NearbyCancel) nearby_.cancel(now);

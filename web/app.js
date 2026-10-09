@@ -1,5 +1,6 @@
 import { validCare, validLastCapture, careSummary, captureReport } from './care-capture-state.js';
 import { validWalkingState } from './walking-state.js';
+import { validParty, orderedMembers, partyChoice } from './party.js';
 import builtinPack from './builtin-pack.js';
 import { setupAssets, prepareFrames } from './asset-library.js';
 import { setupPersonalArt } from './personal-art.js';
@@ -11,13 +12,15 @@ import { createBattleClient } from './battle-client.js';
 import { setupTwoButtonInput } from './two-button-input.js';
 import { createBackgroundPlayer, BACKGROUND_SCENES } from './background-player.js';
 import { validateStarterCatalog, isEggState, paintStarterEgg, paintRookiePlaceholder } from './starter-onboarding.js';
-import { validateAutoTrace, autoStepText, autoResultTitle, captureChoice } from './auto-battle.js';
+import { validateAutoTrace, autoStepText, autoResultTitle, captureChoice, awaitingAutoCapture, pausedAutoTraceMatchesState } from './auto-battle.js';
 import { validProgressCombat, validateEvolutionOptions, evolutionRequirements, paintFormPlaceholder } from './progression.js';
 import { createFormArt } from './form-art.js';
 import { fetchRosterPage, fetchRosterDetail, fetchEvolutionGraph, fetchRosterIds, rosterReferences, rosterEncyclopediaMoves, ROSTER_PAGE_SIZE, ROSTER_STAGES } from './roster-client.js';
 import { validRecoveryCount, recoveryReview, reviewedRecoveryEvents, validEncounterRarity, rarityLabel } from './care-actions.js';
-import { createCaptureGesture } from './capture-gesture.js';
-import { packCaptureFlick, decodeCaptureFlick, captureFlightPoint } from './capture-trajectory.js';
+import { createCaptureRingInput } from './capture-ring-input.js';
+import { CAPTURE_RING, sampleCaptureRing, captureRingChance } from './capture-ring.js';
+import { decodeCaptureFlick, captureFlightPoint } from './capture-trajectory.js';
+import { displayGameMessage as displayMessage } from './game-message.js';
 
 // This browser harness sends commands to the service's native game-core runner.
 // Canvas animation is presentation only; no game rules are duplicated in JS.
@@ -51,7 +54,7 @@ let effectTarget = 'wild';
 let transitionBusy = false;
 let captureWindup = null;
 let captureGesture = null, captureAim = null, captureFlight = null;
-let captureFlickSupported = false;
+let captureFlickSupported = false, captureTimingSupported = false, manualAutoCaptureSupported = false, worldSeedSupported = false;
 let sceneState = null;
 let presentation = null;
 let stageWait = null;
@@ -76,8 +79,12 @@ let assetState = { ready: false, busy: false, packs: [], selectedId: 'scene-mead
 const backgroundPlayer = createBackgroundPlayer({ onChange: () => { if (deviceReady) { syncBackgroundStatus(); scheduleDraw(); } } });
 const battleClient = createBattleClient({ storage: (() => { try { return localStorage; } catch { return null; } })(), onChange: () => { if (deviceReady) render(); } });
 const formArt = createFormArt({ getCredential: () => identity, onChange: () => { artGeneration++; if (deviceReady) render(); } });
-const RULES_VERSION = 13;
-const SCHEMA_VERSION = 17;
+const RULES_VERSION = 15;
+const SCHEMA_VERSION = 22;
+const COLLECTION_CAPACITY = 60;
+const MAX_STATE_BYTES = 64 * 1024;
+// Save responses also carry at most 10,000 bounded history events and a trace.
+const MAX_API_RESPONSE_BYTES = 1024 * 1024;
 const MAX_MEMBER_ID = 4294967294;
 let startersOwner = null;
 let starters = [], startersBusy = false, startersError = '', draftStarterId = 1;
@@ -197,7 +204,7 @@ function rosterMember(member) {
     family: `${member.species[0].toUpperCase()}${member.species.slice(1)} family`,
     type: member.combat.type, typeLabel: typeName(member.combat.type), stage: member.level, stageLabel: member.stage || `Level ${member.level}`,
     hp: member.hp, maxHp: member.combat.maxHp, bond: member.bond,
-    current: member.id === game.activeCreatureId,
+    current: member.id === game.activeCreatureId, partyCount: game.partyMemberIds.length, partySlot: game.partyMemberIds.indexOf(member.id) + 1,
     artId, personal: Boolean(member.stage), rookie: member.stage === 'Rookie', pendingForm: Boolean(member.stage), artAvailable: Boolean(member.stage ? findArt(artId) : findOriginalArt(artId)) };
 }
 function partnerLockReason(allowWildRelease = false) {
@@ -212,6 +219,10 @@ function partnerLockReason(allowWildRelease = false) {
 }
 function canSetPartner(id) {
   return canAct() && !partnerLockReason() && game.collection.some(member => member.id === id && member.formId >= 11) && id !== game.activeCreatureId;
+}
+function canChangeParty(id, type = partyChoice(game, id).type) {
+  const choice = partyChoice(game, id);
+  return canAct() && !partnerLockReason() && !choice.reason && choice.type === type;
 }
 function releaseLockReason(member) {
   if (!member) return 'This companion is no longer carried.';
@@ -336,15 +347,16 @@ function autoBattleView(screen, view, item) {
   const progress = screen.endsWith('-progress');
   const index = progress && autoPlayback?.kind === kind ? autoPlayback.index : (trace?.steps.length || 1) - 1;
   const step = trace?.steps[index];
+  const pausedForCapture = kind === 'wild' && trace?.outcome === 'none';
   Object.assign(view, { title: progress ? `${trace?.player.name || 'Partner'} battles…` : autoResultTitle(trace),
     eyebrow: progress ? `AUTO · TURN ${index + 1} / ${trace?.steps.length || 1}` : `${kind === 'wild' ? 'WILD' : 'PRACTICE'} · AUTO RESULT`,
     battleMode: 'auto', layout: progress ? 'auto-progress' : 'auto-result-carousel', focusActions: progress, scene: Boolean(trace), back: false,
     autoStep: step ? { turn: index + 1, total: trace.steps.length } : null,
     meter: step ? `YOU ${step.playerHpAfter} HP · RIVAL ${step.enemyHpAfter} HP` : '',
     detail: progress && step ? autoStepText(step, trace) : trace ? kind === 'wild'
-      ? trace.outcome === 'captured' ? `${trace.enemy.name} joined your collection. The result is saved.` : trace.outcome === 'retreated' ? 'Your partner returned safely. Rest whenever you are ready.' : `${trace.steps.length} turns completed. Your progress is saved.`
+      ? pausedForCapture ? 'Attacks are paused. Tap the play area at the right time, or resume fighting.' : trace.outcome === 'captured' ? `${trace.enemy.name} joined your collection. The result is saved.` : trace.outcome === 'retreated' ? 'Your partner returned safely. Rest whenever you are ready.' : `${trace.steps.length} turns completed. Your progress is saved.`
       : `${trace.steps.length} exchanges completed. Care and collection are unchanged.` : 'No saved Auto battle is available.',
-    items: progress ? [item('auto-pause', autoPlayback?.paused ? 'Resume replay' : 'Pause replay'), item('auto-finish', 'Show saved result')] : [item(kind === 'wild' ? 'wild-auto-done' : 'practice-auto-done', kind === 'wild' ? 'Return home' : 'Back to practice'),
+    items: progress ? [item('auto-pause', autoPlayback?.paused ? 'Resume replay' : 'Pause replay'), item('auto-finish', pausedForCapture ? 'Go to capture' : 'Show saved result')] : [item(kind === 'wild' ? 'wild-auto-done' : 'practice-auto-done', kind === 'wild' ? 'Return home' : 'Back to practice'),
       ...(trace ? [item(kind === 'wild' ? 'wild-auto-replay' : 'practice-auto-replay', 'Replay saved battle')] : [])],
     footer: progress ? autoPlayback?.paused ? 'REPLAY PAUSED · RESULT ALREADY SAVED' : 'SAVED RESULT · REPLAY ONLY' : 'TAP A CHOICE TO CONTINUE' });
   return view;
@@ -361,7 +373,7 @@ async function playAutoBattle(kind, { animate = true } = {}) {
   const trace = kind === 'wild' ? wildAutoTrace : battleClient.getState().autoTrace;
   if (!trace) return;
   presentation = null; sceneState = null;
-  if (!animate || reducedMotion || document.hidden) { navigation.setScreen(kind === 'wild' ? 'wild-auto-result' : 'battle-auto-result'); render(); return; }
+  if (!animate || reducedMotion || document.hidden) { finishAutoPlayback(kind, trace); return; }
   autoPlayback = { kind, index: 0, trace, paused: false, finished: false };
   transitionBusy = true;
   navigation.setScreen(kind === 'wild' ? 'wild-auto-progress' : 'battle-auto-progress');
@@ -377,9 +389,24 @@ async function playAutoBattle(kind, { animate = true } = {}) {
     }
   } finally {
     autoPlayback = null; transitionBusy = false;
-    navigation.setScreen(kind === 'wild' ? 'wild-auto-result' : 'battle-auto-result');
-    prepareCompanion('celebrate'); render();
+    finishAutoPlayback(kind, trace);
   }
+}
+
+function finishAutoPlayback(kind, trace) {
+  const paused = kind === 'wild' && trace.outcome === 'none';
+  // Navigation only. The next render arms the ball after save acknowledgement,
+  // foreground playback, visibility and recovery gates have all settled.
+  navigation.setScreen(paused ? 'wild-auto-confirm' : kind === 'wild' ? 'wild-auto-result' : 'battle-auto-result');
+  prepareCompanion(paused ? 'idle' : 'celebrate'); render();
+}
+
+function armCaptureAim() {
+  if (!canAct() || !captureTimingSupported || !captureChoice(game).available
+    || game.battleMode !== 'tactical' && !awaitingAutoCapture(game)) return false;
+  captureAim = { revision, started: performance.now() };
+  captureFlight = null; presentation = null; sceneState = null;
+  audio.playCue('capture-arm'); navigation.go('capture-aim'); return true;
 }
 
 function practiceView(screen, view, item) {
@@ -454,6 +481,10 @@ function visualScene() {
 function backgroundSceneId() {
   const screen = navigation.state().screen;
   const practice = battleClient.getState();
+  if (captureAim || captureFlight) {
+    const encounter = captureFlight?.scene || game;
+    return BACKGROUND_SCENES[Math.max(0, (encounter?.encounters || 1) - 1) % BACKGROUND_SCENES.length];
+  }
   if (screen.startsWith('battle-') || screen === 'practice-stats' || ['stats', 'skills'].includes(screen) && statsTarget.startsWith('practice-')) {
     // Revision minus command sequence identifies a duel without touching game RNG.
     const startRevision = (practice.revision || 1) - (practice.state?.sequence || 0);
@@ -686,7 +717,7 @@ function deviceView(screen) {
           items: [item('connection', 'Restore saved game')], footer: 'NO NEW GAME CREATED' }); break;
       }
       Object.assign(view, { title: activeDisplayName(), eyebrow: game ? `${game.stage ? `${game.stage} · ` : ''}Level ${game.level} · Bond ${game.bond}` : 'Your first companion', scene: true, meter: game?.combat ? `${game.hp} / ${game.combat.maxHp} HP` : '',
-        footer: pending ? 'SAVE WAITING' : game ? `${game.steps.toLocaleString()} STEPS · ${game.bond} BOND` : 'LOCAL VIRTUAL DEVICE',
+        footer: pending ? 'SAVE WAITING' : game ? `${game.walking.eligibleSteps.toLocaleString()} EXPLORE STEPS · ${game.bond} BOND` : 'LOCAL VIRTUAL DEVICE',
         items: encounter ? [item(game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle', 'Encounter'), item('menu', 'Menu')] : [item(game ? 'menu' : 'connection', game ? 'Open menu' : 'Set up device'), ...(wildAutoTrace ? [item('wild-auto-result', 'Last Auto result')] : [])], focusActions: !encounter && Boolean(wildAutoTrace) }); break;
     case 'menu':
       Object.assign(view, { title: 'Your little world', eyebrow: '', layout: 'carousel', items: [navItem('care', 'Care', '◒'), navItem('companions', 'Companions', '✳'), navItem('explore', 'Explore', '↗'), navItem('cards', 'Cards', '▱'), navItem('settings', 'Settings', '⚙'), navItem('battle-mode', 'Battle', '⚔'), navItem('stats', 'Stats', '▥'), navItem('progression', 'Progression', '◇'), navItem('type-chart', 'Type chart', '↻'), navItem('roster', 'World DS roster', '▤'), navItem('journal', 'Discovery journal', '✧')] }); break;
@@ -732,14 +763,14 @@ function deviceView(screen) {
         items: [item('confirm-recovery', 'Confirm recovery', !act || !reviewed)], footer: 'BACK KEEPS YOUR CURRENT STATE' }); break;
     }
     case 'companions': {
-      const members = game?.collection || [];
+      const members = orderedMembers(game);
       const pages = Math.max(1, Math.ceil(members.length / COMPANIONS_PER_PAGE));
       companionPage = Math.min(companionPage, pages - 1);
-      Object.assign(view, { title: 'Companions', eyebrow: `${members.length} / 8 COMPANIONS${members.length === 8 ? ' · FULL' : ''}`,
+      Object.assign(view, { title: 'Companions', eyebrow: `${members.length} / ${game?.collectionCapacity || COLLECTION_CAPACITY} COMPANIONS${members.length === game?.collectionCapacity ? ' · FULL' : ''}`,
         artGeneration, layout: 'roster', detail: members.length ? '' : 'Set up your device to meet your first partner.',
         items: members.slice(companionPage * COMPANIONS_PER_PAGE, (companionPage + 1) * COMPANIONS_PER_PAGE)
           .map(member => ({ ...item(`member-${member.id}`, member.name), member: rosterMember(member) })),
-        footer: members.length ? `PAGE ${companionPage + 1} / ${pages}` : '' });
+        footer: members.length ? `PAGE ${companionPage + 1} / ${pages} · XP ${game.partyMemberIds.length} / 3` : '' });
       if (pages > 1) view.items.push(item('companions-next', companionPage === pages - 1 ? 'First page ↻' : 'Next page ›', false, `${companionPage + 1} / ${pages}`));
       if (!members.length) view.items.push(item('connection', 'Set up device'));
       break;
@@ -747,16 +778,17 @@ function deviceView(screen) {
     case 'companion': {
       const member = game?.collection.find(entry => entry.id === companionDetailId);
       const current = member?.id === game?.activeCreatureId;
+      const party = partyChoice(game, member?.id);
       const lockReason = member?.formId < 11 ? 'Earlier test companion retained in your save. Choose a named partner.' : partnerLockReason();
       const confirmation = partnerConfirmation?.deviceId === identity?.deviceId && partnerConfirmation.memberId === member?.id ? partnerConfirmation : null;
       const artMissing = member && !findOriginalArt(member.name.toLowerCase());
       Object.assign(view, { title: member?.name || 'Companion', eyebrow: member ? `#${String(member.id).padStart(2, '0')} · ${member.capturedAtSequence === 0 ? 'STARTER' : 'CAPTURED'} COMPANION` : 'YOUR COLLECTION',
         artGeneration, layout: 'member', creatureType: member?.combat.type, member: member ? rosterMember(member) : null,
-        detail: !member ? 'This companion is not in the current save.' : encounter && canRelease(member) ? 'Release this non-partner to make room. Your encounter will wait.' : lockReason || (confirmation && current ? `Partner set · #${String(member.id).padStart(2, '0')} ${member.name}. Saved.`
-          : confirmation && !current ? 'Earlier change confirmed. Your latest partner is kept.' : current ? 'Your partner for care, walks and battles.' : 'Choose this companion for your next adventure.'),
+        detail: !member ? 'This companion is not in the current save.' : encounter && canRelease(member) ? 'Release this non-partner to make room. Your encounter will wait. XP companions stay locked until Home.' : lockReason || (confirmation && current ? `Partner set · #${String(member.id).padStart(2, '0')} ${member.name}. Saved.`
+          : confirmation && !current ? 'Earlier change confirmed. Your latest partner is kept.' : current ? 'Your partner for care, walks and battles.' : party.reason ? party.reason : party.slot ? 'Earns the full wild battle XP reward, free. Your active partner fights; this companion does not.' : 'Add up to 3 XP companions. Each earns the full wild battle reward for free, without fighting.'),
         notice: lockReason && member ? 'locked' : confirmation && current ? 'success' : '',
         stats: member ? [['Energy', member.energy], ['Fullness', member.fullness], ['Mood', member.mood], ['Bond', member.bond]] : [],
-        items: member ? [item('select-companion', current ? 'Current partner' : 'Set Partner', !canSetPartner(member.id), current ? '✓' : '', '✳'), item('member-stats', 'Stats & moves'), item('member-progression', 'Progression'), item('release-review', 'Release companion', !canRelease(member))]
+        items: member ? [item('select-companion', current ? 'Current partner' : 'Set Partner', !canSetPartner(member.id), current ? '✓' : '', '✳'), ...(!current ? [item(party.type, party.label, !canChangeParty(member.id), party.detail)] : []), item('member-stats', 'Stats & moves'), item('member-progression', 'Progression'), item('release-review', 'Release companion', !canRelease(member))]
           : [item(game ? 'companions' : 'connection', game ? 'Back to collection' : 'Set up device')] });
       if (member && lockReason.startsWith('Check practice')) view.items.push(item('partner-refresh', 'Check practice status'));
       else if (artMissing) view.items.push(item('open-assets', 'Pack library ↗', false, 'Art not saved'));
@@ -785,16 +817,18 @@ function deviceView(screen) {
         items: [item('release-done', encounter ? 'Return to encounter' : 'View companions')], footer: 'YOUR PARTNER IS KEPT' }); break;
     }
     case 'explore':
-      Object.assign(view, { title: 'One little walk', eyebrow: `${(game?.steps || 0).toLocaleString()} STEPS · ${game?.battleMode === 'auto' ? 'AUTO' : 'TACTICAL'}`, detail: encounter ? `${game.wildName} is waiting.${game.queuedEncounters ? ` ${game.queuedEncounters} more encounter${game.queuedEncounters === 1 ? '' : 's'} queued.` : ''} Finish this encounter first.` : game?.queuedEncounters ? `${game.queuedEncounters} encounter${game.queuedEncounters === 1 ? '' : 's'} queued. The next real step starts one; this button simulates 100 steps.` : `${game?.stepsToNextEncounter ?? 100} more steps to an encounter. This button simulates 100 steps; choose your style first.`,
+      Object.assign(view, { title: 'One little walk', eyebrow: `${(game?.walking?.eligibleSteps || 0).toLocaleString()} EXPLORE STEPS · ${game?.battleMode === 'auto' ? 'AUTO' : 'TACTICAL'}`, detail: encounter ? `${game.wildName} is waiting.${game.queuedEncounters ? ` ${game.queuedEncounters} more encounter${game.queuedEncounters === 1 ? '' : 's'} queued.` : ''} Finish this encounter first.` : game?.queuedEncounters ? `${game.queuedEncounters} encounter${game.queuedEncounters === 1 ? '' : 's'} queued. The next real step starts one; this button simulates 100 steps.` : `${game?.stepsToNextEncounter ?? 100} more steps to an encounter. This button simulates 100 steps; choose your style first.`,
         walkProgress: game ? { queued: game.queuedEncounters, remaining: game.stepsToNextEncounter } : null,
         items: [item(encounter ? game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle' : 'walk', encounter ? 'Return to encounter' : 'Explore +100', !encounter && !act, '', '↗'), item('wild-mode', 'Choose battle mode', !act || encounter)] }); break;
     case 'wild-mode':
       Object.assign(view, { title: 'Choose your style', eyebrow: 'WILD ENCOUNTERS', layout: 'carousel',
         items: [item('wild-tactical', 'Tactical', !act || encounter, 'Choose attacks, cards and captures', '⚔'), item('wild-auto', 'Auto', !act || encounter, 'Confirm a battle, then watch', '▶')], footer: 'CHOOSE BEFORE WALKING' }); break;
     case 'wild-auto-confirm':
-      Object.assign(view, { title: 'Ready for Auto?', eyebrow: `WILD ${game?.wildName || 'ENCOUNTER'} · AUTO`, layout: 'auto-confirm', encounterRarity: game?.wildRarity,
-        detail: 'Your partner fights and tries to capture. No cards or timing inputs. Start saves the whole encounter.',
-        items: [item('wild-auto-start', 'Start Auto battle', !act || !encounter || game.battleMode !== 'auto', rarityLabel(game?.wildRarity)), ...(encounter && game.collection.length >= game.collectionCapacity && game.wildRules >= 10 ? [item('make-room', 'Make room', !act, 'Release a non-partner first')] : [])], footer: 'BACK TO WAIT · START TO COMMIT', focusActions: true }); break;
+      Object.assign(view, { title: awaitingAutoCapture(game) ? 'Capture is ready' : 'Ready for Auto?', eyebrow: `WILD ${game?.wildName || 'ENCOUNTER'} · AUTO`, layout: 'auto-confirm', encounterRarity: game?.wildRarity,
+        detail: awaitingAutoCapture(game) ? 'Attacks are paused. Tap the play area at the right time, or resume fighting.' : encounter && game.collection.length >= game.collectionCapacity
+          ? game.wildRules >= 10 ? 'Collection full. Make room before starting if you want to capture. Auto will fight without a capture pause.' : 'Collection full. Auto will fight without a capture pause. Finish this encounter before releasing a Digimon.'
+          : 'Your partner fights until capture is ready. You choose when to tap and throw, or keep fighting.',
+        items: [...(awaitingAutoCapture(game) ? [item('capture', 'Time your tap', !act || !captureTimingSupported), item('wild-auto-resume', 'Resume fighting', !act)] : [item('wild-auto-start', 'Start Auto battle', !act || !encounter || game.battleMode !== 'auto' || !manualAutoCaptureSupported, rarityLabel(game?.wildRarity))]), ...(encounter && game.collection.length >= game.collectionCapacity && game.wildRules >= 10 ? [item('make-room', 'Make room', !act, 'Release a non-partner first')] : [])], footer: 'BACK TO WAIT · START TO COMMIT', focusActions: true }); break;
     case 'wild-auto-progress':
     case 'wild-auto-result':
     case 'battle-auto-progress':
@@ -809,9 +843,9 @@ function deviceView(screen) {
       if (encounter && game.collection.length >= game.collectionCapacity && game.wildRules >= 10) view.items.splice(4, 0, item('make-room', 'Make room', !act, 'Release a non-partner · Encounter waits'));
       break;
     case 'capture':
-      Object.assign(view, { title: 'Ready the beam…', eyebrow: `${Math.max(0, 3 - (game?.captureAttempts || 0))} THROWS LEFT`, detail: 'No request sent yet. Back cancels without using an attempt. The saved throw chance appears after the throw.', items: [item('cancel-capture', 'Cancel capture')], backLabel: '‹ Cancel' }); break;
+      Object.assign(view, { title: 'Ready the beam…', eyebrow: `${Math.max(0, 3 - (game?.captureAttempts || 0))} THROWS LEFT`, detail: 'No request sent yet. Back cancels without using an attempt. The ring shows the current throw chance before your tap.', items: [item('cancel-capture', 'Cancel capture')], backLabel: '‹ Cancel' }); break;
     case 'capture-aim':
-      Object.assign(view, { title: 'Flick to capture', eyebrow: '', scene: true, layout: 'capture-aim', detail: '', items: [], backLabel: 'Cancel', footer: '' }); break;
+      Object.assign(view, { title: 'Capture', eyebrow: '', scene: true, layout: 'capture-aim', detail: '', items: [], backLabel: awaitingAutoCapture(game) ? 'Resume fighting' : 'Cancel', footer: '' }); break;
     case 'cards':
       Object.assign(view, { title: 'Field cards', eyebrow: 'SIMULATED NFC', detail: game?.battleMode === 'auto' ? 'Auto battles choose every move. Cards are available in Tactical mode.' : encounter ? game.cardUsed ? 'One card already used this encounter.' : 'Choose one card for this encounter.' : 'Cards can be used during a wild encounter.',
         items: [item('card-spark', 'Spark', !act || !encounter || game?.cardUsed || game?.battleMode !== 'tactical', '+5 next hit', '✦'), item('card-shelter', 'Shelter', !act || !encounter || game?.cardUsed || game?.battleMode !== 'tactical', 'Guard next hit', '◇')] }); break;
@@ -890,7 +924,7 @@ function renderDevice() {
   const current = navigation.state().screen;
   if (current !== 'capture-aim' && captureAim) { captureAim = null; captureGesture?.cancel('navigation'); }
   if (current === 'capture-aim' && (!captureAim || captureAim.revision !== revision || game?.phase !== 'encounter')) {
-    captureAim = null; captureGesture?.cancel('state-changed'); navigation.setScreen(game?.phase === 'encounter' ? 'battle' : 'home'); return;
+    captureAim = null; captureGesture?.cancel('state-changed'); navigation.setScreen(game?.phase === 'encounter' ? game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle' : 'home'); return;
   }
   $('screen-surface').dataset.captureAim = String(current === 'capture-aim');
   captureGesture?.refresh();
@@ -898,14 +932,14 @@ function renderDevice() {
   const phase = game?.phase || null;
   if (pending && !['saving', 'recovery', 'recovery-confirm'].includes(current)) {
     const selection = pending.events?.at(-1);
-    if (selection?.type === 'select' && Number.isInteger(selection.value)) {
+    if (['select', 'party-add', 'party-remove'].includes(selection?.type) && Number.isInteger(selection.value)) {
       companionDetailId = selection.value; devicePendingReturn = 'companion';
     } else if (selection?.type === 'evolve') {
       progressionMemberId = pending.subjectMemberId || game?.activeCreatureId || 1; devicePendingReturn = 'evolution-result';
     } else if (selection?.type === 'release') {
       devicePendingReturn = 'release-result';
     } else if (pending.intent === 'recover') devicePendingReturn = 'care';
-    else if (selection?.type === 'auto') devicePendingReturn = 'wild-auto-result';
+    else if (['auto', 'auto-fight', 'auto-resume'].includes(selection?.type)) devicePendingReturn = 'wild-auto-result';
     else if (selection?.type === 'mode') devicePendingReturn = 'explore';
     else devicePendingReturn = current;
     navigation.setScreen('saving'); return;
@@ -919,6 +953,7 @@ function renderDevice() {
   }
   if (isEggState(game) && !['starter-select', 'starter-review', 'connection', 'saving', 'recovery', 'recovery-confirm'].includes(current)) { navigation.setScreen('starter-select'); return; }
   if (!isEggState(game) && (['starter-select', 'starter-review'].includes(current) || current === 'starter-hatched' && hatchedIdentity !== identity?.deviceId)) { navigation.setScreen('home'); return; }
+  if (phase !== 'encounter' && current === 'wild-auto-confirm') { navigation.setScreen('home'); return; }
   if (phase === 'encounter' && game.battleMode === 'auto' && current === 'battle') { navigation.setScreen('wild-auto-confirm'); return; }
   if (practice.mode === 'auto' && ['battle-choice', 'battle-cards', 'battle-result'].includes(current)) { navigation.setScreen('battle-auto-result'); return; }
   if (phase !== lastDevicePhase) {
@@ -926,6 +961,7 @@ function renderDevice() {
     if (phase === 'encounter') { navigation.setScreen(game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle'); return; }
     if (current === 'battle') { navigation.setScreen('home'); return; }
   }
+  if (awaitingAutoCapture(game) && ['home', 'battle', 'wild-auto-confirm', 'wild-auto-result'].includes(current) && canAct() && !connectionError && armCaptureAim()) return;
   const state = navigation.state();
   backgroundPlayer.select(backgroundSceneId()); syncBackgroundStatus();
   const scene = visualScene();
@@ -935,7 +971,7 @@ function renderDevice() {
   if (preparedPlayer !== artKey(playerId(scene)) || preparedWild !== artKey(wildId(scene))) prepareCompanion();
   audio.setScene(state.screen.startsWith('battle-') && practice.state?.status === 'active' ? 'battle' : game?.phase === 'encounter' ? 'battle' : 'home');
   deviceScreen.render({ ...deviceView(state.screen), index: state.index, inputMode: deviceInputMode });
-  $('device-confirm-button').disabled = !navigation.selected();
+  $('device-confirm-button').disabled = !captureAim && !navigation.selected();
   $('device-back-button').disabled = !navigation.selected() && !canDeviceBack();
 }
 
@@ -971,6 +1007,10 @@ function deviceBack() {
   }
   if (navigation.state().screen === 'evolution-result') { navigation.setScreen('progression'); return; }
   if (navigation.state().screen === 'release-result') { navigation.setScreen('companions'); return; }
+  if (navigation.state().screen === 'capture-aim' && awaitingAutoCapture(game)) {
+    if (canAct()) { captureGesture?.cancel('resume-fighting'); captureAim = null; void sendAction('auto-resume'); }
+    return;
+  }
   if (navigation.state().screen === 'wild-auto-result') { navigation.setScreen('home'); return; }
   if (navigation.state().screen === 'battle-auto-result') { navigation.setScreen('battle-mode'); return; }
   const practice = battleClient.getState();
@@ -1122,7 +1162,8 @@ async function deviceAction(id, event) {
     devicePendingReturn = 'explore'; await sendAction('mode', id === 'wild-auto' ? 1 : 0);
     if (!pending) navigation.setScreen('explore'); return;
   }
-  if (id === 'wild-auto-start') { if (game?.phase === 'encounter' && game.battleMode === 'auto') return sendAction('auto'); return; }
+  if (id === 'wild-auto-start') { if (game?.phase === 'encounter' && game.battleMode === 'auto' && game.autoCapture === 0 && manualAutoCaptureSupported) return sendAction('auto-fight'); return; }
+  if (id === 'wild-auto-resume') { if (awaitingAutoCapture(game)) return sendAction('auto-resume'); return; }
   if (id === 'wild-auto-done') { presentation = null; navigation.setScreen('home'); return; }
   if (id === 'wild-auto-replay') return playAutoBattle('wild');
   if (id === 'practice-auto-start') { practiceDraftMode = 'auto'; return practiceCommand('start'); }
@@ -1151,6 +1192,7 @@ async function deviceAction(id, event) {
   if (id.startsWith('load-')) { $('saved-playtest-select').value = id.slice(5); await loadPlaytest(); renderDevice(); return; }
   if (['feed', 'play', 'rest', 'walk', 'attack', 'heavy', 'magic', 'capture'].includes(id)) return requestAction(id, id === 'walk' ? 100 : 0);
   if (id === 'select-companion') return requestAction('select', companionDetailId);
+  if (id === 'party-add' || id === 'party-remove') return sendAction(id, companionDetailId);
   if (id === 'card-spark' || id === 'card-shelter') return requestAction('card', id === 'card-spark' ? 1 : 2);
   if (id === 'companions-next') { companionPage = (companionPage + 1) % Math.max(1, Math.ceil((game?.collection.length || 0) / COMPANIONS_PER_PAGE)); navigation.refresh(); return; }
   if (id === 'saves-next') { savesPage = (savesPage + 1) % Math.ceil(savedPlaytests.length / 3); renderDevice(); return; }
@@ -1302,7 +1344,22 @@ async function api(path, { method = 'GET', body, authenticated = false, credenti
       ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
     });
     let result;
-    try { result = await response.json(); }
+    try {
+      if (!response.body || Number(response.headers.get('content-length')) > MAX_API_RESPONSE_BYTES) {
+        await response.body?.cancel(); throw new Error('Response limit');
+      }
+      const reader = response.body.getReader(), chunks = []; let length = 0;
+      try {
+        while (true) {
+          const { done, value } = await reader.read(); if (done) break;
+          length += value.byteLength; if (length > MAX_API_RESPONSE_BYTES) throw new Error('Response limit');
+          chunks.push(value);
+        }
+      } finally { await reader.cancel().catch(() => {}); reader.releaseLock(); }
+      const bytes = new Uint8Array(length); let offset = 0;
+      for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+      result = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+    }
     catch { throw new ApiError('The local service returned an unreadable response.', response.status); }
     if (!response.ok) {
       const message = typeof result.message === 'string' ? result.message
@@ -1324,11 +1381,6 @@ function errorText(error) {
   return error.message || 'The local service could not complete this request.';
 }
 
-function displayMessage(value) {
-  if (typeof value !== 'string' || !value) return 'A new little adventure awaits.';
-  return value.replaceAll('_', ' ');
-}
-
 function addNote(text, detail = 'Saved to your local device') {
   notes.unshift({ text, detail });
   notes.splice(8);
@@ -1343,7 +1395,7 @@ function addNote(text, detail = 'Saved to your local device') {
 
 function validateSave(save) {
   const state = save?.state;
-  validateAutoTrace(save?.autoTrace, 'wild');
+  const trace = validateAutoTrace(save?.autoTrace, 'wild');
   validateEvolutionOptions(state?.evolution?.options);
   const onboarding = state?.onboarding;
   const validOnboarding = onboarding && typeof onboarding.completed === 'boolean'
@@ -1354,17 +1406,20 @@ function validateSave(save) {
   const validEgg = isEggState(state) && onboarding.starterId === null && Array.isArray(state.collection) && state.collection.length === 0
     && state.activeCreatureId === 0 && state.creature === null && state.species === null && state.combat === null && state.wildCombat === null;
   const validCompleted = onboarding?.completed && ['home', 'encounter'].includes(state.phase)
-    && Array.isArray(state.collection) && state.collection.length >= 1 && state.collection.length <= 8
+    && Array.isArray(state.collection) && state.collection.length >= 1 && state.collection.length <= COLLECTION_CAPACITY
     && validCombat(state.combat) && state.collection.every(member => validCombat(member.combat) && validCare(member))
     && (state.phase === 'encounter' ? validCombat(state.wildCombat) : state.wildCombat === null)
     && state.collection.some(member => member.id === state.activeCreatureId);
-  if (!save || !Number.isSafeInteger(save.revision) || save.revision < 0 || !state || new TextEncoder().encode(JSON.stringify(state)).byteLength >= 12288 || state.schemaVersion !== SCHEMA_VERSION || state.rulesVersion !== RULES_VERSION
+  if (!save || !Number.isSafeInteger(save.revision) || save.revision < 0 || !state || new TextEncoder().encode(JSON.stringify(state)).byteLength > MAX_STATE_BYTES || state.schemaVersion !== SCHEMA_VERSION || state.rulesVersion !== RULES_VERSION
+    || !Number.isSafeInteger(state.receivedTrades) || state.receivedTrades < 0 || state.receivedTrades > 4294967295
+    || ![0, 1].includes(state.autoCapture) || state.autoCapture === 1 && !awaitingAutoCapture(state) || !pausedAutoTraceMatchesState(trace, state)
     || !Number.isInteger(state.wildCaptureChance) || state.wildCaptureChance < 0 || state.wildCaptureChance > 100
     || !Number.isSafeInteger(state.foregroundSequence) || state.foregroundSequence < 0 || state.foregroundSequence > state.sequence
+    || !Number.isInteger(state.worldSeed) || state.worldSeed < 0 || state.worldSeed > 0xffffffff
     || !validLastCapture(state.lastCapture, state.foregroundSequence) || !validWalkingState(state.walking, state.phase) || !validRecoveryCount(state.recoveryRestCount) || state.phase !== 'home' && state.recoveryRestCount !== 0 || !validEncounterRarity(state.wildRarity)
     || !Number.isSafeInteger(state.queuedEncounters) || state.queuedEncounters < 0 || state.queuedEncounters > 4294967295
     || !Number.isInteger(state.stepsToNextEncounter) || state.stepsToNextEncounter < 0 || state.stepsToNextEncounter > 100
-    || !validOnboarding || !(validEgg || validCompleted) || state.collectionCapacity !== 8 || !['tactical', 'auto'].includes(state.battleMode) || state.maxLevel !== 20
+    || !validParty(state) || !validOnboarding || !(validEgg || validCompleted) || state.collectionCapacity !== COLLECTION_CAPACITY || !['tactical', 'auto'].includes(state.battleMode) || state.maxLevel !== 20
     || !state.journal || state.journal.capacity !== 512 || !Array.isArray(state.journal.obtainedFormIds) || state.journal.obtainedFormIds.length > 512
     || !state.journal.obtainedFormIds.every((id, index, ids) => Number.isInteger(id) && id >= 1 && id <= 512 && (index === 0 || id > ids[index - 1]))
     || !Number.isInteger(state.nextMemberId) || state.nextMemberId < 1 || state.nextMemberId > 4294967295
@@ -1377,8 +1432,12 @@ function validateSave(save) {
 
 function acceptSave(save) {
   validateSave(save);
+  const selected = navigation.state();
+  const anchorId = selected.screen === 'companions' && selected.selectedId?.startsWith('member-') ? Number(selected.selectedId.slice(7)) : companionDetailId;
   revision = save.revision;
   game = save.state;
+  const anchorIndex = orderedMembers(game).findIndex(member => member.id === anchorId);
+  if (anchorIndex >= 0 && ['companions', 'companion', 'saving'].includes(selected.screen)) companionPage = Math.floor(anchorIndex / COMPANIONS_PER_PAGE);
   wildAutoTrace = save.autoTrace;
   render();
 }
@@ -1386,6 +1445,20 @@ function acceptSave(save) {
 function paintRosterPortrait(surface, member) {
   paintThumbnail(surface, member.artId, { original: !member.personal, type: member.type, rookie: member.rookie, pendingForm: member.pendingForm });
 }
+
+// The developer panel can list sixty records. Paint its tiny portraits only
+// while they are in view; closed tools retain no hidden roster canvases.
+const collectionPortraitObserver = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    if (!entry.isIntersecting || !$('playtest-tools').open) {
+      entry.target.width = 64; delete entry.target.dataset.portraitPainted; continue;
+    }
+    const member = game?.collection.find(member => member.id === Number(entry.target.dataset.memberPortrait));
+    if (member) paintThumbnail(entry.target, member.artId || member.name.toLowerCase(),
+      { type: member.combat.type, rookie: member.stage === 'Rookie', pendingForm: Boolean(member.stage) });
+    entry.target.dataset.portraitPainted = 'true';
+  }
+});
 
 function paintThumbnail(surface, id, { original = false, type = 'neutral', rookie = false, pendingForm = false } = {}) {
   const art = original ? findOriginalArt(id) : findArt(id);
@@ -1418,27 +1491,35 @@ function paintThumbnail(surface, id, { original = false, type = 'neutral', rooki
 }
 
 function renderCollection() {
-  const members = game?.collection || [];
-  const capacity = game?.collectionCapacity || 8;
+  const members = orderedMembers(game);
+  const capacity = game?.collectionCapacity || COLLECTION_CAPACITY;
   $('collection-count').textContent = `${members.length} / ${capacity}`;
   $('collection-status').textContent = isEggState(game) ? 'Choose and hatch your egg to meet your first partner.' : !game ? 'Pair a virtual device to meet your first companion.'
     : partnerLockReason() || (members.length === capacity ? 'Your collection is full. Choose any companion for care, walks and battles.'
         : 'Choose who travels with you. Care, energy, bond and evolution are saved for each companion.');
   $('collection-history').hidden = !game?.legacyCaptures;
   $('collection-history').textContent = game?.legacyCaptures ? `Earlier saves also recorded ${game.legacyCaptures} captures without individual companion details.` : '';
-  const signature = JSON.stringify([members, game?.activeCreatureId, artGeneration]);
+  if (!$('playtest-tools').open) {
+    collectionPortraitObserver.disconnect();
+    if ($('collection-grid').childElementCount) $('collection-grid').replaceChildren();
+    collectionSignature = '';
+    return;
+  }
+  const signature = JSON.stringify([members, game?.activeCreatureId, game?.partyMemberIds, artGeneration]);
   if (signature !== collectionSignature) {
     collectionSignature = signature;
+    collectionPortraitObserver.disconnect();
     $('collection-grid').replaceChildren(...members.map(member => {
       const item = document.createElement('article'); item.className = 'collection-member';
       item.setAttribute('role', 'listitem'); item.dataset.memberId = String(member.id);
       item.dataset.active = String(member.id === game.activeCreatureId);
       const artwork = document.createElement('canvas'); artwork.width = artwork.height = 64; artwork.className = 'collection-art';
       artwork.setAttribute('role', 'img'); artwork.setAttribute('aria-label', `${member.name} companion artwork`);
-      paintThumbnail(artwork, member.artId || member.name.toLowerCase(), { type: member.combat.type, rookie: member.stage === 'Rookie', pendingForm: Boolean(member.stage) });
+      artwork.dataset.memberPortrait = String(member.id);
+      collectionPortraitObserver.observe(artwork);
       const name = document.createElement('h3'); name.textContent = member.name;
       const detail = document.createElement('p'); detail.className = 'collection-member-detail';
-      detail.textContent = `No. ${String(member.id).padStart(2, '0')} · Level ${member.level}`;
+      detail.textContent = `No. ${String(member.id).padStart(2, '0')} · Level ${member.level}${game.partyMemberIds.includes(member.id) ? ` · XP companion ${game.partyMemberIds.indexOf(member.id) + 1}` : ''}`;
       const bond = document.createElement('p'); bond.className = 'collection-member-bond'; bond.dataset.memberBond = '';
       bond.textContent = `${member.bond} bond`;
       const stats = document.createElement('p'); stats.className = 'collection-member-stats';
@@ -1506,7 +1587,7 @@ function render() {
   $('companion-art-status').hidden = !missingArt;
   $('companion-art-status').textContent = missingArt ? game?.stage ? `Artwork pending. An original placeholder represents ${game.creature}; its saved form is ${game.stage}.` : 'This companion’s original art is not saved yet. Download its family in the pack library below; your game and care stats are ready.' : '';
   $('level').textContent = isEggState(game) ? 'EGG' : `LV. ${game?.level || 1}`;
-  $('steps').textContent = (game?.steps || 0).toLocaleString();
+  $('steps').textContent = (game?.walking?.eligibleSteps || 0).toLocaleString();
   $('bond').textContent = game?.bond ?? '—';
   $('captures').textContent = game?.captures ?? '—';
   $('revision').textContent = String(revision);
@@ -1517,8 +1598,8 @@ function render() {
   renderPlaytest();
   renderPlaytests();
   renderDevice();
-  canvas.setAttribute('aria-label', needsTestEncounterRepair() ? 'Updating a saved encounter. Your companions and progress are kept.' : isEggState(game) ? 'Choose an egg. Each egg clearly identifies the Rookie it hatches into.' : game
-    ? `${game.creature}, level ${game.level}. ${game.phase}. ${displayMessage(game.message)}. ${game.steps} steps. Health ${game.hp}. Energy ${game.energy}.`
+  canvas.setAttribute('aria-label', captureAim ? 'Timing capture: tap anywhere in the main play area. Green gives the full eligible chance; orange half; red one tenth, with at least 1%. No timing guarantees a catch. Three attempts maximum.' : needsTestEncounterRepair() ? 'Updating a saved encounter. Your companions and progress are kept.' : isEggState(game) ? 'Choose an egg. Each egg clearly identifies the Rookie it hatches into.' : game
+    ? `${game.creature}, level ${game.level}. ${game.phase}. ${displayMessage(game.message)}. ${game.walking.eligibleSteps} eligible exploration steps. Health ${game.hp}. Energy ${game.energy}.`
     : 'Round virtual device. Pair a virtual device and choose your first egg to begin.');
   const repairKey = `${identity?.deviceId}/${revision}`;
   if (needsTestEncounterRepair() && canWriteGame() && repairAttempt !== repairKey) {
@@ -1646,10 +1727,10 @@ async function presentResult(type, before, after) {
         await waitStage(420);
       }
       if (won) { setStage('win', 'A friendly battle won.', displayMessage(after.message), after, { animation: 'celebrate', cue: 'win' }); await waitStage(600); }
-    } else if (type === 'capture' || type === 'flick') {
-      const aim = type === 'flick' && captureFlight ? decodeCaptureFlick(captureFlight.value) : null;
-      // Saved metadata is the only source of displayed odds. Animation never
-      // rolls, updates the save, or changes a throw's original probability.
+    } else if (type === 'capture' || type === 'flick' || type === 'ring-capture') {
+      const aim = ['flick', 'ring-capture'].includes(type) && captureFlight ? decodeCaptureFlick(captureFlight.value) : null;
+      // The committed record supplies result odds. Animation never rolls,
+      // updates the save, or changes a throw's original probability.
       const committed = after.lastCapture?.sequence === after.foregroundSequence ? captureReport(after.lastCapture) : null;
       const report = committed || (before.wildRules < 12 ? { missed: Boolean(aim && !aim.hit),
         odds: aim && !aim.hit ? 'Miss · no catch' : `${before.wildCaptureChance}% throw chance`,
@@ -1688,6 +1769,18 @@ async function presentResult(type, before, after) {
   } finally { captureFlight = null; finishPresentation(); }
 }
 
+// Called only while the serialized connection/outbox operation owns `busy`.
+// Existing battles and pending encounters are preserved by this background event.
+async function prepareWorldSequence() {
+  if (!worldSeedSupported || !game || isEggState(game) || game.worldSeed || pending || !ownsWriter || !storageAvailable) return Boolean(game?.worldSeed);
+  try { acceptSave(await api('/api/world/seed', { method: 'POST', body: {}, authenticated: true })); }
+  catch {
+    // A lost response may follow a durable commit. Reconcile before any new
+    // revision-based batch, rather than guessing whether setup happened.
+    try { acceptSave(await api('/api/save', { authenticated: true })); } catch { /* Reconnect will retry safely. */ }
+  }
+  return Boolean(game?.worldSeed);
+}
 let testFixturesSupported = false;
 async function reconnect() {
   if (busy || transitionBusy) return;
@@ -1702,13 +1795,14 @@ async function reconnect() {
       try { rememberIdentity(identity); }
       catch { playtestsCorrupt = true; } // Optional switcher storage must not prevent restoring the current game.
     }
-    const health = await api('/api/health'); captureFlickSupported = health.capabilities?.captureFlick === 1;
+    const health = await api('/api/health'); captureFlickSupported = health.capabilities?.captureFlick === 1; captureTimingSupported = health.capabilities?.captureTimingQuality === 1; manualAutoCaptureSupported = health.capabilities?.manualAutoCapture === 1; worldSeedSupported = health.capabilities?.worldSeed === 1;
     testFixturesSupported = health.capabilities?.testFixtures === 1;
 
     if (identity?.token) {
       acceptSave(await api('/api/save', { authenticated: true }));
+      await prepareWorldSequence();
       if (isEggState(game) && !pending) await loadStarters();
-      if (!pending && wildAutoTrace && wildAutoTrace.endSequence === game.foregroundSequence) navigation.setScreen('wild-auto-result');
+      if (!pending && wildAutoTrace && wildAutoTrace.endSequence === game.foregroundSequence) navigation.setScreen(awaitingAutoCapture(game) ? 'wild-auto-confirm' : 'wild-auto-result');
       void loadPractice();
       if (!notes.length) addNote('Welcome back, little explorer.', `Save revision ${revision} restored`);
     }
@@ -1752,6 +1846,7 @@ async function claimDevice() {
     store(KEYS.identity, nextIdentity);
     identity = nextIdentity;
     acceptSave(result);
+    await prepareWorldSequence();
     if (isEggState(game) && !pending) await loadStarters();
     void loadPractice();
     hatchedIdentity = null;
@@ -1774,6 +1869,7 @@ async function loadPlaytest() {
     store(KEYS.identity, nextIdentity);
     identity = nextIdentity; hatchedIdentity = null; presentation = null; sceneState = null; notes.length = 0;
     acceptSave(result);
+    await prepareWorldSequence();
     if (isEggState(game) && !pending) await loadStarters();
     void loadPractice();
     addNote(`${target.label} restored.`, 'Your companions and progress are ready');
@@ -1798,6 +1894,7 @@ async function newPlaytest() {
     store(KEYS.identity, nextIdentity);
     identity = nextIdentity; hatchedIdentity = null; presentation = null; sceneState = null; notes.length = 0;
     acceptSave(result);
+    await prepareWorldSequence();
     if (isEggState(game) && !pending) await loadStarters();
     void loadPractice();
     $('new-playtest-confirm').hidden = true;
@@ -1818,38 +1915,33 @@ function cancelCapture(reason = 'Capture cancelled before sending.') {
 
 async function requestAction(type, value = 0) {
   if (!canAct()) return;
-  if (['attack', 'heavy', 'magic', 'capture', 'card'].includes(type) && game.battleMode !== 'tactical') return;
+  if (['attack', 'heavy', 'magic', 'capture', 'card'].includes(type) && game.battleMode !== 'tactical' && !(type === 'capture' && awaitingAutoCapture(game))) return;
   if (type === 'select' && !canSetPartner(value)) return;
   if (type !== 'capture') return sendAction(type === 'walk' ? 'explore' : type, value);
   if (!captureChoice(game).available) return;
-  if (deviceInputMode === 'touch') {
-    if (!captureFlickSupported) { showNotice('This service needs the capture-flick update. Two-button capture remains available.'); return; }
-    captureAim = { revision, preview: null, hint: 'Drag the ball, then flick up at your new friend.' };
-    captureFlight = null; audio.playCue('capture-arm'); navigation.go('capture-aim'); return;
-  }
-  // A short cancellable presentation comes before any request or durable batch.
-  // It is not a timing mini-game and cannot change core capture odds.
-  if (game.phase !== 'encounter') return;
-  transitionBusy = true;
-  captureWindup = { timer: null, revision };
-  setStage('capture-windup', 'Preparing the capture beam…', 'Cancel now to keep your capture attempt.', game, { effect: 'capture', cue: 'capture-arm' });
-  captureWindup.timer = setTimeout(() => {
-    if (!captureWindup || document.hidden || captureWindup.revision !== revision) { cancelCapture(); return; }
-    captureWindup = null; transitionBusy = false; sceneState = null; effectFrames = null;
-    audio.playCue('capture-throw');
-    // sendAction sets the durable pending batch synchronously before yielding.
-    void sendAction('capture', 0);
-  }, 1200);
+  if (!captureTimingSupported) { showNotice('This service needs the capture update.'); return; }
+  armCaptureAim();
 }
 
 async function sendAction(type, value = 0, recoveryEvents = null) {
   if (type === 'resolve-test-encounter' ? !needsTestEncounterRepair() || !canWriteGame() : type === 'hatch' ? !canHatch() : !canAct()) return;
   if (type === 'select' && !canSetPartner(value)) return;
+  if (['party-add', 'party-remove'].includes(type) && !canChangeParty(value, type)) return;
   if (type === 'evolve' && (!canEvolve() || evolutionOption().formId !== value)) return;
   if (type === 'release' && !canRelease(game.collection.find(member => member.id === value))) return;
-  if (['attack', 'heavy', 'magic', 'capture', 'flick', 'card'].includes(type) && game.battleMode !== 'tactical') return;
+  if (['attack', 'heavy', 'magic', 'capture', 'flick', 'ring-capture', 'card'].includes(type) && game.battleMode !== 'tactical' && !(['flick', 'ring-capture'].includes(type) && awaitingAutoCapture(game))) return;
+  if (type === 'auto-fight' && (!manualAutoCaptureSupported || game.phase !== 'encounter' || game.battleMode !== 'auto' || game.autoCapture !== 0)) return;
+  if (type === 'auto-resume' && (!manualAutoCaptureSupported || !awaitingAutoCapture(game))) return;
   if (type === 'flick' && (!captureFlickSupported || !decodeCaptureFlick(value) || !captureChoice(game).available)) return;
+  if (type === 'ring-capture' && (!captureTimingSupported || !Number.isInteger(value) || value < 0 || value >= CAPTURE_RING.cycleMs || !captureChoice(game).available)) return;
   if (recoveryEvents && (type !== 'rest' || value !== 0 || JSON.stringify(recoveryEvents) !== JSON.stringify(reviewedRecoveryEvents(recoveryDraft, game, identity?.deviceId, revision)))) return;
+  if (['walk', 'explore'].includes(type) && !game.worldSeed) {
+    busy = true; render();
+    let ready;
+    try { ready = await prepareWorldSequence(); } finally { busy = false; render(); }
+    if (!ready) { showNotice('Reconnect before exploring so this device can save its own encounter sequence.', 'service'); return; }
+    if (!canAct()) return;
+  }
   try {
     // Preserve request identity before sending. A timeout may happen after commit.
     const next = { deviceId: identity.deviceId, rulesVersion: RULES_VERSION, baseRevision: revision, batchId: crypto.randomUUID(), events: recoveryEvents || [{ type, value }], ...(recoveryEvents ? { intent: 'recover', subjectMemberId: game.activeCreatureId } : {}), ...(type === 'evolve' ? { subjectMemberId: game.activeCreatureId } : {}), ...(type === 'release' ? { subjectMemberId: value, subjectMemberName: game.collection.find(member => member.id === value).name } : {}) };
@@ -1874,7 +1966,7 @@ async function retryPending() {
   const beforeRevision = revision;
   const actionType = pending.events.at(-1)?.type;
   const recovery = pending.intent === 'recover';
-  const selectedMemberId = actionType === 'select' ? pending.events.at(-1)?.value : null;
+  const selectedMemberId = ['select', 'party-add', 'party-remove'].includes(actionType) ? pending.events.at(-1)?.value : null;
   const evolvingMemberId = actionType === 'evolve' ? pending.subjectMemberId || game?.activeCreatureId : null;
   const evolvingFormId = actionType === 'evolve' ? pending.events.at(-1)?.value : null;
   const releasing = actionType === 'release' ? { deviceId: identity.deviceId, memberId: pending.events.at(-1)?.value, name: pending.subjectMemberName || `Companion #${pending.events.at(-1)?.value}` } : null;
@@ -1893,11 +1985,12 @@ async function retryPending() {
     conflict = false;
     // Idempotent receipts may describe an earlier revision. Never roll the UI back.
     if (receiptIsOlder) acceptSave(await api('/api/save', { authenticated: true }));
-    if (actionType === 'select' && game.collection.some(member => member.id === selectedMemberId)) {
+    await prepareWorldSequence();
+    if (selectedMemberId !== null && game.collection.some(member => member.id === selectedMemberId)) {
       companionDetailId = selectedMemberId;
-      companionPage = Math.floor(game.collection.findIndex(member => member.id === selectedMemberId) / COMPANIONS_PER_PAGE);
+      companionPage = Math.floor(orderedMembers(game).findIndex(member => member.id === selectedMemberId) / COMPANIONS_PER_PAGE);
       devicePendingReturn = 'companion';
-      partnerConfirmation = { deviceId: identity.deviceId, memberId: selectedMemberId };
+      if (actionType === 'select') partnerConfirmation = { deviceId: identity.deviceId, memberId: selectedMemberId };
     }
     showNotice('');
     // A replayed receipt confirms an earlier save; don't replay its battle
@@ -1906,6 +1999,9 @@ async function retryPending() {
       presentation = null; sceneState = null;
       navigation.setScreen(game.phase === 'encounter' ? game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle' : 'home');
       addNote('Earlier test encounter cleared.', 'Companions, progress and battle costs unchanged');
+    } else if (['party-add', 'party-remove'].includes(actionType)) {
+      presentation = null; navigation.setScreen('companion');
+      addNote('XP companions saved.', `${game.partyMemberIds.length} / 3 selected · latest save kept`);
     } else if (recovery) {
       recoveryDraft = null; devicePendingReturn = 'care';
       if (result.revision > beforeRevision && !receiptIsOlder) await presentResult('rest', before, game);
@@ -1923,7 +2019,7 @@ async function retryPending() {
       if (result.revision > beforeRevision && !receiptIsOlder) await presentResult('evolve', before, game);
       presentation = null; navigation.setScreen('evolution-result');
       addNote('Digivolution confirmed.', 'The same companion and its saved XP are kept');
-    } else if (actionType === 'auto') {
+    } else if (['auto', 'auto-fight', 'auto-resume'].includes(actionType)) {
       addNote(autoResultTitle(wildAutoTrace), 'Saved once · playback never changes the result');
       await playAutoBattle('wild', { animate: result.revision > beforeRevision && !receiptIsOlder });
     } else if (actionType === 'mode') {
@@ -1940,7 +2036,7 @@ async function retryPending() {
         acceptSave(await api('/api/save', { authenticated: true }));
         if (error.code === 'partner_locked') {
           await loadPractice();
-          showNotice(actionType === 'evolve' ? 'Finish or retreat from practice before Digivolving. This form change was not applied; review and remove the local request to continue.' : actionType === 'release' ? 'Finish or retreat from practice before releasing a companion. This release was not applied; review and remove the local request to continue.' : 'Finish or retreat from the current practice battle before changing partner. This selection was not applied; review and remove the local request to continue.', 'conflict');
+          showNotice(['party-add', 'party-remove'].includes(actionType) ? 'Finish or retreat from practice before changing XP companions. This change was not applied; review and remove the local request to continue.' : actionType === 'evolve' ? 'Finish or retreat from practice before Digivolving. This form change was not applied; review and remove the local request to continue.' : actionType === 'release' ? 'Finish or retreat from practice before releasing a companion. This release was not applied; review and remove the local request to continue.' : 'Finish or retreat from the current practice battle before changing partner. This selection was not applied; review and remove the local request to continue.', 'conflict');
         } else showNotice(pending.rulesVersion === RULES_VERSION
           ? 'A newer save has been loaded. This local action was based on an older save and was not applied. Discard it to continue from the newer save.'
           : 'Your latest save is loaded. This earlier-rules request was not replayed; it may already be reflected in that save. Review your companions, then discard this pending request to continue.', 'conflict');
@@ -2001,10 +2097,34 @@ function wrappedText(value, x, y, maxWidth, size = 13) {
   lines.slice(0, 2).forEach((item, index) => text(item, x, y + index * (size + 6), size));
 }
 
-function sprite(id, x, y, scale, time, role = 'player') {
+const spriteFitBounds = new WeakMap();
+function fittedSpriteBounds(prepared) {
+  if (spriteFitBounds.has(prepared)) return spriteFitBounds.get(prepared);
+  // Packs retain a padded animation canvas. Fit the visible creature, using
+  // one union across the clip so breathing/movement does not change its scale.
+  let left = Infinity, top = Infinity, right = -1, bottom = -1;
+  for (const frame of prepared.frames) {
+    const rgba = frame.getContext('2d').getImageData(0, 0, frame.width, frame.height).data;
+    for (let y = 0; y < frame.height; y++) for (let x = 0; x < frame.width; x++) {
+      if (!rgba[(y * frame.width + x) * 4 + 3]) continue;
+      left = Math.min(left, x); top = Math.min(top, y);
+      right = Math.max(right, x); bottom = Math.max(bottom, y);
+    }
+  }
+  const bounds = right < 0 ? null : { x: left, y: top, width: right - left + 1, height: bottom - top + 1 };
+  spriteFitBounds.set(prepared, bounds); return bounds;
+}
+
+function sprite(id, x, y, scale, time, role = 'player', fit = null) {
   const art = findArt(id);
   const spec = art?.sprites[resolvedArtKey(id, art)];
   if (!spec) {
+    if (fit) {
+      // Neutral missing-art portrait; no alternate species or implementation label.
+      ctx.save(); ctx.fillStyle = '#fff5d9'; ctx.strokeStyle = '#234a4d'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.roundRect(x - fit / 2, y - fit / 2, fit, fit, 20); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#234a4d'; ctx.font = `bold ${Math.round(fit * .55)}px Arial`; ctx.textAlign = 'center'; ctx.fillText('?', x, y + fit * .18); ctx.restore(); return;
+    }
     if (game?.stage === 'Rookie' && id === playerId() || starters.some(starter => starter.species === id)) {
       const scene = visualScene();
       paintRookiePlaceholder(ctx, x, y - 12, 112, (role === 'wild' ? scene?.wildCombat : scene?.combat)?.type); return;
@@ -2023,12 +2143,19 @@ function sprite(id, x, y, scale, time, role = 'player') {
     const prepared = role === 'wild' ? wildFrames : playerFrames;
     if (!prepared?.frames.length) return;
     const frame = prepared.frames[reducedMotion ? 0 : Math.floor(time / prepared.frameMs) % prepared.frames.length];
+    if (fit) {
+      const bounds = fittedSpriteBounds(prepared); if (!bounds) return;
+      const pixelScale = fit / Math.max(bounds.width, bounds.height);
+      const width = bounds.width * pixelScale, height = bounds.height * pixelScale;
+      ctx.drawImage(frame, bounds.x, bounds.y, bounds.width, bounds.height, x - width / 2, y - height / 2, width, height); return;
+    }
     const pixelScale = Math.max(1, Math.round(16 * scale / frame.width));
     ctx.drawImage(frame, Math.round(x - frame.width * pixelScale / 2), Math.round(y - frame.height * pixelScale / 2), frame.width * pixelScale, frame.height * pixelScale);
     return;
   }
   const frameMs = Math.max(150, Math.min(2000, spec.frameMs || 480));
   const frame = spec.frames[reducedMotion ? 0 : Math.floor(time / frameMs) % spec.frames.length];
+  if (fit) scale = fit / Math.max(spec.width, spec.height);
   const left = Math.round(x - spec.width * scale / 2);
   const top = Math.round(y - spec.height * scale / 2);
   frame.forEach((row, rowIndex) => [...row].forEach((pixel, colIndex) => {
@@ -2067,7 +2194,7 @@ function scheduleDraw() {
 
 function draw(time) {
   if (document.hidden) return;
-  if (time - lastFrame < 80) { scheduleDraw(); return; }
+  if (!captureAim && time - lastFrame < 80) { scheduleDraw(); return; }
   lastFrame = time;
   ctx.imageSmoothingEnabled = true;
   if (!backgroundPlayer.draw(ctx)) landscape(time);
@@ -2120,54 +2247,71 @@ function draw(time) {
 }
 
 function drawCapture(time) {
+  captureGesture?.refresh();
   const scale = 480 / 412;
+  const sample = captureAim ? sampleCaptureRing(Math.max(0, Math.floor(time - captureAim.started)), game.wildFormId) : captureFlight?.sample;
+  const targetRadius = sample?.targetRadius || 60;
   ctx.save(); ctx.scale(scale, scale);
-  // Original turquoise signal orb and aiming ring; no franchise ball artwork.
-  ctx.strokeStyle = '#247f76'; ctx.lineWidth = 3;
-  ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(206, 120, 48, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-  ctx.restore();
-  sprite(wildId(captureFlight?.scene || game), 206 * scale, 120 * scale, 4, time, 'wild');
-  ctx.save(); ctx.scale(scale, scale);
-  const t = captureFlight ? Math.min(1, Math.max(0, (time - captureFlight.started) / 460)) : 0;
-  const point = captureFlight ? captureFlightPoint(captureFlight.value, t, captureFlight.start)
-    : { x: (captureAim?.preview?.x ?? .5) * 412, y: (captureAim?.preview?.y ?? 300 / 412) * 412, radius: 21 };
-  if (point) {
-    ctx.save();
-    if (!reducedMotion && presentation?.stage === 'capture-check') {
-      ctx.translate(point.x, point.y); ctx.rotate(Math.sin(time / 65) * .18); ctx.translate(-point.x, -point.y);
-    }
-    const glow = ctx.createRadialGradient(point.x - point.radius * .3, point.y - point.radius * .35, 1, point.x, point.y, point.radius);
-    glow.addColorStop(0, '#d5ffe3'); glow.addColorStop(.45, '#35b49c'); glow.addColorStop(1, '#0e5559');
-    ctx.fillStyle = glow; ctx.strokeStyle = '#0e4145'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(point.x, point.y, point.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    ctx.strokeStyle = '#e9ffe1'; ctx.beginPath(); ctx.arc(point.x, point.y, point.radius * .72, -.2, 1.2); ctx.stroke();
-    ctx.fillStyle = '#fff6df'; ctx.beginPath(); ctx.moveTo(point.x, point.y - 7); ctx.lineTo(point.x + 5, point.y); ctx.lineTo(point.x, point.y + 7); ctx.lineTo(point.x - 5, point.y); ctx.closePath(); ctx.fill();
-    ctx.restore();
+  // The translucent green area is the best timing window, behind the creature.
+  // Color and the explicit grade/chance cue describe timing, never a touch target.
+  ctx.strokeStyle = 'rgba(84,234,134,0.75)'; ctx.lineWidth = 2 * CAPTURE_RING.bandHalfWidth;
+  ctx.beginPath(); ctx.arc(206, 176, targetRadius, 0, Math.PI * 2); ctx.stroke();
+  sprite(wildId(captureFlight?.scene || game), 206, 176, 11, time, 'wild', 176);
+  const gradeColors = { red: '#f6534a', orange: '#ffa43c', green: '#54ea86' };
+  if (captureAim && sample) {
+    ctx.strokeStyle = '#163334'; ctx.lineWidth = 7;
+    ctx.beginPath(); ctx.arc(206, 176, sample.radiusQ8 / 256, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = gradeColors[sample.grade]; ctx.lineWidth = 4;
+    ctx.stroke();
   }
-  ctx.font = 'bold 13px "Trebuchet MS", Arial, sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#0e4145';
+  if (captureFlight) {
+    const t = Math.min(1, Math.max(0, (time - captureFlight.started) / 460));
+    const point = captureFlightPoint(captureFlight.value, t, { x: 206, y: 300 });
+    if (point) {
+      // Keep the existing flight decoder; shift its target to the new hero center.
+      point.y += 56 * t;
+      ctx.save();
+      if (!reducedMotion && presentation?.stage === 'capture-check') {
+        ctx.translate(point.x, point.y); ctx.rotate(Math.sin(time / 65) * .18); ctx.translate(-point.x, -point.y);
+      }
+      const glow = ctx.createRadialGradient(point.x - point.radius * .3, point.y - point.radius * .35, 1, point.x, point.y, point.radius);
+      glow.addColorStop(0, '#d5ffe3'); glow.addColorStop(.45, '#35b49c'); glow.addColorStop(1, '#0e5559');
+      ctx.fillStyle = glow; ctx.strokeStyle = '#0e4145'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(point.x, point.y, point.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.restore();
+    }
+  }
+  ctx.textAlign = 'center'; ctx.fillStyle = '#0e4145';
+  ctx.font = 'bold 13px "Trebuchet MS", Arial, sans-serif';
   if (captureAim) {
-    ctx.fillText(`${3 - game.captureAttempts} throws left · Odds after throwing`, 206, 193);
-    ctx.font = '13px "Trebuchet MS", Arial, sans-serif';
-    ctx.fillText(captureAim.preview ? 'Release upward to throw' : 'Touch the ball · flick upward', 206, 219);
-    ctx.fillText(captureAim.hint.startsWith('No throw') ? 'No throw sent. Try another flick.' : 'A gentle flick reaches the ring.', 206, 240);
+    const chance = captureRingChance(game.wildCaptureChance, sample.grade);
+    const cue = `${sample.grade.toUpperCase()} ${chance}% - TAP PLAY AREA`;
+    ctx.fillStyle = '#fff6dff5'; ctx.beginPath(); ctx.roundRect(69, 278, 274, 52, 12); ctx.fill();
+    ctx.fillStyle = '#0e4145'; ctx.fillText(cue, 206, 290);
+    ctx.font = '12px "Trebuchet MS", Arial, sans-serif';
+    ctx.fillText('Green area = best chance', 206, 308);
+    ctx.fillText(`${3 - game.captureAttempts} throws left · No guaranteed catch`, 206, 325);
+    const accessible = `${cue}. Tap anywhere in the main play area to throw immediately. ${3 - game.captureAttempts} throws left. No guaranteed catch.`;
+    if (canvas.getAttribute('aria-label') !== accessible) canvas.setAttribute('aria-label', accessible);
   }
   ctx.restore();
 }
 
-captureGesture = createCaptureGesture($('screen-surface'), {
-  ball: { x: .5, y: 300 / 412, radius: 36 / 412 },
-  canArm: () => Boolean(captureAim && navigation.state().screen === 'capture-aim' && canAct() && captureChoice(game).available),
-  getRevision: () => `${identity?.deviceId}:${revision}:${game?.wildFormId}:${game?.captureAttempts}`,
-  onPreview: preview => { if (captureAim) { captureAim.preview = preview; scheduleDraw(); } },
-  onCancel: () => { if (captureAim) { captureAim.preview = null; captureAim.hint = 'No throw sent. Try another flick.'; scheduleDraw(); } },
-  onRelease: gesture => {
+captureGesture = createCaptureRingInput($('screen-surface'), {
+  actionButton: $('device-confirm-button'),
+  canArm: () => Boolean(captureAim && navigation.state().screen === 'capture-aim' && canAct() && captureChoice(game).available && (game.battleMode === 'tactical' || awaitingAutoCapture(game))),
+  getRevision: () => `${identity?.deviceId}:${revision}:${game?.wildFormId}:${game?.captureAttempts}:${captureAim?.started}`,
+  sample: now => captureAim ? sampleCaptureRing(Math.max(0, Math.floor(now - captureAim.started)), game.wildFormId) : null,
+  onCancel: () => { if (captureAim) { captureAim.started = performance.now(); scheduleDraw(); } },
+  onPress: ({ sample }) => {
     if (!captureAim || captureAim.revision !== revision || !canAct() || !captureChoice(game).available) return;
-    const value = packCaptureFlick(gesture); if (value === null) return;
-    captureFlight = { value, started: performance.now(), start: { x: gesture.x * 412, y: gesture.y * 412 }, scene: structuredClone(game) };
+    // Every timing grade connects; only its core-owned probability changes.
+    const value = CAPTURE_RING.onTargetFlickValue;
+    captureFlight = { value, sample, started: performance.now(), scene: structuredClone(game) };
     const thisFlight = captureFlight;
     setTimeout(() => { if (captureFlight === thisFlight) renderDevice(); }, 510);
     captureAim = null; audio.playCue('capture-throw');
-    void sendAction('flick', value);
+    void sendAction('ring-capture', sample.phaseMs);
   },
 });
 
@@ -2177,7 +2321,7 @@ twoButtonInput = setupTwoButtonInput({
   onConfirm: event => { const item = navigation.selected(); if (item) deviceAction(item.id, event); },
 });
 $('device-input-mode').addEventListener('change', event => {
-  if (captureAim) { captureAim = null; captureGesture.cancel('mode-change'); navigation.setScreen('battle'); }
+  if (captureAim) { captureAim = null; captureGesture.cancel('mode-change'); navigation.setScreen(game?.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle'); }
   deviceInputMode = event.target.value === 'buttons' ? 'buttons' : 'touch';
   document.body.dataset.deviceInput = deviceInputMode;
   const url = new URL(location.href); url.searchParams.set('controls', deviceInputMode);
@@ -2199,6 +2343,7 @@ $('device-ui').addEventListener('focusin', event => {
 });
 
 $('start-pairing').addEventListener('click', startPairing);
+$('playtest-tools').addEventListener('toggle', renderCollection);
 $('claim-device').addEventListener('click', claimDevice);
 $('retry-sync').addEventListener('click', retryPending);
 $('discard-conflict').addEventListener('click', discardConflict);

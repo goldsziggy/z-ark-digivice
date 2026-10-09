@@ -12,8 +12,9 @@ struct View {
     Phase phase = Phase::Idle;
     Actor actor = Actor::None;
     bool locked = false, paused = false, flash = false, reflected = false, captured = false, aimMiss = false;
-    // Saved rules-12 capture playback. Chance is revealed only after the throw;
-    // a missed aim always reports zero. These fields never decide an outcome.
+    // Saved capture playback. Chance is revealed only after the throw; timing
+    // throws retain their committed 1..90% chance, even after reboot. A legacy
+    // missed aim reports zero. These fields never decide an outcome.
     bool capturePresentation = false, captureMiss = false, captureCaught = false;
     std::uint8_t captureAttempt = 0, captureRemaining = 0, captureChance = 0;
     std::uint32_t captureElapsedMs = 0;
@@ -34,7 +35,7 @@ public:
     bool startAuto(const autobattle::Trace& committedTrace, std::uint64_t nowMs);
     bool startTactical(const State& before, const State& committedAfter, Action action,
                        std::uint32_t value, std::uint64_t nowMs);
-    // Replay only a valid latest saved capture (record.sequence==state.sequence).
+    // Replay only a valid latest foreground capture (background steps are silent).
     // Restarting/canceling visuals never changes the state or capture RNG.
     bool startSavedCapture(const State& committedState, std::uint64_t nowMs);
     // At most one transition/cue per poll; late frames never fast-forward actors.

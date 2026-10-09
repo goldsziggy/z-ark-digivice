@@ -40,6 +40,7 @@ struct Harness {
         fake::now=0;fake::order.clear();fake::panel={};fake::touch={};fake::touchError=fake::blankError=ESP_OK;
         fake::displayReady=fake::touchReady=fake::dmaQuiet=true;fake::touches=fake::blanks=fake::wakes=0;
         CHECK(saves.restore(state)==storage::BootStatus::Empty);
+        CHECK(apply(state,Action::WorldSeed,state.seed)==Error::None);
         CHECK(apply(state,Action::EncounterSeed,99)==Error::None);CHECK(apply(state,Action::EncounterRate,1)==Error::None);CHECK(saves.checkpoint(state));
         CHECK(runtime.usage_.restore(0));CHECK(runtime.idle_.configure(30,0));runtime.uiSequence_=state.sequence;
         runtime.imu_.sample={0,motion::StepStatus::Tracking,0};game.writes=0;fake::order.clear();
@@ -56,6 +57,52 @@ void quietAndWrites(){
     h.runtime.imu_.sample={3,motion::StepStatus::Tracking,32020};CHECK(h.runtime.pollUsage(32020));
     CHECK(h.runtime.usage_.total()==3&&h.state.explorationSteps==3&&h.game.writes==1&&h.usage.writes==1);
     CHECK(!h.runtime.imu_.paused);
+}
+void resultIdle(){
+    const auto startChecks=checks;
+    Harness h;
+    CHECK(apply(h.state,Action::Explore,1000)==Error::None);
+    h.state.wildHp=h.state.wildMaxHp/2; // Synthetic eligible encounter; the receipt is produced by the real core.
+    const auto encounter=h.state;bool captured=false;
+    for(unsigned seed=1;seed<=100&&!captured;++seed){
+        h.state=encounter;h.state.rngState=seed;
+        CHECK(apply(h.state,Action::Flick,41140)==Error::None);
+        captured=h.state.lastCapture.result==CaptureResult::Captured;
+    }
+    CHECK(captured&&h.state.phase==Phase::Home);
+    CHECK(h.saves.checkpoint(h.state));h.game.writes=0;
+    h.runtime.uiSequence_=h.state.sequence;h.runtime.ui_.selected=deviceui::Screen::Result;
+    Snapshot before;CHECK(encodeSnapshot(h.state,before));
+    CHECK(!h.runtime.idleBlocked());h.idle(30000);
+    CHECK(h.runtime.idle_.blanked()&&fake::panel.idleBlanked&&fake::blanks==1);
+    CHECK(!h.game.writes&&!h.usage.writes&&!h.runtime.intents);
+    CHECK(h.runtime.ui_.screen()==deviceui::Screen::Result&&!h.runtime.imu_.paused);
+    h.input(30020,{true,206,300,true});
+    CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&h.runtime.touchNeedsRelease_);
+    CHECK(!h.runtime.intents&&!h.runtime.ui_.downs&&!h.runtime.ui_.ups);
+    h.input(30040,{false,206,300,true});
+    CHECK(!h.runtime.touchNeedsRelease_&&!h.runtime.intents);
+    h.input(30060,{true,206,300,true});h.input(30080,{false,206,300,true});
+    CHECK(h.runtime.ui_.downs==1&&h.runtime.ui_.ups==1&&h.runtime.intents==1);
+    Snapshot after;CHECK(encodeSnapshot(h.state,after));
+    CHECK(!std::memcmp(before.bytes,after.bytes,kSnapshotSize)&&!h.game.writes&&!h.usage.writes);
+    // A Result label cannot bypass an encounter, playback, held contact or I/O
+    // barrier. These are the same production blockers used by other screens.
+    const std::function<void(Harness&)> blocks[]{
+        [](auto& r){r.runtime.battle_.locked_=true;},
+        [](auto& r){r.runtime.touchPressed_=true;},
+        [](auto& r){r.runtime.ui_.pending_=true;},
+        [](auto& r){CHECK(apply(r.state,Action::Explore,1000)==Error::None);},
+        [](auto& r){r.runtime.usbTransferLease_=true;},
+        [](auto&){fake::dmaQuiet=false;},
+        [](auto& r){r.runtime.walkingFault_=true;}
+    };
+    for(const auto& block:blocks){
+        Harness guarded;guarded.runtime.ui_.selected=deviceui::Screen::Result;block(guarded);
+        CHECK(guarded.runtime.idleBlocked());guarded.idle(30000);
+        CHECK(!guarded.runtime.idle_.blanked()&&!fake::blanks&&!guarded.game.writes&&!guarded.usage.writes);
+    }
+    std::printf("Result idle: %u checks; actual idle/input policy, receipt snapshot identity and existing blockers.\n",checks-startChecks);
 }
 void pendingBeforeBlank(){
     Harness h;h.runtime.imu_.sample={5,motion::StepStatus::Tracking,29999};CHECK(h.runtime.pollUsage(29999));
@@ -157,4 +204,39 @@ void strongerSuspension(){
         h.input(32020,{true,200,300,true});CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&!h.runtime.intents&&h.runtime.touchNeedsRelease_);
     }
 }
-int main(){quietAndWrites();pendingBeforeBlank();flushStartsEncounter();homeWalkingWhileBlanked();menuIdleQueuesEncounter();storageFaults();blockers();wakeContact();wakeFaultAndMotion();strongerSuspension();std::printf("Idle runtime: %u checks passed; actual idle/usage methods + exact touch dispatch/pause body, hardware/UI publication doubles\n",checks);}
+void musicIdleAndWake(){
+    for(const auto screen:{deviceui::Screen::Home,deviceui::Screen::Settings,deviceui::Screen::Sound}){
+        Harness h;h.runtime.ui_.selected=screen;h.runtime.audio_.musicActive=true;
+        // Full audio quiescence remains false during music. Idle must use the
+        // independent SFX barrier, then request Quiet without pausing sensors.
+        CHECK(!h.runtime.audio_.quiescent()&&h.runtime.audio_.effectsQuiescent());
+        CHECK(!h.runtime.idleBlocked());h.input(30000);
+        CHECK(h.runtime.idle_.blanked()&&h.runtime.audio_.scene==device::MusicScene::Quiet);
+        CHECK(!h.runtime.audio_.paused&&!h.runtime.imu_.paused&&!h.runtime.intents);
+        // Scene selection resumes in the same owner poll that wakes the display.
+        // The wake contact is consumed; the first subsequent tap remains usable.
+        h.input(30020,{true,200,300,true});
+        CHECK(!h.runtime.idle_.blanked()&&h.runtime.audio_.scene==device::MusicScene::Home);
+        CHECK(h.runtime.touchNeedsRelease_&&!h.runtime.intents);
+        h.input(30040,{false,200,300,true});
+        h.input(30060,{true,200,300,true});h.input(30080,{false,200,300,true});
+        CHECK(h.runtime.intents==1&&h.runtime.ui_.downs==1&&h.runtime.ui_.ups==1);
+        CHECK(!h.game.writes&&!h.usage.writes);
+    }
+    Harness effect;effect.runtime.audio_.musicActive=true;effect.runtime.audio_.quiet=false;
+    CHECK(effect.runtime.idleBlocked());effect.input(30000);CHECK(!effect.runtime.idle_.blanked());
+}
+void musicScenePolicy(){
+    Harness h;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Home);
+    h.runtime.battle_.locked_=true;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Battle);
+    h.runtime.setup_.active_=true;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Quiet);
+    h.runtime.setup_.active_=false;h.runtime.battle_.locked_=false;h.runtime.encounterRecoveryRequired_=true;
+    h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Quiet);
+    h.runtime.encounterRecoveryRequired_=false;h.runtime.pauseInterface(true);
+    CHECK(h.runtime.audio_.paused&&h.runtime.audio_.scene==device::MusicScene::Quiet);
+    h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Quiet);
+    h.runtime.pauseInterface(false);h.runtime.updateMusicScene();
+    CHECK(!h.runtime.audio_.paused&&h.runtime.audio_.scene==device::MusicScene::Home);
+    h.runtime.frozen=true;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Quiet);
+}
+int main(){quietAndWrites();resultIdle();pendingBeforeBlank();flushStartsEncounter();homeWalkingWhileBlanked();menuIdleQueuesEncounter();storageFaults();blockers();wakeContact();wakeFaultAndMotion();strongerSuspension();musicIdleAndWake();musicScenePolicy();std::printf("Idle runtime: %u checks passed; actual idle/usage methods + exact touch dispatch/pause body, hardware/UI publication doubles\n",checks);}

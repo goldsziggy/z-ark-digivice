@@ -23,7 +23,7 @@ function oldCare(events: Event[], initialMode = 'onboarding') {
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved?: unknown) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-rpg-http-'));
   if (saved) for (const file of ['store.json', 'store.backup.json']) await writeFile(join(dataDir, file), JSON.stringify(saved));
-  let app = await startServer({ dataDir, corePath, battleCorePath, port: 0 });
+  let app = await startServer({ seedSource: () => 12345, dataDir, corePath, battleCorePath, port: 0 });
   const close = () => new Promise<void>((resolve, reject) => app.server.close(error => error ? reject(error) : resolve()));
   t.after(async () => { if (app.server.listening) await close(); await rm(dataDir, { recursive: true, force: true }); });
   const request = async (path: string, token?: string, body?: unknown) => {
@@ -32,26 +32,26 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved
     return { status: response.status, body: await response.json() as any };
   };
   const pair = async () => { const code = (await request('/api/pairing/start', undefined, {})).body.code; return (await request('/api/pairing/claim', undefined, { code })).body; };
-  return { request, pair, dataDir, restart: async () => { await close(); app = await startServer({ dataDir, corePath, battleCorePath, port: 0 }); } };
+  return { request, pair, dataDir, restart: async () => { await close(); app = await startServer({ seedSource: () => 12345, dataDir, corePath, battleCorePath, port: 0 }); } };
 }
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 13, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
 
 test('rules-three Auto capture migrates once without retroactive XP or relabelled receipts', async t => {
   const events = [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }, { type: 'auto', value: 0 }];
   const old = oldCare(events), f = await fixture(t, old);
   const migrated = (await f.request('/api/save', TOKEN)).body;
-  assert.equal(migrated.state.schemaVersion, 17); assert.equal(migrated.state.rulesVersion, 13);
+  assert.equal(migrated.state.schemaVersion, 22); assert.equal(migrated.state.rulesVersion, 15);
   assert.equal(migrated.revision, 1); assert.equal(migrated.baseSequence, 4); assert.deepEqual(migrated.events, []);
   assert.equal(migrated.state.rngState, 3336926330); assert.equal(migrated.state.captures, 1);
   assert.deepEqual(migrated.state.collection.map((member: any) => [member.id, member.species, member.xp, member.level, member.capturedAtSequence]), [[1, 'impmon', 0, 1, 0], [2, 'flicker', 0, 1, 4]]);
   assert.deepEqual(migrated.state.lastAutoBattle, { sequence: 4, turns: 4, outcome: 'captured' }); assert.equal(migrated.autoTrace, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 15); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 652);
+  assert.equal(stored.formatVersion, 17); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 2964);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 3, events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v3.json'), 'utf8')), old);
   const oldPending = { rulesVersion: 3, baseRevision: 0, batchId: old.devices[0].receipts[0].batchId, events };
   assert.equal((await f.request('/api/save-sync', TOKEN, oldPending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', TOKEN, { ...oldPending, rulesVersion: 13 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', TOKEN, { ...oldPending, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
   await f.restart(); assert.deepEqual((await f.request('/api/save', TOKEN)).body, migrated);
   const care = await f.request('/api/save-sync', TOKEN, batch(1, 'care-does-not-award-xp', [{ type: 'feed', value: 0 }]));
   assert.equal(care.status, 200); assert.equal(care.body.state.xp, 0); assert.equal(care.body.state.level, 1);
@@ -92,7 +92,7 @@ test('native branch catalogs are bounded, evolution needs eligibility and is loc
   const f = await fixture(t, oldCare(events)), before = (await f.request('/api/save', TOKEN)).body;
   assert.equal(before.state.level, 10); assert.equal(before.state.formId, 11); assert.equal(before.state.evolution.options.length, 2);
   const catalog = await f.request('/api/evolution/catalog?species=impmon');
-  assert.equal(catalog.status, 200); assert.equal(catalog.body.rulesVersion, 13); assert.equal(catalog.body.forms.length, 7); assert.ok(Buffer.byteLength(JSON.stringify(catalog.body)) <= 16384);
+  assert.equal(catalog.status, 200); assert.equal(catalog.body.rulesVersion, 15); assert.equal(catalog.body.forms.length, 7); assert.ok(Buffer.byteLength(JSON.stringify(catalog.body)) <= 16384);
   for (const path of ['/api/evolution/catalog', '/api/evolution/catalog?species=impmon&species=agumon', '/api/evolution/catalog?species=../../secret', '/api/evolution/catalog?species=impmon&level=20']) assert.equal((await f.request(path)).status, 400);
   const target = before.state.evolution.options.find((option: any) => option.eligible);
   assert.ok(target);

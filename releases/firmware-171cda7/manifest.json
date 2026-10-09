@@ -1,0 +1,79 @@
+{
+  "sdkVersion": "v5.3.6",
+  "sdkCommit": "79e3454c68248bd7d881721c9b2e94561378a8ce",
+  "target": "esp32s3",
+  "profile": "waveshare",
+  "board": "Waveshare ESP32-S3-Touch-LCD-1.46 SKU29565",
+  "sourceCommit": "171cda7e698cf2915b50aa46bc766d8d1d0ee50d",
+  "sourceTreeClean": true,
+  "projectVersion": "171cda7",
+  "compilerWarnings": 0,
+  "installed": true,
+  "privateAssetsSavesOrCredentialsIncluded": false,
+  "images": {
+    "application": {
+      "file": "digivice.bin",
+      "bytes": 1601056,
+      "sha256": "f30f8c5b56730c924a79a7d3a6b8b62565c307ed177632e804be8f3657a2d3d0",
+      "buildLayoutOffset": "0x20000"
+    },
+    "bootloader": {
+      "file": "bootloader.bin",
+      "bytes": 21392,
+      "sha256": "e93da6a7beca0d181b5ecd79560841c1d71956a09fb94a3adf145c770de68dc1",
+      "buildLayoutOffset": "0x0"
+    },
+    "partitionTable": {
+      "file": "partition-table.bin",
+      "bytes": 3072,
+      "sha256": "703550d3bc9af51a7cf8c96f486ba5acb13f81d2301035b3eae0da4f793d33f1",
+      "buildLayoutOffset": "0x8000"
+    },
+    "otaInitial": {
+      "file": "ota_data_initial.bin",
+      "bytes": 8192,
+      "sha256": "7d2c7ac4888bfd75cd5f56e8d61f69595121183afc81556c876732fd3782c62f",
+      "buildLayoutOffset": "0x19000"
+    }
+  },
+  "sdkconfigSha256": "6d007a42374b28049f4731279b3471c10a51c10de70ec8080552fb79d5b80e92",
+  "partitionAndOtaMetadataMatchInstalled66": true,
+  "upgradeScope": "Reviewed exact-device application-only update at0x20000. Do not write bootloader, partition table, OTA metadata or erase data.",
+  "resources": {
+    "measuredBuild": {
+      "applicationBytes": 1601056,
+      "applicationDeltaFrom66Bytes": 2224,
+      "otaSlotBytes": 3145728,
+      "otaSlotFreeBytes": 1544672,
+      "staticDiramBytes": 208663,
+      "staticDiramDeltaFrom66Bytes": 200,
+      "staticDiramCapacityBytes": 341760,
+      "staticDiramUnassignedBytes": 133097,
+      "knownApplicationStackChainBytes": 26720,
+      "mainTaskStackBytes": 32768,
+      "stackRemainderBeforeUnmeasuredCallsBytes": 6048
+    },
+    "hostAbi": {
+      "stateBytes": 2936,
+      "snapshotBytes": 2964,
+      "partyCapacity": 3,
+      "collectionCapacity": 60,
+      "jsonBufferBytes": 65536,
+      "tradeJournalBytes": 6120,
+      "tradeRecordBytes": 6024,
+      "maximumTestedJsonBytes": 38500
+    },
+    "physicalValidation": "Two existing device profiles verified: exact own-save migration, settings/SD preservation and byte-identical checkpoint/reboot. No physical full60 collection/trade or new-control stress test.",
+    "limits": "Stack-chain calculation excludes SDK and indirect calls. NVS fit is synthetic. Physical checks cover existing profiles; full60 collection/trade stress remains untested."
+  },
+  "physicalValidation": {
+    "devicesVerified": 2,
+    "ownSaveMigrationExact": true,
+    "protectedBytesPreservedBeforeBoot": true,
+    "settingsPreserved": true,
+    "sdFilesVerifiedPerDevice": 261,
+    "sdPayloadWrites": 0,
+    "checkpointAndRebootByteIdentical": true,
+    "controlsAndFullCollectionPhysicalAcceptance": false
+  }
+}

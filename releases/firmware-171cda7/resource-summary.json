@@ -1,0 +1,84 @@
+{
+  "sourceCommit": "171cda7e698cf2915b50aa46bc766d8d1d0ee50d",
+  "scope": "Offline host, linked-target and compiler measurements only; no physical full-roster stress claim.",
+  "hostMeasuredBytes": {
+    "member": 44,
+    "state": 2936,
+    "snapshot": 2964,
+    "tradeRecordInMemory": 6024,
+    "tradeRecordWire": 6100,
+    "tradeJournalBlob": 6120,
+    "tradeStore": 30352,
+    "tradeSession": 36408,
+    "saveStoreWithScratch": 11872,
+    "jsonCapacity": 65536,
+    "uiController": 336,
+    "uiModel": 280
+  },
+  "hostDeltaFrom66": {
+    "member": 0,
+    "state": 12,
+    "snapshot": 12,
+    "tradeRecordInMemory": 24,
+    "tradeRecordWire": 24,
+    "tradeJournalBlob": 24,
+    "tradeStore": 120,
+    "tradeSession": 144,
+    "saveStoreWithScratch": 56,
+    "jsonCapacity": 0
+  },
+  "linkedTarget": {
+    "applicationBinBytes": 1601056,
+    "applicationSha256": "f30f8c5b56730c924a79a7d3a6b8b62565c307ed177632e804be8f3657a2d3d0",
+    "diramUsedBytes": 208663,
+    "diramRemainingBytes": 133097,
+    "diramTotalBytes": 341760,
+    "bssBytes": 85392,
+    "bssDeltaFrom66Bytes": 200,
+    "caveat": "Linker allocation remainder is not runtime heap availability."
+  },
+  "mainTaskStack": {
+    "translationUnits": 79,
+    "configuredMainStackBytes": 32768,
+    "conservativeKnownApplicationFrameChainBytes": 26720,
+    "deltaFrom66Bytes": 96,
+    "remainingBeforeUnmeasuredLibraryAndIndirectCalls": 6048,
+    "method": "Existing official Xtensa GCC13.2 / IDF5.3.6 compile flags with -fstack-usage -fcallgraph-info=su. Bounded Auto tactical reentry and one HomeOpen delegation, as original66 analysis.",
+    "caveat": "Includes conservative branches excluded by actual dispatch values. SDK/library and indirect callback stack remains unmeasured. No physical high-water or full60 stress result implied."
+  },
+  "stateJson": {
+    "measurement": {
+      "stateBytes": 2936,
+      "snapshotBytes": 2964,
+      "jsonBufferBytes": 65536,
+      "measuredMaximumJsonBytes": 38500,
+      "statesSwept": 3641,
+      "maximumForm": 245,
+      "maximumLevel": 15
+    },
+    "deltaFrom66MeasuredBytes": 70,
+    "allocation": "Existing bounded temporary65536-byte PSRAM allocation and explicit OOM path unchanged.",
+    "scope": "3641 legal form/level combinations,60 members, full journal, long IDs and all3 selected companions. Synthetic sweep; not a mathematical maximum over every valid state."
+  },
+  "nvsGeometry": {
+    "existingPartitionBytes": 65536,
+    "currentCareBlobBytes": 2964,
+    "currentTradeJournalBlobBytes": 6120,
+    "supportedPriorTradeJournalBytes": [
+      1512,
+      1520,
+      6096
+    ],
+    "committedCareAndJournalPayloadBytes": 18168,
+    "extraLargestWriteBlobBytes": 6120,
+    "extraOtherNamespacesReserveBytes": 8192,
+    "syntheticTestPayloadBytes": 32480,
+    "generatorExit": 0,
+    "caveat": "Geometry and page/entry overhead only; not a runtime GC, physical occupancy, wear or power-loss simulation."
+  },
+  "remainingAcceptance": [
+    "Per-device installation and save/settings/SD/protected-region checks are reported separately.",
+    "Physical stack high-water, runtime heap, current draw and full60-roster stress remain unmeasured by this audit.",
+    "False stationary steps remain unresolved."
+  ]
+}

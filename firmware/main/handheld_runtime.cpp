@@ -40,9 +40,26 @@ void HandheldRuntime::resolveTestEncounterAtBoot() {
     std::printf("SAVE RECOVERY: old test encounter is blocked; RAM preserved. Core=%s; %s. Restart to check saved state.\n",
         errorText(result), saves_.diagnostic());
 }
+bool HandheldRuntime::ensureWorldSeed() {
+    if (!state_.onboardingComplete || state_.worldSeed) return true;
+    if (encounterRecoveryRequired_ || powerFrozen() || tradeSession_.blocksForeground()) return false;
+    State candidate = state_;
+    const auto result = startupSeeds_.ready() ? apply(candidate, Action::WorldSeed, startupSeeds_.world) : Error::InvalidValue;
+    if (result == Error::None && saves_.writable() && saves_.checkpoint(candidate)) {
+        state_ = candidate;
+        std::puts("Independent encounter world saved; current encounter and walking progress preserved.");
+        return true;
+    }
+    encounterRecoveryRequired_ = true;
+    std::printf("SAVE RECOVERY: encounter world seed unavailable or uncommitted; play paused. Core=%s; %s.\n",
+        errorText(result), saves_.diagnostic());
+    return false;
+}
 void HandheldRuntime::begin() {
     static_assert(onboarding::kChoices == combat::kStarterCount, "starter roster and navigation must agree");
-    resolveTestEncounterAtBoot(); // Before starter, random draws, asset requests or presentation.
+    beginTradeStorage(); // Journal reconciliation precedes every care mutation.
+    if (!tradeSession_.blocksForeground()) resolveTestEncounterAtBoot(); // Before starter, random draws, asset requests or presentation.
+    (void)ensureWorldSeed(); // Never select a new foe before its independent seed is durable.
     starter_.reset(state_.onboardingComplete);
     const auto practiceNvs = practiceBackend_.initialize();
     const auto practiceBoot = practice_.restore();
@@ -54,9 +71,8 @@ void HandheldRuntime::begin() {
     std::printf("Network adapter: %s; no credentials are printed.\n", esp_err_to_name(networkResult));
     // Offer selection is a saved game event. Never show newly drawn choices
     // until their checkpoint is verified, and never redraw an existing offer.
-    if (!state_.onboardingComplete && !state_.starterOfferSeed && saves_.writable()) {
-        auto seed = esp_random();
-        if (!seed) seed = esp_random();
+    if (!tradeSession_.blocksForeground() && !state_.onboardingComplete && !state_.starterOfferSeed && saves_.writable()) {
+        const auto seed = startupSeeds_.offers;
         State candidate = state_;
         if (seed && apply(candidate, Action::StarterOfferSeed, seed) == Error::None &&
             saves_.checkpoint(candidate)) {
@@ -98,7 +114,7 @@ board::Capabilities HandheldRuntime::capabilities(board::Capabilities base) cons
 void HandheldRuntime::warm(bool force) {
     // No creature exists before hatch. Test packs require the explicit
     // development-assets build; production never substitutes a named test form.
-    auto candidate = state_.onboardingComplete ? assets::plan(state_, assets::DeviceAssetsClient::developmentAssetsEnabled()) : assets::Plan{};
+    auto candidate = state_.onboardingComplete && state_.worldSeed ? assets::plan(state_, assets::DeviceAssetsClient::developmentAssetsEnabled()) : assets::Plan{};
     if (board::selectedProfile().id == board::ProfileId::HeltecUnverified) {
         std::size_t kept = 0;
         for (std::size_t i = 0; i < candidate.count; ++i) if (std::strncmp(candidate.ids[i], "scene-", 6) != 0) {
@@ -142,13 +158,13 @@ void HandheldRuntime::poll() {
         if (stopUsbTransfer(true)) std::puts("SDPUT TIMEOUT partial=retained");
     }
     if (usbTransferLease_) return; // No rendering, touch, steps or prefetch during installation.
-    if (encounterRecoveryRequired_) {
+    if (encounterRecoveryRequired_ || !tradeSession_.healthy() || !ensureWorldSeed()) {
         pollInterface(now); // Show recovery and retain normal physical power handling.
         return; // No motion delivery, game events or asset downloads while unresolved.
     }
     (void)pollUsage(now);
     pollInterface(now);
-    if (powerFrozen()) return; // Includes motion sampling, prefetch, and new asset reads/jobs.
+    if (powerFrozen() || !ensureWorldSeed()) return; // Includes motion sampling, prefetch, and new asset reads/jobs.
     const auto& network = network_.status();
     if (network.state != previousNetwork_) {
         if (network.state != net::State::Online) assets_.cancel();
@@ -178,7 +194,7 @@ void HandheldRuntime::poll() {
     // Confirmed deltas can drain even after sensor I/O stops. A storage/ack
     // uncertainty is different: StepDelivery latches and never replays it.
     if (!stepDelivery_.halted() && motionUpdate_.pendingSteps && state_.onboardingComplete) {
-        const auto delivered=stepDelivery_.pump(steps_,state_,saves_,now,practice_.allowsCareAction(Action::Walk));
+        const auto delivered=stepDelivery_.pump(steps_,state_,saves_,now,allowsCareAction(Action::Walk));
         motionUpdate_=steps_.poll(now);
         if (delivered.result==motion::DeliveryResult::SaveRecovery || delivered.result==motion::DeliveryResult::AckRecovery ||
             delivered.result==motion::DeliveryResult::CoreRejected) {
@@ -241,13 +257,14 @@ power::Work HandheldRuntime::drainPower(std::uint64_t now) {
     }
     if (!interfaceQuiescent()) { powerReason_ = "waiting for display/audio/motion shutdown"; return power::Work::Pending; }
     if (!encounterRecoveryRequired_ && !pollUsage(now, true)) { powerReason_ = "lifetime/walking checkpoint requires recovery"; return power::Work::Failed; }
+    if (tradeSession_.freezesGameWrites()) { powerReason_ = tradeSession_.diagnostic(); return power::Work::Failed; }
     if (!saves_.writable()) { powerReason_ = saves_.diagnostic(); return power::Work::Failed; }
     // Practice commands already commit/read back synchronously. Uncertain
     // practice storage must be reviewed, never hidden by an intentional cut.
     if (!practice_.writable()) { powerReason_ = practice_.diagnostic(); return power::Work::Failed; }
     motionUpdate_ = steps_.poll(now);
     if (motionUpdate_.pendingSteps) {
-        if (!practice_.allowsCareAction(Action::Walk)) {
+        if (!allowsCareAction(Action::Walk)) {
             powerReason_ = "confirmed steps remain; resume and finish practice before powering off";
             return power::Work::Failed;
         }
@@ -312,7 +329,7 @@ void HandheldRuntime::pollPower(std::uint64_t now) {
     if (actions.beginShutdown) beginPowerShutdown(now);
     if (actions.save) {
         // No gameplay callback can run between this checkpoint and latch release.
-        powerWork_ = saves_.writable() && practice_.writable() && saves_.checkpoint(state_)
+        powerWork_ = !tradeSession_.freezesGameWrites() && saves_.writable() && practice_.writable() && saves_.checkpoint(state_)
             ? power::Work::Ready : power::Work::Failed;
         powerReason_ = powerWork_ == power::Work::Ready
             ? "save verified; release PWR to finish power-off" : saves_.diagnostic();
@@ -321,7 +338,7 @@ void HandheldRuntime::pollPower(std::uint64_t now) {
         // Revalidate the barrier even if the user held PWR long after the save.
         if (!nearbyQuiescent() || !assets_.quiescent() || !interfaceQuiescent() || !usbTransfer_.quiescent() || usbTransfer_.active() || usbTransferLease_ ||
             network_.quiescence() != ESP_OK || !sdPowerPrepared_ ||
-            !saves_.writable() || !practice_.writable() || steps_.poll(now).pendingSteps) {
+            tradeSession_.freezesGameWrites() || !saves_.writable() || !practice_.writable() || steps_.poll(now).pendingSteps) {
             powerWork_ = power::Work::Failed;
             powerReason_ = "shutdown barrier changed after save; power retained";
         } else {
@@ -778,6 +795,25 @@ bool HandheldRuntime::command(char* line) {
         if (!std::strncmp(line, "sdput", 5)) { std::puts("SDPUT ERROR code=POWER"); return true; }
         std::puts("Commands paused for power transition/standby. Use power status; release then short-press/release PWR to resume when I/O is idle.");
         return true; // Never allow app_main fallback, checkpoint, or reboot through.
+    }
+    if (tradeSession_.blocksForeground()) {
+        const bool readOnly = !std::strcmp(line, "status") || !std::strcmp(line, "snapshot") ||
+            !std::strcmp(line, "capabilities") || !std::strcmp(line, "companions") ||
+            !std::strcmp(line, "journal") || !std::strcmp(line, "device status") ||
+            !std::strcmp(line, "net status") || !std::strcmp(line, "trade status");
+        if (!std::strcmp(line, "trade status")) { std::puts(tradeSession_.diagnostic()); return true; }
+        if (!std::strcmp(line, "nearby open") && tradeSession_.healthy()) {
+#if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
+            beginNearby();
+#endif
+            return true;
+        }
+        if (!std::strcmp(line, "nearby close")) { closeNearby(); return true; }
+        if (!std::strcmp(line, "reboot") && nearbyQuiescent()) {
+            if (!prepareUsageRestart()) return true;
+            std::fflush(stdout); esp_restart(); return true;
+        }
+        if (!readOnly) { std::puts(tradeSession_.diagnostic()); return true; }
     }
     if (encounterRecoveryRequired_) {
         if (!std::strcmp(line, "reboot")) {

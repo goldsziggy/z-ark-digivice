@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "snapshot_test_helpers.hpp"
 #include "legacy_v12.hpp"
 #include "forms.hpp"
 #include <cstdio>
@@ -94,14 +95,14 @@ void migrationAndBounds(){
   if(phase>2){prior.wildHp=prior.wildMaxHp/2;CHECK(old::apply(prior,old::Action::Flick,0)==old::Error::None);}
   old::Snapshot encoded;CHECK(old::encodeSnapshot(prior,encoded));std::uint8_t bytes[kV15SnapshotSize];std::memcpy(bytes,encoded.bytes,sizeof(bytes));bytes[4]=15;bytes[6]=112;bytes[7]=2;put32(bytes+sizeof(bytes)-4,crc(bytes,sizeof(bytes)-4));
   State decoded;CHECK(decodeSnapshot(bytes,sizeof(bytes),decoded)==SnapshotStatus::Migrated);CHECK(decoded.foregroundSequence==decoded.sequence&&!decoded.pendingEncounter.formId);
-  Snapshot round;CHECK(encodeSnapshot(decoded,round));CHECK(!std::memcmp(bytes+12,round.bytes+12,kV15SnapshotSize-16));
+  Snapshot round;CHECK(encodeSnapshot(decoded,round));CHECK(snapshot_test::sameOldPayload(bytes,round.bytes,kV15SnapshotSize));
  }
 
  auto egg=newDevice();rejects(egg,Action::AccrueSteps,1,Error::WrongPhase);rejects(egg,Action::PresentEncounter,0,Error::WrongPhase);
  auto s=hatched(1);rejects(s,Action::AccrueSteps,0,Error::InvalidValue);rejects(s,Action::AccrueSteps,1001,Error::InvalidValue);rejects(s,Action::PresentEncounter,1,Error::InvalidValue);
  step(s,Action::AccrueSteps,1000);Snapshot bytes;CHECK(encodeSnapshot(s,bytes));
- for(unsigned field=0;field<3;++field){auto corrupt=bytes;put32(corrupt.bytes+632+field*4,field==0?9999:0);put32(corrupt.bytes+648,crc(corrupt.bytes,648));auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::InvalidState&&same(dest,s));}
- for(unsigned index=632;index<sizeof(bytes.bytes);++index){auto corrupt=bytes;corrupt.bytes[index]^=1;auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::BadChecksum&&same(dest,s));}
+ for(unsigned field=0;field<3;++field){auto corrupt=bytes;put32(corrupt.bytes+snapshot_test::currentOffset(632)+field*4,field==0?9999:0);put32(corrupt.bytes+kSnapshotSize-4,crc(corrupt.bytes,kSnapshotSize-4));auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::InvalidState&&same(dest,s));}
+ for(unsigned index=snapshot_test::currentOffset(632);index<sizeof(bytes.bytes);++index){auto corrupt=bytes;corrupt.bytes[index]^=1;auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::BadChecksum&&same(dest,s));}
  auto bad=s;bad.foregroundSequence=s.sequence+1;CHECK(!isValid(bad));bad=s;bad.pendingEncounter.formId=0;CHECK(!isValid(bad));bad=s;bad.encounterProgress=1;CHECK(!isValid(bad));bad=s;bad.pendingEncounter.rules=11;CHECK(!isValid(bad));
  s.sequence=UINT32_MAX;rejects(s,Action::AccrueSteps,1,Error::CounterOverflow);rejects(s,Action::PresentEncounter,0,Error::CounterOverflow);
  s.sequence=999;s.explorationSteps=UINT32_MAX;CHECK(isValid(s));rejects(s,Action::AccrueSteps,1,Error::CounterOverflow);

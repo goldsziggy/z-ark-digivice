@@ -20,6 +20,9 @@ esp_err_t Audio::begin() {
     if (channel_ || queue_ || board::selectedProfile().id != board::ProfileId::Waveshare146) {
         error_ = ESP_ERR_INVALID_STATE; return error_;
     }
+    preferencesError_ = settings_.begin();
+    const auto& preferences = settings_.preferences();
+    volume_ = preferences.volume; muted_ = preferences.muted; musicEnabled_ = preferences.music;
     i2s_chan_config_t channel = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER);
     channel.dma_desc_num = descriptors;
     channel.dma_frame_num = frames;
@@ -29,6 +32,7 @@ esp_err_t Audio::begin() {
     i2s_std_config_t config{};
     config.clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(kAudioSampleRate);
     config.slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_STEREO);
+    static_assert(kAudioSampleRate == 44100, "Keep the PCM5101A no-MCLK PLL clock contract");
     // Waveshare pinned PCM5101.h: SCLK48/LCLK38/DOUT47, no MCLK or RX.
     // Duplicate mono into both slots so the DAC output wiring is immaterial.
     config.gpio_cfg.mclk = I2S_GPIO_UNUSED;
@@ -66,13 +70,23 @@ bool Audio::play(AudioCue cue) {
     lastCueMs_[index] = now;
     return true;
 }
-void Audio::setMuted(bool muted) {
+esp_err_t Audio::persistPreferences() {
+    preferencesError_ = settings_.save({static_cast<std::uint8_t>(volume_.load()),muted_.load(),musicEnabled_.load()});
+    return preferencesError_;
+}
+esp_err_t Audio::setMuted(bool muted) {
     muted_ = muted;
     if (muted) { ++epoch_; if (queue_) xQueueReset(queue_); }
+    return persistPreferences();
 }
-void Audio::setVolume(std::uint8_t percent) {
-    volume_ = std::min(static_cast<unsigned>(percent), 50U);
+esp_err_t Audio::setVolume(std::uint8_t percent) {
+    volume_ = std::min(static_cast<unsigned>(percent), sound::kMaxVolume);
     if (!volume_) { ++epoch_; if (queue_) xQueueReset(queue_); }
+    return persistPreferences();
+}
+esp_err_t Audio::setMusicEnabled(bool enabled) {
+    musicEnabled_ = enabled;
+    return persistPreferences();
 }
 void Audio::pause(bool paused) {
     paused_ = paused;
@@ -80,22 +94,27 @@ void Audio::pause(bool paused) {
 }
 void Audio::taskEntry(void* context) { static_cast<Audio*>(context)->run(); }
 void Audio::run() {
-    CueSynth synth;
+    AudioMixer synth;
     std::int16_t pcm[frames*2]{};
     bool enabled = false;
-    unsigned priority = 0, tail = 0;
+    unsigned priority = 0, tail = 0, effectTail = 0;
     std::uint32_t activeEpoch = 0;
     for (;;) {
         Request request{};
         const bool received = xQueueReceive(queue_, &request, enabled ? 0 : pdMS_TO_TICKS(20)) == pdTRUE;
-        if (stopRequested() || (enabled && activeEpoch != epoch_.load())) {
-            synth = {}; tail = 0;
-        } else if (received && request.epoch == epoch_.load() && nowMs()-request.createdMs <= 350 &&
-                   (synth.finished() || cuePriority(request.cue) >= priority)) {
-            synth.start(request.cue); priority = cuePriority(request.cue);
-            tail = descriptors+1; activeEpoch = request.epoch;
+        const auto epoch = epoch_.load();
+        if (stopRequested() || activeEpoch != epoch) {
+            synth = {}; tail = effectTail = 0; activeEpoch = epoch;
         }
-        if (synth.finished() && tail == 0) {
+        if (!stopRequested() && ready_.load() && received && request.epoch == epoch_.load() && nowMs()-request.createdMs <= 350 &&
+                   (synth.cueFinished() || cuePriority(request.cue) >= priority)) {
+            synth.start(request.cue); priority = cuePriority(request.cue);
+            tail = effectTail = descriptors+1; activeEpoch = request.epoch;
+        }
+        const bool music = ready_.load() && musicEnabled_.load() && !stopRequested();
+        const auto scene = scene_.load();
+        effectsActive_ = !synth.cueFinished() || effectTail != 0;
+        if (!synth.needsSamples(music, scene) && tail == 0) {
             if (enabled) {
                 const auto error = i2s_channel_disable(channel_);
                 if (error != ESP_OK) {
@@ -105,7 +124,7 @@ void Audio::run() {
                 }
                 enabled = false;
             }
-            active_ = false;
+            active_ = false; effectsActive_ = false;
             settledEpoch_ = epoch_.load();
             continue;
         }
@@ -125,19 +144,23 @@ void Audio::run() {
             }
             if (error == ESP_OK) error = i2s_channel_enable(channel_);
             if (error != ESP_OK) {
-                error_ = error; ready_ = false; synth = {}; tail = 0;
+                error_ = error; ready_ = false; synth = {}; tail = effectTail = 0;
                 xQueueReset(queue_); continue;
             }
             enabled = true;
         }
-        const bool wasFinished = synth.finished();
-        for (unsigned i = 0; i < frames; ++i) pcm[i*2] = pcm[i*2+1] = synth.sample(volume_.load());
-        if (wasFinished && tail) --tail;
+        const bool wasCueFinished = synth.cueFinished();
+        const bool hadContent = synth.needsSamples(music, scene);
+        const auto volume = volume_.load();
+        for (unsigned i = 0; i < frames; ++i) pcm[i*2] = pcm[i*2+1] = synth.sample(volume, music, scene);
+        if (hadContent) tail = descriptors+1;
+        else if (tail) --tail;
+        if (wasCueFinished && effectTail) --effectTail;
         std::size_t written = 0;
         const auto error = i2s_channel_write(channel_, pcm, sizeof(pcm), &written, 30);
         if (error != ESP_OK || written != sizeof(pcm)) {
             error_ = error == ESP_OK ? ESP_ERR_INVALID_SIZE : error;
-            ready_ = false; synth = {}; tail = 0; xQueueReset(queue_);
+            ready_ = false; synth = {}; tail = effectTail = 0; xQueueReset(queue_);
         }
     }
 }

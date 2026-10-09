@@ -9,10 +9,15 @@
 // This core has no heap allocation, clock, network, filesystem, or hardware dependency.
 namespace digivice {
 
-constexpr std::uint32_t kSchemaVersion = 17;
-constexpr std::uint32_t kRulesVersion = 13;
+constexpr std::uint32_t kSchemaVersion = 22;
+constexpr std::uint32_t kRulesVersion = 15;
 constexpr std::uint32_t kDevelopmentSeed = 12345;
-constexpr std::size_t kSnapshotSize = 652;
+constexpr std::size_t kSnapshotSize = 2964;
+constexpr std::size_t kV21SnapshotSize = 2952;
+constexpr std::size_t kV20SnapshotSize = 664;
+constexpr std::size_t kV19SnapshotSize = 660;
+constexpr std::size_t kV18SnapshotSize = 656;
+constexpr std::size_t kV17SnapshotSize = 652; // V16 and V17 share this layout.
 constexpr std::size_t kV15SnapshotSize = 636;
 constexpr std::size_t kV14SnapshotSize = 600;
 constexpr std::size_t kV13SnapshotSize = 576;
@@ -22,30 +27,34 @@ constexpr std::size_t kV5SnapshotSize = 412;
 constexpr std::size_t kPreviousSnapshotSize = 404; // Formats 3 and 4.
 constexpr std::size_t kLegacySnapshotSize = 96;
 constexpr std::size_t kV2SnapshotSize = 100;
-constexpr std::size_t kJsonCapacity = 12288;
+// Measured60-member catalog sweep:38,430 bytes including combat/care details.
+constexpr std::size_t kJsonCapacity = 65536;
 constexpr std::size_t kJournalCapacity = 512;
 constexpr std::size_t kJournalWords = kJournalCapacity / 32;
 constexpr std::uint32_t kMaxLevel = 20;
 constexpr std::uint32_t kMaxXp = 7600;
-constexpr std::size_t kCollectionCapacity = 8;
+constexpr std::size_t kCollectionCapacity = 60;
+constexpr std::size_t kPartyCapacity = 3;
+constexpr std::size_t kLegacyCollectionCapacity = 8; // Snapshot schemas1..20.
 constexpr std::uint32_t kMaxReplayEvents = 10000;
 
 enum class Phase : std::uint8_t { Home, Encounter, Egg };
 enum class BattleMode : std::uint8_t { Tactical, Auto };
+enum class AutoCapture : std::uint8_t { None, Awaiting };
 enum class EncounterRate : std::uint8_t { Off, Relaxed, Normal, Frequent };
 enum class Species : std::uint16_t {
     None, Mote, Flicker, Rill, Cinder, Impmon, Agumon, Gabumon, Patamon,
     Tentomon, Palmon, Gomamon, Renamon
 };
-enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter };
+enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove };
 enum class Message : std::uint8_t {
     Welcome, Fed, Played, Rested, Walked, Encounter, AttackCard, ShieldCard,
-    Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared
+    Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared, PartyAdded, PartyRemoved
 };
 enum class Error : std::uint8_t {
     None, InvalidState, InvalidAction, InvalidValue, WrongPhase, LowEnergy,
     CardAlreadyUsed, WildTooStrong, CaptureLimit, CounterOverflow, CollectionFull, UnknownMember, AlreadyHatched,
-    WrongMode, AutoLimit, EvolutionUnavailable, ActiveMemberRelease
+    WrongMode, AutoLimit, EvolutionUnavailable, ActiveMemberRelease, PartyFull, PartyMemberExists, NotPartyMember, ActiveMemberParty
 };
 
 struct CreatureMember {
@@ -118,6 +127,14 @@ struct State {
     PendingEncounter pendingEncounter{};
     // Latest gameplay action revision; walking checkpoints do not dismiss its result.
     std::uint32_t foregroundSequence=0;
+    // Local acquisitions by durable Nearby exchange; never battle captures/rewards.
+    std::uint32_t receivedTrades=0;
+    // AutoFight stops here until an actual Flick/RingCapture or explicit AutoResume.
+    AutoCapture autoCapture=AutoCapture::None;
+    // Independent future encounter roster seed. Zero retains historical replay.
+    std::uint32_t worldSeed=0;
+    // Up to3 owned, non-active XP companions in selection order; unused slots0.
+    std::uint32_t partyMemberIds[kPartyCapacity]{};
 };
 
 struct Snapshot { std::uint8_t bytes[kSnapshotSize]{}; };
@@ -137,6 +154,14 @@ std::uint32_t levelForXp(std::uint32_t xp);
 const CreatureMember* findMember(const State& state, std::uint32_t id);
 const CreatureMember* activeMember(const State& state);
 bool hasObtained(const State& state, std::uint32_t formId);
+bool isPartyMember(const State&,std::uint32_t id);
+std::size_t partyCount(const State&);
+// Display order only: active, XP companions in selection order, remaining newest
+// acquisition first. The canonical collection remains in ascending stable ID order.
+const CreatureMember* collectionMemberAtDisplayIndex(const State&,std::size_t index);
+std::size_t displayIndexForMember(const State&,std::uint32_t id); // collectionCount if absent.
+// Ownership/partner changes compact selections, dropping lost or active IDs.
+void reconcileParty(State&);
 combat::CareBonus memberCare(const CreatureMember& member);
 combat::Profile memberBattleProfile(const State&,const CreatureMember&);
 const char* captureResultName(CaptureResult);
@@ -146,6 +171,11 @@ bool validStarterOfferForm(std::uint32_t formId);
 combat::Defense wildGuard(const State& state);
 // Native capture odds; zero outside a legal attempt. Auto may use the same helper.
 std::uint32_t captureChance(const State& state);
+// Timing-input v1: phaseMs is 0..2399, graded against this state's actual foe.
+// One factor on captureChance: red10%, orange50%, green100%; floor with minimum
+// one only for an eligible positive base. Invalid phase/ineligible state returns0.
+// No RNG, mutation, or additional rarity/level/care multiplier.
+std::uint32_t ringCaptureChance(const State& state, std::uint32_t phaseMs);
 // Capture-input v1 retains its existing encoding; rules12 updates odds/results.
 // Quantized client observations are not proof of a real gesture.
 constexpr std::uint32_t kFlickInputVersion = 1;
@@ -155,6 +185,8 @@ struct FlickTrajectory { std::int32_t landingX = 0, landingY = 0; bool hit = fal
 // 412x412 reference stage: launch(206,300), target(206,120), hit radius48.
 // Invalid input leaves result unchanged; successful decoding does not mutate a save.
 bool decodeFlick(std::uint32_t value, FlickTrajectory& result);
+// Does not advance any RNG; zero worldSeed preserves the saved legacy seed.
+std::uint32_t worldSelectionSeed(const State& state);
 // Pure bounded pool selection; only explicit partner stage unlocks higher tiers.
 std::uint32_t selectWildForm(std::uint32_t encounter, std::uint32_t seed,
                              std::uint32_t partnerFormId, std::uint32_t rivalLevel);
@@ -181,10 +213,23 @@ bool needsTestEncounterResolution(const State& state);
 // EncounterSeed(nonzero u32) is a private setup event, legal only once after hatch
 // before walking progress. Native firmware supplies entropy and checkpoints it before use;
 // replay tools may omit it and use the deterministic seed fallback.
+// WorldSeed(nonzero u32) initializes future roster selection once after hatch.
+// It preserves current/pending encounters, capture/pacing RNG and foregroundSequence.
+// PartyAdd/PartyRemove(memberId) modify only Home companion selection.
+// Selected extras each receive full base wild victory/capture XP; no shared care.
+// RingCapture(phaseMs0..2399) is additive: existing Capture/Flick replay stays
+// unchanged. Every legal timing grade spends one attempt and one capture draw.
 Error apply(State& state, Action action, std::uint32_t value = 0);
 // Equivalent to Action::Auto. A trace is optional and valid only on success;
 // firmware can persist just State's summary. One whole fight advances sequence once.
 Error applyAuto(State& state, autobattle::Trace* trace = nullptr);
+// Current UI flow: attack-only chunk ending at a capture opportunity or terminal
+// result. Outcome::None means the full last exchange finished, then Awaiting was
+// checkpointed. No capture RNG/attempt is spent without a subsequent Flick/RingCapture.
+Error applyAutoFight(State& state, autobattle::Trace* trace = nullptr);
+// Explicit Skip/Resume Fight: finish the remainder without any capture attempt.
+// One durable event, so no separate declined flag or prompt retry is needed.
+Error applyAutoResume(State& state, autobattle::Trace* trace = nullptr);
 const char* errorText(Error error);
 const char* messageText(Message message);
 const char* creatureName(const State& state);
@@ -196,6 +241,9 @@ bool parseAction(const char* name, Action& action);
 std::size_t writeJson(const State& state, char* output, std::size_t capacity);
 // Canonical little-endian encoding with CRC32. It never persists struct padding.
 bool encodeSnapshot(const State& state, Snapshot& snapshot);
+// V20 appends worldSeed; all older snapshots retain historical selection with zero.
+// V19 appends AutoCapture; all older snapshots migrate it to None.
+// V18 appends receivedTrades; all older snapshots migrate it to zero.
 // V17 is the production-only roster epoch, preserving the V16 byte layout.
 // V16 appends one pending encounter; V15 migration preserves every old field.
 // V14 appends walking settings/pacing; V13 migration preserves every old field and

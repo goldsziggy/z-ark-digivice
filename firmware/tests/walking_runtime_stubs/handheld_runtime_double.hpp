@@ -5,6 +5,7 @@
 // they do not prove the ESP class layout, power GPIO or worker implementation.
 #define CONFIG_DIGIVICE_DISPLAY_TOUCH 1
 #include "game.hpp"
+#include "entropy_seed.hpp"
 #include "save_store.hpp"
 #include "usage_store.hpp"
 #include "pedometer.hpp"
@@ -12,6 +13,7 @@
 #include "audio_cues.hpp"
 #include "device_ui.hpp"
 #include "nearby_protocol.hpp"
+#include "trade_protocol.hpp"
 #include "esp_err.h"
 #include <cstdint>
 #include <cstring>
@@ -37,6 +39,17 @@ struct WalkingUiDouble {
     void cancelTouch(){}
 };
 struct WalkingPracticeDouble { bool allowed=true;bool allowsCareAction(Action) const {return allowed;} };
+// Only trade ownership gates are doubled here. The real trade Session/store
+// and packet-loss recovery have independent tests; this suite owns walking and
+// friendly-battle lifecycle while no trade radio session is being opened.
+struct WalkingTradeSessionDouble {
+    bool healthy_=true,foregroundBlocked=false,backgroundAllowed=true;
+    const trade::Record* current=nullptr;
+    bool healthy()const{return healthy_;}
+    bool blocksForeground()const{return foregroundBlocked;}
+    bool permitsBackground()const{return backgroundAllowed;}
+    const trade::Record* record()const{return current;}
+};
 struct WalkingAudioDouble { unsigned cues=0;void play(device::AudioCue) {++cues;} };
 struct WalkingAssetsDouble {
     bool paused_=false,idle=true;unsigned pauses=0;
@@ -85,6 +98,9 @@ public:
     bool prepareUsageRestart();
     void pollBattlePresentation(std::uint64_t now);
     void beginNearby();void closeNearby();void pollNearby(std::uint64_t now);void nearbyIntent(deviceui::Intent);
+    bool openTradeRadio(std::uint64_t){return false;}
+    void pollTradePersistence(std::uint64_t){}
+    bool tradeNegotiating()const{return tradeNegotiating_;}
     enum class NearbyPhase:std::uint8_t {Idle,Starting,Active,Stopping,Fault};
     bool nearbyBusy()const{return nearbyPhase_!=NearbyPhase::Idle;}
     bool nearbyQuiescent()const{return !nearbyBusy()&&nearbyRadio_.quiescent();}
@@ -92,6 +108,10 @@ public:
     WalkingNetworkDouble network_;
     WalkingRadioDouble nearbyRadio_;
     nearby::Protocol nearby_;
+    WalkingTradeSessionDouble tradeSession_;
+    tradewire::Protocol tradeWire_;
+    bool tradePeerTerminal_=false,tradeTxTurn_=false,tradeNegotiating_=false;
+    const char* tradeStatus_="Trade disabled in walking lifecycle harness";
     nearby::Fighter nearbyFighter_{};
     NearbyPhase nearbyPhase_=NearbyPhase::Idle;
     std::uint64_t nearbyDeadline_=0,nearbyTurnAt_=0,nearbyShownSession_=0,nearbyAttackCueAt_=0;
@@ -111,6 +131,7 @@ public:
     battlepresentation::Sequencer battle_;
     State& state_;
     storage::SaveStore& saves_;
+    entropy::Seeds startupSeeds_{7,11,0x12345678u,13};
     bool interfacePaused_=false,interfaceDirty_=false,walkingFault_=false,touchPressed_=false;
     bool frozen=false,quiescent=true;
     unsigned pauseRequests=0;

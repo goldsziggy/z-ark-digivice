@@ -1,6 +1,8 @@
-# Capture, motion and feedback
+# Capture, motion and feedback — historical bring-up
 
-**Two-device status:** unit 2 runs **`90ee501`** after an independently verified 16 MiB backup and four verified flash-image hashes. Boot, command response, software reboot and restoration of its own 576-byte saved-egg snapshot passed. Unit 1 remains on **`569643d`**, awaiting USB reconnection after the known stall; no further flash or reset was attempted. Physical screen/touch/audio acceptance and SD artwork verification remain pending. [Per-device status](TWO_DEVICE_PREPARATION.md) · Evidence (historical local evidence omitted).
+This page retains the earlier bring-up record. Its installed versions, disabled-step statement and mute-only sound controls are historical. Current f9 adds a software pedometer and saved sound controls; the next [lanyard, recovery and sound update](LANYARD_NEARBY_AUDIO_RELEASE.md) adds bounded recovery, 0–100% volume and a corrected DAC clock.
+
+**Historical two-device status:** unit 2 runs **`90ee501`** after an independently verified 16 MiB backup and four verified flash-image hashes. Boot, command response, software reboot and restoration of its own 576-byte saved-egg snapshot passed. Unit 1 remains on **`569643d`**, awaiting USB reconnection after the known stall; no further flash or reset was attempted. Physical screen/touch/audio acceptance and SD artwork verification remain pending. [Per-device status](TWO_DEVICE_PREPARATION.md) · Evidence (historical local evidence omitted).
 
 ## Touch capture is the primary interaction
 

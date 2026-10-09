@@ -1,5 +1,8 @@
 # Production encounters and battle artwork
 
+**Latest physical checkpoint — 9 October 2026:** both units now run **`f74ee4c`** (schema 17 / rules 13), including the battle-art/production-roster fixes, Home/walking/CCW90 changes and left/right tap alternatives. At the user’s explicit request, each entire 64 KiB NVS partition was erased and verified blank before boot. Both now have fresh unhatched egg profiles, empty collection/journal/practice, default settings and no previous save restored. Each passed 261 unchanged SD-artwork hashes and an identical fresh snapshot across software reboot. All serial handles are closed; both are ready to disconnect. Current per-unit evidence (historical local evidence omitted). These are serial/driver checks; physical screen, finger and battle acceptance remain separate.
+
+
 The reported Flicker encounter and sprite flashes were reproducible from both installed `6e058e1` and the uninstalled `517f2b6` source. This follow-up retains the Home carousel, walking across screens, one waiting encounter and confirmed CCW90 display/touch correction. No device was opened or flashed while preparing it.
 
 ## Confirmed causes and corrections

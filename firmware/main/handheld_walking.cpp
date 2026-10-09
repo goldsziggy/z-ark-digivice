@@ -1,6 +1,5 @@
 #include "handheld_runtime.hpp"
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
-#include "esp_random.h"
 #include "esp_timer.h"
 #include "freertos/task.h"
 #include <algorithm>
@@ -28,16 +27,16 @@ bool HandheldRuntime::pollUsage(std::uint64_t now, bool force) {
     const bool fresh = now - sample.observedAtMs <= 500;
     const bool finalAccepted = force && interfacePaused_ && sample.status == motion::StepStatus::Paused &&
         fresh && interfaceQuiescent(); // Worker published its final accepted pre-pause count.
-    const bool eligible = state_.onboardingComplete && saves_.writable() && fresh &&
+    const bool eligible = state_.onboardingComplete && state_.worldSeed && saves_.writable() && fresh &&
         (finalAccepted || (!powerFrozen() && !interfacePaused_ && imu_.ready() &&
         (sample.status == motion::StepStatus::Priming || sample.status == motion::StepStatus::Tracking)));
-    if (!state_.onboardingComplete || state_.encounterRate == EncounterRate::Off) walkingPending_ = 0;
+    if (!state_.onboardingComplete || !state_.worldSeed || state_.encounterRate == EncounterRate::Off) walkingPending_ = 0;
     if (eligible && state_.encounterRate != EncounterRate::Off)
         walkingPending_ = std::min<std::uint32_t>(1000, walkingPending_ + std::min<std::uint32_t>(added, 1000));
     if (!usage_.checkpoint(now, force)) { walkingFault_ = true; return false; }
     // Only presentation waits for Home. Background checkpoints preserve the
     // current fight, held touch and menu; one persisted slot cannot pile up.
-    const bool quietHome = !powerFrozen() && !interfacePaused_ &&
+    const bool quietHome = !tradeSession_.blocksForeground() && !powerFrozen() && !interfacePaused_ &&
         state_.phase == Phase::Home && state_.onboardingComplete &&
         ui_.encounterPresentationEligible() && ui_.interactionIdle() && !touchPressed_ &&
         !setup_.active() && !battle_.locked() && !nearbyBusy() &&
@@ -52,17 +51,18 @@ bool HandheldRuntime::pollUsage(std::uint64_t now, bool force) {
     };
     // Flush accepted tails during orderly shutdown too. No presentation is
     // allowed while paused/frozen, but the queued encounter is durable.
-    if (walkingPending_ && state_.onboardingComplete && saves_.writable() &&
+    if (walkingPending_ && tradeSession_.permitsBackground() && state_.onboardingComplete && state_.worldSeed && saves_.writable() &&
         (eligible || force || (quietHome && state_.pendingEncounter.formId))) {
         // Device entropy is committed once and never rerolled on a retry.
         if (!state_.encounterRng) {
             State seeded = state_;
-            auto seed = esp_random(); if (!seed) seed = 1;
+            const auto seed = startupSeeds_.pacing;
             if (apply(seeded, Action::EncounterSeed, seed) != Error::None ||
                 !publishBackground(seeded, Action::EncounterSeed, seed)) {
                 walkingFault_ = true; return false;
             }
         }
+        if (!tradeSession_.permitsBackground()) return true;
         State candidate = state_;
         if (apply(candidate, Action::AccrueSteps, walkingPending_) != Error::None) {
             walkingFault_ = true; return false;
@@ -79,7 +79,7 @@ bool HandheldRuntime::pollUsage(std::uint64_t now, bool force) {
             walkingPending_ = 0; lastWalkingSaveMs_ = now;
         }
     }
-    if (!quietHome || !state_.pendingEncounter.formId || walkingPending_ || !saves_.writable()) return true;
+    if (!quietHome || !state_.worldSeed || !state_.pendingEncounter.formId || walkingPending_ || !saves_.writable()) return true;
     State candidate = state_;
     if (apply(candidate, Action::PresentEncounter) != Error::None) { walkingFault_ = true; return false; }
     if (!usage_.checkpoint(now, true) || !saves_.checkpoint(candidate)) { walkingFault_ = true; return false; }

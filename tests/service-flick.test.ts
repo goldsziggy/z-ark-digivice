@@ -13,12 +13,12 @@ const hit = { type: 'flick', value: 41140 }; // dx 0, reach 180: target centre.
 const miss = { type: 'flick', value: 0 }; // dx -160, reach 0.
 const prepare = [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 },
   { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }];
-const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 13, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-flick-http-'));
-  const options = { rootDir, dataDir, corePath, battleCorePath, port: 0 };
+  const options = { seedSource: () => 12345, rootDir, dataDir, corePath, battleCorePath, port: 0 };
   let app = await startServer(options);
   const close = () => new Promise<void>((resolve, reject) => app.server.close(error => error ? reject(error) : resolve()));
   t.after(async () => { if (app.server.listening) await close(); await rm(dataDir, { recursive: true, force: true }); });
@@ -40,7 +40,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
 
 test('flick requires an exact bounded payload and legal Tactical capture context', async t => {
   const f = await fixture(t), identity = await f.pair();
-  assert.deepEqual((await f.request('/api/health')).body.capabilities, { captureFlick: 1, deferredEncounters: 1 });
+  assert.deepEqual((await f.request('/api/health')).body.capabilities, { captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1 });
   assert.equal((await f.request('/api/device/health')).body.capabilities, undefined);
   const initial = await f.request('/api/save', identity.token);
   let serial = 0;

@@ -16,7 +16,7 @@ async function fixture(now?: () => number, legacyCount = 0) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-service-test-'));
   const historical = legacyFixture(legacyCount);
   if (legacyCount) await writeFile(join(dataDir, 'store.json'), JSON.stringify(historical.store));
-  let app = await startServer({ dataDir, rootDir, corePath, port: 0, now });
+  let app = await startServer({ seedSource: () => 12345, dataDir, rootDir, corePath, port: 0, now });
   const url = () => `http://127.0.0.1:${(app.server.address() as { port: number }).port}`;
   const request = async (path: string, options: { method?: string; body?: unknown; token?: string; headers?: Record<string, string> } = {}) => {
     const response = await fetch(`${url()}${path}`, {
@@ -53,7 +53,7 @@ async function fixture(now?: () => number, legacyCount = 0) {
       request.on('error', reject); request.end();
     }),
     stop: close,
-    restart: async () => { await close(); app = await startServer({ dataDir, rootDir, corePath, port: 0, now }); },
+    restart: async () => { await close(); app = await startServer({ seedSource: () => 12345, dataDir, rootDir, corePath, port: 0, now }); },
     dispose: async () => { if (app.server.listening) await close(); await rm(dataDir, { recursive: true, force: true }); },
   };
 }
@@ -63,8 +63,8 @@ test('HTTP service validates replay, identity, retries, concurrency, and product
   t.after(f.dispose);
   const paired = await f.legacy();
   const token = paired.token;
-  assert.equal(paired.state.schemaVersion, 17);
-  assert.equal(paired.state.rulesVersion, 13);
+  assert.equal(paired.state.schemaVersion, 22);
+  assert.equal(paired.state.rulesVersion, 15);
   assert.equal(paired.revision, 0);
   assert.deepEqual(paired.events, []);
   assert.equal(paired.seed, 12345);
@@ -82,14 +82,14 @@ test('HTTP service validates replay, identity, retries, concurrency, and product
   });
 
   await t.test('same batch and semantic body retries return original response even after later updates', async () => {
-    const first = { rulesVersion: 13, baseRevision: 0, batchId: 'first-batch-001', events: [{ type: 'feed', value: 0 }] };
+    const first = { rulesVersion: 15, baseRevision: 0, batchId: 'first-batch-001', events: [{ type: 'feed', value: 0 }] };
     const accepted = await f.request('/api/save-sync', { token, body: first });
     assert.equal(accepted.status, 200);
     assert.equal(accepted.body.revision, 1);
     assert.equal(accepted.body.state.sequence, 1);
-    const second = await f.request('/api/save-sync', { token, body: { rulesVersion: 13, baseRevision: 1, batchId: 'second-batch-001', events: [{ type: 'play', value: 0 }] } });
+    const second = await f.request('/api/save-sync', { token, body: { rulesVersion: 15, baseRevision: 1, batchId: 'second-batch-001', events: [{ type: 'play', value: 0 }] } });
     assert.equal(second.status, 200);
-    const retry = await f.request('/api/save-sync', { token, body: { rulesVersion: 13, events: [{ value: 0, type: 'feed' }], batchId: first.batchId, baseRevision: 0 } });
+    const retry = await f.request('/api/save-sync', { token, body: { rulesVersion: 15, events: [{ value: 0, type: 'feed' }], batchId: first.batchId, baseRevision: 0 } });
     assert.deepEqual(retry.body, accepted.body);
     const mismatch = await f.request('/api/save-sync', { token, body: { ...first, events: [{ type: 'rest', value: 0 }] } });
     assert.equal(mismatch.status, 409);
@@ -104,17 +104,17 @@ test('HTTP service validates replay, identity, retries, concurrency, and product
 
   await t.test('invalid actions, transitions, metadata and raw GPS cannot alter saves', async () => {
     for (const events of [[{ type: 'teleport', value: 0 }], [{ type: 'walk', value: 1001 }], [{ type: 'walk', value: -1 }], [{ type: 'walk', value: 1.5 }], [{ type: 'card', value: 7 }], [{ type: 'feed', value: 1 }], [{ type: 'feed', value: 0, latitude: 1 }], [], Array.from({ length: 101 }, () => ({ type: 'feed', value: 0 }))]) {
-      assert.equal((await f.request('/api/save-sync', { token, body: { rulesVersion: 13, baseRevision: 2, batchId: 'invalid-batch-001', events } })).status, 422);
+      assert.equal((await f.request('/api/save-sync', { token, body: { rulesVersion: 15, baseRevision: 2, batchId: 'invalid-batch-001', events } })).status, 422);
     }
-    const invalidTransition = await f.request('/api/save-sync', { token, body: { rulesVersion: 13, baseRevision: 2, batchId: 'invalid-attack-001', events: [{ type: 'attack', value: 0 }] } });
+    const invalidTransition = await f.request('/api/save-sync', { token, body: { rulesVersion: 15, baseRevision: 2, batchId: 'invalid-attack-001', events: [{ type: 'attack', value: 0 }] } });
     assert.equal(invalidTransition.status, 422);
     assert.equal(invalidTransition.body.error, 'invalid_transition');
-    assert.equal((await f.request('/api/save-sync', { token, body: { rulesVersion: 13, baseRevision: 2, batchId: 'extra-field-001', events: [{ type: 'rest', value: 0 }], gps: [1, 2] } })).status, 400);
+    assert.equal((await f.request('/api/save-sync', { token, body: { rulesVersion: 15, baseRevision: 2, batchId: 'extra-field-001', events: [{ type: 'rest', value: 0 }], gps: [1, 2] } })).status, 400);
     assert.equal((await f.request('/api/save', { token })).body.revision, 2);
   });
 
   await t.test('concurrent writes from the same revision accept one batch', async () => {
-    const results = await Promise.all(['concurrent-001', 'concurrent-002'].map((batchId) => f.request('/api/save-sync', { token, body: { rulesVersion: 13, baseRevision: 2, batchId, events: [{ type: 'rest', value: 0 }] } })));
+    const results = await Promise.all(['concurrent-001', 'concurrent-002'].map((batchId) => f.request('/api/save-sync', { token, body: { rulesVersion: 15, baseRevision: 2, batchId, events: [{ type: 'rest', value: 0 }] } })));
     assert.deepEqual(results.map((response) => response.status).sort(), [200, 409]);
     assert.equal((await f.request('/api/save', { token })).body.revision, 3);
   });
@@ -131,7 +131,7 @@ test('HTTP service validates replay, identity, retries, concurrency, and product
 
   await t.test('only allowlisted assets are served and catalog verifies pack bytes', async () => {
     const combat = await f.request('/api/combat/catalog');
-    assert.equal(combat.status, 200); assert.equal(combat.body.rulesVersion, 13);
+    assert.equal(combat.status, 200); assert.equal(combat.body.rulesVersion, 15);
     assert.equal(combat.body.profiles.length, 8);
     for (const lineage of ['mote','flicker','rill','cinder']) assert.equal((await f.request(`/api/evolution/catalog?species=${lineage}`)).body.error,'invalid_lineage');
     assert.ok(combat.body.profiles.every((profile: { species: string }) => !['mote', 'bramble', 'rill', 'flicker'].includes(profile.species)));
@@ -154,7 +154,7 @@ test('corrupt primary recovers the latest acknowledged save and durable idempote
   const f = await fixture(undefined, 1);
   t.after(f.dispose);
   const paired = await f.legacy();
-  const batch = { rulesVersion: 13, baseRevision: 0, batchId: 'recover-batch-001', events: [{ type: 'walk', value: 100 }] };
+  const batch = { rulesVersion: 15, baseRevision: 0, batchId: 'recover-batch-001', events: [{ type: 'walk', value: 100 }] };
   const accepted = await f.request('/api/save-sync', { token: paired.token, body: batch });
   assert.equal(accepted.status, 200);
   await writeFile(join(f.dataDir, 'store.json'), '{interrupted/corrupt');

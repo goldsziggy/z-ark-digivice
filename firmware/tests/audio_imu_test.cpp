@@ -20,10 +20,10 @@ void audioBoundsAndMute() {
         long energy = 0;
         bool silent = true, capped = true, bounded = true;
         while (!normal.finished() && frames < kAudioSampleRate*2) {
-            const auto n = normal.sample(15), m = muted.sample(0), l = loud.sample(50), x = excessive.sample(1000);
+            const auto n = normal.sample(15), m = muted.sample(0), l = loud.sample(100), x = excessive.sample(1000);
             energy += std::abs(n); silent = silent && m == 0;
             capped = capped && x == l;
-            bounded = bounded && std::abs(n) <= 3195 && std::abs(l) <= 10649;
+            bounded = bounded && std::abs(n) <= 3195 && std::abs(l) <= 21299;
             ++frames;
         }
         CHECK(frames > 1000 && frames <= static_cast<unsigned>(kAudioSampleRate*1.2F));

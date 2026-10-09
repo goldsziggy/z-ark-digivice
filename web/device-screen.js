@@ -56,8 +56,8 @@ export function createDeviceScreen(root, { activate, select, move, paintPortrait
       if (view.graph) { root.dataset.graphFocusId = String(view.graph.focusFormId); root.dataset.graphOffset = String(view.graph.offset); root.dataset.graphTotal = String(view.graph.total); if (view.graph.nodeId) root.dataset.graphNodeId = String(view.graph.nodeId); else delete root.dataset.graphNodeId; }
       else { delete root.dataset.graphFocusId; delete root.dataset.graphOffset; delete root.dataset.graphTotal; delete root.dataset.graphNodeId; }
       if (view.catalogFormId) root.dataset.catalogFormId = String(view.catalogFormId); else delete root.dataset.catalogFormId;
-      if (view.member) { root.dataset.memberId = String(view.member.id); root.dataset.current = String(view.member.current); }
-      else { delete root.dataset.memberId; delete root.dataset.current; }
+      if (view.member) { root.dataset.memberId = String(view.member.id); root.dataset.current = String(view.member.current); root.dataset.partySlot = String(view.member.partySlot || 0); }
+      else { delete root.dataset.memberId; delete root.dataset.current; delete root.dataset.partySlot; }
       if (view.progression) {
         root.dataset.progressionMember = String(view.progression.memberId); root.dataset.formId = String(view.progression.formId);
         root.dataset.xp = String(view.progression.xp); root.dataset.level = String(view.progression.level);
@@ -77,6 +77,8 @@ export function createDeviceScreen(root, { activate, select, move, paintPortrait
         const tags = document.createElement('div'); tags.className = 'member-tags';
         tags.append(memberTag(member.typeLabel, 'member-type'));
         if (member.current) tags.append(memberTag('PARTNER', 'partner-badge'));
+        if (member.partySlot) tags.append(memberTag(`XP COMPANION ${member.partySlot}`, 'partner-badge'));
+        else if (!member.current && member.partyCount === 3) tags.append(memberTag('XP FULL 3/3', 'partner-badge'));
         summary.append(tags, memberTag(`${member.family} · ${member.stageLabel || `Stage ${member.stage}`}`, 'member-family'), memberHealth(member));
         if (!member.artAvailable) summary.append(memberTag(member.pendingForm ? 'Artwork pending' : 'Art not saved', 'roster-art-missing'));
         hero.append(summary); content.append(hero);
@@ -124,13 +126,14 @@ export function createDeviceScreen(root, { activate, select, move, paintPortrait
         if (item.member) {
           const member = item.member;
           button.classList.add('roster-card'); button.dataset.memberId = String(member.id);
-          button.dataset.current = String(member.current); button.dataset.creatureType = member.type;
-          button.setAttribute('aria-label', `Companion #${member.id}, ${member.name}, ${member.typeLabel}, ${member.stageLabel || `stage ${member.stage}`}, ${member.hp} of ${member.maxHp} health${member.current ? ', current partner' : ''}`);
+          button.dataset.current = String(member.current); button.dataset.partySlot = String(member.partySlot || 0); button.dataset.creatureType = member.type;
+          button.setAttribute('aria-label', `Companion #${member.id}, ${member.name}, ${member.typeLabel}, ${member.stageLabel || `stage ${member.stage}`}, ${member.hp} of ${member.maxHp} health${member.current ? ', current partner' : ''}${member.partySlot ? `, XP companion ${member.partySlot}` : ''}`);
           button.append(memberPortrait(member, 64));
           const summary = document.createElement('span'); summary.className = 'roster-summary';
           const title = document.createElement('span'); title.className = 'roster-title';
           title.append(memberTag(`#${String(member.id).padStart(2, '0')}`, 'roster-id'), memberTag(member.name, 'roster-name'));
           if (member.current) title.append(memberTag('PARTNER', 'partner-badge'));
+          if (member.partySlot) title.append(memberTag(`XP ${member.partySlot}`, 'partner-badge'));
           summary.append(title, memberTag(`${member.typeLabel} · ${member.stageLabel || `Stage ${member.stage}`}${!member.artAvailable ? member.rookie ? ' · Artwork pending' : ' · Art not saved' : ''}`, 'roster-meta'), memberHealth(member));
           button.append(summary); choices.append(button); return;
         }

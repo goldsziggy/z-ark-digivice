@@ -290,9 +290,9 @@ def screen(t):
         text(d,(240,114),'CAPTURE COMPLETE',20,'#e9ffc5',True)
         text(d,(240,145),'Flicker joined your collection',13,'#c2e5df')
         gains=CAPTURE['numericDeltas']
-        text(d,(240,331),f"+{gains['captures']} FRIEND    +{gains['bond']} BOND",15,'#acffcc',True)
+        text(d,(240,331),f"+{gains['captures']} DIGIMON    +{gains['bond']} BOND",15,'#acffcc',True)
     label=('A WILD FLICKER!' if t<3 else 'SPARK · ATTACK UP' if t<5 else 'SPARK BURST!' if t<7.8
-           else 'FLICKER STRIKES' if t<10 else 'CAPTURE!' if t<13.5 else 'NEW FRIEND!')
+           else 'FLICKER STRIKES' if t<10 else 'CAPTURE!' if t<13.5 else 'NEW DIGIMON!')
     accent='#c1ffbe' if t<7.8 else '#ffbb9c' if t<10 else '#c9c5ff' if t<13.5 else '#b9ffcf'
     rounded(d,(115,378,365,419),'#0b1b2e',13,outline='#4b7487')
     text(d,(240,399),label,17,accent,True)

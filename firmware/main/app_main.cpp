@@ -1,8 +1,10 @@
 #include "board_hal.hpp"
+#include "device_entropy.hpp"
 #include "game.hpp"
 #include "handheld_runtime.hpp"
 #include "nvs_backend.hpp"
 #include "save_store.hpp"
+#include "trade_nvs.hpp"
 
 #include "sdkconfig.h"
 #if defined(CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG) && CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
@@ -10,10 +12,12 @@
 #include "driver/usb_serial_jtag_vfs.h"
 #endif
 #include "esp_err.h"
+#include "esp_heap_caps.h"
 #include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include <algorithm>
 #include <cerrno>
 #include <cinttypes>
 #include <climits>
@@ -25,6 +29,12 @@
 
 namespace {
 using namespace digivice;
+
+// Keep the return-by-value initialization temporary out of app_main's frame,
+// which remains live beneath every save/trade call for the lifetime of the task.
+__attribute__((noinline)) void initializeBootState(State& state, bool fresh, std::uint32_t seed) {
+    state = fresh ? newDevice(seed) : newGame();
+}
 
 esp_err_t initializeConsoleInput() {
 #if CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
@@ -43,10 +53,17 @@ esp_err_t initializeConsoleInput() {
 }
 
 void printState(const State& state) {
-    // Only the main-task console calls this function. Keep the bounded JSON
-    // scratch off its stack while derived stats/recovery previews recurse.
-    static char json[kJsonCapacity];
-    if (writeJson(state, json, sizeof(json))) std::puts(json);
+    // Cold diagnostics use one bounded temporary buffer. Prefer external RAM
+    // on the display board; generic serial builds use the ordinary heap.
+#if defined(CONFIG_SPIRAM) && CONFIG_SPIRAM
+    auto* json = static_cast<char*>(heap_caps_malloc(kJsonCapacity, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+#else
+    auto* json = static_cast<char*>(heap_caps_malloc(kJsonCapacity, MALLOC_CAP_8BIT));
+#endif
+    if (!json) { std::puts("State JSON unavailable: insufficient diagnostic memory; saved game unchanged."); return; }
+    if (writeJson(state, json, kJsonCapacity)) std::puts(json);
+    else std::puts("State JSON exceeded diagnostic buffer; saved game unchanged.");
+    heap_caps_free(json);
 }
 
 void help() {
@@ -54,7 +71,8 @@ void help() {
     std::puts("Full recovery (Home): rest full | rest full confirm | rest full cancel/status. Review first; one checkpoint.");
     std::puts("attack/physical: normal hit; heavy: 6 energy required; magic: magic vs resistance.");
     std::puts("Wild modes (Home): mode tactical | mode auto | mode confirm | mode cancel | mode status");
-    std::puts("After confirming Auto: walk 100, then auto resolves and saves the whole encounter. No manual combat/card/capture in Auto.");
+    std::puts("After confirming Auto: auto fights to the capture opportunity, then tap the screen or auto-resume to continue without capture.");
+    std::puts("Capture timing harness: ring-capture <phaseMs 0..2399>. Explicit simulated timing; missing or invalid phase is rejected.");
     std::puts("Digivolution: evolve status | evolve <formId> | evolve confirm | evolve cancel. Preview first; confirmation saves once.");
     std::puts("Collection: companions | journal | select <stable ID> | release <stable ID> confirm (nonactive; Home or new encounters).");
     std::puts("Power: power status; Waveshare onboard PWR hold 3 seconds, early release cancels. Quiet standby resumes with short PWR press/release.");
@@ -94,7 +112,7 @@ bool readLine(char* line, std::size_t capacity, HandheldRuntime& runtime) {
         const int ch = std::getchar();
         if (ch == EOF) {
             std::clearerr(stdin);
-            vTaskDelay(pdMS_TO_TICKS(20));
+            vTaskDelay(std::max<TickType_t>(1, pdMS_TO_TICKS(runtime.recommendedPollDelayMs())));
             continue;
         }
         if (ch == '\n' || ch == '\r') {
@@ -172,6 +190,7 @@ void command(char* line, State& state, storage::SaveStore& saves,
     }
     Action action;
     if (!parseAction(name, action)) { std::puts("Unknown command; type help."); return; }
+    if (action == Action::Auto) action = Action::AutoFight; // Historical Auto remains replay-only.
     if (action == Action::Mode) {
         std::puts("Choose mode tactical or mode auto, then mode confirm; direct numeric mode changes are disabled.");
         return;
@@ -181,9 +200,9 @@ void command(char* line, State& state, storage::SaveStore& saves,
         return;
     }
     std::uint32_t argument = 0;
-    const bool takesValue = action == Action::Walk || action == Action::Card || action == Action::Select || action == Action::Hatch;
+    const bool takesValue = action == Action::Walk || action == Action::Card || action == Action::Select || action == Action::Hatch || action == Action::RingCapture;
     if ((takesValue && !parseUnsigned(value, argument)) || (!takesValue && value)) {
-        std::puts("walk/card/select/hatch require an unsigned integer; other actions take no argument.");
+        std::puts("walk/card/select/hatch/ring-capture require an unsigned integer; other actions take no argument.");
         return;
     }
     if (!saves.writable()) {
@@ -197,8 +216,8 @@ void command(char* line, State& state, storage::SaveStore& saves,
     State next = state;
     const auto error = apply(next, action, argument);
     if (error != Error::None) { std::printf("Rejected: %s\n", errorText(error)); return; }
-    // A command (including the whole Auto result) is acknowledged only after
-    // its entire state is durable. Duplicate Auto after a result is rejected by
+    // Every command, including an Auto attack chunk, is acknowledged only after
+    // its complete state is durable. Duplicate Auto while awaiting a flick is rejected by
     // the core's phase guard; uncertain writes freeze commands until recovery. No
     // physical step interrupt will write flash per step; future HAL batches it.
     if (!saves.checkpoint(next)) {
@@ -216,41 +235,52 @@ extern "C" void app_main() {
     std::setvbuf(stdout, nullptr, _IONBF, 0);
     const auto consoleInitialization = initializeConsoleInput();
     const auto caps = digivice::board::initialize();
+    // Power hold is asserted; no ADC, RF or audio owner has started yet.
+    const auto startupSeeds = digivice::device::collectStartupEntropy();
     std::printf("\nDigivice v0.1 / %s\n", digivice::board::boardName());
     capabilities(caps);
-    digivice::storage::NvsBackend backend;
+    static digivice::storage::NvsBackend backend;
     const auto initialization = backend.initialize();
     if (initialization != ESP_OK) {
         std::printf("NVS initialization failed (%s). Recovery mode; partition was NOT erased.\n",
                     esp_err_to_name(initialization));
     }
-    digivice::storage::SaveStore saves(backend);
-    auto state = digivice::newGame(); // Explicit fixed development seed for replay.
+    static digivice::storage::SaveStore saves(backend);
+    static digivice::State state;
+    initializeBootState(state, false, 0); // Inspection fallback; never enroll or save this default.
     const auto boot = saves.restore(state);
     std::printf("Boot storage: %s\n", saves.diagnostic());
     if (boot == digivice::storage::BootStatus::Empty) {
         // Empty means BOTH slots are explicitly missing. Corruption, future
         // schema, unreadable NVS and restored older saves never restart hatch.
-        state = digivice::newDevice();
-        if (!saves.checkpoint(state)) std::printf("Initial egg checkpoint failed: %s\n", saves.diagnostic());
+        if (!digivice::devicetrade::freshCareStorageAllowed()) {
+            saves.requireRecovery("care slots missing with trade journal evidence or unreadable trade storage; no new game created");
+            std::printf("RECOVERY: %s\n", saves.diagnostic());
+        } else if (!startupSeeds.ready()) {
+            saves.requireRecovery("startup entropy/identity unavailable; empty storage retained, no fixed-seed profile created");
+            std::printf("RECOVERY: %s\n", saves.diagnostic());
+        } else {
+            initializeBootState(state, true, startupSeeds.profile);
+            if (!saves.checkpoint(state)) std::printf("Initial egg checkpoint failed: %s\n", saves.diagnostic());
+        }
     }
     if (boot == digivice::storage::BootStatus::RecoveryRequired) {
         std::puts("RECOVERY: snapshot/status are inspection only; do not erase or downgrade storage.");
         std::puts("Shown state is the newest valid fallback, or a temporary default if none exists.");
     }
-    static digivice::HandheldRuntime runtime(state, saves);
+    static digivice::HandheldRuntime runtime(state, saves, startupSeeds);
     runtime.begin();
     printState(state);
     help();
     if (consoleInitialization != ESP_OK) {
         std::printf("USB console input unavailable (%s); runtime remains active.\n",
                     esp_err_to_name(consoleInitialization));
-        for (;;) { runtime.poll(); vTaskDelay(pdMS_TO_TICKS(20)); }
+        for (;;) { runtime.poll(); vTaskDelay(std::max<TickType_t>(1, pdMS_TO_TICKS(runtime.recommendedPollDelayMs()))); }
     }
     const int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     if (flags < 0 || fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK) < 0) {
         std::puts("Nonblocking console unavailable; input disabled to keep network/game tasks responsive.");
-        for (;;) { runtime.poll(); vTaskDelay(pdMS_TO_TICKS(20)); }
+        for (;;) { runtime.poll(); vTaskDelay(std::max<TickType_t>(1, pdMS_TO_TICKS(runtime.recommendedPollDelayMs()))); }
     }
     for (;;) {
         static char line[1536]{}; // Bounded USB frames; keep off the task stack.

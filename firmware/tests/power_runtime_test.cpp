@@ -29,6 +29,10 @@ unsigned cuts=0, assertions=0, syncs=0, requests=0, practiceWrites=0, restarts=0
 unsigned networkTicks=0;
 std::uint32_t randomValue=7;
 unsigned randomCalls=0;
+bool diagnosticAllocationFailure=false;
+unsigned diagnosticAllocations=0,diagnosticFrees=0,diagnosticOutstanding=0;
+std::size_t diagnosticBytes=0;
+std::uint32_t diagnosticCaps=0;
 bool networkPaused=false, senseFailure=false, cutFailure=false, assertFailure=false, recheckPressed=false;
 std::uint64_t readAt=~std::uint64_t{0}; unsigned readsAtTime=0;
 std::vector<std::uint8_t> sd(digivice::assets::kStorageBytes,255);
@@ -43,16 +47,28 @@ void reset() {
     motionCount=cuts=assertions=syncs=requests=practiceWrites=restarts=0;
     networkTicks=0;
     randomValue=7;randomCalls=0;
+    diagnosticAllocationFailure=false;diagnosticAllocations=diagnosticFrees=diagnosticOutstanding=0;
+    diagnosticBytes=0;diagnosticCaps=0;
     sd.assign(sd.size(),255);practicePresent[0]=practicePresent[1]=false;delayHook={};
     assetPaused=assetsInitiallyPaused=refuseInspectionBarrier=false;inspectionBarrier=true;inventoryCalls=probeCalls=0;
     sdReady=true;sdMounted={};
     transferPauseFailure=false;transferBarrier=true;transferHandles=transferPauses=0;transferLineBytes=0;transferState={};
 }
 }
+digivice::entropy::Seeds testSeeds() { return {17u,0x2468aceu,0x12345678u,7u}; }
+namespace digivice::device { entropy::Seeds collectStartupEntropy() { return testSeeds(); } }
 std::uint32_t esp_random() { ++fake::randomCalls; return fake::randomValue; }
 std::int64_t esp_timer_get_time() { return static_cast<std::int64_t>(fake::now*1000); }
 void esp_restart() { ++fake::restarts; throw fake::Restart{}; }
 void vTaskDelay(TickType_t ticks) { fake::now+=ticks;if(fake::delayHook)fake::delayHook(); }
+void* heap_caps_malloc(std::size_t bytes,std::uint32_t capabilities) {
+    ++fake::diagnosticAllocations;fake::diagnosticBytes=bytes;fake::diagnosticCaps=capabilities;
+    if(fake::diagnosticAllocationFailure||bytes>digivice::kJsonCapacity)return nullptr;
+    auto* memory=std::malloc(bytes);if(memory)++fake::diagnosticOutstanding;return memory;
+}
+void heap_caps_free(void* allocation) {
+    if(allocation){++fake::diagnosticFrees;--fake::diagnosticOutstanding;std::free(allocation);}
+}
 
 namespace digivice::board {
 Capabilities initialize(){return {};}
@@ -75,6 +91,13 @@ NvsBackend::~NvsBackend()=default;
 esp_err_t NvsBackend::initialize(){handle_=1;ready_=true;return ESP_OK;}
 ReadStatus NvsBackend::readSlot(unsigned,Slot&){return ReadStatus::Missing;}
 bool NvsBackend::writeSlot(unsigned,const Snapshot&){return true;}
+}
+namespace digivice::devicetrade {
+bool freshCareStorageAllowed(){return true;}
+NvsBackend::~NvsBackend()=default;
+esp_err_t NvsBackend::initialize(){handle_=1;ready_=true;return ESP_OK;}
+Read NvsBackend::read(unsigned,Slot&){return Read::Missing;}
+bool NvsBackend::write(unsigned,const Bytes&){return false;}
 }
 namespace digivice::devicepractice {
 NvsBackend::~NvsBackend()=default;
@@ -159,10 +182,10 @@ namespace {
 unsigned checks=0;
 void require(bool value,const char* reason){++checks;if(!value)throw std::runtime_error(reason);}
 struct Fixture {
-    digivice::State state=[] {auto s=digivice::newDevice();(void)digivice::apply(s,digivice::Action::Hatch,1);return s;}();
+    digivice::State state=[] {auto s=digivice::newDevice();(void)digivice::apply(s,digivice::Action::Hatch,1);(void)digivice::apply(s,digivice::Action::WorldSeed,testSeeds().world);return s;}();
     ParkSaveBackend backend;
     digivice::storage::SaveStore saves{backend};
-    digivice::HandheldRuntime runtime{state,saves};
+    digivice::HandheldRuntime runtime{state,saves,testSeeds()};
     Fixture(){require(saves.restore(state)==digivice::storage::BootStatus::Empty,"empty fixture");require(saves.checkpoint(state),"initial save");runtime.begin();}
     void tick(unsigned milliseconds=20){fake::now+=milliseconds;runtime.poll();}
     void wait(unsigned milliseconds){for(unsigned elapsed=0;elapsed<milliseconds;elapsed+=20)tick();}
@@ -185,15 +208,81 @@ struct ConsolePipe {
     ~ConsolePipe(){::dup2(original,STDIN_FILENO);::close(original);::close(descriptors[0]);::close(descriptors[1]);std::clearerr(stdin);fake::delayHook={};}
     void write(const std::string& text){require(::write(descriptors[1],text.data(),text.size())==static_cast<ssize_t>(text.size()),"console bytes queued");}
 };
+struct ConsoleOutput {
+    std::FILE* file=std::tmpfile();
+    int original=-1;
+    ConsoleOutput(){
+        require(file!=nullptr,"diagnostic output file");std::fflush(stdout);
+        original=::dup(STDOUT_FILENO);
+        require(original>=0&&::dup2(::fileno(file),STDOUT_FILENO)>=0,"capture diagnostic output");
+    }
+    ~ConsoleOutput(){std::fflush(stdout);if(original>=0){::dup2(original,STDOUT_FILENO);::close(original);}if(file)std::fclose(file);}
+    std::string read(){
+        std::fflush(stdout);std::rewind(file);std::string result;char chunk[4096];
+        for(std::size_t n;(n=std::fread(chunk,1,sizeof(chunk),file))!=0;)result.append(chunk,n);
+        return result;
+    }
+};
 }
 namespace {
+void boundedDiagnosticMemory() {
+    using namespace digivice;
+    fake::reset();Fixture f;
+    f.state.sequence=f.state.foregroundSequence=100;f.state.collectionCount=kCollectionCapacity;
+    f.state.captures=f.state.encounters=kCollectionCapacity-1;f.state.steps=100*(kCollectionCapacity-1);
+    f.state.nextMemberId=kCollectionCapacity+1;
+    for(unsigned i=1;i<kCollectionCapacity;++i){f.state.collection[i]=f.state.collection[0];f.state.collection[i].id=i+1;f.state.collection[i].capturedAtSequence=i+1;}
+    require(isValid(f.state)&&f.saves.checkpoint(f.state),"full60 diagnostic fixture is durably valid");
+    const auto before=f.state;const auto writes=f.backend.writes;
+    const auto readStatus=[&]{ConsoleOutput capture;printState(f.state);return capture.read();};
+    const auto json=readStatus();
+    require(json.find("\"collectionCapacity\":60")!=std::string::npos&&json.find("\"id\":60")!=std::string::npos,"full roster status includes final member and capacity");
+    require(json.size()<kJsonCapacity&&fake::diagnosticBytes==kJsonCapacity,"diagnostic allocation is bounded by the native JSON contract");
+    require(fake::diagnosticCaps==(MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT),"display target diagnostics request PSRAM");
+    require(fake::diagnosticAllocations==1&&fake::diagnosticFrees==1&&!fake::diagnosticOutstanding,"successful diagnostic releases its temporary buffer");
+    fake::diagnosticAllocationFailure=true;const auto failure=readStatus();
+    require(failure.find("insufficient diagnostic memory")!=std::string::npos,"OOM is visible to console user");
+    require(fake::diagnosticAllocations==2&&fake::diagnosticFrees==1&&!fake::diagnosticOutstanding,"OOM makes one bounded request without internal fallback or leaked buffer");
+    require(sameSavedState(f.state,before)&&f.backend.writes==writes,"success and OOM leave all60 members and durable saves unchanged");
+    fake::diagnosticAllocationFailure=false;require(readStatus()==json,"diagnostic retry returns the exact same full state");
+    require(fake::diagnosticAllocations==3&&fake::diagnosticFrees==2&&!fake::diagnosticOutstanding,"retry releases memory");
+}
+void consoleAutoWaitsForFlick() {
+    using namespace digivice;
+    fake::reset();Fixture f;f.wait(100);
+    State before,expected;bool found=false;
+    for(unsigned seed=1;seed<=64&&!found;++seed) {
+        before=newDevice(seed);require(apply(before,Action::Hatch,2)==Error::None,"auto fixture hatch");
+        require(apply(before,Action::WorldSeed,testSeeds().world)==Error::None,"auto fixture independent world");
+        require(apply(before,Action::Explore,1000)==Error::None,"auto fixture encounter");before.battleMode=BattleMode::Auto;
+        expected=before;require(applyAutoFight(expected)==Error::None,"native AutoFight fixture");
+        found=expected.autoCapture==AutoCapture::Awaiting;
+    }
+    require(found,"fixture reaches capture opportunity");f.state=before;require(f.saves.checkpoint(f.state),"auto initial state saved");
+    const auto writes=f.backend.writes;f.dispatch("auto");
+    require(sameSavedState(f.state,expected)&&f.backend.writes==writes+1,"serial auto saves partial attack chunk, not historical autothrow");
+    require(f.state.captureAttempts==0&&f.state.lastCapture.result==CaptureResult::None,"no throw while awaiting user");
+    f.dispatch("auto");require(f.backend.writes==writes+1,"duplicate auto cannot continue or throw");
+    const auto paused=expected;
+    for(const auto* invalid : {"ring-capture", "ring-capture -1", "ring-capture 2400", "ring-capture 12x"}) {
+        f.dispatch(invalid);
+        require(sameSavedState(f.state,paused)&&f.backend.writes==writes+1,"invalid or missing serial ring phase cannot become an implicit throw");
+    }
+    require(applyAutoResume(expected)==Error::None,"expected skip resumes attacks");f.dispatch("auto-resume");
+    require(sameSavedState(f.state,expected)&&f.backend.writes==writes+2&&f.state.phase==Phase::Home,"explicit resume completes without capture prompt");
+    Fixture ring;ring.wait(100);ring.state=paused;
+    require(ring.saves.checkpoint(ring.state),"save legal paused state in a fresh fixture without rolling back a checkpoint");
+    expected=paused;require(apply(expected,Action::RingCapture,2300)==Error::None,"expected red timing throw");
+    const auto beforeThrow=ring.backend.writes;ring.dispatch("ring-capture 2300");
+    require(sameSavedState(ring.state,expected)&&ring.backend.writes==beforeThrow+1,"explicit serial phase produces exactly the native saved throw");
+}
 void startupOffersAreDurable() {
     using namespace digivice;
     fake::reset();
     State state=newDevice();ParkSaveBackend backend;storage::SaveStore saves{backend};
     require(saves.restore(state)==storage::BootStatus::Empty,"fresh egg storage");
     require(saves.checkpoint(state),"original egg checkpoint");
-    HandheldRuntime runtime{state,saves};runtime.begin();
+    HandheldRuntime runtime{state,saves,testSeeds()};runtime.begin();
     require(state.phase==Phase::Egg&&!state.onboardingComplete&&state.collectionCount==0,
             "offer initialization never hatches or grants a partner");
     require(state.starterOfferSeed==7&&state.sequence==1&&backend.writes==2,
@@ -205,7 +294,7 @@ void startupOffersAreDurable() {
     require(restored.restore(after)==storage::BootStatus::Loaded&&sameSavedState(offered,after),
             "restart restores exact offer and seed");
     fake::randomValue=99;const auto calls=fake::randomCalls,writes=backend.writes;
-    HandheldRuntime rebooted{after,restored};rebooted.begin();
+    HandheldRuntime rebooted{after,restored,testSeeds()};rebooted.begin();
     require(sameSavedState(offered,after)&&backend.writes==writes&&fake::randomCalls==calls+1,
             "restart only draws the motion session, never rerolls saved offers");
     char open[]{"starter confirm"},next[]{"starter next"},back[]{"starter back"};
@@ -217,13 +306,13 @@ void startupOffersAreDurable() {
         fake::reset();State egg=newDevice();ParkSaveBackend failing;storage::SaveStore store{failing};
         require(store.restore(egg)==storage::BootStatus::Empty&&store.checkpoint(egg),"fault fixture original egg");
         failing.failBefore=!landed;failing.failAfter=landed;
-        HandheldRuntime failed{egg,store};failed.begin();
+        HandheldRuntime failed{egg,store,testSeeds()};failed.begin();
         require(egg.starterOfferSeed==0&&egg.phase==Phase::Egg&&!store.writable()&&!failed.allowsCareAction(Action::Hatch),
                 "uncertain offer write stays unpublished and blocks hatch");
         failing.failBefore=failing.failAfter=false;storage::SaveStore recovery{failing};State recovered;
         require(recovery.restore(recovered)==storage::BootStatus::Loaded,"own save survives failed offer checkpoint");
         require((recovered.starterOfferSeed!=0)==landed,"restore honors whether failed write reached storage");
-        HandheldRuntime again{recovered,recovery};again.begin();
+        HandheldRuntime again{recovered,recovery,testSeeds()};again.begin();
         require(recovered.starterOfferSeed==7&&recovered.phase==Phase::Egg&&recovered.collectionCount==0,
                 "recovery establishes exactly one fixed offer without hatching");
     }
@@ -263,16 +352,17 @@ void startupTestEncounterResolution() {
         require(saves.restore(state)==storage::BootStatus::Empty&&saves.checkpoint(state),"original own checkpoint");
         const auto before=state;State expected=state;
         if(scenario!=3)require(apply(expected,Action::ResolveTestEncounter,0)==Error::None,"expected explicit resolution event");
+        require(apply(expected,Action::WorldSeed,testSeeds().world)==Error::None,"expected independent world event after resolution");
         const auto writes=backend.writes;
-        HandheldRuntime runtime{state,saves};runtime.begin();
+        HandheldRuntime runtime{state,saves,testSeeds()};runtime.begin();
         require(sameSavedState(state,expected)&&!needsTestEncounterResolution(state),"publish only exact resolution or unchanged real encounter");
-        require(backend.writes==writes+(scenario!=3),"one verified checkpoint only when needed");
+        require(backend.writes==writes+(scenario!=3)+1,"each resolution/world event verified once");
         require(state.rngState==before.rngState&&state.encounterRng==before.encounterRng&&state.explorationSteps==before.explorationSteps&&state.steps==before.steps,"boot resolution draws no game RNG or walking progress");
         require(!std::memcmp(state.collection,before.collection,sizeof(state.collection)),"all collection and care bytes preserved");
         storage::SaveStore restored{backend};State rebooted;
         require(restored.restore(rebooted)==storage::BootStatus::Loaded&&sameSavedState(rebooted,state),"verified result survives restart");
         const auto committed=backend.writes;
-        HandheldRuntime again{rebooted,restored};again.begin();
+        HandheldRuntime again{rebooted,restored,testSeeds()};again.begin();
         require(backend.writes==committed&&sameSavedState(rebooted,state),"restart never duplicates the resolution event");
     }
     // A reported failed write may have landed. RAM remains exact; only the next
@@ -282,7 +372,7 @@ void startupTestEncounterResolution() {
         fake::reset();State state=installedTestEncounter();ParkSaveBackend backend;storage::SaveStore saves{backend};
         require(saves.restore(state)==storage::BootStatus::Empty&&saves.checkpoint(state),"fault original checkpoint");
         const auto before=state;backend.failBefore=failure==0;backend.failAfter=failure==1;backend.failReadback=failure==2;
-        HandheldRuntime runtime{state,saves};runtime.begin();
+        HandheldRuntime runtime{state,saves,testSeeds()};runtime.begin();
         require(sameSavedState(before,state)&&!saves.writable()&&!runtime.allowsCareAction(Action::Attack),"uncertain cleanup stays unpublished and blocks gameplay");
         const auto writes=backend.writes;const auto requests=fake::requests;
         for(unsigned i=0;i<4;++i){fake::now+=20;runtime.poll();}
@@ -296,8 +386,8 @@ void startupTestEncounterResolution() {
         backend.failBefore=backend.failAfter=backend.failReadback=false;storage::SaveStore restored{backend};State after;
         require(restored.restore(after)==storage::BootStatus::Loaded,"own slots restore after uncertainty");
         require(needsTestEncounterResolution(after)!=landed,"restore honors whether uncertain event reached storage");
-        HandheldRuntime again{after,restored};again.begin();
-        require(!needsTestEncounterResolution(after)&&backend.writes==writes+(!landed),"reboot resolves at most one missing event");
+        HandheldRuntime again{after,restored,testSeeds()};again.begin();
+        require(!needsTestEncounterResolution(after)&&backend.writes==writes+(!landed)+1,"reboot resolves missing event and establishes independent world once");
     }
     // A logical event-limit failure still leaves healthy storage and the
     // physical PWR path usable. The recovery latch itself must not block shutdown.
@@ -306,11 +396,52 @@ void startupTestEncounterResolution() {
     ParkSaveBackend backend;storage::SaveStore saves{backend};
     require(isValid(exhausted)&&saves.restore(exhausted)==storage::BootStatus::Empty&&saves.checkpoint(exhausted),"valid exhausted recovery fixture");
     const auto before=exhausted;const auto writes=backend.writes;
-    HandheldRuntime runtime{exhausted,saves};runtime.begin();
+    HandheldRuntime runtime{exhausted,saves,testSeeds()};runtime.begin();
     require(!runtime.allowsCareAction(Action::Attack)&&saves.writable()&&backend.writes==writes,"logical resolution failure preserves healthy storage without speculative write");
     auto tick=[&](unsigned count){for(unsigned i=0;i<count;++i){fake::now+=20;runtime.poll();}};
     tick(5);fake::pressed=true;tick(160);fake::pressed=false;tick(5);
     require(fake::cuts==1&&sameSavedState(before,exhausted),"recovery diagnostic retains normal physical power shutdown without game mutation");
+}
+void independentWorldStartup() {
+    using namespace digivice;
+    for(unsigned stage=0;stage<4;++stage) {
+        fake::reset();auto state=newDevice();require(apply(state,Action::Hatch,1)==Error::None,"world fixture hatch");
+        if(stage) {
+            require(apply(state,Action::EncounterSeed,91)==Error::None,"existing gap seed");
+            require(apply(state,Action::AccrueSteps,1000)==Error::None,"existing queued foe");
+            if(stage>=2)require(apply(state,Action::PresentEncounter)==Error::None,"existing active foe");
+            if(stage==3)require(apply(state,Action::AccrueSteps,1000)==Error::None,"second queued foe during match");
+        }
+        ParkSaveBackend backend;storage::SaveStore saves{backend};require(saves.restore(state)==storage::BootStatus::Empty&&saves.checkpoint(state),"own pre-upgrade save");
+        auto expected=state;require(apply(expected,Action::WorldSeed,testSeeds().world)==Error::None,"expected only world initialization");
+        const auto writes=backend.writes;HandheldRuntime runtime{state,saves,testSeeds()};runtime.begin();
+        require(sameSavedState(state,expected)&&backend.writes==writes+1,"startup changes only explicit world event");
+        for(unsigned boot=0;boot<3;++boot) {
+            storage::SaveStore reader{backend};State restored;require(reader.restore(restored)==storage::BootStatus::Loaded,"world saved across reboot");
+            HandheldRuntime restarted{restored,reader,{91u,92u+boot,93u,94u}};restarted.begin();
+            require(sameSavedState(restored,expected)&&backend.writes==writes+1,"new boot entropy never reseeds persistent world");
+        }
+    }
+    for(unsigned failure=0;failure<4;++failure) {
+        fake::reset();auto state=newDevice();require(apply(state,Action::Hatch,1)==Error::None,"failure fixture hatch");
+        ParkSaveBackend backend;storage::SaveStore saves{backend};require(saves.restore(state)==storage::BootStatus::Empty&&saves.checkpoint(state),"failure original save");
+        const auto before=state;
+        backend.failBefore=failure==0;backend.failAfter=failure==1;backend.failReadback=failure==2;
+        HandheldRuntime runtime{state,saves,failure==3?entropy::Seeds{}:testSeeds()};runtime.begin();
+        require(sameSavedState(state,before)&&!runtime.allowsCareAction(Action::Walk),"uncertain or absent entropy blocks gameplay without RAM publication");
+        const auto writes=backend.writes;
+        for(unsigned tick=0;tick<5;++tick){fake::now+=20;runtime.poll();}
+        for(const char* input:{"walk 100","auto","feed","assets warm"}){char line[80]{};std::strcpy(line,input);require(runtime.command(line),"runtime consumes mutation while entropy recovery active");}
+        require(sameSavedState(state,before)&&backend.writes==writes,"no same-boot seed retry or progression after failure");
+    }
+    // A just-hatched native identity cannot bypass initialization through the
+    // console dispatcher before the next owner poll.
+    fake::reset();auto state=newDevice();ParkSaveBackend backend;storage::SaveStore saves{backend};
+    require(saves.restore(state)==storage::BootStatus::Empty&&saves.checkpoint(state),"egg saved");HandheldRuntime runtime{state,saves,testSeeds()};runtime.begin();
+    require(apply(state,Action::Hatch,1)==Error::None&&saves.checkpoint(state),"hatch boundary saved");
+    const auto before=state;char walk[]{"walk 100"};command(walk,state,saves,runtime.capabilities({}),runtime);
+    require(sameSavedState(state,before)&&!runtime.allowsCareAction(Action::Walk),"immediate console walk cannot select shared default sequence");
+    runtime.poll();require(state.worldSeed==testSeeds().world&&runtime.allowsCareAction(Action::Walk),"owner poll establishes world before accepting walks");
 }
 void heldBootAndCancel(){
     fake::reset();fake::pressed=true;Fixture f;f.wait(5000);
@@ -598,8 +729,11 @@ void usbTransferHandshakeClearsPartialGameplay(){
 }
 }
 int main(){try{
+    boundedDiagnosticMemory();
+    consoleAutoWaitsForFlick();
     startupOffersAreDurable();
     startupTestEncounterResolution();
+    independentWorldStartup();
     heldBootAndCancel();shutdownAndResume();blockedWorkerAndFailure();barriersRecheckedAtRelease();saveAndSyncFailures();practiceFailureAndPausePreserved();pendingStepsAndResumeAnchor();hardwareFailuresAndReleaseRace();partialConsoleInput();readOnlySdDiagnostics();
     usbTransferLease();usbTransferTimeoutAndPauseRestoration();usbTransferDelayedAcquisition();usbTransferAbortWithoutSd();usbTransferPowerBarriers();usbTransferConsoleFrames();usbTransferStaleConsoleInput();usbTransferHandshakeClearsPartialGameplay();
     std::printf("PASS %u power/USB lease integration checks (actual runtime/core, SDK/storage/radio/transfer I/O doubles; no board claim).\n",checks);

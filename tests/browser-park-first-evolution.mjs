@@ -1,4 +1,4 @@
-// One fresh native journey. All commands originate from the physical browser
+// One fresh native journey. All gameplay commands originate from the browser
 // buttons; the harness uses authenticated GET /api/save only for assertions.
 // Navigation follows browser-gameplay.mjs; hold uses the real pointer lifecycle.
 import assert from 'node:assert/strict';
@@ -9,10 +9,11 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { startServer } from '../service/server.ts';
+import { gameReady, autoCheckpoint, flickBall, exploreEncounter } from './manual-auto-browser-tools.mjs';
 import { holdDeviceBack } from './browser-tools.mjs';
 
-const corePath = resolve('build/park/digivice-core');
-const battleCorePath = resolve('build/park/digivice-battle');
+const corePath = resolve(process.env.DIGIVICE_TEST_CORE_PATH || 'build/digivice-core');
+const battleCorePath = resolve(process.env.DIGIVICE_TEST_BATTLE_PATH || 'build/digivice-battle');
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const hash = value => createHash('sha256').update(value).digest('hex');
 const binaries = [corePath, battleCorePath].map(path => ({ path, sha256: hash(readFileSync(path)) }));
@@ -22,8 +23,9 @@ const started = Date.now();
 const app = await startServer({ dataDir, port: 0, corePath, battleCorePath });
 const base = `http://127.0.0.1:${app.server.address().port}`;
 const browser = await chromium.launch({ headless: true, executablePath: process.env.PLAYWRIGHT_CHROMIUM });
-const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+const page = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: 'reduce' });
 page.setDefaultTimeout(10000);
+const cdp=await page.context().newCDPSession(page);
 const screen = page.locator('#device-ui');
 const left = page.locator('#device-back-button');
 const right = page.locator('#device-confirm-button');
@@ -70,7 +72,7 @@ async function command(id, endpoint = '/api/save-sync', status = 200) {
   const received = await response;
   assert.equal(received.status(), status, `${id}: ${await received.text()}`);
   const result = await received.json();
-  await ready();
+  await gameReady(page);
   return result;
 }
 async function read() {
@@ -84,7 +86,7 @@ function summary(saved) {
   return { revision: saved.revision, sequence: s.sequence, phase: s.phase, rulesVersion: s.rulesVersion,
     activeCreatureId: s.activeCreatureId, name: s.creature, formId: s.formId, level: s.level,
     xp: member?.xp, bond: s.bond, hp: s.hp, maxHp: s.combat?.maxHp, energy: s.energy,
-    steps: s.steps, encounters: s.encounters, captures: s.captures, battleMode: s.battleMode,
+    steps: s.steps+s.walking.eligibleSteps, legacySteps:s.steps, eligibleSteps:s.walking.eligibleSteps, encounters: s.encounters, captures: s.captures, battleMode: s.battleMode,
     collection: s.collection.map(m => ({ id: m.id, name: m.name, formId: m.formId, xp: m.xp, level: m.level, bond: m.bond })),
     evolution: s.evolution.options.map(o => ({ formId: o.formId, name: o.name, requiredLevel: o.requiredLevel, requiredBond: o.requiredBond, eligible: o.eligible })) };
 }
@@ -125,7 +127,7 @@ try {
   await command('start-pairing', '/api/pairing/start', 201);
   identity = await command('claim-device', '/api/pairing/claim', 201); await onScreen('starter-select');
   const egg = await milestone('Fresh paired egg');
-  assert.equal(egg.revision, 0); assert.equal(egg.state.phase, 'egg');
+  assert.equal(egg.revision, 1); assert.ok(egg.state.onboarding.offerSeed > 0); assert.equal(egg.state.phase, 'egg');
   assert.equal(posts.filter(p => p.path === '/api/save-sync').length, 0);
   await choose('starter-2'); await onScreen('starter-review');
   await command('hatch-starter'); await onScreen('starter-hatched'); await choose('meet-starter'); await onScreen('home');
@@ -146,9 +148,10 @@ try {
 
   for (let index = 1; index <= 20; index++) {
     const before = await recoverFully(`before encounter ${index}`);
-    await menu('explore'); await command('walk'); await onScreen('wild-auto-confirm');
+    await menu('explore'); const walked = await exploreEncounter(command); await onScreen('wild-auto-confirm');
     const waiting = await read();
-    assert.equal(waiting.state.steps, before.state.steps + 100);
+    assert.equal(waiting.state.walking.eligibleSteps, before.state.walking.eligibleSteps + walked.inputs * 100);
+    assert.equal(waiting.state.steps, before.state.steps);
     assert.equal(waiting.state.encounters, before.state.encounters + 1);
     assert.equal(waiting.state.phase, 'encounter');
     const postCount = posts.length;
@@ -157,21 +160,36 @@ try {
     assert.equal(posts.length, postCount, 'Back from Auto confirmation does not commit');
     assert.deepEqual(await read(), waiting, 'Waiting Auto encounter remains unchanged until explicit start');
     await choose('wild-auto-confirm'); await onScreen('wild-auto-confirm');
-    const result = await command('wild-auto-start'); await onScreen('wild-auto-result');
+    let result = await command('wild-auto-start'); await autoCheckpoint(page);
+    assert.deepEqual(posts.at(-1).events, [{type:'auto-fight',value:0}]);
+    const partial = result.autoTrace, throws=[];
+    if(result.state.autoCapture===1){
+      const pause=await read(),pausePosts=posts.length;await page.waitForTimeout(250);assert.deepEqual(await read(),pause);assert.equal(posts.length,pausePosts);
+      for(let attempt=0;attempt<3&&result.state.autoCapture===1;attempt++){
+        await onScreen('capture-aim');const captureBefore=await read(),capturePosts=posts.length;
+        const response=page.waitForResponse(r=>r.url().endsWith('/api/save-sync')&&r.request().method()==='POST'&&r.status()===200);
+        await flickBall(page,cdp);result=await(await response).json();await gameReady(page);
+        const events=posts.at(-1).events;assert.equal(events.length,1);assert.equal(events[0].type,'flick');
+        const trajectory=JSON.parse(execFileSync(corePath,['--flick-trajectory',String(events[0].value)],{encoding:'utf8'}));assert.equal(trajectory.hit,true);
+        assert.equal(posts.length,capturePosts+1);assert.equal(result.state.lastCapture.attempt,captureBefore.state.captureAttempts+1);
+        throws.push({value:events[0].value,result:result.state.lastCapture.result,attempt:result.state.lastCapture.attempt,chance:result.state.lastCapture.chance,nativeTrajectory:trajectory});
+      }
+      assert.equal(result.state.phase,'home');await onScreen('home');
+    } else await onScreen('wild-auto-result');
     const after = await read();
     assert.equal(after.state.phase, 'home');
     assert.equal(after.state.activeCreatureId, hatched.state.activeCreatureId);
     assert.equal(after.state.formId, hatched.state.formId);
-    assert.equal(posts.length, postCount + 1, 'Only explicit Auto start submits the battle');
-    assert.deepEqual(posts.at(-1).events, [{ type: 'auto', value: 0 }]);
-    const trace = result.autoTrace;
-    const entry = { encounter: index, review, before: summary(before), waiting: summary(waiting), after: summary(after),
-      result: await snapshot(), autoTrace: trace ? { outcome: trace.outcome, steps: trace.steps.length,
-        captureAttempts: trace.steps.filter(s => s.action === 'capture').length } : null,
-      explicitStartOnly: true, addedMembers: after.state.collection.filter(m => !before.state.collection.some(p => p.id === m.id)).map(m => ({ id: m.id, name: m.name, formId: m.formId })) };
+    assert.equal(posts.length, postCount + 1 + throws.length, 'Only explicit Auto start and physical flicks submit battle actions');
+    assert.equal(posts.at(-1).events[0].type, throws.length ? 'flick' : 'auto-fight');
+    const trace = partial;
+    const entry = { encounter: index, walkInputs: walked.inputs, review, before: summary(before), waiting: summary(waiting), after: summary(after),
+      result: await snapshot(), autoTrace: trace ? { outcome: throws.length ? result.state.lastCapture.result === 'captured' ? 'captured' : 'capture-exhausted' : trace.outcome, steps: trace.steps.length,
+        captureAttempts: 0 } : null,
+      manualThrows:throws, explicitStartAndPhysicalFlicksOnly: true, addedMembers: after.state.collection.filter(m => !before.state.collection.some(p => p.id === m.id)).map(m => ({ id: m.id, name: m.name, formId: m.formId })) };
     encounters.push(entry);
     line(`Encounter ${index}: ${JSON.stringify({ outcome: entry.autoTrace?.outcome, ...summary(after) })}`);
-    await choose('wild-auto-done'); await onScreen('home');
+    if(await screen.getAttribute('data-screen')==='wild-auto-result') await choose('wild-auto-done'); await onScreen('home');
     if (index === 1) await milestone('First explicit Auto battle completed', after);
     if (after.state.evolution.options.some(o => o.eligible)) break;
     // Play raises the real companion's bond through the care menu when level
@@ -218,7 +236,7 @@ try {
   }
   assert.deepEqual(errors, []);
   assert.ok(encounters.length <= 20);
-  assert.ok(posts.every(p => ['/api/pairing/start', '/api/pairing/claim', '/api/save-sync'].includes(p.path)));
+  assert.ok(posts.every(p => ['/api/pairing/start', '/api/pairing/claim', '/api/starter-offers', '/api/save-sync'].includes(p.path)));
 } catch (error) {
   outcome = 'FAIL';
   failure = `${error.stack || error}`;
@@ -228,17 +246,17 @@ try {
   const eventCounts = gamePosts.flatMap(p => p.events).reduce((counts, event) => ({ ...counts, [event.type]: (counts[event.type] || 0) + 1 }), {});
   const report = { result: outcome, failure, sourceCommit, binaries, isolatedPort: app.server.address()?.port,
     elapsedSeconds: Math.round((Date.now() - started) / 1000), encounterCap: 20,
-    method: { freshIdentity: true, twoPhysicalButtonsOnly: true, directGamePosts: 0, authenticatedSaveGets: reads,
+    method: { freshIdentity: true, twoButtonNavigationPlusPhysicalCaptureFlick: true, directGamePosts: 0, authenticatedSaveGets: reads,
       stateSeeding: false, browserStorageMutation: false, nativePrediction: false, reducedMotion: true,
-      note: 'Choose/command navigation follows browser-gameplay.mjs; Back imports browser-tools.holdDeviceBack.' },
-    buttons, counts: { pairingPosts: posts.length - gamePosts.length, gameCommandBatches: gamePosts.length,
+      note: 'Two-button navigation follows browser-gameplay.mjs; capture always uses a trusted touchscreen flick, with native trajectory validation. No automatic throws.' },
+    buttons, counts: { pairingPosts: posts.filter(p=>p.path.startsWith('/api/pairing/')).length, starterOfferPosts:posts.filter(p=>p.path==='/api/starter-offers').length, gameCommandBatches: gamePosts.length,
       nativeEvents: gamePosts.reduce((n, p) => n + p.events.length, 0), eventCounts, encounters: encounters.length,
-      autoCaptureAttempts: encounters.reduce((n, e) => n + (e.autoTrace?.captureAttempts || 0), 0),
-      captures: lastSave?.state.captures, steps: lastSave?.state.steps, recoverFullyConfirmations: recovery.length },
+      autoCaptureAttempts: encounters.reduce((n, e) => n + (e.autoTrace?.captureAttempts || 0), 0), manualFlicks:encounters.reduce((n,e)=>n+e.manualThrows.length,0),
+      captures: lastSave?.state.captures, steps: lastSave ? lastSave.state.steps+lastSave.state.walking.eligibleSteps : null, recoverFullyConfirmations: recovery.length },
     milestones, encounters, recovery, evolution, checks, posts, finalState: lastSave ? summary(lastSave) : null,
     finalSaveSha256: lastSave ? hash(JSON.stringify(lastSave)) : null, pageErrors: errors };
   mkdirSync('docs/evidence', { recursive: true });
-  const output = 'docs/evidence/park-readiness-first-evolution';
+  const output = process.env.FIRST_EVOLUTION_REPORT || 'docs/evidence/park-readiness-first-evolution';
   writeFileSync(`${output}.json`, `${JSON.stringify(report, null, 2)}\n`);
   line(`RESULT ${outcome}: ${JSON.stringify({ counts: report.counts, buttons, failure, pageErrors: errors })}`);
   writeFileSync(`${output}.txt`, `${log.join('\n')}\n`);

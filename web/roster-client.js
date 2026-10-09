@@ -19,7 +19,7 @@ function base(entry) {
     && validEncounterRarity(entry.encounterRarity) && entry.encounterRarity !== null
     && integer(entry.previewLevel, 1, 20) && validProgressCombat(entry.combat) && entry.combat.type === entry.type && art(entry.art, entry.formId);
 }
-function header(value) { return object(value) && value.formatVersion === 1 && value.catalogVersion === 6 && value.rulesVersion === 13; }
+function header(value) { return object(value) && value.formatVersion === 1 && value.catalogVersion === 6 && value.rulesVersion === 15; }
 export function validateRosterPage(value) {
   if (!header(value) || !integer(value.total, 0, 512) || !integer(value.offset, 0, 512) || !integer(value.limit, 1, 16)
     || !Array.isArray(value.entries) || value.entries.length > value.limit || !value.entries.every(base)

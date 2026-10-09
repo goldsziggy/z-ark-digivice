@@ -18,7 +18,7 @@ export function validLastCapture(value, sequence) {
     || !integer(value.sequence, 0, sequence) || !integer(value.targetLevel, 0, 20) || !integer(value.targetFormId, 0, 512) || !integer(value.chance, 0, 100)
     || !integer(value.attempt, 0, 3) || !['none', 'miss', 'escaped', 'captured'].includes(value.result)) return false;
   if (value.result === 'none') return value.sequence === 0 && value.targetFormId === 0 && value.targetLevel === 0 && value.chance === 0 && value.attempt === 0;
-  return value.sequence > 0 && value.targetFormId > 0 && value.targetLevel > 0 && value.attempt > 0 && (value.result === 'miss' ? value.chance === 0 : integer(value.chance, 10, 90));
+  return value.sequence > 0 && value.targetFormId > 0 && value.targetLevel > 0 && value.attempt > 0 && (value.result === 'miss' ? value.chance === 0 : integer(value.chance, 1, 90));
 }
 export function careSummary(member) {
   return validCare(member) ? `Care: ATK/MAG +${member.care.offenseBonus} · DEF/RES +${member.care.protectionBonus}` : '';

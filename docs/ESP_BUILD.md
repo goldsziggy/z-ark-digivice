@@ -1,6 +1,26 @@
+**Current source package:** `171cda7`, schema 22/rules 15. Read the [current package instructions](../releases/firmware-171cda7/README.md) and [publication validation](../PUBLICATION_VALIDATION.json). Retained checkpoints below are historical.
+
 # Actual ESP32-S3 builds
 
-## Current target and per-device verification
+> Current exported source: `66ceaaf` (schema21/rules14, 60 Digimon). [Current build and migration guide](ROSTER60.md) · [Publication validation](../PUBLICATION_VALIDATION.json). Installation statements below describe their named historical checkpoints; this export preparation does not assert a new physical installation.
+
+The [capture-ring/world-seed source update](CAPTURE_RING_WORLD_SEED.md) is prepared separately and has not been flashed. Its compiler evidence is kept with that release.
+
+## Current release and installed checkpoint
+
+Both playtest devices are installed on **`8be26c6`** following save-preserving
+verification. See the [current build and resource guide](LANYARD_NEARBY_AUDIO_RELEASE.md)
+and sanitized physical evidence (historical local evidence omitted).
+This release adds automatic sensor recovery, more forgiving software step
+detection, explicit Nearby Tactical/Auto selection and 100% / 44,100 Hz audio.
+Exact image, own-save, settings, SD and reboot checks passed; physical walking
+accuracy, audible output and RF acceptance remain open. The previous
+[f9 build and resource guide](SOUND_TRADE_AUTO_RELEASE.md) remains historical.
+
+## Historical 8a420c7 target and per-device verification
+
+The following build and device status are retained from that earlier checkpoint;
+its version labels, USB availability and measurements are not current status.
 
 Clean source **`8a420c765ce4be418e10be4bb28266b8d9a33608`** builds the standard Waveshare 1.46 profile with ESP-IDF **5.3.6** and zero compiler warnings. The app is **1,449,936 bytes**, leaving **1,695,792 bytes** in the unchanged 3 MiB slot; static DIRAM is **145,419 bytes**. This build includes USB-to-SD transfer, FAT/FAT32/exFAT support and a bounded wait for the audio worker to acknowledge the installation pause before SD access. It also backports the official bounded synchronous I²C NACK wait into a pinned project-local component; the installed SDK remains unchanged. Current source/artifact pins (historical local evidence omitted).
 
@@ -35,6 +55,8 @@ Clean source **`0c158d3581eb464f4e0e409d0f91ab4f0defb73c`** builds the exact **W
 | Physical UI host checks | 403 passed |
 | Audio/IMU host checks | 172 passed |
 
+**Historical initial bring-up behavior:** the motion and audio statements in this
+paragraph are superseded by the [current release guide](LANYARD_NEARBY_AUDIO_RELEASE.md).
 Octal 80 MHz PSRAM is enabled for this standard profile. Only disposable pixels are explicitly placed there; core saves remain in NVS. The display QSPI clock is 40 MHz, audio synthesis 22,050 Hz with default 15% software volume, and physical pedometer support stays disabled. Raw IMU availability enables optional cosmetic tilt, not walking encounters. Save schema/rules, the partition table, NVS and app offsets are unchanged. Static linker use and allocation requests are not measured runtime heap; the near-12 Hz scheduling cap is not observed FPS or input latency. Audio task/queue/DMA consumption is estimated at approximately 8 KiB plus SDK overhead.
 
 The build command is `bash scripts/build-esp.sh waveshare`; it does not flash. Only this exact standard profile has a recorded cross-build for the physical playtest source. Older GenericSerial and development profile results below retain their earlier source scope. [Touch acceptance path](TOUCH_READINESS.md#physical-touch-playtest-path) · [Install/package checks](INSTALLATION.md).

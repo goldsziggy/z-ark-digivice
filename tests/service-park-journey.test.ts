@@ -15,7 +15,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, broke
     await mkdir(join(directory, 'assets/packs'), { recursive: true });
     await writeFile(join(directory, 'assets/packs/catalog.json'), '{truncated');
   }
-  const options = { rootDir: brokenArt ? directory : rootDir, dataDir: join(directory, '.data'), port: 0,
+  const options = { seedSource: () => 12345, rootDir: brokenArt ? directory : rootDir, dataDir: join(directory, '.data'), port: 0,
     corePath: process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/digivice-core'),
     battleCorePath: process.env.DIGIVICE_TEST_BATTLE_PATH ?? join(rootDir, 'build/digivice-battle'), now: () => clock };
   let app = await startServer(options);
@@ -91,11 +91,11 @@ test('park roster-full/release flow preserves member identity and exact ACKs acr
     const result = await f.request('/api/save-sync', identity.token, body); assert.equal(result.status, 200); current = result.body; return result;
   };
   await submit(command([{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }]));
-  for (let attempt = 0; attempt < 64 && current.state.collection.length < 8; attempt++) {
+  for (let attempt = 0; attempt < 512 && current.state.collection.length < 60; attempt++) {
     await submit(command([...Array.from({ length: 16 }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 }]));
-    assert.equal(current.state.phase, 'home'); assert.ok(current.state.collection.length <= 8);
+    assert.equal(current.state.phase, 'home'); assert.ok(current.state.collection.length <= 60);
   }
-  assert.equal(current.state.collection.length, 8, 'bounded real native encounters reach the capacity fixture');
+  assert.equal(current.state.collection.length, 60, 'bounded real native encounters reach the capacity fixture');
   const ids = current.state.collection.map((member: any) => member.id);
   const totalCaptures = current.state.captures;
   await submit(command([{ type: 'mode', value: 0 }, { type: 'walk', value: 100 }]));

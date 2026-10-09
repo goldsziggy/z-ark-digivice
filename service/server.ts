@@ -8,19 +8,19 @@ import { createDeviceAssetService, DEVICE_PROFILE } from './device-assets.ts';
 import { BattleError, createBattleService, type BattleProfile } from './battle-service.ts';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { isIPv4 } from 'node:net';
-import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-type Event = { type: 'feed' | 'play' | 'rest' | 'walk' | 'card' | 'attack' | 'heavy' | 'magic' | 'capture' | 'flick' | 'select' | 'hatch' | 'mode' | 'auto' | 'evolve' | 'release' | 'explore' | 'encounter-rate' | 'encounter-seed' | 'starter-offer-seed' | 'accrue-steps' | 'present-encounter' | 'resolve-test-encounter'; value: number };
+type Event = { type: 'feed' | 'play' | 'rest' | 'walk' | 'card' | 'attack' | 'heavy' | 'magic' | 'capture' | 'flick' | 'ring-capture' | 'select' | 'hatch' | 'mode' | 'auto' | 'auto-fight' | 'auto-resume' | 'evolve' | 'release' | 'explore' | 'encounter-rate' | 'encounter-seed' | 'starter-offer-seed' | 'accrue-steps' | 'present-encounter' | 'resolve-test-encounter' | 'world-seed' | 'party-add' | 'party-remove'; value: number };
 type State = Record<string, unknown> & { schemaVersion: number; rulesVersion: number; sequence: number };
 type Receipt = { batchId: string; bodyHash: string; revision: number; eventEnd: number };
 type LegacyHistory = { events: Event[]; receipts: Receipt[]; snapshotBase64: string };
 type OldDevice = { deviceId: string; tokenHash: string; seed: number; revision: number; events: Event[]; receipts: Receipt[] };
 type V2Device = OldDevice & { legacy: LegacyHistory | null };
-type HistoricalEvents = { rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; events: Event[]; receipts: Receipt[] };
+type HistoricalEvents = { rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14; events: Event[]; receipts: Receipt[] };
 type Baseline = { histories: HistoricalEvents[]; snapshotBase64: string; autoTrace?: AutoTrace };
 type InitialMode = 'legacy' | 'onboarding';
 type V3Device = OldDevice & { legacy: Baseline | null };
@@ -40,8 +40,13 @@ type V12Store = { formatVersion: 12; gameSchemaVersion: 13; rulesVersion: 10; de
 type V13Store = { formatVersion: 13; gameSchemaVersion: 14; rulesVersion: 11; devices: Device[] };
 type Schema15Store = { formatVersion: 14; gameSchemaVersion: 15; rulesVersion: 12; devices: Device[] };
 type Schema16Store = { formatVersion: 14; gameSchemaVersion: 16; rulesVersion: 12; devices: Device[] };
-type Store = { formatVersion: 15; gameSchemaVersion: 17; rulesVersion: 13; devices: Device[] };
-type StoredData = OldStore | V2Store | V3Store | V4Store | V5Store | V6Store | V7Store | V8Store | V9Store | V10Store | V11Store | V12Store | V13Store | Schema15Store | Schema16Store | Store;
+type Schema17Store = { formatVersion: 15; gameSchemaVersion: 17; rulesVersion: 13; devices: Device[] };
+type Schema18Store = { formatVersion: 15; gameSchemaVersion: 18; rulesVersion: 13; devices: Device[] };
+type Schema19Store = { formatVersion: 15; gameSchemaVersion: 19; rulesVersion: 13; devices: Device[] };
+type Schema20Store = { formatVersion: 15; gameSchemaVersion: 20; rulesVersion: 13; devices: Device[] };
+type Schema21Store = { formatVersion: 16; gameSchemaVersion: 21; rulesVersion: 14; devices: Device[] };
+type Store = { formatVersion: 17; gameSchemaVersion: 22; rulesVersion: 15; devices: Device[] };
+type StoredData = OldStore | V2Store | V3Store | V4Store | V5Store | V6Store | V7Store | V8Store | V9Store | V10Store | V11Store | V12Store | V13Store | Schema15Store | Schema16Store | Schema17Store | Schema18Store | Schema19Store | Schema20Store | Schema21Store | Store;
 export type GarageReadAdapter = {
   list(): Promise<unknown>;
   fetchPack(id: string, version: number): Promise<{ bytes: Uint8Array; sha256: string; contentType: string }>;
@@ -49,10 +54,9 @@ export type GarageReadAdapter = {
   close?(): void;
 };
 export type LanOptions = { bindAddress: string; allowedHosts: string[]; allowedOrigins: string[] };
-type AppOptions = { includeTestFixtures?: boolean; rootDir?: string; dataDir?: string; corePath?: string; battleCorePath?: string; now?: () => number; garageAssets?: GarageReadAdapter; lan?: LanOptions };
+type AppOptions = { /** Explicit in-process test injection only; credentials always use Node crypto. */ seedSource?: () => number; includeTestFixtures?: boolean; rootDir?: string; dataDir?: string; corePath?: string; battleCorePath?: string; now?: () => number; garageAssets?: GarageReadAdapter; lan?: LanOptions };
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SEED = 12345;
 const MAX_BODY = 32 * 1024;
 const MAX_EVENTS_PER_BATCH = 100;
 const MAX_EVENTS = 10_000;
@@ -65,7 +69,7 @@ const GARAGE_ORIGINAL_IDS = new Set(['starter-v2', 'tide-v1', 'ember-v1']);
 const GARAGE_PERSONAL_ID = /^personal-[a-z0-9][a-z0-9-]{0,38}$/;
 const GARAGE_MAX_PACK = 256 * 1024;
 const GARAGE_MAX_PROVENANCE = 64 * 1024;
-const EVENT_TYPES = new Set(['feed', 'play', 'rest', 'walk', 'card', 'attack', 'heavy', 'magic', 'capture', 'flick', 'select', 'hatch', 'mode', 'auto', 'evolve', 'release', 'explore', 'encounter-rate', 'encounter-seed', 'starter-offer-seed', 'accrue-steps', 'present-encounter', 'resolve-test-encounter']);
+const EVENT_TYPES = new Set(['feed', 'play', 'rest', 'walk', 'card', 'attack', 'heavy', 'magic', 'capture', 'flick', 'ring-capture', 'select', 'hatch', 'mode', 'auto', 'auto-fight', 'auto-resume', 'evolve', 'release', 'explore', 'encounter-rate', 'encounter-seed', 'starter-offer-seed', 'accrue-steps', 'present-encounter', 'resolve-test-encounter', 'world-seed', 'party-add', 'party-remove']);
 const ASSETS = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/index.html', ['web/index.html', 'text/html; charset=utf-8']],
@@ -77,8 +81,12 @@ const ASSETS = new Map([
   ['/walking-state.js', ['web/walking-state.js', 'text/javascript; charset=utf-8']],
   ['/care-actions.js', ['web/care-actions.js', 'text/javascript; charset=utf-8']],
   ['/care-capture-state.js', ['web/care-capture-state.js', 'text/javascript; charset=utf-8']],
+  ['/party.js', ['web/party.js', 'text/javascript; charset=utf-8']],
+  ['/game-message.js', ['web/game-message.js', 'text/javascript; charset=utf-8']],
   ['/capture-gesture.js', ['web/capture-gesture.js', 'text/javascript; charset=utf-8']],
   ['/capture-trajectory.js', ['web/capture-trajectory.js', 'text/javascript; charset=utf-8']],
+  ['/capture-ring.js', ['web/capture-ring.js', 'text/javascript; charset=utf-8']],
+  ['/capture-ring-input.js', ['web/capture-ring-input.js', 'text/javascript; charset=utf-8']],
   ['/auto-battle.js', ['web/auto-battle.js', 'text/javascript; charset=utf-8']],
   ['/starter-onboarding.js', ['web/starter-onboarding.js', 'text/javascript; charset=utf-8']],
   ['/roster-client.js', ['web/roster-client.js', 'text/javascript; charset=utf-8']],
@@ -168,12 +176,15 @@ function keysExactly(value: Record<string, unknown>, keys: string[]): boolean {
   const actual = Object.keys(value).sort();
   return actual.length === keys.length && actual.every((key, index) => key === [...keys].sort()[index]);
 }
-function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 13): input is Event[] {
+function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 15): input is Event[] {
   return Array.isArray(input) && input.length <= maximum && input.every((event) => {
     if (!object(event) || !keysExactly(event, ['type', 'value']) || typeof event.type !== 'string' || !EVENT_TYPES.has(event.type) || !Number.isSafeInteger(event.value)) return false;
+    if (event.type === 'party-add' || event.type === 'party-remove') return rulesVersion >= 15 && Number(event.value) >= 1 && Number(event.value) <= 0xfffffffe;
+    if (event.type === 'auto-fight' || event.type === 'auto-resume') return rulesVersion >= 13 && event.value === 0;
     if (event.type === 'resolve-test-encounter') return rulesVersion >= 13 && event.value === 0;
     if (event.type === 'accrue-steps') return rulesVersion >= 12 && Number(event.value) >= 1 && Number(event.value) <= 1000;
     if (event.type === 'present-encounter') return rulesVersion >= 12 && event.value === 0;
+    if (event.type === 'world-seed') return rulesVersion >= 13 && Number(event.value) >= 1 && Number(event.value) <= 0xffffffff;
     if (event.type === 'starter-offer-seed') return rulesVersion >= 12 && Number(event.value) >= 1 && Number(event.value) <= 0xffffffff;
     if (event.type === 'encounter-seed') return rulesVersion >= 11 && Number(event.value) >= 1 && Number(event.value) <= 0xffffffff;
     if (event.type === 'explore') return rulesVersion >= 11 && Number(event.value) >= 1 && Number(event.value) <= 1000;
@@ -181,6 +192,7 @@ function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 13): i
     if (event.type === 'walk') return Number(event.value) >= 1 && Number(event.value) <= 1000;
     if (event.type === 'card') return event.value === 1 || event.value === 2;
     if (event.type === 'flick') return rulesVersion >= 10 && Number(event.value) >= 0 && Number(event.value) <= 82175;
+    if (event.type === 'ring-capture') return rulesVersion >= 13 && Number(event.value) >= 0 && Number(event.value) < 2400;
     if (event.type === 'mode') return rulesVersion >= 3 && (event.value === 0 || event.value === 1);
     if (event.type === 'auto') return rulesVersion >= 3 && event.value === 0;
     if (event.type === 'hatch') return rulesVersion >= 3 && Number(event.value) >= 1 && Number(event.value) <= (rulesVersion >= 12 ? 11 : 8);
@@ -192,47 +204,58 @@ function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 13): i
   });
 }
 function stateSupported(value: unknown): value is State {
-  if (!object(value) || Buffer.byteLength(JSON.stringify(value)) >= 12288 || value.schemaVersion !== 17 || value.rulesVersion !== 13 || !Number.isSafeInteger(value.sequence) || Number(value.sequence) < 0 || !Array.isArray(value.collection) || !['tactical', 'auto'].includes(String(value.battleMode)) || !object(value.onboarding) || !keysExactly(value.onboarding, ['completed', 'starterId', 'offerSeed', 'offers'])) return false;
+  if (!object(value) || Buffer.byteLength(JSON.stringify(value)) >= 64 * 1024 || value.schemaVersion !== 22 || value.rulesVersion !== 15 || value.collectionCapacity !== 60 || !Number.isSafeInteger(value.sequence) || Number(value.sequence) < 0 || !Array.isArray(value.collection) || !['tactical', 'auto'].includes(String(value.battleMode)) || !object(value.onboarding) || !keysExactly(value.onboarding, ['completed', 'starterId', 'offerSeed', 'offers'])) return false;
   const bounded = (input: unknown, minimum: number, maximum: number) => Number.isSafeInteger(input) && Number(input) >= minimum && Number(input) <= maximum;
+  if (![0, 1].includes(Number(value.autoCapture)) || typeof value.autoCapture !== 'number' || (value.autoCapture === 1 && (value.phase !== 'encounter' || value.battleMode !== 'auto' || Number(value.wildCaptureChance) <= 0))) return false;
+  if (!bounded(value.worldSeed, 0, 0xffffffff)) return false;
+  if (!bounded(value.receivedTrades, 0, Number(value.sequence))) return false;
   if (!bounded(value.foregroundSequence, 0, Number(value.sequence))) return false;
   if (!bounded(value.recoveryRestCount, 0, 40) || !bounded(value.queuedEncounters, 0, 42_949_672) || !bounded(value.stepsToNextEncounter, 0, 100) || value.phase !== 'home' && value.recoveryRestCount !== 0 ||
-    (value.phase === 'encounter' && [10, 11, 12, 13].includes(Number(value.wildRules)) ? !['common', 'uncommon', 'rare'].includes(String(value.wildRarity)) : value.wildRarity !== null)) return false;
+    (value.phase === 'encounter' && [10, 11, 12, 13, 14, 15].includes(Number(value.wildRules)) ? !['common', 'uncommon', 'rare'].includes(String(value.wildRarity)) : value.wildRarity !== null)) return false;
   if (!validLastCapture(value.lastCapture, value.foregroundSequence) || !validWalkingState(value.walking, value.phase) || value.maxLevel !== 20 || !bounded(value.wildCaptureChance, 0, 100) || !bounded(value.wildLevel, 0, 20) || !bounded(value.wildTurn, 0, 1000) ||
     !object(value.evolution) || !Array.isArray(value.evolution.options) || value.evolution.options.length > 2 ||
     !value.collection.every(member => object(member) && validCare(member) && bounded(member.level, 1, 20) && bounded(member.formId, 1, 512) && bounded(member.id, 1, 0xfffffffe) && bounded(member.xp, 0, 7600) && bounded(member.xpToNext, 0, 7600))) return false;
-  if (!bounded(value.nextMemberId, 1, 0xffffffff) || !bounded(value.wildFormId, 0, 512) || ![0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].includes(Number(value.wildRules)) || !(value.wildGuard === null || ['brace', 'ward', 'counter'].includes(String(value.wildGuard))) ||
+  if (!bounded(value.nextMemberId, 1, 0xffffffff) || !bounded(value.wildFormId, 0, 512) || ![0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(Number(value.wildRules)) || !(value.wildGuard === null || ['brace', 'ward', 'counter'].includes(String(value.wildGuard))) ||
     !object(value.journal) || !keysExactly(value.journal, ['capacity', 'obtainedFormIds']) || value.journal.capacity !== 512 || !Array.isArray(value.journal.obtainedFormIds) || value.journal.obtainedFormIds.length > 512 ||
     !value.journal.obtainedFormIds.every((id, index, ids) => bounded(id, 1, 512) && (index === 0 || Number(ids[index - 1]) < Number(id))) ||
     !value.collection.every((member, index, members) => object(member) && Number(member.id) < Number(value.nextMemberId) && (index === 0 || Number((members[index - 1] as Record<string, unknown>).id) < Number(member.id)))) return false;
+  if (value.partyCapacity !== 3 || !Array.isArray(value.partyMemberIds) || value.partyMemberIds.length > 3 || new Set(value.partyMemberIds).size !== value.partyMemberIds.length ||
+    !value.partyMemberIds.every(id => bounded(id, 1, 0xfffffffe) && id !== value.activeCreatureId && (value.collection as unknown[]).some(member => object(member) && member.id === id))) return false;
   const { completed, starterId, offerSeed, offers } = value.onboarding;
   if (!bounded(offerSeed, 0, 0xffffffff) || !Array.isArray(offers) || offers.length !== 3 || (offerSeed === 0 ? offers.some(id => id !== 0) : new Set(offers).size !== 3 || !offers.every(id => bounded(id, 1, 512)))) return false;
   if (typeof completed !== 'boolean' || !(starterId === null || Number.isInteger(starterId) && Number(starterId) >= 1 && Number(starterId) <= 11)) return false;
   return completed
-    ? ['home', 'encounter'].includes(String(value.phase)) && value.collection.length >= 1 && value.collection.length <= 8
+    ? ['home', 'encounter'].includes(String(value.phase)) && value.collection.length >= 1 && value.collection.length <= 60
     : starterId === null && value.phase === 'egg' && value.collection.length === 0 && value.activeCreatureId === 0 && value.creature === null && value.species === null && value.combat === null;
 }
 function supportedStoredVersion(value: unknown): boolean {
-  return object(value) && ((value.formatVersion === 1 && value.gameSchemaVersion === 2 && value.rulesVersion === 1) || (value.formatVersion === 2 && value.gameSchemaVersion === 3 && value.rulesVersion === 2) || (value.formatVersion === 3 && value.gameSchemaVersion === 4 && value.rulesVersion === 3) || (value.formatVersion === 4 && value.gameSchemaVersion === 5 && value.rulesVersion === 3) || (value.formatVersion === 5 && value.gameSchemaVersion === 6 && value.rulesVersion === 3) || (value.formatVersion === 6 && value.gameSchemaVersion === 7 && value.rulesVersion === 4) || (value.formatVersion === 7 && value.gameSchemaVersion === 8 && value.rulesVersion === 5) || (value.formatVersion === 8 && value.gameSchemaVersion === 9 && value.rulesVersion === 6) || (value.formatVersion === 9 && value.gameSchemaVersion === 10 && value.rulesVersion === 7) || (value.formatVersion === 10 && value.gameSchemaVersion === 11 && value.rulesVersion === 8) || (value.formatVersion === 11 && value.gameSchemaVersion === 12 && value.rulesVersion === 9) || (value.formatVersion === 12 && value.gameSchemaVersion === 13 && value.rulesVersion === 10) || (value.formatVersion === 13 && value.gameSchemaVersion === 14 && value.rulesVersion === 11) || (value.formatVersion === 14 && (value.gameSchemaVersion === 15 || value.gameSchemaVersion === 16) && value.rulesVersion === 12) || (value.formatVersion === 15 && value.gameSchemaVersion === 17 && value.rulesVersion === 13));
+  return object(value) && ((value.formatVersion === 1 && value.gameSchemaVersion === 2 && value.rulesVersion === 1) || (value.formatVersion === 2 && value.gameSchemaVersion === 3 && value.rulesVersion === 2) || (value.formatVersion === 3 && value.gameSchemaVersion === 4 && value.rulesVersion === 3) || (value.formatVersion === 4 && value.gameSchemaVersion === 5 && value.rulesVersion === 3) || (value.formatVersion === 5 && value.gameSchemaVersion === 6 && value.rulesVersion === 3) || (value.formatVersion === 6 && value.gameSchemaVersion === 7 && value.rulesVersion === 4) || (value.formatVersion === 7 && value.gameSchemaVersion === 8 && value.rulesVersion === 5) || (value.formatVersion === 8 && value.gameSchemaVersion === 9 && value.rulesVersion === 6) || (value.formatVersion === 9 && value.gameSchemaVersion === 10 && value.rulesVersion === 7) || (value.formatVersion === 10 && value.gameSchemaVersion === 11 && value.rulesVersion === 8) || (value.formatVersion === 11 && value.gameSchemaVersion === 12 && value.rulesVersion === 9) || (value.formatVersion === 12 && value.gameSchemaVersion === 13 && value.rulesVersion === 10) || (value.formatVersion === 13 && value.gameSchemaVersion === 14 && value.rulesVersion === 11) || (value.formatVersion === 14 && (value.gameSchemaVersion === 15 || value.gameSchemaVersion === 16) && value.rulesVersion === 12) || (value.formatVersion === 15 && (value.gameSchemaVersion === 17 || value.gameSchemaVersion === 18 || value.gameSchemaVersion === 19 || value.gameSchemaVersion === 20) && value.rulesVersion === 13) || (value.formatVersion === 16 && value.gameSchemaVersion === 21 && value.rulesVersion === 14) || (value.formatVersion === 17 && value.gameSchemaVersion === 22 && value.rulesVersion === 15));
 }
-function validSnapshot(value: unknown, format?: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17, maximumFormat = 17): value is string {
-  if (typeof value !== 'string' || ![540, 552, 572, 668, 768, 800, 848, 872].includes(value.length)) return false;
+function validSnapshot(value: unknown, format?: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22, maximumFormat = 22): value is string {
+  if (typeof value !== 'string' || ![540, 552, 572, 668, 768, 800, 848, 872, 876, 880, 888, 3936, 3952].includes(value.length)) return false;
   const bytes = Buffer.from(value, 'base64');
   if (bytes.toString('base64') !== value || bytes.toString('ascii', 0, 4) !== 'DGVS') return false;
   const actualFormat = bytes.readUInt16LE(4);
-  return (format === undefined ? [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].includes(actualFormat) && actualFormat <= maximumFormat : actualFormat === format) &&
-    bytes.length === (actualFormat >= 16 ? 652 : actualFormat === 15 ? 636 : actualFormat === 14 ? 600 : actualFormat >= 8 ? 576 : actualFormat === 7 ? 500 : actualFormat === 6 ? 428 : actualFormat === 5 ? 412 : 404) && bytes.readUInt32LE(8) === (actualFormat === 3 ? 2 : actualFormat === 17 ? 13 : actualFormat >= 15 ? 12 : actualFormat === 14 ? 11 : actualFormat === 13 ? 10 : actualFormat === 12 ? 9 : actualFormat === 11 ? 8 : actualFormat === 10 ? 7 : actualFormat === 9 ? 6 : actualFormat === 8 ? 5 : actualFormat === 7 ? 4 : 3);
+  return (format === undefined ? [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(actualFormat) && actualFormat <= maximumFormat : actualFormat === format) &&
+    bytes.length === (actualFormat === 22 ? 2964 : actualFormat === 21 ? 2952 : actualFormat === 20 ? 664 : actualFormat === 19 ? 660 : actualFormat === 18 ? 656 : actualFormat >= 16 ? 652 : actualFormat === 15 ? 636 : actualFormat === 14 ? 600 : actualFormat >= 8 ? 576 : actualFormat === 7 ? 500 : actualFormat === 6 ? 428 : actualFormat === 5 ? 412 : 404) && bytes.readUInt32LE(8) === (actualFormat === 3 ? 2 : actualFormat === 22 ? 15 : actualFormat === 21 ? 14 : actualFormat >= 17 ? 13 : actualFormat >= 15 ? 12 : actualFormat === 14 ? 11 : actualFormat === 13 ? 10 : actualFormat === 12 ? 9 : actualFormat === 11 ? 8 : actualFormat === 10 ? 7 : actualFormat === 9 ? 6 : actualFormat === 8 ? 5 : actualFormat === 7 ? 4 : 3);
 }
 
 function baseSequence(legacy: Baseline | null): number { return legacy?.histories.reduce((total, history) => total + history.events.length, 0) ?? 0; }
 function traceMatches(state: State, trace: AutoTrace): boolean {
+  if (trace.outcome === 'none') {
+    const last = trace.steps.at(-1);
+    return last !== undefined && state.phase === 'encounter' && state.battleMode === 'auto' && state.autoCapture === 1 &&
+      trace.endSequence === state.foregroundSequence && last.playerHpAfter === state.hp && last.enemyHpAfter === state.wildHp &&
+      trace.player.formId === state.formId && trace.enemy.formId === state.wildFormId;
+  }
   return trace.endSequence <= state.sequence && object(state.lastAutoBattle) && state.lastAutoBattle.sequence === trace.endSequence &&
     state.lastAutoBattle.turns === trace.steps.length && state.lastAutoBattle.outcome === trace.outcome;
 }
-function batchHash(baseRevision: number, events: Event[], rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13): string {
+function batchHash(baseRevision: number, events: Event[], rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15): string {
   const body = { baseRevision, events: events.map(({ type, value }) => ({ type, value })) };
   return sha256(JSON.stringify(rulesVersion === 1 ? body : { rulesVersion, ...body }));
 }
-function validateHistory(events: unknown, receipts: unknown, revisionOffset: number, rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13, batches: Set<string>): number {
+function validateHistory(events: unknown, receipts: unknown, revisionOffset: number, rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15, batches: Set<string>): number {
   if (!validEvents(events, MAX_EVENTS, rulesVersion) || !Array.isArray(receipts) || receipts.length > MAX_EVENTS) throw new Error('Unsupported or corrupt event history.');
   let end = 0;
   for (let index = 0; index < receipts.length; index++) {
@@ -250,7 +273,7 @@ function validateStore(value: unknown): asserts value is StoredData {
   const hashes = new Set();
   for (const device of value.devices) {
     const keys = ['deviceId', 'tokenHash', 'seed', 'revision', 'events', 'receipts', ...(value.formatVersion !== 1 ? ['legacy'] : []), ...(Number(value.formatVersion) >= 4 ? ['initialMode'] : [])];
-    if (!object(device) || !keysExactly(device, keys) || typeof device.deviceId !== 'string' || !/^dv_[a-f0-9]{24}$/.test(device.deviceId) || typeof device.tokenHash !== 'string' || !/^[a-f0-9]{64}$/.test(device.tokenHash) || device.seed !== SEED || !Number.isSafeInteger(device.revision) || Number(device.revision) < 0) throw new Error('Unsupported or corrupt device record.');
+    if (!object(device) || !keysExactly(device, keys) || typeof device.deviceId !== 'string' || !/^dv_[a-f0-9]{24}$/.test(device.deviceId) || typeof device.tokenHash !== 'string' || !/^[a-f0-9]{64}$/.test(device.tokenHash) || !Number.isSafeInteger(device.seed) || Number(device.seed) < 1 || Number(device.seed) > 0xffffffff || !Number.isSafeInteger(device.revision) || Number(device.revision) < 0) throw new Error('Unsupported or corrupt device record.');
     if (Number(value.formatVersion) >= 4 && device.initialMode !== 'legacy' && device.initialMode !== 'onboarding') throw new Error('Invalid immutable game initializer.');
     if (Number(value.formatVersion) >= 4 && Number(value.formatVersion) < 6 && device.initialMode === 'onboarding' && device.legacy !== null) throw new Error('An onboarding identity cannot carry a legacy baseline.');
     if (Array.isArray(device.events) && device.events.some(event => object(event) && event.type === 'hatch') && (Number(value.formatVersion) < 4 || device.initialMode !== 'onboarding')) throw new Error('A legacy identity cannot contain hatch events.');
@@ -268,19 +291,20 @@ function validateStore(value: unknown): asserts value is StoredData {
     }
     if ((Number(value.formatVersion) >= 3) && device.legacy !== null) {
       const legacy = device.legacy;
-      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 15 ? 17 : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2)) throw new Error('Corrupt migration baseline.');
+      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 17 ? 22 : value.formatVersion === 16 ? 21 : value.formatVersion === 15 ? undefined : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 15 && ![17, 18, 19, 20].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2)) throw new Error('Corrupt migration baseline.');
       if (Object.hasOwn(legacy, 'autoTrace') && (Buffer.byteLength(JSON.stringify(legacy.autoTrace)) > 16 * 1024 || !parseAutoTrace(legacy.autoTrace, 'wild'))) throw new Error('Corrupt archived Auto trace.');
       let lastRules = 0;
       for (const history of legacy.histories) {
-        if (!object(history) || !keysExactly(history, ['rulesVersion', 'events', 'receipts']) || (![1, 2, ...(Number(value.formatVersion) >= 6 ? [3] : []), ...(Number(value.formatVersion) >= 7 ? [4] : []), ...(Number(value.formatVersion) >= 8 ? [5] : []), ...(Number(value.formatVersion) >= 9 ? [6] : []), ...(Number(value.formatVersion) >= 10 ? [7] : []), ...(Number(value.formatVersion) >= 11 ? [8] : []), ...(Number(value.formatVersion) >= 12 ? [9] : []), ...(Number(value.formatVersion) >= 13 ? [10] : []), ...(Number(value.formatVersion) >= 14 ? [11] : []), ...(value.formatVersion === 15 ? [12] : [])].includes(Number(history.rulesVersion))) || Number(history.rulesVersion) <= lastRules) throw new Error('Corrupt archived rule history.');
+        if (!object(history) || !keysExactly(history, ['rulesVersion', 'events', 'receipts']) || (![1, 2, ...(Number(value.formatVersion) >= 6 ? [3] : []), ...(Number(value.formatVersion) >= 7 ? [4] : []), ...(Number(value.formatVersion) >= 8 ? [5] : []), ...(Number(value.formatVersion) >= 9 ? [6] : []), ...(Number(value.formatVersion) >= 10 ? [7] : []), ...(Number(value.formatVersion) >= 11 ? [8] : []), ...(Number(value.formatVersion) >= 12 ? [9] : []), ...(Number(value.formatVersion) >= 13 ? [10] : []), ...(Number(value.formatVersion) >= 14 ? [11] : []), ...(Number(value.formatVersion) >= 15 ? [12] : []), ...(Number(value.formatVersion) >= 16 ? [13] : []), ...(value.formatVersion === 17 ? [14] : [])].includes(Number(history.rulesVersion))) || Number(history.rulesVersion) <= lastRules) throw new Error('Corrupt archived rule history.');
         if (device.initialMode === 'onboarding' && Number(history.rulesVersion) < 3) throw new Error('An onboarding identity cannot contain pre-onboarding history.');
-        legacyRevisions += validateHistory(history.events, history.receipts, legacyRevisions, history.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12, batches);
+        legacyRevisions += validateHistory(history.events, history.receipts, legacyRevisions, history.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14, batches);
         legacyEvents += (history.events as Event[]).length;
         lastRules = Number(history.rulesVersion);
       }
     }
+    if (Number(value.gameSchemaVersion) < 20 && Array.isArray(device.events) && device.events.some(event => object(event) && event.type === 'world-seed')) throw new Error('Unsupported world seed event in a historical schema.');
     if (value.gameSchemaVersion === 15 && Array.isArray(device.events) && device.events.some(event => object(event) && ['accrue-steps', 'present-encounter'].includes(String(event.type)))) throw new Error('Unsupported deferred encounter events in a schema 15 history.');
-    const revisions = validateHistory(device.events, device.receipts, legacyRevisions, value.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13, batches);
+    const revisions = validateHistory(device.events, device.receipts, legacyRevisions, value.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15, batches);
     if (device.revision !== legacyRevisions + revisions || legacyEvents + (device.events as Event[]).length > MAX_EVENTS) throw new Error('Invalid device revision or lifetime history limit.');
   }
 }
@@ -317,6 +341,12 @@ function createUnlockedApp(options: AppOptions = {}) {
   const dataDir = resolve(options.dataDir ?? join(rootDir, '.data'));
   const corePath = resolve(options.corePath ?? join(rootDir, 'build/digivice-core'));
   const now = options.now ?? Date.now;
+  const seedSource = options.seedSource ?? (() => randomInt(1, 0x100000000));
+  function nextSeed(): number {
+    const seed = seedSource();
+    if (!Number.isSafeInteger(seed) || seed < 1 || seed > 0xffffffff) throw new Error('Seed source must return a nonzero unsigned 32-bit integer.');
+    return seed;
+  }
   let worldArt: ReturnType<typeof createWorldDsAssetService> | undefined;
   let roster: ReturnType<typeof createRosterService> | undefined;
   const privateArt = () => worldArt ??= createWorldDsAssetService({ rootDir });
@@ -369,7 +399,7 @@ function createUnlockedApp(options: AppOptions = {}) {
   mkdirSync(dataDir, { recursive: true, mode: 0o700 });
   const storePath = join(dataDir, 'store.json');
   const backupPath = join(dataDir, 'store.backup.json');
-  let loaded: StoredData = { formatVersion: 15, gameSchemaVersion: 17, rulesVersion: 13, devices: [] };
+  let loaded: StoredData = { formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: [] };
   let loadedText: string | null = null;
   let store: Store;
   let migratedLegacyStore = false;
@@ -397,7 +427,7 @@ function createUnlockedApp(options: AppOptions = {}) {
 
   function runCore(args: string[], events: Event[]): unknown {
     const input = events.map((event) => `${event.type} ${event.value}`).join('\n');
-    const result = spawnSync(corePath, args, { input: input ? `${input}\n` : '', encoding: 'utf8', timeout: 3000, maxBuffer: 64 * 1024, windowsHide: true });
+    const result = spawnSync(corePath, args, { input: input ? `${input}\n` : '', encoding: 'utf8', timeout: 3000, maxBuffer: 128 * 1024, windowsHide: true });
     if (result.error) throw new HttpError(503, 'core_unavailable', 'The shared game core is unavailable. Run npm run build first.');
     if (result.status !== 0) throw new HttpError(422, 'invalid_transition', 'The game core rejected an action in this event history.');
     try { return JSON.parse(result.stdout); } catch { throw new HttpError(503, 'core_output_invalid', 'The game core returned invalid output.'); }
@@ -411,12 +441,32 @@ function createUnlockedApp(options: AppOptions = {}) {
   } catch (error) {
     throw new Error('The installed game core does not support capture flick input version 1. Run npm run build before starting this service.', { cause: error });
   }
+  // Ring timing is additive within rules 13. A matching schema alone does not
+  // establish that the native binary can interpret this newer event correctly.
+  try {
+    const contract = runCore(['--capture-ring-contract'], []);
+    if (!object(contract) || !keysExactly(contract, ['inputVersion', 'action', 'cycleMs', 'factors']) ||
+      contract.inputVersion !== 1 || contract.action !== 'ring-capture' || contract.cycleMs !== 2400 ||
+      !object(contract.factors) || !keysExactly(contract.factors, ['red', 'orange', 'green']) ||
+      contract.factors.red !== 10 || contract.factors.orange !== 50 || contract.factors.green !== 100) throw new Error('Unsupported capture timing quality contract.');
+  } catch (error) {
+    throw new Error('The installed game core does not support capture timing quality input version 1. Run npm run build before starting this service.', { cause: error });
+  }
+  // Party XP changes wild reward outcomes. Refuse a stale executable
+  // even with an empty store before advertising XP companions.
+  try {
+    const budget = runCore(['--budget'], []);
+    if (!object(budget) || budget.schemaVersion !== 22 || budget.rulesVersion !== 15 || budget.collectionCapacity !== 60 || budget.partyCapacity !== 3 ||
+      budget.snapshotBytes !== 2964 || budget.jsonBufferBytes !== 65536) throw new Error('Unsupported XP companion contract.');
+  } catch (error) {
+    throw new Error('The installed game core does not support the XP companion contract. Run npm run build before starting this service.', { cause: error });
+  }
   let starters: unknown;
   function starterCatalog(): unknown {
     if (starters) return starters;
     const value = runCore(['--starters'], []);
     const boundedText = (input: unknown) => typeof input === 'string' && input.length >= 1 && input.length <= 64 && !/[\u0000-\u001f\u007f]/.test(input);
-    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'starters']) || value.formatVersion !== 1 || value.rulesVersion !== 13 ||
+    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'starters']) || value.formatVersion !== 1 || value.rulesVersion !== 15 ||
       !Array.isArray(value.starters) || value.starters.length !== 8 || Buffer.byteLength(JSON.stringify(value)) > 8192 ||
       !value.starters.every((entry, index) => {
         if (!object(entry) || !keysExactly(entry, ['id', 'species', 'name', 'stage', 'combat']) || entry.id !== index + 1 || entry.species !== STARTER_SPECIES[index] || !boundedText(entry.name) || entry.stage !== 'Rookie' || !object(entry.combat)) return false;
@@ -435,7 +485,7 @@ function createUnlockedApp(options: AppOptions = {}) {
     const value = runCore(['--evolutions', species], []);
     const integer = (input: unknown, min: number, max: number) => Number.isSafeInteger(input) && Number(input) >= min && Number(input) <= max;
     const text = (input: unknown) => typeof input === 'string' && input.length >= 1 && input.length <= 64 && !/[\u0000-\u001f\u007f]/.test(input);
-    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'species', 'forms']) || value.formatVersion !== 1 || value.rulesVersion !== 13 || value.species !== species ||
+    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'species', 'forms']) || value.formatVersion !== 1 || value.rulesVersion !== 15 || value.species !== species ||
       !Array.isArray(value.forms) || value.forms.length < 1 || value.forms.length > 7 || Buffer.byteLength(JSON.stringify(value)) > 16 * 1024 || !value.forms.every(form => {
         if (!object(form) || !keysExactly(form, ['formId', 'parentId', 'children', 'name', 'stage', 'requiredLevel', 'requiredBond', 'previewLevel', 'artId', 'combat']) ||
           !integer(form.formId, 1, 512) || !integer(form.parentId, 0, 512) || !Array.isArray(form.children) || form.children.length > 2 || !form.children.every(id => integer(id, 1, 512)) ||
@@ -462,7 +512,7 @@ function createUnlockedApp(options: AppOptions = {}) {
     const text = (input: unknown, max = 64) => typeof input === 'string' && Buffer.byteLength(input) >= 1 && Buffer.byteLength(input) <= max && !/[\u0000-\u001f\u007f]/.test(input);
     const ids = (input: unknown, max: number): input is number[] => Array.isArray(input) && input.length <= max && input.every(id => integer(id, 1, 512)) && new Set(input).size === input.length;
     const bad = () => { throw new HttpError(503, 'core_output_invalid', 'The native evolution graph is unsupported or exceeds its bounds.'); };
-    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms']) || value.formatVersion !== 2 || value.rulesVersion !== 13 || value.catalogVersion !== 6 || value.focusFormId !== formId || value.offset !== offset || value.limit !== limit || !integer(value.total, 1, 512) || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, Math.max(0, Number(value.total) - offset)) || Buffer.byteLength(JSON.stringify(value)) > 16384) return bad();
+    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms']) || value.formatVersion !== 2 || value.rulesVersion !== 15 || value.catalogVersion !== 6 || value.focusFormId !== formId || value.offset !== offset || value.limit !== limit || !integer(value.total, 1, 512) || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, Math.max(0, Number(value.total) - offset)) || Buffer.byteLength(JSON.stringify(value)) > 16384) return bad();
     const expectedNext = offset + value.forms.length < Number(value.total) ? offset + value.forms.length : null;
     if (value.nextOffset !== expectedNext) return bad();
     const seen = new Set<number>();
@@ -476,7 +526,7 @@ function createUnlockedApp(options: AppOptions = {}) {
     }
     return value;
   }
-  function replay(events: Event[], seed = SEED, legacy: Baseline | null = null, initialMode: InitialMode = 'legacy'): State {
+  function replay(events: Event[], seed: number, legacy: Baseline | null = null, initialMode: InitialMode = 'legacy'): State {
     const state = runCore(legacy ? ['--replay-snapshot', legacy.snapshotBase64] : [initialMode === 'onboarding' ? '--replay-onboarding' : '--replay', String(seed)], events);
     if (!stateSupported(state) || state.sequence !== baseSequence(legacy) + events.length) throw new HttpError(503, 'migration_required', 'The game core state or rules version is unsupported.');
     return state;
@@ -493,7 +543,8 @@ function createUnlockedApp(options: AppOptions = {}) {
     if (!autoTrace && legacy?.autoTrace && traceMatches(result.state, legacy.autoTrace)) autoTrace = legacy.autoTrace;
     return { state: result.state, autoTrace };
   }
-  const initialState = replay([], SEED, null, 'onboarding');
+  // Probe the executable without consuming device entropy or creating a profile.
+  replay([], 1, null, 'onboarding');
   function persist(next: Store): void {
     const serialized = JSON.stringify(next);
     if (Buffer.byteLength(serialized) > MAX_STORE) throw new HttpError(507, 'storage_limit', 'The development store is full.');
@@ -519,13 +570,13 @@ function createUnlockedApp(options: AppOptions = {}) {
       if (JSON.stringify(restored) !== JSON.stringify(migrated.state)) throw new Error('Legacy migration baseline did not restore identically.');
       return { ...device, legacy, initialMode: 'legacy', events: [], receipts: [] };
     });
-    const next: Store = { formatVersion: 15, gameSchemaVersion: 17, rulesVersion: 13, devices };
+    const next: Store = { formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices };
     validateStore(next);
     const archivePath = join(dataDir, `store.rules-v${previous.rulesVersion}.json`);
     if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
     persist(next);
     migratedLegacyStore = true;
-  } else if (loaded.formatVersion === 3 || loaded.formatVersion === 4 || loaded.formatVersion === 5 || loaded.formatVersion === 6 || loaded.formatVersion === 7 || loaded.formatVersion === 8 || loaded.formatVersion === 9 || loaded.formatVersion === 10 || loaded.formatVersion === 11 || loaded.formatVersion === 12 || loaded.formatVersion === 13 || loaded.formatVersion === 14) {
+  } else if (loaded.formatVersion === 3 || loaded.formatVersion === 4 || loaded.formatVersion === 5 || loaded.formatVersion === 6 || loaded.formatVersion === 7 || loaded.formatVersion === 8 || loaded.formatVersion === 9 || loaded.formatVersion === 10 || loaded.formatVersion === 11 || loaded.formatVersion === 12 || loaded.formatVersion === 13 || loaded.formatVersion === 14 || loaded.formatVersion === 15 || loaded.formatVersion === 16) {
     const previous = loaded;
     const version = previous.rulesVersion;
     const devices = previous.devices.map((device): Device => {
@@ -533,14 +584,14 @@ function createUnlockedApp(options: AppOptions = {}) {
       const args = device.legacy ? [`--migrate-v${version}-snapshot`, device.legacy.snapshotBase64] :
         [`--migrate-v${version}${initialMode === 'onboarding' ? '-onboarding' : ''}`, String(device.seed)];
       const migrated = runCore(args, device.events);
-      if (!object(migrated) || !validSnapshot(migrated.snapshotBase64, 17) || !stateSupported(migrated.state)) throw new Error('Frozen-rules migration returned an unsupported baseline.');
+      if (!object(migrated) || !validSnapshot(migrated.snapshotBase64, 22) || !stateSupported(migrated.state)) throw new Error('Frozen-rules migration returned an unsupported baseline.');
       const legacy: Baseline = { histories: [...(device.legacy?.histories ?? []), { rulesVersion: version, events: device.events, receipts: device.receipts }], snapshotBase64: migrated.snapshotBase64 };
       if (migrated.state.sequence !== baseSequence(legacy)) throw new Error('Frozen-rules migration changed the event sequence.');
-      if (version === 8 || version === 9 || version === 10 || version === 11 || version === 12) {
+      if (version === 8 || version === 9 || version === 10 || version === 11 || version === 12 || version === 13 || version === 14) {
         const traceArgs = device.legacy ? [`--replay-v${version}-snapshot-trace`, device.legacy.snapshotBase64] :
           [`--replay-v${version}${initialMode === 'onboarding' ? '-onboarding' : ''}-trace`, String(device.seed)];
         const original = runCore(traceArgs, device.events);
-        if (!object(original) || !keysExactly(original, ['state', 'trace']) || !object(original.state) || original.state.schemaVersion !== (version === 12 ? 16 : version + 3) || original.state.rulesVersion !== version || original.state.sequence !== migrated.state.sequence || Buffer.byteLength(JSON.stringify(original.trace)) > 16 * 1024) throw new Error('Frozen-rules Auto trace recovery failed.');
+        if (!object(original) || !keysExactly(original, ['state', 'trace']) || !object(original.state) || original.state.schemaVersion !== (version === 14 ? 21 : version === 13 ? 20 : version === 12 ? 16 : version + 3) || original.state.rulesVersion !== version || original.state.sequence !== migrated.state.sequence || Buffer.byteLength(JSON.stringify(original.trace)) > 16 * 1024) throw new Error('Frozen-rules Auto trace recovery failed.');
         let autoTrace = parseAutoTrace(original.trace, 'wild');
         if (device.legacy?.autoTrace) {
           // The old suffix may contain no Auto action, while its service baseline
@@ -559,7 +610,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       if (JSON.stringify(restored) !== JSON.stringify(migrated.state)) throw new Error('Frozen-rules migration baseline did not restore identically.');
       return { ...device, initialMode, legacy, events: [], receipts: [] };
     });
-    const next: Store = { formatVersion: 15, gameSchemaVersion: 17, rulesVersion: 13, devices };
+    const next: Store = { formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices };
     validateStore(next);
     const archivePath = join(dataDir, `store.rules-v${version}.json`);
     if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
@@ -632,7 +683,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       const method = request.method;
       if (path === '/api/device/health') {
         if (method !== 'GET' || request.url !== path) throw new HttpError(400, 'invalid_request', 'Device health expects GET without parameters.');
-        return json(response, 200, { status: 'ok', protocolVersion: 1, gameRulesVersion: 13, gameSchemaVersion: 17, assetProfile: DEVICE_PROFILE });
+        return json(response, 200, { status: 'ok', protocolVersion: 1, gameRulesVersion: 15, gameSchemaVersion: 22, assetProfile: DEVICE_PROFILE });
       }
       if (path === '/api/device/assets' || path.startsWith('/api/device/assets/')) {
         if (!deviceAssets) return json(response, 503, { error: 'device_assets_unavailable', message: 'Verified device assets are not installed.' });
@@ -696,7 +747,7 @@ function createUnlockedApp(options: AppOptions = {}) {
         if (Buffer.byteLength(JSON.stringify(result)) > 64 * 1024) throw new HttpError(503, 'roster_unavailable', 'Roster response exceeds its bounded size.');
         return json(response, 200, result);
       }
-      if (method === 'GET' && path === '/api/health') return json(response, 200, { status: 'ok', mode: 'local-development', assetStatus: assetService ? 'available' : 'unavailable', schemaVersion: 17, rulesVersion: 13, capabilities: { captureFlick: 1, deferredEncounters: 1, ...(includeTestFixtures ? { testFixtures: 1 } : {}) }, recoveredFromBackup, migratedLegacyStore });
+      if (method === 'GET' && path === '/api/health') return json(response, 200, { status: 'ok', mode: 'local-development', assetStatus: assetService ? 'available' : 'unavailable', schemaVersion: 22, rulesVersion: 15, collectionCapacity: 60, partyCapacity: 3, capabilities: { captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1, ...(includeTestFixtures ? { testFixtures: 1 } : {}) }, recoveredFromBackup, migratedLegacyStore });
       if (method === 'GET' && path === '/api/starters') return json(response, 200, starterCatalog());
       if (path === '/api/evolution-graph') {
         const query = new URL(request.url!, 'http://localhost').searchParams, keys = [...query.keys()];
@@ -747,10 +798,11 @@ function createUnlockedApp(options: AppOptions = {}) {
         if (!expiresAt || expiresAt <= now()) { pairings.delete(input.code); throw new HttpError(401, 'pairing_expired', 'The code is invalid, expired, or already used.'); }
         if (store.devices.length >= MAX_DEVICES) throw new HttpError(409, 'device_limit', 'The prototype supports eight paired devices.');
         const token = randomBytes(32).toString('base64url');
-        const device: Device = { deviceId: `dv_${randomBytes(12).toString('hex')}`, tokenHash: sha256(token), seed: SEED, revision: 0, legacy: null, initialMode: 'onboarding', events: [], receipts: [] };
-        persist({ formatVersion: 15, gameSchemaVersion: 17, rulesVersion: 13, devices: [...store.devices, device] });
+        const device: Device = { deviceId: `dv_${randomBytes(12).toString('hex')}`, tokenHash: sha256(token), seed: nextSeed(), revision: 0, legacy: null, initialMode: 'onboarding', events: [], receipts: [] };
+        const initialState = replay([], device.seed, null, 'onboarding');
+        persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: [...store.devices, device] });
         pairings.delete(input.code);
-        return json(response, 201, { deviceId: device.deviceId, token, revision: 0, seed: SEED, state: initialState, autoTrace: null, events: [], baseSequence: 0 });
+        return json(response, 201, { deviceId: device.deviceId, token, revision: 0, seed: device.seed, state: initialState, autoTrace: null, events: [], baseSequence: 0 });
       }
       if (method === 'POST' && path === '/api/starter-offers') {
         authenticated(request);
@@ -763,14 +815,35 @@ function createUnlockedApp(options: AppOptions = {}) {
         if (result.state.phase !== 'egg') throw new HttpError(409, 'onboarding_complete', 'This companion has already hatched.');
         if ((result.state.onboarding as Record<string, unknown>).offerSeed === 0) {
           if (baseSequence(device.legacy) + device.events.length >= MAX_EVENTS) throw new HttpError(409, 'history_limit', 'The prototype lifetime event limit is reached.');
-          let offerSeed = 0;
-          while (!offerSeed) offerSeed = randomBytes(4).readUInt32LE();
+          const offerSeed = nextSeed();
           const events: Event[] = [{ type: 'starter-offer-seed', value: offerSeed }];
           const nextEvents = [...device.events, ...events];
           result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
           const next: Device = { ...device, revision: device.revision + 1, events: nextEvents,
-            receipts: [...device.receipts, { batchId: `starter-offers-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 13), revision: device.revision + 1, eventEnd: nextEvents.length }] };
-          persist({ formatVersion: 15, gameSchemaVersion: 17, rulesVersion: 13, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
+            receipts: [...device.receipts, { batchId: `starter-offers-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 15), revision: device.revision + 1, eventEnd: nextEvents.length }] };
+          persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
+          device = next;
+        }
+        return json(response, 200, { deviceId: device.deviceId, revision: device.revision, seed: device.seed, ...result, events: device.events, baseSequence: baseSequence(device.legacy) });
+      }
+      if (method === 'POST' && path === '/api/world/seed') {
+        authenticated(request);
+        const input = await body(request);
+        if (!object(input) || !keysExactly(input, [])) throw new HttpError(400, 'invalid_request', 'World initialization expects an empty JSON object.');
+        // Replay/persist are synchronous after the body await: concurrent calls and
+        // lost-response retries observe one durable seed, never a reroll. The browser
+        // drains its outbox first; unchanged client batches keep their original receipts.
+        let device = authenticated(request);
+        let result = replayResult(device.events, device.seed, device.legacy, device.initialMode);
+        if (result.state.phase === 'egg') throw new HttpError(409, 'onboarding_required', 'Hatch your starter before initializing its world.');
+        if (result.state.worldSeed === 0) {
+          if (baseSequence(device.legacy) + device.events.length >= MAX_EVENTS) throw new HttpError(409, 'history_limit', 'The prototype lifetime event limit is reached.');
+          const events: Event[] = [{ type: 'world-seed', value: nextSeed() }];
+          const nextEvents = [...device.events, ...events];
+          result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
+          const next: Device = { ...device, revision: device.revision + 1, events: nextEvents,
+            receipts: [...device.receipts, { batchId: `world-seed-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 15), revision: device.revision + 1, eventEnd: nextEvents.length }] };
+          persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
           device = next;
         }
         return json(response, 200, { deviceId: device.deviceId, revision: device.revision, seed: device.seed, ...result, events: device.events, baseSequence: baseSequence(device.legacy) });
@@ -802,11 +875,12 @@ function createUnlockedApp(options: AppOptions = {}) {
         const input = await body(request);
         // Fetch again after body await: another request may have updated the store.
         const device = authenticated(request);
-        if (object(input) && input.rulesVersion !== 13) throw new HttpError(409, 'migration_required', 'This batch uses older or unsupported rules. Preserve it and fetch the current save; do not relabel or replay it.');
-        if (!object(input) || !keysExactly(input, ['rulesVersion', 'baseRevision', 'batchId', 'events']) || !Number.isSafeInteger(input.baseRevision) || Number(input.baseRevision) < 0 || typeof input.batchId !== 'string' || !/^[a-zA-Z0-9_-]{8,80}$/.test(input.batchId)) throw new HttpError(400, 'invalid_request', 'Supply rulesVersion:13, baseRevision, an 8–80 character batchId, and events.');
+        if (object(input) && input.rulesVersion !== 15) throw new HttpError(409, 'migration_required', 'This batch uses older or unsupported rules. Preserve it and fetch the current save; do not relabel or replay it.');
+        if (!object(input) || !keysExactly(input, ['rulesVersion', 'baseRevision', 'batchId', 'events']) || !Number.isSafeInteger(input.baseRevision) || Number(input.baseRevision) < 0 || typeof input.batchId !== 'string' || !/^[a-zA-Z0-9_-]{8,80}$/.test(input.batchId)) throw new HttpError(400, 'invalid_request', 'Supply rulesVersion:15, baseRevision, an 8–80 character batchId, and events.');
         if (!validEvents(input.events, MAX_EVENTS_PER_BATCH) || input.events.length === 0) throw new HttpError(422, 'invalid_events', 'Supply 1–100 supported, bounded events with exact type and value fields.');
         const events = input.events;
-        const bodyHash = batchHash(Number(input.baseRevision), events, 13);
+        if (events.some(event => event.type === 'world-seed')) throw new HttpError(422, 'server_owned_event', 'World initialization is generated by the trusted setup endpoint.');
+        const bodyHash = batchHash(Number(input.baseRevision), events, 15);
         if (device.legacy?.histories.some(history => history.receipts.some(receipt => receipt.batchId === input.batchId))) throw new HttpError(409, 'legacy_batch_requires_reconciliation', 'This batch was committed under older rules. Fetch the current save; it will not be applied again.');
         const previous = device.receipts.find((entry) => entry.batchId === input.batchId);
         if (previous) {
@@ -817,14 +891,14 @@ function createUnlockedApp(options: AppOptions = {}) {
         // A receipt above acknowledges an already committed selection. Only new
         // selection batches consult this device's independent practice state.
         if (events.some(event => event.type === 'present-encounter') && battleService().get(device.deviceId).battle?.status === 'active') throw new HttpError(409, 'encounter_deferred', 'Finish the current practice battle before showing the waiting wild encounter.');
-        if (events.some(event => event.type === 'select' || event.type === 'evolve' || event.type === 'release') && battleService().get(device.deviceId).battle?.status === 'active') {
-          throw new HttpError(409, 'partner_locked', 'Finish or retreat from the current practice battle before changing, evolving or releasing companions.');
+        if (events.some(event => event.type === 'select' || event.type === 'evolve' || event.type === 'release' || event.type === 'party-add' || event.type === 'party-remove') && battleService().get(device.deviceId).battle?.status === 'active') {
+          throw new HttpError(409, 'partner_locked', 'Finish or retreat from the current practice battle before changing the partner, XP companions, evolution or collection.');
         }
         if (baseSequence(device.legacy) + device.events.length + events.length > MAX_EVENTS) throw new HttpError(409, 'history_limit', 'The prototype lifetime event limit is reached; export and migrate the save.');
         const nextEvents = [...device.events, ...events];
         const result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
         const next: Device = { ...device, revision: device.revision + 1, events: nextEvents, receipts: [...device.receipts, { batchId: input.batchId, bodyHash, revision: device.revision + 1, eventEnd: nextEvents.length }] };
-        persist({ formatVersion: 15, gameSchemaVersion: 17, rulesVersion: 13, devices: store.devices.map((entry) => entry.deviceId === device.deviceId ? next : entry) });
+        persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: store.devices.map((entry) => entry.deviceId === device.deviceId ? next : entry) });
         return json(response, 200, { deviceId: device.deviceId, revision: next.revision, ...result });
       }
       if (method === 'GET' && ASSETS.has(path)) {

@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { startServer } from '../service/server.ts';
+import { autoCheckpoint, resumeFighting, exploreEncounter } from './manual-auto-browser-tools.mjs';
 import { touchDevice } from './touch-browser-tools.mjs';
 
 if (!process.env.PLAYWRIGHT_MODULE) throw new Error('Set PLAYWRIGHT_MODULE to an existing Playwright installation.');
@@ -135,7 +136,7 @@ try {
   await seed([event('hatch', 1)], 'Fresh isolated identity and native hatch; onboarding itself is covered by browser-touch.mjs.');
   await context.addInitScript(identity => localStorage.setItem('digivice.dev.identity.v1', JSON.stringify(identity)), identity);
   await page.goto(base); await ui.onScreen('home'); await sizeScreen();
-  await ui.menu('explore'); const walked = await command('walk'); await ui.onScreen('battle'); await check('wild tactical opening');
+  await ui.menu('explore'); const {saved: walked} = await exploreEncounter(command); await ui.onScreen('battle'); await check('wild tactical opening');
   assert.equal(walked.state.wildCaptureChance, 0); assert.equal(await ui.control('capture').isDisabled(), true);
   const beforeAttack = await http(), attacked = await command('attack');
   assert.deepEqual(attacked.state, predict(beforeAttack, event('attack'))); await ui.onScreen('battle'); await check('wild tactical attack and retaliation');
@@ -166,7 +167,7 @@ try {
   assert.ok(missed, 'bounded native setup reaches a genuine failed capture');
   const seeded = await seed(history.slice(origin.events.length), 'Reach a legal capture which the deterministic core will reject; no fabricated state.');
   assert.deepEqual(seeded.state, missed.before); await reload('battle');
-  await ui.reveal('capture'); assert.match(await ui.control('capture').textContent(), new RegExp(`${missed.before.wildCaptureChance}%`)); await check('legal capture chance');
+  await ui.reveal('capture'); assert.doesNotMatch(await ui.control('capture').textContent(), /\d+%/); assert.match(await ui.control('capture').textContent(), /Odds after throwing/); await check('legal capture chance');
   const unchanged = await http(), postCount = posts.length;
   await ui.tap('capture', 'capture-aim'); await check('capture aim with visible Cancel'); await ui.back('battle');
   assert.deepEqual(await http(), unchanged); assert.equal(posts.length, postCount);
@@ -185,7 +186,7 @@ try {
     if (saved.state.phase !== 'encounter') {
       await ui.menu('care');
       if (saved.state.recoveryRestCount > 0) { await ui.tap('recover-review', 'recover-confirm'); await check('recovery confirmation'); await command('confirm-recovery'); }
-      await ui.menu('explore'); saved = await command('walk'); await ui.onScreen('battle');
+      await ui.menu('explore'); saved = (await exploreEncounter(command)).saved; await ui.onScreen('battle');
     }
     for (let turn = 0; turn < 40 && saved.state.phase === 'encounter'; turn++) {
       saved = await http(); // Read includes replay history; POST receipts omit it.
@@ -272,12 +273,12 @@ try {
   // commits once; all progress, pause, resume and replay controls are cosmetic.
   await page.emulateMedia({ reducedMotion: 'no-preference' }); await reload('home');
   await ui.menu('explore'); await ui.tap('wild-mode', 'wild-mode'); await command('wild-auto'); await ui.onScreen('explore');
-  await command('walk'); await ui.onScreen('wild-auto-confirm'); await check('wild Auto start review');
+  await exploreEncounter(command); await ui.onScreen('wild-auto-confirm'); await check('wild Auto start review');
   const beforeAuto = await http(), autoPosts = posts.length;
   await ui.back(); await ui.home(); assert.deepEqual(await http(), beforeAuto); assert.equal(posts.length, autoPosts);
   await ui.tap('wild-auto-confirm', 'wild-auto-confirm');
   const auto = await command('wild-auto-start'); await ui.onScreen('wild-auto-progress');
-  assert.deepEqual(auto.state, predict(beforeAuto, event('auto')));
+  assert.deepEqual(auto.state, predict(beforeAuto, event('auto-fight')));
   const savedAuto = await http(); assert.equal(posts.length, autoPosts + 1);
   await ui.tap('auto-pause'); await page.waitForTimeout(800);
   const pausedStep = await ui.screen.getAttribute('data-auto-step');
@@ -285,14 +286,22 @@ try {
   assert.deepEqual(await http(), savedAuto);
   await ui.tap('auto-pause');
   await page.waitForFunction(step => {
-    const root = document.querySelector('#device-ui'); return root?.dataset.screen === 'wild-auto-result' || root?.dataset.autoStep !== step;
+    const root = document.querySelector('#device-ui'); return ['capture-aim','wild-auto-result'].includes(root?.dataset.screen) || root?.dataset.autoStep !== step;
   }, pausedStep);
   if (await ui.screen.getAttribute('data-screen') === 'wild-auto-progress') await ui.tap('auto-finish');
+  await autoCheckpoint(page);
+  let finalAuto=auto, finalSaved=savedAuto, expectedPosts=autoPosts+1;
+  if(auto.state.autoCapture===1){
+    await ui.onScreen('capture-aim');await check('wild Auto manual capture pause');
+    const pausePosts=posts.length;await page.waitForTimeout(800);assert.equal(posts.length,pausePosts);assert.deepEqual(await http(),savedAuto);
+    finalAuto=await resumeFighting(page,()=>ui.back());finalSaved=await http();expectedPosts++;
+    assert.deepEqual(finalAuto.state,predict(savedAuto,event('auto-resume')));
+  }
   await ui.onScreen('wild-auto-result'); await check('wild Auto saved result');
   await ui.tap('wild-auto-replay', 'wild-auto-progress'); await ui.tap('auto-pause'); await check('wild Auto replay paused');
   await ui.tap('auto-finish', 'wild-auto-result'); await check('wild Auto replay finished'); await ui.tap('wild-auto-done', 'home');
-  assert.equal(posts.length, autoPosts + 1); assert.deepEqual(await http(), savedAuto);
-  assertions.push({ name: 'Wild Auto start, progress, pause, resume and replay', backBeforeStartWithoutPost: true, turns: auto.autoTrace.steps.length, outcome: auto.autoTrace.outcome, oneDurableCommand: true, pausedStep, replayDoesNotChangeSave: true, nativeOutcomeMatches: true });
+  assert.equal(posts.length, expectedPosts); assert.deepEqual(await http(), finalSaved);
+  assertions.push({ name: 'Wild Auto start, playback pause/resume, manual capture decision and replay', backBeforeStartWithoutPost: true, turns: auto.autoTrace.steps.length, outcome: finalAuto.autoTrace.outcome, explicitStartAndOptionalResumeOnly: true, pausedStep, replayDoesNotChangeSave: true, nativeOutcomeMatches: true });
   inputSessions.push(await page.evaluate(() => window.__touchGameplay));
   assert.deepEqual(errors, []);
   for (const input of inputSessions) { assert.equal(input.keyboard, 0); assert.equal(input.externalControls, 0); assert.ok(input.touches.every(touch => touch.trusted)); assert.ok(input.pointerEvents.every(pointer => pointer.trusted && pointer.pointerType === 'touch')); }
@@ -303,7 +312,7 @@ try {
 } catch (error) { failure = String(error.stack || error); throw error; }
 finally {
   mkdirSync('docs/evidence', { recursive: true });
-  writeFileSync('docs/evidence/touch-only-gameplay.json', JSON.stringify({ outcome, failure, sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+  writeFileSync(process.env.TOUCH_GAMEPLAY_REPORT || '../deliverables/manual-auto-regression-20261009/touch-only-gameplay.json', JSON.stringify({ outcome, failure, sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
     sourceFiles: initialSources, binaries: [corePath, battleCorePath].map(path => ({ name: path.split('/').at(-1), sha256: hash(readFileSync(path)) })),
     scope: 'Headless hasTouch browser, only trusted on-screen taps and CDP touchscreen drag/release; capture values decoded and replayed by native core; 412 CSS-pixel circular display with minimum 70px targets; public placeholder artwork. Native histories prepare fixtures separately.',
     assertions, checks, gameCommandsFromTouch: posts, fixtureSetup: fixtures, inputSessions, errors,

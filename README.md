@@ -6,6 +6,12 @@ An offline virtual-pet game, local development service and ESP32-S3 firmware, wi
 
 The shared deterministic C++ core handles care, walking encounters, Tactical/Auto battles, capture, collection and explicit evolution. A Node/TypeScript service supplies bounded asset catalogs, browser pairing and replay-validated save revisions. The round browser simulator uses the same core. Immediate handheld play works without a phone or network; native service pairing/outbox/save synchronization is still future work. Local Nearby uses ESP-NOW independently of cloud pairing.
 
+## Current source
+
+Source `171cda7` adds **three XP companions** beyond the active partner, retaining the collection of **60 Digimon**, graded ring capture, independent world seeds, sound controls and nearby trading. Each selected companion receives the full wild victory/capture XP reward without fighting or reducing the partner’s reward. Schema 22/rules 15 migrates earlier saves with no XP companions selected, preserving members, seeds and the active partner. Old firmware cannot read the expanded save; keep each device's own pre-upgrade backup. [XP companion guide](docs/XP-COMPANIONS.md) · [Collection and resource guide](docs/ROSTER60.md) · [Graded capture](docs/GRADED_CAPTURE.md) · [Nearby trading](docs/NEARBY_TRADING.md).
+
+The source/build checkpoint and any physical installation result are recorded separately in [publication validation](PUBLICATION_VALIDATION.json). Existing showcase media intentionally remains labeled as the earlier `f74ee4c` demonstration. The C14-P19 CAD and print downloads are unchanged.
+
 ## Run locally
 
 Requires an existing C++17 compiler, CMake 3.16+ and Node 24.12+. No package installation is needed for the core development service.
@@ -19,6 +25,7 @@ npm run dev
 
 ```sh
 npm run test:publication
+npm run test:browser:party # optional actual-Chrome check; existing Playwright setup required
 ```
 
 The publication check builds the host core and runs the source-only test scope. Tests requiring omitted background JPEG/pack fixtures remain separate; the full historical `npm test` is not the test command for this reduced asset export. See [export contents and verification boundaries](PUBLICATION.md).
@@ -33,7 +40,7 @@ Firmware builds with an existing official ESP-IDF **5.3.6** toolchain. Set `DIGI
 npm run build:esp:waveshare
 ```
 
-That command builds only. The exact previously installed [f74 firmware images and manifest](releases/firmware-f74ee4c/README.md) are included with their hashes and installation limits. No device backups or private assets are included. The historical guarded flash helper is pinned to an older release and cannot install this package; a release-specific installer review is required. [Firmware setup](docs/FIRMWARE.md) · [Connectors](docs/HARDWARE_CONNECTORS.md) · [Optional NFC](docs/NFC_OPTIONAL.md).
+That command builds only. The current [171cda7 firmware build images and manifest](releases/firmware-171cda7/README.md) and historical [f74 package](releases/firmware-f74ee4c/README.md) are included with hashes and installation limits. No device backups or private assets are included. The historical guarded flash helper is pinned to an older release and cannot install this package; a release-specific installer review is required. [Firmware setup](docs/FIRMWARE.md) · [Connectors](docs/HARDWARE_CONNECTORS.md) · [Optional NFC](docs/NFC_OPTIONAL.md).
 
 [Current C14-P19 CAD and print parts](hardware/README.md) preserve both touch-only and two-button fronts. C14-P19 enlarges only the main white front's receiving pilots to 1.9 mm; common black/red parts and small white RF windows remain unchanged. [Six downloadable plate/G-code ZIPs](hardware/c14-p19/downloads/README.md) include both repair-front and full-white options for Kobra S1 / PLA / 0.4 mm. The [assembly and screw guide](hardware/c14-p19/docs/z-ark_Digivice_C14_P19_Assembly_and_Screws.pdf) covers the 17-screw first build and optional 20-screw NFC-tray assembly.
 
@@ -41,9 +48,11 @@ Required vendor reference meshes are external acquisition prerequisites for rebu
 
 ## Current readiness
 
-Game/firmware source is frozen at **`f74ee4c132b4b9bc6407d99bbc20b13af9dfd962`**, the firmware verified on both project units. It includes the Home carousel, walking across screens, one waiting encounter, production roster, corrected sprite facing/animation selection and tap alternatives for horizontal swipes. Current snapshots use schema 17 / rules 13 / 652 bytes. Later volume, music and trading work is excluded.
+Game and firmware source is frozen at **`171cda7e698cf2915b50aa46bc766d8d1d0ee50d`**. Current snapshots use schema 22/rules 15 and 2,964 bytes, with three optional XP companions. The export includes the full current volume, music, trading and capture implementations. Host tests and the supplied ESP build establish software/build checks; physical installation and playtest acceptance are separate milestones.
 
-Prior installation verified each unit's fresh save, existing SD asset hashes and reboot persistence. Unit 2's earlier USB silence did not recur during that bounded check. Physical touch, gameplay, walking, audio, power and two-device RF acceptance remain open. No board was reset, flashed or accessed for this export.
+Both existing devices passed the application-only `171cda7` update: their own saves migrated exactly to 2,964 bytes, settings were preserved, and all 261 SD files (4,700,573 bytes per device) verified without asset writes. Each save remained byte-identical through checkpoint and reboot, with zero gameplay events. The protected flash region matched before boot; all serial handles are closed. The three XP companion slots began empty. [Sanitized installation result](releases/firmware-171cda7/installation-summary.json).
+
+These checks cover existing profiles and data/reboot integrity. New companion controls, a full 60-member collection, long walking accuracy and Nearby trade stress have not passed physical acceptance. Earlier false steps while stationary remain unresolved. Publication tooling itself accesses no board. See [publication validation](PUBLICATION_VALIDATION.json) for scope and limits.
 
 Third-party sprite and scenery packs are absent. The showcase contains recorded gameplay and native rendered demonstrations; these do not grant reuse rights to third-party artwork. Normal browser/device asset catalogs therefore advertise **zero downloadable packs**; missing exact-form art uses the neutral missing-art display. The three original browser packs and ten original device blobs remain explicit legacy test fixtures, never production starters. [Publication boundaries](PUBLICATION.md) · [Service API](service/API.md) · [Architecture](docs/ARCHITECTURE.md) · [Current Home controls](docs/HOME_CAROUSEL.md) · [Battle fixes](docs/BATTLE_ART_RELEASE.md) · [Nearby protocol](docs/NEARBY_PROTOCOL.md).
 

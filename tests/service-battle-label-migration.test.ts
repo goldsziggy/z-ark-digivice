@@ -34,38 +34,38 @@ function withoutLabels(value: any): any {
   return Array.isArray(value) ? value.map(withoutLabels) : value && typeof value === 'object'
     ? Object.fromEntries(Object.entries(value).filter(([key]) => key !== 'skills').map(([key, child]) => [key, withoutLabels(child)])) : value;
 }
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 13, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved: unknown) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-label-epoch-'));
   for (const name of ['store.json', 'store.backup.json']) await writeFile(join(dataDir, name), JSON.stringify(saved));
-  let app = await startServer({ rootDir, dataDir, corePath, battleCorePath, port: 0 });
+  let app = await startServer({ seedSource: () => 12345, rootDir, dataDir, corePath, battleCorePath, port: 0 });
   const close = () => new Promise<void>((resolve, reject) => app.server.close(error => error ? reject(error) : resolve()));
   t.after(async () => { if (app.server.listening) await close(); app.close(); await rm(dataDir, { recursive: true, force: true }); });
   async function request(path: string, body?: unknown) {
     const response = await fetch(`http://127.0.0.1:${(app.server.address() as { port: number }).port}${path}`, { method: body === undefined ? 'GET' : 'POST', headers: { authorization: `Bearer ${TOKEN}`, ...(body === undefined ? {} : { 'content-type': 'application/json' }) }, body: body === undefined ? undefined : JSON.stringify(body) });
     return { status: response.status, body: await response.json() as any };
   }
-  return { dataDir, request, restart: async () => { await close(); app.close(); app = await startServer({ rootDir, dataDir, corePath, battleCorePath, port: 0 }); } };
+  return { dataDir, request, restart: async () => { await close(); app.close(); app = await startServer({ seedSource: () => 12345, rootDir, dataDir, corePath, battleCorePath, port: 0 }); } };
 }
 
 test('rules7 baseline and suffix preserve progress, archive exact receipts, and expose reviewed current Home labels', async t => {
   const history6 = { rulesVersion: 6, events: frozen.prefixEvents, receipts: receipts(6, 0, frozen.prefixEvents, 'before-seven-baseline') };
   const old = oldStore(frozen.suffixEvents, 'onboarding', { histories: [history6], snapshotBase64: frozen.baseline.snapshotBase64 });
   const f = await fixture(t, old), saved = (await f.request('/api/save')).body;
-  assert.deepEqual([saved.state.schemaVersion, saved.state.rulesVersion, saved.revision], [17, 13, old.devices[0].revision]);
+  assert.deepEqual([saved.state.schemaVersion, saved.state.rulesVersion, saved.revision], [22, 15, old.devices[0].revision]);
   assert.equal(saved.baseSequence, frozen.prefixEvents.length + frozen.suffixEvents.length); assert.deepEqual(saved.events, []); assert.equal(saved.autoTrace, null);
   for (const key of ['collection', 'activeCreatureId', 'nextMemberId', 'journal', 'rngState', 'xp', 'formId', 'hp', 'bond', 'captures', 'onboarding', 'battleMode', 'lastAutoBattle']) assert.deepEqual(withoutLabels(legacyFields(saved.state[key])), withoutLabels(frozen.suffixResult.state[key]), key);
   assert.equal(frozen.suffixResult.state.combat.skills.magic, 'Hex Spark'); assert.equal(saved.state.combat.skills.magic, 'Thunder Cloud');
   assert.equal(saved.state.wildCaptureChance, 0);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [15, 17, 13]);
-  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 652); assert.equal(snapshot.readUInt16LE(4), 17); assert.equal(snapshot.readUInt32LE(8), 13);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [17, 22, 15]);
+  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 2964); assert.equal(snapshot.readUInt16LE(4), 22); assert.equal(snapshot.readUInt32LE(8), 15);
   assert.deepEqual(stored.devices[0].legacy.histories, [history6, { rulesVersion: 7, events: old.devices[0].events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v7.json'), 'utf8')), old);
   const pending = { rulesVersion: 7, baseRevision: history6.receipts.length, batchId: old.devices[0].receipts[0].batchId, events: old.devices[0].events };
   assert.equal((await f.request('/api/save-sync', pending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 13 })).body.error, 'legacy_batch_requires_reconciliation');
-  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 13, events: [{ type: 'feed', value: 0 }] })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 15, events: [{ type: 'feed', value: 0 }] })).body.error, 'legacy_batch_requires_reconciliation');
   await f.restart(); assert.deepEqual((await f.request('/api/save')).body, saved);
   const input = batch(saved.revision, 'eight-care-ack-retry', [{ type: 'feed', value: 0 }]);
   const accepted = await f.request('/api/save-sync', input); assert.equal(accepted.status, 200); assert.equal(accepted.body.state.xp, saved.state.xp);

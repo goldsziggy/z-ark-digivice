@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "snapshot_test_helpers.hpp"
 #include "forms.hpp"
 #include "legacy_v12.hpp"
 #include "../firmware/tests/legacy_v15_snapshot.hpp"
@@ -16,7 +17,7 @@ void prior(old::State& s,old::Action a,unsigned v=0){CHECK(old::apply(s,a,v)==ol
 bool same(const State& a,const State& b){Snapshot x,y;return encodeSnapshot(a,x)&&encodeSnapshot(b,y)&&!std::memcmp(x.bytes,y.bytes,kSnapshotSize);}
 void reject(State& s,Action a,Error error){auto before=s;CHECK(apply(s,a)==error);CHECK(same(s,before));}
 void restore(State& s){Snapshot saved;CHECK(encodeSnapshot(s,saved));State next;CHECK(decodeSnapshot(saved.bytes,sizeof(saved.bytes),next)==SnapshotStatus::Ok&&same(s,next));s=next;}
-State migrate(const old::State& s){old::Snapshot bytes;CHECK(old::encodeSnapshot(s,bytes));State current;CHECK(decodeSnapshot(bytes.bytes,sizeof(bytes.bytes),current)==SnapshotStatus::Migrated);Snapshot saved;CHECK(encodeSnapshot(current,saved));CHECK(!std::memcmp(bytes.bytes+12,saved.bytes+12,kSnapshotSize-16));return current;}
+State migrate(const old::State& s){old::Snapshot bytes;CHECK(old::encodeSnapshot(s,bytes));State current;CHECK(decodeSnapshot(bytes.bytes,sizeof(bytes.bytes),current)==SnapshotStatus::Migrated);Snapshot saved;CHECK(encodeSnapshot(current,saved));CHECK(snapshot_test::sameOldPayload(bytes.bytes,saved.bytes,sizeof(bytes.bytes))&&current.receivedTrades==0);return current;}
 void productionPool(){
  unsigned counts[4]{};bool seen[forms::kFormCount+1]{};unsigned draws=0;
  for(unsigned partner=1;partner<=forms::kFormCount;++partner)for(unsigned level:{1u,5u,10u,15u,20u}){
@@ -64,10 +65,10 @@ void firstStepsAndStarters(){
  for(unsigned seed=1;seed<=128;++seed)for(unsigned starter=1;starter<=8;++starter){
   auto s=newDevice(seed);CHECK(forms::productionForm(starterForm(s,starter)));step(s,Action::Hatch,starter);step(s,Action::EncounterSeed,seed);
   const auto before=s;const auto remaining=encounterStepsRemaining(s);CHECK(remaining>=40&&remaining<=80);
-  step(s,Action::AccrueSteps,remaining);CHECK(s.phase==Phase::Home&&s.pendingEncounter.rules==13&&forms::productionForm(s.pendingEncounter.formId));
+  step(s,Action::AccrueSteps,remaining);CHECK(s.phase==Phase::Home&&s.pendingEncounter.rules==kRulesVersion&&forms::productionForm(s.pendingEncounter.formId));
   CHECK(s.hp==before.hp&&s.energy==before.energy&&s.rngState==before.rngState&&s.encounters==0);
-  restore(s);step(s,Action::PresentEncounter);CHECK(s.wildRules==13&&forms::productionForm(s.wildFormId)&&!needsTestEncounterResolution(s));
-  auto direct=newDevice(seed);step(direct,Action::Hatch,starter);step(direct,Action::Walk,100);CHECK(direct.wildRules==13&&forms::productionForm(direct.wildFormId));
+  restore(s);step(s,Action::PresentEncounter);CHECK(s.wildRules==kRulesVersion&&forms::productionForm(s.wildFormId)&&!needsTestEncounterResolution(s));
+  auto direct=newDevice(seed);step(direct,Action::Hatch,starter);step(direct,Action::Walk,100);CHECK(direct.wildRules==kRulesVersion&&forms::productionForm(direct.wildFormId));
  }
 }
 void preservedApartFromDismissal(const State& before,const State& after){
@@ -109,13 +110,13 @@ unsigned nibble(char ch){return ch>='0'&&ch<='9'?unsigned(ch-'0'):unsigned(ch-'a
 void frozenInstalledFixtures(){
  for(const char* text:{kLegacyV15HomeHex,kLegacyV15EncounterHex,kLegacyV15CaptureHex}){
   std::uint8_t data[kV15SnapshotSize];CHECK(std::strlen(text)==sizeof(data)*2);for(unsigned i=0;i<sizeof(data);++i)data[i]=static_cast<std::uint8_t>(nibble(text[i*2])*16+nibble(text[i*2+1]));
-  State s;CHECK(decodeSnapshot(data,sizeof(data),s)==SnapshotStatus::Migrated);Snapshot round;CHECK(encodeSnapshot(s,round)&&!std::memcmp(data+12,round.bytes+12,sizeof(data)-16));
+  State s;CHECK(decodeSnapshot(data,sizeof(data),s)==SnapshotStatus::Migrated);Snapshot round;CHECK(encodeSnapshot(s,round)&&snapshot_test::sameOldPayload(data,round.bytes,sizeof(data)));
   if(needsTestEncounterResolution(s)){auto before=s;step(s,Action::ResolveTestEncounter);preservedApartFromDismissal(before,s);restore(s);}
  }
  // No rules17 record can invent a current-rules original foe, but oldrules remain decodable until explicit repair.
  auto s=newDevice();step(s,Action::Hatch,1);step(s,Action::AccrueSteps,1000);auto bad=s;bad.pendingEncounter={4,1,13};CHECK(!isValid(bad));bad.pendingEncounter.rules=12;CHECK(isValid(bad));
  Action action;CHECK(parseAction("resolve-test-encounter",action)&&action==Action::ResolveTestEncounter);
- CHECK(kSchemaVersion==17&&kRulesVersion==13&&kSnapshotSize==652);
+ CHECK(kSchemaVersion==22&&kRulesVersion==15&&kSnapshotSize==2964);
 }
 }
 int main(){productionPool();releaseEvolutionEdges();firstStepsAndStarters();resolution();frozenInstalledFixtures();std::printf("%u production-roster/migration checks, %u failures\n",checks,failures);return failures?1:0;}

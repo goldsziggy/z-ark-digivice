@@ -7,11 +7,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { startServer } from '../service/server.ts';
+import { autoCheckpoint, resumeFighting, exploreEncounter } from './manual-auto-browser-tools.mjs';
 import { holdDeviceBack } from './browser-tools.mjs';
 import { autoStepText } from '../web/auto-battle.js';
 import { BATTLE_PENDING_KEY } from '../web/battle-client.js';
 
-const CORE_RULES = 10, PRACTICE_RULES = 7, CARE_PENDING = 'digivice.dev.pending.v1';
+const CORE_RULES = 13, PRACTICE_RULES = 7, CARE_PENDING = 'digivice.dev.pending.v1';
 const corePath = resolve(process.env.DIGIVICE_TEST_CORE_PATH || 'build/digivice-core');
 const battleCorePath = resolve(process.env.DIGIVICE_TEST_BATTLE_PATH || 'build/digivice-battle');
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -77,12 +78,12 @@ async function replay(kind, trace, label) {
   const before=posts.length,save=await read(),battle=await read('/api/battle');
   await page.evaluate(()=>{window.__autoPolicyLines=[];window.__autoPolicyObserver?.disconnect();window.__autoPolicyObserver=new MutationObserver(()=>{const r=document.querySelector('#device-ui');if(['wild-auto-progress','battle-auto-progress'].includes(r?.dataset.screen)){const s=r.querySelector('.screen-detail')?.textContent;if(s&&!window.__autoPolicyLines.includes(s))window.__autoPolicyLines.push(s);}});window.__autoPolicyObserver.observe(document.querySelector('#device-ui'),{subtree:true,childList:true,characterData:true});});
   await choose(`${prefix}-auto-replay`);await onScreen(progress);
-  assert.equal(await right.isDisabled(),true);assert.equal(await screen.locator('button[data-device-action]').count(),0);
-  await rawPress(right);await rawPress(right);await rawPress(left);await holdDeviceBack(page);
+  assert.deepEqual(await screen.locator('button[data-device-action]').evaluateAll(nodes=>nodes.map(n=>n.dataset.deviceAction).sort()),['auto-finish','auto-pause']);
+  await rawPress(right);await page.waitForTimeout(750);const pausedStep=await screen.getAttribute('data-auto-step');await page.waitForTimeout(750);assert.equal(await screen.getAttribute('data-auto-step'),pausedStep);await rawPress(right);await holdDeviceBack(page);
   assert.equal(posts.length,before);await onScreen(result); // Page default timeout is expanded below for bounded replay.
   const lines=await page.evaluate(()=>window.__autoPolicyLines);for(const step of trace.steps)assert.ok(lines.includes(autoStepText(step,trace)),`${label}:missing recorded step ${step.turn}`);
   assert.deepEqual(await read(),save);assert.deepEqual(await read('/api/battle'),battle);assert.equal(posts.length,before);
-  replays.push({label,kind,steps:trace.steps.length,noManualControls:true,noCommandsOrRewards:true,frozenNames:true});
+  replays.push({label,kind,steps:trace.steps.length,onlyReplayControls:true,noCommandsOrRewards:true,frozenNames:true});
 }
 async function restart() { await page.goto('about:blank');await new Promise(resolve=>app.server.close(resolve));app.close();app=await startServer({dataDir,port,corePath,battleCorePath});await page.goto(`${base}/?controls=buttons`); }
 async function loseReply(id,path,pendingKey,routeName) {
@@ -97,17 +98,20 @@ try {
   mkdirSync('docs/evidence',{recursive:true});
   page.setDefaultTimeout(45000); // Maximum40-step presentation is650ms/step.
   await page.goto(`${base}/?controls=buttons`);await onScreen('saving');await ready();const migrated=await read();
-  assert.equal(migrated.state.rulesVersion,CORE_RULES);assert.equal(migrated.state.schemaVersion,13);assert.deepEqual(migrated.autoTrace,care.response.body.autoTrace);assert.equal(migrated.revision,care.response.body.revision);
+  assert.equal(migrated.state.rulesVersion,CORE_RULES);assert.equal(migrated.state.schemaVersion,19);assert.deepEqual(migrated.autoTrace,care.response.body.autoTrace);assert.equal(migrated.revision,care.response.body.revision);
   assert.equal(posts.length,0);const rejected=await command('retry','/api/save-sync',409);assert.equal(rejected.error,'migration_required');await ready();
   assert.deepEqual(posts[0].body,oldCareBody);assert.equal(await page.evaluate(key=>localStorage.getItem(key),CARE_PENDING),oldCarePending);assert.deepEqual(await read(),migrated);
   await choose('open-recovery');await choose('recovery-confirm');const rejectedCount=posts.length;await holdDeviceBack(page);assert.equal(posts.length,rejectedCount);assert.equal(await page.evaluate(key=>localStorage.getItem(key),CARE_PENDING),oldCarePending);
   await choose('recovery-confirm');await choose('discard-local');await onScreen('wild-auto-result');assert.deepEqual(await read(),migrated);await replay('wild',migrated.autoTrace,'frozen-care8');await evidence('frozen-care8');
   await page.evaluate(({key,raw})=>localStorage.setItem(key,raw),{key:BATTLE_PENDING_KEY,raw:oldPracticePending});await page.reload();await onScreen('battle-resolve');await ready();const old=await command('practice-retry','/api/battle/start');await onScreen('battle-auto-result');
   assert.deepEqual(old,oldPractice.expectedCurrent);assert.equal(posts.at(-1).raw,oldPracticeBody);await replay('practice',old.autoTrace,'frozen-practice6');
-  await menu('explore');const beforeWalk=posts.length;await command('walk');await onScreen('wild-auto-confirm');const encounter=await read();assert.equal(encounter.state.wildRules,CORE_RULES);assert.equal(posts.length,beforeWalk+1);
+  await menu('explore');const beforeWalk=posts.length;const walked=await exploreEncounter(command);await onScreen('wild-auto-confirm');const encounter=await read();assert.equal(encounter.state.wildRules,CORE_RULES);assert.equal(posts.length,beforeWalk+walked.inputs);assert.ok(posts.slice(beforeWalk).every(p=>JSON.stringify(p.body.events)===JSON.stringify([{type:'explore',value:100}])));
   const beforeConfirm=posts.length;await holdDeviceBack(page);assert.equal(posts.length,beforeConfirm);assert.deepEqual(await read(),encounter);await home();await choose('wild-auto-confirm');await onScreen('wild-auto-confirm');
   const wildLost=await loseReply('wild-auto-start','/api/save-sync',CARE_PENDING,'saving');assert.equal(JSON.parse(wildLost.raw).rulesVersion,CORE_RULES);
-  const wild=await command('retry');await onScreen('wild-auto-result');assert.deepEqual(wild,wildLost.committed);assert.equal(posts.at(-1).raw,posts.at(-2).raw);await replay('wild',wild.autoTrace,'current-care10');await evidence('current-wild');
+  let wild=await command('retry');await autoCheckpoint(page);assert.deepEqual(wild,wildLost.committed);assert.equal(posts.at(-1).raw,posts.at(-2).raw);
+  assert.deepEqual(posts.at(-1).body.events,[{type:'auto-fight',value:0}]);
+  if(wild.state.autoCapture===1){const pausedSave=await read(),count=posts.length;await page.waitForTimeout(800);assert.deepEqual(await read(),pausedSave);assert.equal(posts.length,count);wild=await resumeFighting(page,()=>holdDeviceBack(page));}
+  await onScreen('wild-auto-result');await replay('wild',wild.autoTrace,'current-care13');await evidence('current-wild');
   const pet=await read();await menu('battle-mode');await choose('practice-start');const beforeMode=posts.length;await choose('practice-auto');await onScreen('battle-auto-confirm');await holdDeviceBack(page);assert.equal(posts.length,beforeMode);
   await choose('practice-tactical',false);const tactical=await command('practice-tactical','/api/battle/start');await onScreen('battle-choice');assert.equal(tactical.battle.rulesVersion,PRACTICE_RULES);await holdDeviceBack(page);await command('practice-retreat','/api/battle/act');await onScreen('battle-result');await choose('practice-continue');
   await choose('practice-start');await choose('practice-auto');await onScreen('battle-auto-confirm');

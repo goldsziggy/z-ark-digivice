@@ -6,7 +6,7 @@ export type AutoTrace = {
   formatVersion: 1; mode: 'auto'; kind: 'wild' | 'practice'; startSequence: number; endSequence: number;
   player: Participant; enemy: Participant;
   combatRulesVersion?: 12; playerCare?: { offenseBonus: number; protectionBonus: number }; enemyCare?: { offenseBonus: number; protectionBonus: number };
-  outcome: 'won' | 'captured' | 'retreated' | 'lost' | 'draw';
+  outcome: 'none' | 'won' | 'captured' | 'retreated' | 'lost' | 'draw';
   steps: Array<{ turn: number; phase: 'attack' | 'defend'; action: string; opponentAction: string | null;
     playerHpBefore: number; playerHpAfter: number; enemyHpBefore: number; enemyHpAfter: number; reflected: boolean; captured: boolean; capture?: { chance: number; attempt: number; result: 'miss' | 'escaped' | 'captured' }; guard?: null | 'brace' | 'ward' | 'counter' }>;
 };
@@ -32,7 +32,7 @@ export function parseAutoTrace(value: unknown, kind: AutoTrace['kind'], practice
   if (current && (kind !== 'wild' || value.combatRulesVersion !== 12 || !validTraceCare(value.playerCare) || !validTraceCare(value.enemyCare))) return invalid();
   if (!object(value) || !exact(value, ['formatVersion', 'mode', 'kind', 'startSequence', 'endSequence', 'outcome', 'steps', 'player', 'enemy', ...(current ? ['combatRulesVersion', 'playerCare', 'enemyCare'] : [])]) || value.formatVersion !== 1 || value.mode !== 'auto' || value.kind !== kind ||
     !integer(value.startSequence, 0xffffffff) || !integer(value.endSequence, 0xffffffff) || Number(value.endSequence) <= Number(value.startSequence) ||
-    !['won', 'captured', 'retreated', 'lost', 'draw'].includes(String(value.outcome)) || !Array.isArray(value.steps) || value.steps.length < 1 || value.steps.length > (kind === 'wild' ? 48 : practiceLimit)) return invalid();
+    !(kind === 'wild' ? ['none', 'won', 'captured', 'retreated'] : ['won', 'lost', 'draw']).includes(String(value.outcome)) || !Array.isArray(value.steps) || value.steps.length < 1 || value.steps.length > (kind === 'wild' ? 48 : practiceLimit)) return invalid();
   if (kind === 'wild' ? value.endSequence !== Number(value.startSequence) + 1 : Number(value.endSequence) - Number(value.startSequence) !== value.steps.length) return invalid();
   const player = participant(value.player), enemy = participant(value.enemy);
   const steps = value.steps.map((step, index) => {
@@ -43,5 +43,9 @@ export function parseAutoTrace(value: unknown, kind: AutoTrace['kind'], practice
     return { turn: Number(step.turn), phase: step.phase as 'attack' | 'defend', action: String(step.action), opponentAction: step.opponentAction === null ? null : String(step.opponentAction),
       playerHpBefore: Number(step.playerHpBefore), playerHpAfter: Number(step.playerHpAfter), enemyHpBefore: Number(step.enemyHpBefore), enemyHpAfter: Number(step.enemyHpAfter), reflected: step.reflected, captured: step.captured, ...(Object.hasOwn(step, 'guard') ? { guard: step.guard as null | 'brace' | 'ward' | 'counter' } : {}), ...(current && step.action === 'capture' ? { capture: { ...(step.capture as NonNullable<AutoTrace['steps'][number]['capture']>) } } : {}) };
   });
+  if (value.outcome === 'none' && steps.some((step, index) =>
+    step.phase !== 'attack' || !['physical', 'heavy', 'magic'].includes(step.action) || step.captured || step.capture ||
+    step.playerHpAfter < 1 || step.enemyHpAfter < 1 || step.playerHpBefore < step.playerHpAfter || step.enemyHpBefore < step.enemyHpAfter ||
+    (index > 0 && (step.playerHpBefore !== steps[index - 1].playerHpAfter || step.enemyHpBefore !== steps[index - 1].enemyHpAfter)))) return invalid();
   return { ...(current ? { combatRulesVersion: 12 as const, playerCare: value.playerCare as NonNullable<AutoTrace['playerCare']>, enemyCare: value.enemyCare as NonNullable<AutoTrace['enemyCare']> } : {}), formatVersion: 1, mode: 'auto', kind, player, enemy, startSequence: Number(value.startSequence), endSequence: Number(value.endSequence), outcome: value.outcome as AutoTrace['outcome'], steps };
 }

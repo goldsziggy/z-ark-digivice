@@ -2,7 +2,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 mkdir -p build/firmware-host
+bash firmware/tests/test_device_entropy.sh
 bash firmware/tests/test_save_store.sh
+bash firmware/tests/test_audio_settings.sh
+bash firmware/tests/test_audio_worker.sh
+bash firmware/tests/test_trade_session.sh
+bash firmware/tests/test_trade_runtime.sh
 
 # Shared portable runtime and fault models; no ESP SDK or serial port needed.
 for module in power network motion step_delivery recovery_choice asset_cache sprite prefetch file_asset_storage starter battle_mode_choice practice_session evolution_choice release_confirmation local_form_art; do

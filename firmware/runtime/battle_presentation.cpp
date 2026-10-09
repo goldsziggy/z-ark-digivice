@@ -32,8 +32,7 @@ bool valid(const autobattle::Trace& t,bool tactical) {
     if(t.kind!=autobattle::Kind::Wild || !t.count || t.count>autobattle::kMaxTraceSteps ||
        t.startSequence==UINT32_MAX || t.endSequence!=t.startSequence+1 ||
        (t.combatRulesVersion!=4 && t.combatRulesVersion!=7 && t.combatRulesVersion!=8 && t.combatRulesVersion!=9 && t.combatRulesVersion!=12) ||
-       (t.outcome!=Outcome::None && t.outcome!=Outcome::Won && t.outcome!=Outcome::Captured && t.outcome!=Outcome::Retreated) ||
-       (!tactical && t.outcome==Outcome::None)) return false;
+       (t.outcome!=Outcome::None && t.outcome!=Outcome::Won && t.outcome!=Outcome::Captured && t.outcome!=Outcome::Retreated)) return false;
     if(!combat::validCareBonus({t.playerOffenseBonus,t.playerProtectionBonus}) ||
        !combat::validCareBonus({t.enemyOffenseBonus,t.enemyProtectionBonus}) ||
        (t.combatRulesVersion!=12 && (t.playerOffenseBonus || t.playerProtectionBonus || t.enemyOffenseBonus || t.enemyProtectionBonus))) return false;
@@ -42,11 +41,12 @@ bool valid(const autobattle::Trace& t,bool tactical) {
     if(!p.stats.maxHp || !e.stats.maxHp || p.stats.maxHp>512 || e.stats.maxHp>512) return false;
     for(std::size_t i=0;i<t.count;++i) {
         const auto& s=t.steps[i];
-        if(t.combatRulesVersion==12 && s.action==Move::Capture) {
+        if(!tactical && t.outcome==Outcome::None && !attack(s.action)) return false;
+        if(s.action==Move::Capture && (t.combatRulesVersion==12 || s.captureAttempt)) {
             const auto result=static_cast<CaptureResult>(s.captureResult);
             if(s.captureAttempt<1 || s.captureAttempt>3 || result==CaptureResult::None ||
                s.captureResult>static_cast<std::uint8_t>(CaptureResult::Captured) ||
-               (result==CaptureResult::Miss ? s.captureChance!=0 : s.captureChance<10 || s.captureChance>90) ||
+               (result==CaptureResult::Miss ? s.captureChance!=0 : s.captureChance<(tactical?1u:10u) || s.captureChance>90) ||
                s.captured!=(result==CaptureResult::Captured) || s.reflected || s.opponentAction!=Move::None ||
                s.playerHpAfter!=s.playerHpBefore || s.enemyHpAfter!=s.enemyHpBefore ||
                (s.captureAttempt==3 && i+1<t.count)) return false;
@@ -67,7 +67,8 @@ bool valid(const autobattle::Trace& t,bool tactical) {
            (i && (t.steps[i-1].captured || s.playerHpBefore!=t.steps[i-1].playerHpAfter || s.enemyHpBefore!=t.steps[i-1].enemyHpAfter))) return false;
     }
     const auto& last=t.steps[t.count-1];
-    const bool captureEnded=t.combatRulesVersion==12 && last.action==Move::Capture &&
+    if(!tactical && t.outcome==Outcome::None && last.enemyHpAfter>e.stats.maxHp/2) return false;
+    const bool captureEnded=last.captureAttempt && last.action==Move::Capture &&
         last.captureAttempt==3 && !last.captured;
     return (last.captured==(t.outcome==Outcome::Captured)) && (t.outcome!=Outcome::Won || !last.enemyHpAfter) &&
            (!captureEnded || t.outcome==Outcome::Retreated) &&
@@ -88,9 +89,10 @@ bool Sequencer::begin(const autobattle::Trace& t,std::uint64_t now,bool tactical
 }
 bool Sequencer::startTactical(const State& before,const State& after,Action action,std::uint32_t value,std::uint64_t now) {
     if(locked() || !isValid(before) || !isValid(after) || before.phase!=digivice::Phase::Encounter ||
-       before.battleMode!=BattleMode::Tactical || before.sequence==UINT32_MAX || after.sequence!=before.sequence+1 ||
+       (before.battleMode!=BattleMode::Tactical && !(before.battleMode==BattleMode::Auto &&
+        before.autoCapture==AutoCapture::Awaiting && (action==Action::Flick || action==Action::RingCapture))) || before.sequence==UINT32_MAX || after.sequence!=before.sequence+1 ||
        before.activeCreatureId!=after.activeCreatureId ||
-       (action!=Action::Attack && action!=Action::Heavy && action!=Action::Magic && action!=Action::Capture && action!=Action::Flick)) return false;
+       (action!=Action::Attack && action!=Action::Heavy && action!=Action::Magic && action!=Action::Capture && action!=Action::Flick && action!=Action::RingCapture)) return false;
     const auto* member=activeMember(before);
     if(!member) return false;
     autobattle::Trace t{};
@@ -109,7 +111,8 @@ bool Sequencer::startTactical(const State& before,const State& after,Action acti
     s.reflected=action==Action::Heavy && guard==combat::Defense::Counter;
     const bool terminal=after.phase==digivice::Phase::Home;
     if(!terminal && (after.phase!=digivice::Phase::Encounter || after.wildFormId!=before.wildFormId || after.encounters!=before.encounters)) return false;
-    const bool captureEnded=t.combatRulesVersion==12 && s.action==Move::Capture && after.message==Message::CaptureEnded;
+    const bool calmCapture=action==Action::RingCapture || t.combatRulesVersion==12 || before.autoCapture==AutoCapture::Awaiting;
+    const bool captureEnded=calmCapture && s.action==Move::Capture && after.message==Message::CaptureEnded;
     if(terminal && !s.captured && after.message!=Message::Won && after.message!=Message::Trained && after.message!=Message::Retreated && !captureEnded) return false;
     t.outcome=!terminal?Outcome::None:s.captured?Outcome::Captured:after.message==Message::Retreated || captureEnded?Outcome::Retreated:Outcome::Won;
     s.playerHpAfter=!terminal?after.hp:t.outcome==Outcome::Retreated && !captureEnded?0:before.hp;
@@ -129,11 +132,12 @@ bool Sequencer::startTactical(const State& before,const State& after,Action acti
     s.opponentAction=s.captured || !s.enemyHpAfter?Move::None:s.reflected?Move::Counter:before.wildTurn%2?Move::Magic:Move::Physical;
     bool aimMiss=false;
     if(action==Action::Flick) { FlickTrajectory trajectory; if(!decodeFlick(value,trajectory)) return false; aimMiss=!trajectory.hit; }
-    if(t.combatRulesVersion==12 && s.action==Move::Capture) {
+    if(calmCapture && s.action==Move::Capture) {
         const auto& record=after.lastCapture;
+        const auto chance=action==Action::RingCapture ? ringCaptureChance(before,value) : aimMiss?0:captureChance(before);
         if(record.sequence!=after.sequence || record.targetFormId!=before.wildFormId || record.targetLevel!=before.wildLevel ||
            record.attempt!=before.captureAttempts+1 || (record.result==CaptureResult::Miss)!=aimMiss ||
-           record.chance!=(aimMiss?0:captureChance(before))) return false;
+           record.chance!=chance) return false;
         s.captureChance=record.chance; s.captureAttempt=record.attempt; s.captureResult=static_cast<std::uint8_t>(record.result);
         s.opponentAction=Move::None;
     }
@@ -157,10 +161,12 @@ bool Sequencer::startSavedCapture(const State& state,std::uint64_t now) {
         if(!present) return false;
     } else if(ended) {
         if(state.phase!=digivice::Phase::Home || state.message!=Message::CaptureEnded) return false;
-    } else if(state.phase!=digivice::Phase::Encounter || state.wildRules<12 || state.message!=Message::CaptureMissed ||
+    } else if(state.phase!=digivice::Phase::Encounter || state.message!=Message::CaptureMissed ||
               state.captureAttempts!=record.attempt || state.wildFormId!=record.targetFormId || state.wildLevel!=record.targetLevel) return false;
     autobattle::Trace t{};
-    t.startSequence=record.sequence-1; t.endSequence=record.sequence; t.combatRulesVersion=12;
+    t.startSequence=record.sequence-1; t.endSequence=record.sequence;
+    t.combatRulesVersion=state.phase==digivice::Phase::Encounter && state.wildRules<12 ?
+        state.wildRules<8?7:state.wildRules==8?8:state.wildRules==9?9:4 : 12;
     t.playerFormId=member->formId; t.playerLevel=member->level;
     t.enemyFormId=record.targetFormId; t.enemyLevel=record.targetLevel;
     t.outcome=caught?Outcome::Captured:ended?Outcome::Retreated:Outcome::None; t.count=1;
@@ -197,7 +203,7 @@ void Sequencer::enter(Phase phase,std::uint64_t now) {
     view_.actorName=p.name; view_.move=player?s.action:s.opponentAction; view_.moveName=skill(p,view_.move);
     view_.aimMiss=player && aimMiss_;
     view_.damage=player?loss(s.enemyHpBefore,s.enemyHpAfter):loss(s.playerHpBefore,s.playerHpAfter);
-    if(player && trace_.combatRulesVersion==12 && s.action==Move::Capture) {
+    if(player && s.captureAttempt && s.action==Move::Capture) {
         view_.capturePresentation=true; view_.captureAttempt=s.captureAttempt;
         view_.captureRemaining=static_cast<std::uint8_t>(3-s.captureAttempt);
         captureStage_=0; impactAt_=now;

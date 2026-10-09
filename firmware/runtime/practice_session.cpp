@@ -171,7 +171,8 @@ bool PracticeSession::blocksPartner() const { return !writable_ || (hasBattle_ &
 bool PracticeSession::allowsCareAction(digivice::Action action) const {
     return !blocksPartner() || (action != digivice::Action::Select && action != digivice::Action::Walk &&
         action != digivice::Action::Explore && action != digivice::Action::PresentEncounter &&
-        action != digivice::Action::Evolve && action != digivice::Action::Release);
+        action != digivice::Action::Evolve && action != digivice::Action::Release &&
+        action != digivice::Action::PartyAdd && action != digivice::Action::PartyRemove);
 }
 bool PracticeSession::replay(autobattle::Trace& trace) const {
     if (!writable_ || !hasBattle_ || record_.mode != Mode::Auto) return false;

@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "capture_ring.hpp"
 #include "combat.hpp"
 #include "forms.hpp"
 #include "legacy_forms_v6.hpp"
@@ -20,6 +21,48 @@ const CreatureMember* findMember(const State& state,std::uint32_t id) {
     return nullptr;
 }
 const CreatureMember* activeMember(const State& state) { return findMember(state,state.activeCreatureId); }
+bool isPartyMember(const State& s,std::uint32_t id) {
+    if(!id)return false;
+    for(const auto selected:s.partyMemberIds)if(selected==id)return true;
+    return false;
+}
+std::size_t partyCount(const State& s) {
+    std::size_t count=0;for(const auto id:s.partyMemberIds)if(id)++count;return count;
+}
+void reconcileParty(State& s) {
+    std::uint32_t retained[kPartyCapacity]{};std::size_t count=0;
+    for(const auto id:s.partyMemberIds) {
+        if(!id||id==s.activeCreatureId||!findMember(s,id))continue;
+        bool duplicate=false;for(std::size_t i=0;i<count;++i)duplicate|=retained[i]==id;
+        if(!duplicate)retained[count++]=id;
+    }
+    for(std::size_t i=0;i<kPartyCapacity;++i)s.partyMemberIds[i]=retained[i];
+}
+const CreatureMember* collectionMemberAtDisplayIndex(const State& s,std::size_t index) {
+    if(s.collectionCount>kCollectionCapacity||index>=s.collectionCount)return nullptr;
+    if(index==0)return activeMember(s);
+    --index;
+    for(const auto id:s.partyMemberIds)if(id){if(index==0)return findMember(s,id);--index;}
+    for(std::size_t i=s.collectionCount;i>0;--i){const auto& m=s.collection[i-1];
+        if(m.id==s.activeCreatureId||isPartyMember(s,m.id))continue;
+        if(index==0)return &m;
+        --index;
+    }
+    return nullptr;
+}
+std::size_t displayIndexForMember(const State& s,std::uint32_t id) {
+    if(!id||s.collectionCount>kCollectionCapacity)return s.collectionCount;
+    if(id==s.activeCreatureId)return 0;
+    std::size_t index=1;
+    for(const auto selected:s.partyMemberIds)if(selected){if(selected==id)return index;++index;}
+    for(std::size_t i=s.collectionCount;i>0;--i){const auto candidate=s.collection[i-1].id;
+        if(candidate==s.activeCreatureId||isPartyMember(s,candidate))continue;
+        if(candidate==id)return index;
+        ++index;
+    }
+    return s.collectionCount;
+}
+
 combat::CareBonus memberCare(const CreatureMember& member){return combat::careBonus(member.bond,member.fullness,member.mood);}
 combat::Profile memberBattleProfile(const State& state,const CreatureMember& member){
     if(state.phase==Phase::Encounter&&member.id==state.activeCreatureId&&state.wildRules<12){
@@ -70,6 +113,12 @@ std::uint32_t captureChance(const State& state) {
     const auto penalty=rarityPenalty+levelPenalty;
     return base>penalty+10?base-penalty:10u;
 }
+std::uint32_t ringCaptureChance(const State& state, std::uint32_t phaseMs) {
+    if (phaseMs >= capturering::kCycleMs ||
+        needsTestEncounterResolution(state) ||
+        (state.battleMode == BattleMode::Auto && state.autoCapture != AutoCapture::Awaiting)) return 0;
+    return capturering::chanceForGrade(captureChance(state), capturering::sample(phaseMs, state.wildFormId).grade);
+}
 bool decodeFlick(std::uint32_t value, FlickTrajectory& result) {
     if(value>kFlickMaxValue) return false;
     const auto dx=static_cast<std::int32_t>(value/256u)-160;
@@ -78,6 +127,7 @@ bool decodeFlick(std::uint32_t value, FlickTrajectory& result) {
     result={206+dx,300-reach,dx*dx+dy*dy<=48*48};
     return true;
 }
+std::uint32_t worldSelectionSeed(const State& state) { return state.worldSeed ? state.worldSeed : state.seed; }
 std::uint32_t selectWildForm(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partnerFormId,std::uint32_t rivalLevel) {
     return encounters::selectProduction(encounter,seed,partnerFormId,rivalLevel);
 }
@@ -151,8 +201,20 @@ void addXp(State& state,std::uint32_t amount,std::uint32_t rules=0) {
         state.level=level; state.message=Message::Trained;
     }
 }
+// Exactly one terminal wild reward call. Extras use their own level/HP scale;
+// the active partner's cap never reduces their award, and care is untouched.
+void addPartyXp(State& state,std::uint32_t amount) {
+    for(const auto id:state.partyMemberIds)if(id){
+        auto& member=*const_cast<CreatureMember*>(findMember(state,id));
+        const auto oldMax=maxHp(member.formId,member.level);
+        member.xp=cappedAdd(member.xp,amount,kMaxXp);
+        const auto level=levelForXp(member.xp);
+        if(level>member.level){member.hp=scaleHp(member.hp,oldMax,maxHp(member.formId,level));member.level=level;}
+    }
+}
 void home(State& state) {
     state.phase = Phase::Home;
+    state.autoCapture = AutoCapture::None;
     state.wildHp = state.wildMaxHp = state.captureAttempts = 0;
     state.attackBoost = state.shield = 0;
     state.cardUsed = false;
@@ -262,7 +324,7 @@ static bool validLegacyForVersion(const State& state, bool legacy) {
     if (state.starterId > combat::kStarterCount || (state.starterId && (!state.sequence || legacy || state.legacyCaptures)) ||
         state.message == Message::EggReady ||
         (state.message == Message::Hatched && !state.starterId)) return false;
-    if (state.collectionCount < 1 || state.collectionCount > kCollectionCapacity ||
+    if (state.collectionCount < 1 || state.collectionCount > kLegacyCollectionCapacity ||
         state.activeCreatureId < 1 || state.activeCreatureId > state.collectionCount ||
         state.legacyCaptures > state.captures ||
         state.captures - state.legacyCaptures != state.collectionCount - 1) return false;
@@ -331,7 +393,7 @@ static bool validRules4State(const State& state, bool /* legacy */) {
     if (state.starterId > combat::kStarterCount || (state.starterId && (!state.sequence || state.legacyCaptures)) ||
         state.message == Message::EggReady ||
         (state.message == Message::Hatched && !state.starterId)) return false;
-    if (state.collectionCount < 1 || state.collectionCount > kCollectionCapacity ||
+    if (state.collectionCount < 1 || state.collectionCount > kLegacyCollectionCapacity ||
         state.activeCreatureId < 1 || state.activeCreatureId > state.collectionCount ||
         state.legacyCaptures > state.captures ||
         state.captures - state.legacyCaptures != state.collectionCount - 1) return false;
@@ -379,11 +441,21 @@ static bool validRules4State(const State& state, bool /* legacy */) {
 
 static bool validForVersion(const State& s,bool) {
     if(s.foregroundSequence>s.sequence)return false;
+    bool partyTail=false;
+    for(std::size_t i=0;i<kPartyCapacity;++i){const auto id=s.partyMemberIds[i];
+        if(!id){partyTail=true;continue;}
+        if(partyTail||!s.onboardingComplete||id==s.activeCreatureId||!findMember(s,id))return false;
+        for(std::size_t j=0;j<i;++j)if(s.partyMemberIds[j]==id)return false;
+    }
+    if(static_cast<unsigned>(s.autoCapture)>1)return false;
+    if(s.autoCapture==AutoCapture::Awaiting && (s.phase!=Phase::Encounter || s.battleMode!=BattleMode::Auto ||
+       s.collectionCount>=kCollectionCapacity || s.nextMemberId==kMax || s.captures==kMax ||
+       !s.wildHp || s.wildHp>s.wildMaxHp/2 || !s.wildTurn || s.captureAttempts>=3))return false;
     const auto& capture=s.lastCapture;
     if(static_cast<unsigned>(capture.result)>3)return false;
     if(capture.result==CaptureResult::None){if(capture.sequence||capture.targetFormId||capture.chance||capture.attempt||capture.targetLevel)return false;}
     else if(!capture.sequence||capture.sequence>s.sequence||!combat::validFormProfile(capture.targetFormId,capture.targetLevel)||capture.attempt<1||capture.attempt>3||
-            (capture.result==CaptureResult::Miss?capture.chance!=0:(capture.chance<10||capture.chance>90))||
+            (capture.result==CaptureResult::Miss?capture.chance!=0:(capture.chance<1||capture.chance>90))||
             (capture.result==CaptureResult::Captured&&!s.captures))return false;
     if(s.starterOfferSeed){std::uint32_t offers[3];drawStarterOffers(s.starterOfferSeed,offers);for(unsigned i=0;i<3;++i)if(s.starterOffers[i]!=offers[i])return false;}
     else for(const auto offer:s.starterOffers)if(offer)return false;
@@ -394,7 +466,7 @@ static bool validForVersion(const State& s,bool) {
     const auto& pending=s.pendingEncounter;
     if(pending.formId) {
         if(!s.onboardingComplete || !combat::validFormProfile(pending.formId,pending.level) ||
-           (pending.rules!=12&&pending.rules!=13) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
+           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
            s.encounterProgress || s.encounters==kMax) return false;
     } else if(pending.level || pending.rules) return false;
     static_assert(forms::kFormCount<=kJournalCapacity);
@@ -408,16 +480,16 @@ static bool validForVersion(const State& s,bool) {
            s.steps || s.stepCredit || s.hp || s.energy || s.fullness || s.mood || s.bond || s.level || s.captures || s.encounters ||
            s.wildHp || s.wildMaxHp || s.captureAttempts || s.cardUsed || s.attackBoost || s.shield || s.legacyCaptures ||
            s.activeCreatureId || s.collectionCount || s.wildSpecies!=Species::None || s.wildLevel || s.wildTurn || s.wildFormId || s.wildRules ||
-           s.explorationSteps || s.walkingEncounters || s.encounterRng || s.encounterTarget || s.encounterProgress ||
-           capture.result!=CaptureResult::None || s.encounterRate!=EncounterRate::Normal || s.nextMemberId!=1 || s.message!=Message::EggReady || s.battleMode!=BattleMode::Tactical || s.lastAutoOutcome!=autobattle::Outcome::None) return false;
+           s.explorationSteps || s.walkingEncounters || s.encounterRng || s.encounterTarget || s.encounterProgress || s.worldSeed ||
+           capture.result!=CaptureResult::None || s.encounterRate!=EncounterRate::Normal || s.nextMemberId!=1 || s.receivedTrades || s.message!=Message::EggReady || s.battleMode!=BattleMode::Tactical || s.lastAutoOutcome!=autobattle::Outcome::None) return false;
         for(const auto& m:s.collection) if(!emptyMember(m))return false;
         for(const auto word:s.journal) if(word)return false;
         return true;
     }
     if(s.starterId>11 || (s.starterId>=9&&!s.starterOfferSeed) || (s.starterId&&(!s.sequence||s.legacyCaptures)) || s.message==Message::EggReady ||
-       (s.message==Message::Hatched&&!s.starterId) || s.collectionCount<1 || s.collectionCount>8 || !activeMember(s) ||
+       (s.message==Message::Hatched&&!s.starterId) || s.collectionCount<1 || s.collectionCount>kCollectionCapacity || !activeMember(s) ||
        s.legacyCaptures>s.captures || s.nextMemberId<2 ||
-       static_cast<std::uint64_t>(s.captures-s.legacyCaptures)+2!=s.nextMemberId) return false;
+       s.receivedTrades>s.sequence || static_cast<std::uint64_t>(s.captures-s.legacyCaptures)+s.receivedTrades+2!=s.nextMemberId) return false;
     for(std::size_t i=0;i<kCollectionCapacity;++i) {
         const auto& m=s.collection[i];
         if(i>=s.collectionCount){if(!emptyMember(m))return false;continue;}
@@ -434,16 +506,16 @@ static bool validForVersion(const State& s,bool) {
     const auto& m=*activeMember(s);
     if(s.hp!=m.hp || s.energy!=m.energy || s.fullness!=m.fullness || s.mood!=m.mood || s.bond!=m.bond || s.level!=m.level ||
        !s.rngState || s.steps<s.stepCredit || (s.steps-s.stepCredit)%100 || static_cast<std::uint64_t>(s.encounters)!=(s.steps-s.stepCredit)/100+static_cast<std::uint64_t>(s.walkingEncounters) ||
-       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::EncounterCleared)) return false;
+       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::PartyRemoved)) return false;
     if(s.phase==Phase::Home) return !s.wildHp&&!s.wildMaxHp&&!s.captureAttempts&&!s.cardUsed&&!s.attackBoost&&!s.shield&&
         s.wildSpecies==Species::None&&!s.wildLevel&&!s.wildTurn&&!s.wildFormId&&!s.wildRules;
     if(s.phase!=Phase::Encounter || !s.encounters || !forms::validForLineage(s.wildFormId,static_cast<unsigned>(s.wildSpecies)) ||
-       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13) ||
+       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15) ||
        (s.wildRules>=13&&!forms::productionForm(s.wildFormId)) ||
        (s.wildRules==4&&(s.wildSpecies<Species::Flicker||s.wildSpecies>Species::Cinder||s.wildFormId!=rootForm(s.wildSpecies))) ||
        s.wildTurn>1000 || s.wildMaxHp!=maxHpForRules(s.wildFormId,s.wildLevel,s.wildRules) || !s.wildHp || s.wildHp>s.wildMaxHp || s.captureAttempts>3 || (s.wildRules>=12&&s.captureAttempts==3) ||
        (s.attackBoost&&s.attackBoost!=5) || s.shield>12 || (s.attackBoost&&s.shield) || (!s.cardUsed&&(s.attackBoost||s.shield)))return false;
-    if(s.battleMode==BattleMode::Auto && (s.wildHp!=s.wildMaxHp||s.captureAttempts||s.wildTurn||s.cardUsed||s.attackBoost||s.shield))return false;
+    if(s.battleMode==BattleMode::Auto && s.autoCapture==AutoCapture::None && (s.wildHp!=s.wildMaxHp||s.captureAttempts||s.wildTurn||s.cardUsed||s.attackBoost||s.shield))return false;
     return true;
 }
 
@@ -471,7 +543,7 @@ bool needsTestEncounterResolution(const State& state) {
 
 Error apply(State& state, Action action, std::uint32_t value) {
     if (!isValid(state)) return Error::InvalidState;
-    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::ResolveTestEncounter)) return Error::InvalidAction;
+    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::PartyRemove)) return Error::InvalidAction;
     if (state.sequence == kMax) return Error::CounterOverflow;
     if(needsTestEncounterResolution(state)&&action!=Action::ResolveTestEncounter)return Error::InvalidAction;
     if(action==Action::StarterOfferSeed){
@@ -492,6 +564,9 @@ Error apply(State& state, Action action, std::uint32_t value) {
     } else if (action == Action::Mode) {
         if (value > 1) return Error::InvalidValue;
         if (state.phase != Phase::Home) return Error::WrongPhase;
+    } else if (action == Action::WorldSeed) {
+        if (!value) return Error::InvalidValue;
+        if (state.worldSeed) return Error::InvalidAction;
     } else if (action == Action::EncounterSeed) {
         if (!value) return Error::InvalidValue;
         if (state.encounterTarget || state.encounterRng) return Error::InvalidAction;
@@ -520,15 +595,23 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (value != 1 && value != 2) return Error::InvalidValue;
     } else if (action == Action::Flick) {
         if (value > kFlickMaxValue) return Error::InvalidValue;
+    } else if (action == Action::RingCapture) {
+        if (value >= capturering::kCycleMs) return Error::InvalidValue;
+    } else if (action == Action::PartyAdd || action == Action::PartyRemove) {
+        if(value<1||value==kMax)return Error::InvalidValue;
+        if(state.phase!=Phase::Home)return Error::WrongPhase;
     } else if (action == Action::Select || action == Action::Release) {
         if (value < 1 || value == kMax) return Error::InvalidValue;
     } else if (value != 0) {
         return Error::InvalidValue;
     }
     if (action == Action::Auto) return applyAuto(state);
+    if (action == Action::AutoFight) return applyAutoFight(state);
+    if (action == Action::AutoResume) return applyAutoResume(state);
     if (state.phase == Phase::Encounter && state.battleMode == BattleMode::Auto && action != Action::Walk &&
-        action != Action::AccrueSteps && action != Action::EncounterSeed && action != Action::ResolveTestEncounter &&
-        !(action==Action::Release && state.wildRules>=10))
+        action != Action::AccrueSteps && action != Action::EncounterSeed && action != Action::WorldSeed && action != Action::ResolveTestEncounter &&
+        !(action==Action::Release && state.wildRules>=10) &&
+        !((action==Action::Flick || action==Action::RingCapture) && state.autoCapture==AutoCapture::Awaiting))
         return Error::WrongMode;
     State next = state;
     switch (action) {
@@ -538,13 +621,24 @@ Error apply(State& state, Action action, std::uint32_t value) {
         }
         if(next.pendingEncounter.formId && !forms::productionForm(next.pendingEncounter.formId))next.pendingEncounter={};
         break;
+    case Action::PartyAdd:
+        if(!findMember(next,value))return Error::UnknownMember;
+        if(value==next.activeCreatureId)return Error::ActiveMemberParty;
+        if(isPartyMember(next,value))return Error::PartyMemberExists;
+        if(partyCount(next)>=kPartyCapacity)return Error::PartyFull;
+        next.partyMemberIds[partyCount(next)]=value;next.message=Message::PartyAdded;break;
+    case Action::PartyRemove:
+        if(!findMember(next,value))return Error::UnknownMember;
+        if(!isPartyMember(next,value))return Error::NotPartyMember;
+        for(auto& id:next.partyMemberIds)if(id==value)id=0;
+        reconcileParty(next);next.message=Message::PartyRemoved;break;
     case Action::Release: {
         if(next.phase!=Phase::Home && !(next.phase==Phase::Encounter && next.wildRules>=10)) return Error::WrongPhase;
         if(value==next.activeCreatureId) return Error::ActiveMemberRelease;
         if(!findMember(next,value)) return Error::UnknownMember;
         std::size_t index=0; while(next.collection[index].id!=value) ++index;
         for(;index+1<next.collectionCount;++index) next.collection[index]=next.collection[index+1];
-        next.collection[--next.collectionCount]={}; next.message=Message::Released; break;
+        next.collection[--next.collectionCount]={}; reconcileParty(next); next.message=Message::Released; break;
     }
     case Action::Evolve: {
         auto& member=active(next);
@@ -602,6 +696,9 @@ Error apply(State& state, Action action, std::uint32_t value) {
         next.message = Message::Rested;
         if(useful) addBond(next, 1);
         break; }
+    case Action::WorldSeed:
+        next.worldSeed=value;
+        break;
     case Action::EncounterSeed:
         next.encounterRng=value;
         drawEncounterTarget(next);
@@ -616,7 +713,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if(!next.encounterTarget) drawEncounterTarget(next);
         const auto effort=value*static_cast<unsigned>(next.encounterRate);
         if(effort>=next.encounterTarget-next.encounterProgress) {
-            const auto form=selectWildForm(next.encounters+1,next.seed,active(next).formId,next.level);
+            const auto form=selectWildForm(next.encounters+1,worldSelectionSeed(next),active(next).formId,next.level);
             if(!forms::find(form)) return Error::InvalidState;
             next.pendingEncounter={form,next.level,kRulesVersion};
             next.encounterProgress=0;
@@ -645,7 +742,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
             ++next.encounters;
             next.phase=Phase::Encounter;
             next.wildLevel=next.level; next.wildTurn=0; next.wildRules=kRulesVersion;
-            next.wildFormId=selectWildForm(next.encounters,next.seed,active(next).formId,next.wildLevel);
+            next.wildFormId=selectWildForm(next.encounters,worldSelectionSeed(next),active(next).formId,next.wildLevel);
             const auto* foe=forms::find(next.wildFormId); if(!foe)return Error::InvalidState;
             next.wildSpecies=static_cast<Species>(foe->lineage);
             next.wildMaxHp=next.wildHp=maxHp(next.wildFormId,next.wildLevel);
@@ -664,7 +761,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
             ++next.encounters;
             next.phase = Phase::Encounter;
             next.wildLevel=next.level; next.wildTurn=0; next.wildRules=kRulesVersion; // New events use the production roster/resolver.
-            next.wildFormId=selectWildForm(next.encounters,next.seed,active(next).formId,next.wildLevel);
+            next.wildFormId=selectWildForm(next.encounters,worldSelectionSeed(next),active(next).formId,next.wildLevel);
             const auto* foe=forms::find(next.wildFormId); if(!foe)return Error::InvalidState;
             next.wildSpecies=static_cast<Species>(foe->lineage);
             next.wildMaxHp=next.wildHp=maxHp(next.wildFormId,next.wildLevel);
@@ -703,7 +800,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
             const auto xpReward=20+6*next.wildLevel, encounterRules=next.wildRules;
             home(next);
             next.message = Message::Won;
-            addBond(next, 8); addXp(next,xpReward,encounterRules);
+            addBond(next, 8); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward);
         } else {
             next.wildHp -= damage;
             next.message = Message::Attacked;
@@ -712,22 +809,24 @@ Error apply(State& state, Action action, std::uint32_t value) {
         break;
     }
     case Action::Capture:
-    case Action::Flick: {
+    case Action::Flick:
+    case Action::RingCapture: {
         if (next.phase != Phase::Encounter) return Error::WrongPhase;
         if (next.collectionCount >= kCollectionCapacity) return Error::CollectionFull;
         if(next.nextMemberId==kMax || next.captures==kMax) return Error::CounterOverflow;
         if (next.wildHp > next.wildMaxHp / 2) return Error::WildTooStrong;
         if (next.captureAttempts >= 3) return Error::CaptureLimit;
-        const auto chance=captureChance(next);
+        const auto chance=action==Action::RingCapture ? ringCaptureChance(next,value) : captureChance(next);
         ++next.captureAttempts;
         FlickTrajectory trajectory;
-        // Aim misses spend an attempt without a capture RNG draw. Rules12
-        // gives three calm throws; older encounters keep their response policy.
-        const bool aimed=action==Action::Capture || (decodeFlick(value,trajectory) && trajectory.hit);
-        if(next.wildRules>=12)next.lastCapture={next.sequence+1,next.wildFormId,aimed?chance:0u,
+        // Legacy aim misses keep spending no RNG. Every legal RingCapture grade
+        // draws once using its reduced/full eligible odds, including red timing.
+        const bool aimed=action==Action::Capture || action==Action::RingCapture || (decodeFlick(value,trajectory) && trajectory.hit);
+        const bool calm=action==Action::RingCapture || next.wildRules>=12 || next.autoCapture==AutoCapture::Awaiting;
+        if(calm)next.lastCapture={next.sequence+1,next.wildFormId,aimed?chance:0u,
             static_cast<std::uint8_t>(next.captureAttempts),static_cast<std::uint8_t>(next.wildLevel),aimed?CaptureResult::Escaped:CaptureResult::Miss};
         if (aimed && random(next) % 100 < chance) {
-            if(next.wildRules>=12)next.lastCapture.result=CaptureResult::Captured;
+            if(calm)next.lastCapture.result=CaptureResult::Captured;
             auto captured=freshMember(next.nextMemberId,next.wildSpecies,next.sequence+1);
             captured.formId=next.wildFormId; captured.bond=forms::find(captured.formId)->minBond;
             captured.level=next.wildLevel; captured.xp=xpForLevel(captured.level);
@@ -738,12 +837,12 @@ Error apply(State& state, Action action, std::uint32_t value) {
             ++next.captures;
             home(next);
             next.message = Message::Captured;
-            addBond(next, 12); addXp(next,xpReward,encounterRules);
-        } else if(next.wildRules>=12&&next.captureAttempts==3){
+            addBond(next, 12); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward);
+        } else if(calm&&next.captureAttempts==3){
             home(next);next.message=Message::CaptureEnded;
         } else {
             next.message = Message::CaptureMissed;
-            if(next.wildRules<12)wildResponse(next);
+            if(!calm)wildResponse(next);
         }
         break;
     }
@@ -752,6 +851,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (!findMember(next,value)) return Error::UnknownMember;
         if (!forms::productionForm(findMember(next,value)->formId)) return Error::InvalidAction;
         next.activeCreatureId = value;
+        reconcileParty(next);
         loadActive(next);
         next.message = Message::Selected;
         break;
@@ -770,7 +870,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
     ++next.sequence;
     // Queue-only repair must preserve the current real battle policy/result.
     const bool pendingOnlyRepair=action==Action::ResolveTestEncounter && state.phase==next.phase;
-    if(action!=Action::AccrueSteps&&action!=Action::EncounterSeed&&!pendingOnlyRepair)
+    if(action!=Action::AccrueSteps&&action!=Action::EncounterSeed&&action!=Action::WorldSeed&&!pendingOnlyRepair)
         next.foregroundSequence=next.sequence;
     if(next.onboardingComplete)storeActive(next);
     if (!isValid(next)) return Error::InvalidState;
@@ -790,11 +890,14 @@ std::uint32_t recoveryRestCount(const State& state) {
     return 0;
 }
 
-Error applyAuto(State& state, autobattle::Trace* trace) {
+namespace {
+enum class AutoFlow { Legacy, PauseForFlick, ResumeWithoutCapture };
+Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow) {
     if (trace) { trace->count = 0; trace->outcome = autobattle::Outcome::None; }
     if (!isValid(state)) return Error::InvalidState;
     if (state.phase != Phase::Encounter) return Error::WrongPhase;
     if (state.battleMode != BattleMode::Auto) return Error::WrongMode;
+    if((flow==AutoFlow::ResumeWithoutCapture)!=(state.autoCapture==AutoCapture::Awaiting))return Error::InvalidAction;
     if (state.sequence == kMax) return Error::CounterOverflow;
     if(needsTestEncounterResolution(state))return Error::InvalidAction;
     const auto startSequence = state.sequence;
@@ -804,6 +907,8 @@ Error applyAuto(State& state, autobattle::Trace* trace) {
     // Reuse the exact Tactical transitions on a private candidate. Internal
     // turns share the outer event's sequence, including capture timestamps.
     next.battleMode = BattleMode::Tactical;
+    next.autoCapture=AutoCapture::None;
+    if(flow!=AutoFlow::Legacy){next.lastAutoOutcome=autobattle::Outcome::None;next.lastAutoSequence=next.lastAutoTurns=0;}
     if (trace) {
         trace->kind = autobattle::Kind::Wild;
         trace->startSequence = startSequence; trace->endSequence = startSequence + 1;
@@ -818,7 +923,11 @@ Error applyAuto(State& state, autobattle::Trace* trace) {
     }
     for (std::uint32_t turn = 0; turn < autobattle::kMaxTraceSteps; ++turn) {
         Action chosen;
-        if (next.collectionCount < kCollectionCapacity && next.wildHp <= next.wildMaxHp / 2 && next.captureAttempts < 3)
+        // The historical one-event Auto policy in an old encounter keeps its
+        // original eight-slot decisions. Current AutoFight/manual throws use
+        // all60 slots immediately, including when continuing an old encounter.
+        const auto autoCapacity=state.wildRules<=13?kLegacyCollectionCapacity:kCollectionCapacity;
+        if (flow==AutoFlow::Legacy && next.collectionCount < autoCapacity && next.wildHp <= next.wildMaxHp / 2 && next.captureAttempts < 3)
             chosen = Action::Capture;
         else {
             constexpr Action moves[]{Action::Attack, Action::Magic, Action::Heavy};
@@ -883,6 +992,13 @@ Error applyAuto(State& state, autobattle::Trace* trace) {
             state = next;
             return Error::None;
         }
+        if(flow==AutoFlow::PauseForFlick && captureChance(next)) {
+            // The crossing attack AND its response have finished. No throw or
+            // capture RNG draw is included in this durable attack-only chunk.
+            next.battleMode=BattleMode::Auto;next.autoCapture=AutoCapture::Awaiting;
+            if(!isValid(next)){if(trace)trace->count=0;return Error::InvalidState;}
+            state=next;return Error::None;
+        }
         next.sequence = startSequence;
         next.foregroundSequence = startSequence;
         // The private candidate stays valid between internal turns. Publish the
@@ -901,6 +1017,10 @@ Error applyAuto(State& state, autobattle::Trace* trace) {
     if(trace) trace->outcome=next.lastAutoOutcome;
     state=next; return Error::None;
 }
+} // namespace
+Error applyAuto(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::Legacy);}
+Error applyAutoFight(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::PauseForFlick);}
+Error applyAutoResume(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::ResumeWithoutCapture);}
 
 const char* errorText(Error error) {
     switch (error) {
@@ -914,18 +1034,24 @@ const char* errorText(Error error) {
     case Error::WildTooStrong: return "weaken the wild creature to half health before capture";
     case Error::CaptureLimit: return "three capture attempts already used this encounter";
     case Error::CounterOverflow: return "state counter limit reached";
-    case Error::CollectionFull: return "collection is full (8 creatures); no creature was replaced";
+    case Error::CollectionFull: return "collection is full (60 Digimon); no Digimon was replaced";
     case Error::UnknownMember: return "that creature is not in your collection";
-    case Error::AlreadyHatched: return "starter already chosen; no creature was replaced";
+    case Error::AlreadyHatched: return "starter already chosen; no Digimon was replaced";
     case Error::WrongMode: return "action unavailable in this battle mode";
-    case Error::ActiveMemberRelease: return "select another companion before releasing this member";
+    case Error::ActiveMemberRelease: return "select another active partner before releasing this Digimon";
     case Error::EvolutionUnavailable: return "evolution requires a legal next form and its level/bond thresholds";
+    case Error::PartyFull: return "three XP companions are already selected";
+    case Error::PartyMemberExists: return "that Digimon is already an XP companion";
+    case Error::NotPartyMember: return "that Digimon is not an XP companion";
+    case Error::ActiveMemberParty: return "your active partner already earns battle XP";
     case Error::AutoLimit: return "auto battle reached its bounded turn limit; state unchanged";
     }
     return "unknown error";
 }
 const char* messageText(Message message) {
     switch (message) {
+    case Message::PartyAdded: return "XP companion selected.";
+    case Message::PartyRemoved: return "XP companion removed.";
     case Message::Welcome: return "Your adventure begins.";
     case Message::Fed: return "A happy snack.";
     case Message::Played: return "Time together builds your bond.";
@@ -936,7 +1062,7 @@ const char* messageText(Message message) {
     case Message::ShieldCard: return "Shelter card read. A gentle shield surrounds you.";
     case Message::Attacked: return "Your creature used a skill.";
     case Message::Won: return "A friendly battle won.";
-    case Message::Captured: return "A new friend joined your collection!";
+    case Message::Captured: return "A new Digimon joined your collection!";
     case Message::CaptureMissed: return "The wild creature slipped away from the capture beam.";
     case Message::Retreated: return "A gentle retreat. Rest whenever you are ready.";
     case Message::Evolved: return "Your bond helped your creature evolve!";
@@ -945,7 +1071,7 @@ const char* messageText(Message message) {
     case Message::Hatched: return "Your Rookie partner has hatched!";
     case Message::CaptureEnded: return "The wild creature wandered on. Three throws used.";
     case Message::EncounterCleared: return "Ready to explore.";
-    case Message::Released: return "Your friend is free to roam; your journal remembers them.";
+    case Message::Released: return "Your Digimon is free to roam; your journal remembers them.";
     case Message::Trained: return "Your companion gained a level from battle experience!";
     }
     return "Unknown message.";
@@ -970,7 +1096,7 @@ const char* wildName(const State& state) {
 }
 bool parseAction(const char* name, Action& action) {
     if (!name) return false;
-    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter"};
+    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove"};
     if (std::strcmp(name, "physical") == 0) { action = Action::Attack; return true; }
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (std::strcmp(name, names[i]) == 0) {
@@ -1031,8 +1157,8 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
         append("\"creature\":\"%s\",\"species\":\"%s\",",memberName(m),speciesId(m.species));
         progress(m); metadata(m.formId); append(","); profile(m.formId,m.level,m.id==s.activeCreatureId); care(m);
     } else append("\"creature\":null,\"species\":null,\"formId\":0,\"xp\":0,\"xpToNext\":0,\"stage\":null,\"artId\":null,\"combat\":null,\"care\":null");
-    append(",\"message\":\"%s\",\"activeCreatureId\":%u,\"collectionCapacity\":8,\"legacyCaptures\":%u,\"onboarding\":{\"completed\":%s,\"starterId\":",
-           message,number(s.activeCreatureId),number(s.legacyCaptures),s.onboardingComplete ? "true" : "false");
+    append(",\"message\":\"%s\",\"activeCreatureId\":%u,\"collectionCapacity\":%u,\"legacyCaptures\":%u,\"onboarding\":{\"completed\":%s,\"starterId\":",
+           message,number(s.activeCreatureId),number(kCollectionCapacity),number(s.legacyCaptures),s.onboardingComplete ? "true" : "false");
     if(s.starterId) append("%u",number(s.starterId)); else append("null");
     append(",\"offerSeed\":%u,\"offers\":[%u,%u,%u]}",number(s.starterOfferSeed),number(s.starterOffers[0]),number(s.starterOffers[1]),number(s.starterOffers[2]));
     append(",\"lastCapture\":{\"sequence\":%u,\"targetFormId\":%u,\"targetLevel\":%u,\"chance\":%u,\"attempt\":%u,\"result\":\"%s\"}",
@@ -1060,8 +1186,11 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     if(s.pendingEncounter.formId)append("{\"formId\":%u,\"level\":%u,\"rules\":%u}",number(s.pendingEncounter.formId),number(s.pendingEncounter.level),number(s.pendingEncounter.rules));
     else append("null");
     append("}");
+    append(",\"partyCapacity\":%u,\"partyMemberIds\":[",number(kPartyCapacity));
+    for(std::size_t i=0;i<partyCount(s);++i)append("%s%u",i?",":"",number(s.partyMemberIds[i]));
+    append("]");
     append(",\"foregroundSequence\":%u",number(s.foregroundSequence));
-    append(",\"nextMemberId\":%u,\"journal\":{\"capacity\":512,\"obtainedFormIds\":[",number(s.nextMemberId));
+    append(",\"autoCapture\":%u,\"worldSeed\":%u,\"receivedTrades\":%u,\"nextMemberId\":%u,\"journal\":{\"capacity\":512,\"obtainedFormIds\":[",number(static_cast<unsigned>(s.autoCapture)),number(s.worldSeed),number(s.receivedTrades),number(s.nextMemberId));
     bool obtainedComma=false;
     for(std::uint32_t id=1;id<=forms::kFormCount;++id) if(hasObtained(s,id)){append("%s%u",obtainedComma?",":"",number(id));obtainedComma=true;}
     append("]},\"collection\":[");
@@ -1088,12 +1217,14 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
 }
 
 bool encodeSnapshot(const State& s, Snapshot& snapshot) {
-    static_assert(kSnapshotSize == 8 + (22 + 4 + kCollectionCapacity * 11 + 11 + kJournalWords + 6 + 9 + 4) * 4 + 4);
+    static_assert(kSnapshotSize == 8 + (22 + 4 + kCollectionCapacity * 11 + 11 + kJournalWords + 6 + 9 + 4 + 3 + kPartyCapacity) * 4 + 4);
     if (!isValid(s)) return false;
-    Snapshot next;
-    auto* bytes = next.bytes;
+    // Validation is the only failure point. Write directly afterwards so deep
+    // durable trade/save calls do not stack another full collection snapshot.
+    auto* bytes = snapshot.bytes;
+    std::memset(bytes,0,kSnapshotSize);
     std::memcpy(bytes, "DGVS", 4);
-    bytes[4] = 17;
+    bytes[4] = static_cast<std::uint8_t>(kSchemaVersion);
     constexpr auto payload = kSnapshotSize - 12;
     bytes[6] = static_cast<std::uint8_t>(payload);
     bytes[7] = static_cast<std::uint8_t>(payload >> 8);
@@ -1128,8 +1259,11 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
         s.starterOfferSeed,s.starterOffers[0],s.starterOffers[1],s.starterOffers[2]};
     for(const auto value:added){put32(bytes+offset,value);offset+=4;}
     put32(bytes+offset,s.pendingEncounter.formId); put32(bytes+offset+4,s.pendingEncounter.level); put32(bytes+offset+8,s.pendingEncounter.rules); put32(bytes+offset+12,s.foregroundSequence);
+    put32(bytes+offset+16,s.receivedTrades);
+    put32(bytes+offset+20,static_cast<std::uint32_t>(s.autoCapture));
+    put32(bytes+offset+24,s.worldSeed);
+    for(std::size_t i=0;i<kPartyCapacity;++i)put32(bytes+offset+28+4*i,s.partyMemberIds[i]);
     put32(bytes + kSnapshotSize - 4, crc32(bytes, kSnapshotSize - 4));
-    snapshot = next;
     return true;
 }
 
@@ -1137,13 +1271,13 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     if (!bytes || length < 8) return SnapshotStatus::InvalidLength;
     if (std::memcmp(bytes, "DGVS", 4) != 0) return SnapshotStatus::BadMagic;
     const auto version = static_cast<unsigned>(bytes[4]) | (static_cast<unsigned>(bytes[5]) << 8);
-    if (version < 1 || version > 17) return SnapshotStatus::UnsupportedVersion;
+    if (version < 1 || version > kSchemaVersion) return SnapshotStatus::UnsupportedVersion;
     const auto required = version == 1 ? kLegacySnapshotSize : version == 2 ? kV2SnapshotSize :
-                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : kSnapshotSize;
+                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : kSnapshotSize;
     const auto payload = static_cast<unsigned>(bytes[6]) | (static_cast<unsigned>(bytes[7]) << 8);
     if (length != required || payload != length - 12) return SnapshotStatus::InvalidLength;
     if (get32(bytes + length - 4) != crc32(bytes, length - 4)) return SnapshotStatus::BadChecksum;
-    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
+    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
     std::size_t offset = 12;
     const auto read = [&]() { const auto value = get32(bytes + offset); offset += 4; return value; };
     State next;
@@ -1158,7 +1292,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     next.attackBoost = read();
     next.shield = version == 1 ? 0 : read();
     const auto message = read();
-    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : Message::EncounterCleared;
+    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : version<22 ? Message::EncounterCleared : Message::PartyRemoved;
     if (phase > (version < 5 ? 1u : 2u) || card > 1 || message > static_cast<unsigned>(lastMessage))
         return SnapshotStatus::InvalidState;
     next.phase = static_cast<Phase>(phase);
@@ -1171,10 +1305,13 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
         storeActive(next);
     } else {
         next.legacyCaptures = read(); next.activeCreatureId = read(); next.collectionCount = read();
+        const auto savedCapacity=version<=20?kLegacyCollectionCapacity:kCollectionCapacity;
+        if(next.collectionCount>savedCapacity)return SnapshotStatus::InvalidState;
         const auto wild = read();
         if (wild > (version<8 ? static_cast<unsigned>(Species::Cinder) : 65535u)) return SnapshotStatus::InvalidState;
         next.wildSpecies = static_cast<Species>(wild);
-        for (auto& member : next.collection) {
+        for (std::size_t i=0;i<savedCapacity;++i) {
+            auto& member=next.collection[i];
             member.id = read();
             const auto species = read();
             if (species > (version<8 ? static_cast<unsigned>(version < 5 ? Species::Cinder : Species::Renamon) : 65535u)) return SnapshotStatus::InvalidState;
@@ -1216,6 +1353,10 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     }
     if(version>=16){next.pendingEncounter.formId=read();next.pendingEncounter.level=read();next.pendingEncounter.rules=read();next.foregroundSequence=read();}
     else next.foregroundSequence=next.sequence;
+    if(version>=18)next.receivedTrades=read();
+    if(version>=19){const auto value=read();if(value>1)return SnapshotStatus::InvalidState;next.autoCapture=static_cast<AutoCapture>(value);}
+    if(version>=20)next.worldSeed=read();
+    if(version>=22)for(auto& id:next.partyMemberIds)id=read();
     if(version==7 && !validRules4State(next,false)) return SnapshotStatus::InvalidState;
     if(version<7) {
         if(!validLegacyForVersion(next,version<4)) return SnapshotStatus::InvalidState;
@@ -1258,6 +1399,8 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
         if(next.wildRules>7 || (founder&&!legacy_v7::forms::canReach(root,founder->formId)))
             return SnapshotStatus::InvalidState;
     }
+    if(version<=21 && (next.wildRules>14 || next.pendingEncounter.rules>14)) return SnapshotStatus::InvalidState;
+    if(version<=20 && (next.wildRules>13 || next.pendingEncounter.rules>13)) return SnapshotStatus::InvalidState;
     if(version<=16 && (next.wildRules>12 || next.pendingEncounter.rules>12)) return SnapshotStatus::InvalidState;
     if(version==14 && next.wildRules>11) return SnapshotStatus::InvalidState;
     if(version==13 && next.wildRules>10) return SnapshotStatus::InvalidState;
@@ -1280,12 +1423,12 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     }
     if(!isValid(next)) return SnapshotStatus::InvalidState;
     state = next;
-    return version < 17 ? SnapshotStatus::Migrated : SnapshotStatus::Ok;
+    return version < kSchemaVersion ? SnapshotStatus::Migrated : SnapshotStatus::Ok;
 }
 const char* snapshotStatusText(SnapshotStatus status) {
     switch (status) {
     case SnapshotStatus::Ok: return "ok";
-    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 17";
+    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 22";
     case SnapshotStatus::InvalidLength: return "invalid snapshot length";
     case SnapshotStatus::BadMagic: return "invalid snapshot magic";
     case SnapshotStatus::UnsupportedVersion: return "unsupported snapshot version";

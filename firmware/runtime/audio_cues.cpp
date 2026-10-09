@@ -1,4 +1,5 @@
 #include "audio_cues.hpp"
+#include "audio_settings.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -84,7 +85,7 @@ std::int16_t CueSynth::sample(unsigned volume) {
         voice.frequency *= voice.slide;
     }
     ++position_;
-    const float bounded = std::clamp(sum, -.65F, .65F)*static_cast<float>(std::min(volume, 50U))/100.0F;
+    const float bounded = std::clamp(sum, -.65F, .65F)*static_cast<float>(std::min(volume, sound::kMaxVolume))/100.0F;
     return static_cast<std::int16_t>(bounded*32767.0F);
 }
 } // namespace digivice::device

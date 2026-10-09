@@ -1,4 +1,5 @@
 #include "device_ui.hpp"
+#include "capture_ring.hpp"
 #include "forms.hpp"
 #include <algorithm>
 #include <array>
@@ -53,13 +54,14 @@ constexpr auto clipSpans=makeClipSpans();
 
 struct Canvas {
     std::uint16_t* p;
+    int clipLeft=0, clipTop=0, clipRight=kSize, clipBottom=kSize;
     void pixel(int x, int y, std::uint16_t color) {
-        if (Controller::inside(x, y)) p[y * kSize + x] = color;
+        if (x>=clipLeft && x<clipRight && y>=clipTop && y<clipBottom && Controller::inside(x, y)) p[y * kSize + x] = color;
     }
     void span(int y, int begin, int end, std::uint16_t color) {
-        if (y<0 || y>=kSize) return;
-        begin=std::max<int>(begin,clipSpans[y].begin);
-        end=std::min<int>(end,clipSpans[y].end);
+        if (y<clipTop || y>=clipBottom) return;
+        begin=std::max({begin,static_cast<int>(clipSpans[y].begin),clipLeft});
+        end=std::min({end,static_cast<int>(clipSpans[y].end),clipRight});
         if (begin<end) std::fill(p+y*kSize+begin,p+y*kSize+end,color);
     }
     void rect(int x, int y, int w, int h, std::uint16_t color) {
@@ -85,19 +87,46 @@ struct Canvas {
             }
         }
     }
+    void shadedAnnulus(int x,int y,int innerRadius,int outerRadius,std::uint16_t color) {
+        const int inner=innerRadius*innerRadius,outer=outerRadius*outerRadius;
+        int reach=0,hole=-1;
+        const auto blend=[&](int row,int begin,int end) {
+            if(row<clipTop || row>=clipBottom)return;
+            begin=std::max({begin,static_cast<int>(clipSpans[row].begin),clipLeft});
+            end=std::min({end,static_cast<int>(clipSpans[row].end),clipRight});
+            for(int column=begin;column<end;++column) {
+                auto& pixel=p[row*kSize+column];
+                // 75% target color over the existing background in RGB565.
+                pixel=static_cast<std::uint16_t>(((((color>>11)*3+(pixel>>11))/4)<<11)|
+                    (((((color>>5)&63)*3+((pixel>>5)&63))/4)<<5)|(((color&31)*3+(pixel&31))/4));
+            }
+        };
+        for(int yy=-outerRadius;yy<=outerRadius;++yy) {
+            const int outerSquared=outer-yy*yy;
+            while((reach+1)*(reach+1)<=outerSquared)++reach;
+            while(reach*reach>outerSquared)--reach;
+            const int holeSquared=inner-1-yy*yy;
+            if(holeSquared<0){hole=-1;blend(y+yy,x-reach,x+reach+1);}
+            else {
+                while((hole+1)*(hole+1)<=holeSquared)++hole;
+                while(hole*hole>holeSquared)--hole;
+                blend(y+yy,x-reach,x-hole);blend(y+yy,x+hole+1,x+reach+1);
+            }
+        }
+    }
     bool scene(const Artwork& art, const ArtRequest& request) {
         if (!art.background || art.backgroundPixels<kPixels || !art.backgroundId || !request.sceneId ||
             std::strncmp(art.backgroundId,request.sceneId,48)!=0) return false;
-        for (int y=0;y<kSize;++y) {
-            const auto row=clipSpans[y];
-            if (row.begin<row.end) std::copy(art.background+y*kSize+row.begin,art.background+y*kSize+row.end,p+y*kSize+row.begin);
+        for (int y=clipTop;y<clipBottom;++y) {
+            const int begin=std::max<int>(clipLeft,clipSpans[y].begin),end=std::min<int>(clipRight,clipSpans[y].end);
+            if (begin<end) std::copy(art.background+y*kSize+begin,art.background+y*kSize+end,p+y*kSize+begin);
         }
         return true;
     }
     void shadow(int x,int y,int halfWidth) {
         for(int dy=-2;dy<=2;++dy) for(int dx=-halfWidth+std::abs(dy)*3;dx<=halfWidth-std::abs(dy)*3;++dx) {
             const int xx=x+dx,yy=y+dy;
-            if(!Controller::inside(xx,yy)) continue;
+            if(xx<clipLeft || xx>=clipRight || yy<clipTop || yy>=clipBottom || !Controller::inside(xx,yy)) continue;
             const auto value=p[yy*kSize+xx];
             p[yy*kSize+xx]=static_cast<std::uint16_t>(((((value>>11)&31)*3/5)<<11)|((((value>>5)&63)*3/5)<<5)|((value&31)*3/5));
         }
@@ -187,6 +216,33 @@ struct Canvas {
         text(x-32,y+13,"ART MISSING",1,dim,11);
     }
 };
+constexpr auto timingRed=rgb(246,83,74),timingOrange=rgb(255,164,60),timingGreen=rgb(84,234,134);
+std::uint16_t timingColor(capturering::Grade grade) {
+    return grade==capturering::Grade::Green ? timingGreen : grade==capturering::Grade::Orange ? timingOrange : timingRed;
+}
+const char* timingName(capturering::Grade grade) {
+    return grade==capturering::Grade::Green ? "GREEN" : grade==capturering::Grade::Orange ? "ORANGE" : "RED";
+}
+bool captureAction(Action action) { return action==Action::Flick || action==Action::RingCapture; }
+void captureScene(Canvas& c,const State& state,const Model& model,const ArtRequest& art,const capturering::Sample& ring) {
+    c.rect(62,49,288,28,panel);
+    c.center(55,"TIME THE RING",2,amber);
+    // The broad target is below the exact encountered sprite; its colors never
+    // obscure the creature. Only the moving timing ring is drawn above it.
+    c.shadedAnnulus(206,176,ring.targetRadius-capturering::kBandHalfWidth,
+        ring.targetRadius+capturering::kBandHalfWidth,timingGreen);
+    if(!c.spriteFrame(206,176,176,model.artwork.sprite,art)) c.missingArt(206,176);
+    const auto radius=static_cast<int>((ring.radiusQ8+128)/256);
+    const auto color=timingColor(ring.grade);
+    c.circle(206,176,radius,color,false);
+    c.circle(206,176,std::max(1,radius-1),color,false);
+    char label[48];
+    std::snprintf(label,sizeof(label),"%s %u%% - TAP PLAY AREA",timingName(ring.grade),static_cast<unsigned>(ringCaptureChance(state,ring.phaseMs)));
+    c.badge(269,label,1,color,32);
+    std::snprintf(label,sizeof(label),"%u THROWS LEFT%s",static_cast<unsigned>(3-std::min<std::uint32_t>(3,state.captureAttempts)),
+        state.autoCapture==AutoCapture::Awaiting ? " - AUTO PAUSED" : "");
+    c.badge(335,label,1,dim,36);
+}
 sprite::Animation battleAnimation(const battlepresentation::View* view,battlepresentation::Actor actor) {
     using Actor=battlepresentation::Actor;
     if(!view || !view->locked || view->capturePresentation || view->actor==Actor::None)
@@ -208,8 +264,16 @@ int horizontalTap(int x,int y,bool picker) {
     }
     return 0;
 }
+bool canCapture(const State& state,const Model& model) {
+    // Eligibility only: never run a speculative throw or consume even a copied RNG.
+    return model.writable && model.inputEnabled && !model.encounterRecoveryRequired &&
+        (state.battleMode==BattleMode::Tactical || state.autoCapture==AutoCapture::Awaiting) && captureChance(state)>0;
+}
 bool legal(const State& state, const Model& model, Action action, std::uint32_t value = 0) {
     if (!model.writable || !model.inputEnabled) return false;
+    if ((action==Action::PartyAdd || action==Action::PartyRemove) &&
+        (!model.partyEditable || model.encounterRecoveryRequired ||
+         (model.nearby && model.nearby->stage!=nearby::Stage::Closed))) return false;
     State copy = state;
     return apply(copy, action, value) == Error::None;
 }
@@ -222,6 +286,52 @@ bool nearbyFeedback(const Model& model) {
     return view && (view->stage==nearby::Stage::Playing || view->stage==nearby::Stage::Finished) &&
         model.nearbyTurnElapsedMs<kNearbyFeedbackMs && view->match.sequence && nearby::valid(view->match);
 }
+bool activeTrade(const tradewire::View* view) {
+    return view && view->stage!=tradewire::Stage::Closed && view->stage!=tradewire::Stage::Discovering;
+}
+const tradewire::Peer* tradingPeer(const Model& model,const trade::Identity& identity) {
+    if(!model.trade) return nullptr;
+    for(std::size_t i=0;i<std::min(model.trade->peerCount,tradewire::kMaxPeers);++i)
+        if(trade::sameIdentity(model.trade->peers[i].identity,identity)) return &model.trade->peers[i];
+    return nullptr;
+}
+trade::Identity peerIdentity(const nearby::Mac& mac) {
+    trade::Identity result;std::memcpy(result.bytes,mac.bytes,sizeof(result.bytes));return result;
+}
+std::uint32_t tradeContext(const tradewire::View* v) {
+    if(!v) return 0;
+    // Presentation epoch only. Real consent carries the canonical transcript
+    // identity and is independently checked by the runtime/protocol.
+    return static_cast<unsigned>(v->stage) | (v->localSide<<8) |
+        (static_cast<unsigned>(v->durable)<<9) | (static_cast<unsigned>(v->peerDurable)<<12) |
+        (v->localConfirmed?1u<<15:0) | (v->peerConfirmed?1u<<16:0) |
+        (v->peerReviewed?1u<<17:0) | (v->offerPending?1u<<18:0) |
+        (v->connected?1u<<19:0) | (v->recoveryOffer?1u<<20:0);
+}
+bool changeTrade(const Model& model) {
+    const auto* v=model.trade;
+    return v && model.tradeWritable && v->stage==tradewire::Stage::Reviewing &&
+        v->localSide<2 &&
+        v->durable==tradewire::Durable::None && !v->localConfirmed && !v->peerConfirmed &&
+        !v->offerPending && !v->recoveryOffer && trade::valid(v->transcript);
+}
+bool confirmTrade(const State& state,const Model& model) {
+    const auto* v=model.trade;
+    return v && model.tradeWritable && model.writable && v->stage==tradewire::Stage::Reviewing &&
+        v->durable==tradewire::Durable::None && v->connected && v->peerReviewed &&
+        !v->localConfirmed && !v->offerPending && !v->recoveryOffer && v->localSide<2 &&
+        trade::valid(v->transcript) && trade::canOffer(state,v->transcript.offers[v->localSide].id) &&
+        trade::sameMember(*findMember(state,v->transcript.offers[v->localSide].id),v->transcript.offers[v->localSide]);
+}
+std::uint32_t tradeCandidate(const State& state,std::uint32_t current,bool next) {
+    unsigned start=state.collectionCount ? state.collectionCount-1 : 0;
+    for(unsigned i=0;i<state.collectionCount;++i) if(state.collection[i].id==current) start=i;
+    for(unsigned n=1;n<=state.collectionCount;++n) {
+        const auto i=(start+(next ? n : state.collectionCount-n))%state.collectionCount;
+        if(trade::canOffer(state,state.collection[i].id)) return state.collection[i].id;
+    }
+    return 0;
+}
 std::uint32_t maxHp(const State& state) {
     const auto* member = activeMember(state);
     return member ? forms::stats(member->formId, member->level).maxHp : 0;
@@ -233,9 +343,9 @@ const char* shortMessage(Message message) {
     case Message::Rested: return "FEELING BETTER";
     case Message::Hatched: return "YOUR ADVENTURE BEGINS";
     case Message::Won: return "BATTLE WON!";
-    case Message::Captured: return "A NEW FRIEND!";
+    case Message::Captured: return "A NEW DIGIMON!";
     case Message::CaptureMissed: return "TRY ANOTHER THROW";
-    case Message::CaptureEnded: return "THE WILD FRIEND LEFT";
+    case Message::CaptureEnded: return "THE WILD DIGIMON LEFT";
     case Message::Retreated: return "HOME SAFE - TAKE A REST";
     case Message::Evolved: return "A NEW FORM!";
     case Message::Selected: return "PARTNER READY";
@@ -249,7 +359,8 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  EvolutionDetails, EvolutionReview, EvolutionConfirm, EvolutionDone, Encounters, RateOff, RateRelaxed, RateNormal, RateFrequent,
  NearbyOpen, NearbyPrevious, NearbyNext, NearbyReview, NearbyChallenge, NearbyAccept, NearbyCancel, NearbyClose,
  NearbyPhysical, NearbyMagic, NearbyHeavy, NearbyCommit, NearbyBrace, NearbyCounter, NearbyWard,
- HomePrevious, HomeNext, HomeOpen };
+ HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
+ TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle };
 constexpr const char* homeTitles[]{"CARE","PARTNERS","SETTINGS","NEARBY"};
 constexpr const char* homeActions[]{"OPEN CARE","PARTNERS","SETTINGS","FIND NEARBY"};
 } // namespace
@@ -260,7 +371,11 @@ bool Controller::inside(int x, int y) {
     return dx*dx+dy*dy <= 204*204;
 }
 void Controller::resetTouch() {
-    down_=gesture_=battleGesture_=browseGesture_=false; cancelled_=true; sampleCount_=0; downButton_=0;
+    down_=battleGesture_=browseGesture_=false; cancelled_=true; downButton_=0;
+}
+std::uint64_t Controller::captureElapsed(std::uint64_t now) const {
+    if(captureEpoch_==UINT64_MAX || now<captureEpoch_) captureEpoch_=now;
+    return now-captureEpoch_;
 }
 void Controller::cancelEvolution() {
     evolution_.cancel(); evolutionMember_=evolutionForm_=evolutionTarget_=0;
@@ -271,11 +386,16 @@ void Controller::cancelTouch() {
     if (screen_==Screen::ReleaseReview) screen_=Screen::Stats;
     if (screen_==Screen::NearbyReview) screen_=Screen::Nearby;
 }
+void Controller::acknowledgeContactReleased() {
+    resetTouch(); captureContactBlocked_=false;
+}
 void Controller::notice(const char* message) {
     std::snprintf(notice_,sizeof(notice_),"%s",message ? message : "");
 }
 void Controller::resolve(const char* message) {
+    const bool captureRetry=pending_ && screen_==Screen::Capture;
     pending_=false; resetTouch();
+    if(captureRetry) { captureEpoch_=UINT64_MAX; captureEligible_=false; }
     if (message) notice(message);
 }
 bool Controller::acknowledgeWalking(const State& before, const State& after, Action action, std::uint32_t value) {
@@ -311,6 +431,28 @@ bool Controller::acknowledgeWalking(const State& before, const State& after, Act
     return true;
 }
 void Controller::update(const State& state, const Model& model) {
+    const auto tradeTag=model.trade ? trade::fingerprint(model.trade->transcript) : 0;
+    const auto tradeEpoch=tradeContext(model.trade);
+    const bool tradeChanged=tradeTag!=tradeFingerprint_ || tradeEpoch!=tradeContext_;
+    const auto previousTradeStage=static_cast<tradewire::Stage>(tradeContext_&255u);
+    if(tradeChanged) {
+        resetTouch();
+        if(tradeTag!=tradeFingerprint_) tradePage_=0;
+        if(activeTrade(model.trade)) screen_=Screen::TradeReview;
+        else if(screen_==Screen::TradeReview && previousTradeStage!=tradewire::Stage::Closed && previousTradeStage!=tradewire::Stage::Discovering)
+            screen_=model.nearby && model.nearby->stage==nearby::Stage::Discovering ? Screen::Nearby : Screen::Home;
+    }
+    tradeFingerprint_=tradeTag;tradeContext_=tradeEpoch;
+    if(screen_==Screen::TradeChoose) {
+        if(!trade::canOffer(state,tradeMemberId_)) {
+            const auto candidate=tradeCandidate(state,0,true);
+            if(candidate!=tradeMemberId_) {tradeMemberId_=candidate;resetTouch();}
+        }
+        if(!activeTrade(model.trade)) {
+            const auto* peer=tradingPeer(model,tradePeer_);
+            if(!peer || peer->advertisement.nonce!=tradePeerNonce_) {resetTouch();screen_=Screen::Nearby;}
+        }
+    }
     const bool revision = !initialized_ || sequence_ != state.sequence || phase_ != state.phase;
     const bool presentationLocked = model.battle && model.battle->locked;
     const auto nearbyStage=model.nearby ? model.nearby->stage : nearby::Stage::Closed;
@@ -321,10 +463,16 @@ void Controller::update(const State& state, const Model& model) {
     if (model.nearby && nearbyIndex_>=peerCount(model.nearby)) nearbyIndex_=0;
     const auto peer=model.nearby && nearbyIndex_<peerCount(model.nearby) ? model.nearby->peers[nearbyIndex_].mac : nearby::Mac{};
     const auto peerFighter=model.nearby && nearbyIndex_<peerCount(model.nearby) ? model.nearby->peers[nearbyIndex_].fighter : nearby::Fighter{};
+    const auto peerNonce=model.nearby && nearbyIndex_<peerCount(model.nearby) ? model.nearby->peers[nearbyIndex_].openNonce : 0;
+    const auto opponent=model.nearby ? model.nearby->opponent : nearby::Mac{};
+    const auto offeredMode=model.nearby ? model.nearby->offeredMode : nearby::Mode::Tactical;
+    const nearby::Fighter offered[]{model.nearby ? model.nearby->offered[0] : nearby::Fighter{},model.nearby ? model.nearby->offered[1] : nearby::Fighter{}};
     const auto role=static_cast<std::uint8_t>(model.nearby ? (model.nearby->host ? 1 : 0) |
         (model.nearby->match.attacker<<1) | (static_cast<unsigned>(model.nearby->match.mode)<<2) |
         (static_cast<unsigned>(model.nearby->match.status)<<3) : 255);
-    const bool nearbyChanged=role!=nearbyRole_ || feedback!=nearbyFeedback_ || !nearby::sameFighter(peerFighter,nearbyFighter_) || nearbyStage!=nearbyStage_ || nearbySession!=nearbySession_ ||
+    const bool nearbyChanged=peerNonce!=nearbyPeerNonce_ || !nearby::sameMac(opponent,nearbyOpponent_) || offeredMode!=nearbyOfferedMode_ ||
+        !nearby::sameFighter(offered[0],nearbyOffered_[0]) || !nearby::sameFighter(offered[1],nearbyOffered_[1]) ||
+        role!=nearbyRole_ || feedback!=nearbyFeedback_ || !nearby::sameFighter(peerFighter,nearbyFighter_) || nearbyStage!=nearbyStage_ || nearbySession!=nearbySession_ ||
         nearbySequence!=nearbySequence_ || nearbyPending!=nearbyPending_ || std::memcmp(peer.bytes,nearbyPeer_.bytes,6)!=0;
     if (nearbyChanged) {
         resetTouch();
@@ -333,8 +481,11 @@ void Controller::update(const State& state, const Model& model) {
     }
     nearbyStage_=nearbyStage; nearbySession_=nearbySession; nearbySequence_=nearbySequence;
     nearbyPending_=nearbyPending; nearbyPeer_=peer; nearbyFighter_=peerFighter; nearbyFeedback_=feedback; nearbyRole_=role;
+    nearbyPeerNonce_=peerNonce; nearbyOpponent_=opponent; nearbyOfferedMode_=offeredMode;
+    nearbyOffered_[0]=offered[0]; nearbyOffered_[1]=offered[1];
+    if (nearbyStage==nearby::Stage::Closed) nearbyMode_=nearby::Mode::Tactical;
     const bool contextChanged = presentationLocked!=battleLocked_ || revision || starterStage_ != model.starterStage || selectedId_ != model.selectedId || starterForm_!=model.starterFormId || starterCount_!=model.starterCount ||
-        writable_ != model.writable || enabled_ != model.inputEnabled;
+        writable_ != model.writable || enabled_ != model.inputEnabled || partyEditable_ != model.partyEditable;
     const auto* partner = activeMember(state);
     const bool evolutionCommitted = revision && screen_==Screen::EvolutionReview &&
         lastAction_==Action::Evolve && state.sequence==actionSequence_ &&
@@ -371,12 +522,27 @@ void Controller::update(const State& state, const Model& model) {
     }
     if (presentationLocked) screen_=Screen::Battle;
     else if (battleLocked_) screen_=state.phase==Phase::Encounter ? Screen::Battle : Screen::Result;
+    if(!presentationLocked && state.phase==Phase::Encounter && state.autoCapture==AutoCapture::Awaiting &&
+        !activeTrade(model.trade) && (!model.nearby || model.nearby->stage==nearby::Stage::Closed)) screen_=Screen::Capture;
+    if(activeTrade(model.trade) && screen_!=Screen::TradeChoose && !presentationLocked) screen_=Screen::TradeReview;
     if (revision) { notice_[0]=0; pending_=false; battleSelection_=combat::Move::Physical; }
     battleLocked_=presentationLocked;
     if (model.starterStage != starterStage_ || model.selectedId != selectedId_) pending_=false;
-    if (state.collectionCount && memberIndex_ >= state.collectionCount) memberIndex_=0;
+    // Display order can change after selection/party edits. Keep the exact
+    // viewed instance whenever it survives, without reordering durable slots.
+    const auto selectedIndex=displayIndexForMember(state,memberId_);
+    if(selectedIndex<state.collectionCount) memberIndex_=static_cast<std::uint8_t>(selectedIndex);
+    else {
+        if(memberIndex_>=state.collectionCount) memberIndex_=0;
+        const auto* selected=collectionMemberAtDisplayIndex(state,memberIndex_);
+        memberId_=selected ? selected->id : 0;
+    }
+    const bool captureEligible=screen_==Screen::Capture && !presentationLocked && !pending_ && canCapture(state,model);
+    if(!captureEligible || captureEligible!=captureEligible_ || contextChanged || captureEpochForm_!=state.wildFormId)
+        captureEpoch_=UINT64_MAX;
+    captureEligible_=captureEligible; captureEpochForm_=state.wildFormId;
     sequence_=state.sequence; phase_=state.phase; starterStage_=model.starterStage;
-    selectedId_=model.selectedId; starterForm_=model.starterFormId; starterCount_=model.starterCount; writable_=model.writable; enabled_=model.inputEnabled; initialized_=true;
+    selectedId_=model.selectedId; starterForm_=model.starterFormId; starterCount_=model.starterCount; writable_=model.writable; enabled_=model.inputEnabled; partyEditable_=model.partyEditable; initialized_=true;
 }
 std::size_t Controller::buttons(const State& state, const Model& model, Button* out) const {
     std::size_t count=0;
@@ -407,21 +573,31 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     case Screen::Encounter:
         add(116,248,180,52,state.battleMode==BattleMode::Auto ? "AUTO BATTLE" : "BATTLE",Battle); break;
     case Screen::Battle:
-        if (state.battleMode==BattleMode::Auto) add(116,250,180,52,"RUN AUTO",Auto,legal(state,model,Action::Auto));
-        else add(274,287,76,44,"CATCH",Capture,legal(state,model,Action::Flick,160*256+180));
+        if (state.battleMode==BattleMode::Auto) add(116,250,180,52,"RUN AUTO",Auto,legal(state,model,Action::AutoFight));
+        else add(274,287,76,44,"CATCH",Capture,canCapture(state,model));
         back(); break;
-    case Screen::Capture: back(); break;
+    case Screen::Capture:
+        if(state.autoCapture==AutoCapture::Awaiting) add(104,348,204,38,"SKIP / RESUME FIGHT",AutoResume,legal(state,model,Action::AutoResume));
+        else back();
+        break;
     case Screen::Result: add(116,274,180,50,"HOME",Again); break;
-    case Screen::Collection:
-        left(1,"STATS + EVOLVE",MemberStats,state.collectionCount>0);
-        right(1,"MAKE PARTNER",MemberSelect,state.collectionCount &&
-            state.collection[memberIndex_].id!=state.activeCreatureId && legal(state,model,Action::Select,state.collection[memberIndex_].id));
+    case Screen::Collection: {
+        const auto* member=selectedMember(state);
+        const bool active=member && member->id==state.activeCreatureId;
+        const bool companion=member && isPartyMember(state,member->id);
+        const auto action=companion ? Action::PartyRemove : Action::PartyAdd;
+        const char* label=active ? "ACTIVE PARTNER" : companion ? "REMOVE XP COMPANION" :
+            partyCount(state)==kPartyCapacity ? "XP COMPANIONS FULL" : "ADD XP COMPANION";
+        add(100,248,212,36,label,PartyToggle,member && !active && legal(state,model,action,member->id));
+        left(1,"STATS + EVOLVE",MemberStats,member);
+        right(1,"MAKE PARTNER",MemberSelect,member && !active && legal(state,model,Action::Select,member->id));
         back(); break;
+    }
     case Screen::Stats:
-        if (state.collectionCount && state.collection[memberIndex_].id==state.activeCreatureId)
+        if (selectedMember(state) && memberId_==state.activeCreatureId)
             add(108,292,196,44,"DIGIVOLVE",EvolveOpen,state.phase==Phase::Home);
-        else add(108,292,196,44,"RELEASE FRIEND",ReleaseOpen,state.collectionCount &&
-            legal(state,model,Action::Release,state.collection[memberIndex_].id));
+        else add(108,292,196,44,"RELEASE DIGIMON",ReleaseOpen,selectedMember(state) &&
+            legal(state,model,Action::Release,memberId_));
         back(); break;
     case Screen::ReleaseReview:
         add(108,280,196,50,"RELEASE",ReleaseConfirm,releaseMember_ && legal(state,model,Action::Release,releaseMember_)); back(); break;
@@ -440,17 +616,45 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     case Screen::Settings:
         add(100,117,212,44,"SCREEN TIMEOUT",Sleep);
         add(100,172,212,44,"ENCOUNTER SETTINGS",Encounters);
-        left(0,model.muted ? "SOUND OFF" : "SOUND ON",Mute);
+        left(0,"SOUND SETTINGS",SoundOpen);
         right(0,model.gyroEnabled ? "GYRO ON" : "GYRO OFF",Gyro,model.motionAvailable);
         left(1,state.battleMode==BattleMode::Auto ? "MODE: AUTO" : "MODE: TACTICAL",Mode,
             legal(state,model,Action::Mode,state.battleMode==BattleMode::Auto ? 0 : 1));
         right(1,"WIFI SETUP",Setup); back(); break;
+    case Screen::Sound:
+        left(0,model.muted ? "MUTE: ON" : "MUTE: OFF",Mute);
+        right(0,model.musicEnabled ? "MUSIC: ON" : "MUSIC: OFF",Music);
+        back(); break;
+    case Screen::TradeChoose: {
+        const auto* peer=tradingPeer(model,tradePeer_);
+        const bool initial=model.trade && model.trade->stage==tradewire::Stage::Discovering;
+        const bool available=initial ? peer && peer->compatible && peer->advertisement.available && peer->advertisement.nonce==tradePeerNonce_ : changeTrade(model);
+        add(108,292,196,44,initial ? "OFFER TO TRADE" : "CHANGE OFFER",TradeSelect,
+            model.writable && model.tradeWritable && available && trade::canOffer(state,tradeMemberId_));
+        back(); break;
+    }
+    case Screen::TradeReview: {
+        const auto* v=model.trade;
+        if(v && v->stage==tradewire::Stage::Reviewing && v->durable==tradewire::Durable::None) {
+            add(62,286,100,46,"CHANGE",TradeChange,changeTrade(model));
+            add(174,286,176,46,"CONFIRM BOTH",TradeConfirm,confirmTrade(state,model));
+        }
+        const bool terminal=!v || v->stage==tradewire::Stage::Closed || v->stage==tradewire::Stage::Discovering ||
+            v->stage==tradewire::Stage::Applied || v->stage==tradewire::Stage::Aborted || v->stage==tradewire::Stage::Cancelled;
+        if(terminal) add(144,348,124,38,"DONE",TradeClose);
+        else if(v->durable!=tradewire::Durable::Committed && v->durable!=tradewire::Durable::Applied &&
+                v->stage!=tradewire::Stage::Committing && v->stage!=tradewire::Stage::Applying)
+            add(130,348,152,38,v->durable==tradewire::Durable::Prepared ? "ASK TO CANCEL" : "CANCEL",TradeCancel,trade::valid(v->transcript));
+        break;
+    }
     case Screen::EncounterSettings:
         left(0,"PAUSED",RateOff,legal(state,model,Action::EncounterRate,0));
         right(0,"RELAXED",RateRelaxed,legal(state,model,Action::EncounterRate,1));
         left(1,"NORMAL",RateNormal,legal(state,model,Action::EncounterRate,2));
         right(1,"FREQUENT",RateFrequent,legal(state,model,Action::EncounterRate,3)); back(); break;
     case Screen::NearbyReview:
+        add(62,218,140,44,nearbyMode_==nearby::Mode::Tactical ? "> TACTICAL" : "TACTICAL",NearbyTactical);
+        add(210,218,140,44,nearbyMode_==nearby::Mode::Auto ? "> AUTO" : "AUTO",NearbyAuto);
         add(108,280,196,50,"CHALLENGE",NearbyChallenge,model.nearby &&
             model.nearby->stage==nearby::Stage::Discovering && nearbyIndex_<peerCount(model.nearby) && model.nearby->peers[nearbyIndex_].available);
         back(); break;
@@ -460,7 +664,11 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
             // Keep the exchange readable before offering the next choices.
             // LEAVE remains available below; no game rule or network clock changes.
         } else if (nearby && nearby->stage==nearby::Stage::Discovering) {
-            add(108,292,196,44,"CHALLENGE",NearbyReview,nearbyIndex_<peerCount(nearby) && nearby->peers[nearbyIndex_].available);
+            const bool peerReady=nearbyIndex_<peerCount(nearby) && nearby->peers[nearbyIndex_].available;
+            add(62,286,149,46,"BATTLE",NearbyReview,peerReady && !activeTrade(model.trade));
+            const auto* trading=peerReady ? tradingPeer(model,peerIdentity(nearby->peers[nearbyIndex_].mac)) : nullptr;
+            add(218,286,132,46,"TRADE",TradeOpen,trading && trading->compatible && trading->advertisement.available &&
+                model.trade->stage==tradewire::Stage::Discovering && model.tradeWritable && model.writable);
         } else if (nearby && nearby->stage==nearby::Stage::Incoming) {
             left(0,"ACCEPT",NearbyAccept); right(0,"DECLINE",NearbyCancel);
         } else if (nearby && (nearby->stage==nearby::Stage::Outgoing || nearby->stage==nearby::Stage::Accepting || nearby->stage==nearby::Stage::Reconnecting)) {
@@ -476,9 +684,28 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
 }
 Intent Controller::navigate(Screen next) {
     screen_=next; notice_[0]=0; resetTouch();
+    captureEligible_=next==Screen::Capture;
+    captureEpoch_=captureEligible_ ? lastAt_ : UINT64_MAX;
     return {IntentKind::Navigation};
 }
 Intent Controller::navigateHorizontal(bool next,const State& state,const Model& model) {
+    if(screen_==Screen::TradeChoose) {
+        const auto candidate=tradeCandidate(state,tradeMemberId_,next);
+        if(!candidate || candidate==tradeMemberId_) return {};
+        tradeMemberId_=candidate;return {IntentKind::Navigation};
+    }
+    if(screen_==Screen::TradeReview) {tradePage_=static_cast<std::uint8_t>((tradePage_+(next?1:4))%5);return {IntentKind::Navigation};}
+    if(screen_==Screen::Sound) {
+        constexpr std::uint8_t levels[]{0,5,15,30,50,75,100};
+        if(next) {
+            for(const auto level:levels) if(level>model.volumePercent) {
+                pending_=true; resetTouch(); return {IntentKind::Volume,Action::Feed,level};
+            }
+        } else for(unsigned i=sizeof(levels)/sizeof(levels[0]);i>0;--i) if(levels[i-1]<model.volumePercent) {
+            pending_=true; resetTouch(); return {IntentKind::Volume,Action::Feed,levels[i-1]};
+        }
+        return {};
+    }
     if(screen_==Screen::Home) return activate(next ? HomeNext : HomePrevious,state,model);
     if(screen_==Screen::Starter) return activate(next ? Next : Prev,state,model);
     if(screen_==Screen::Collection) return activate(next ? MemberNext : MemberPrev,state,model);
@@ -500,8 +727,17 @@ Intent Controller::navigateHorizontal(bool next,const State& state,const Model& 
     }
     return {IntentKind::Navigation};
 }
+Intent Controller::proposeTrade(IntentKind kind,const Model& model,std::uint32_t memberId) {
+    Intent intent{kind,Action::Feed,memberId};intent.peer=tradePeer_;
+    if(model.trade) {
+        const auto& t=model.trade->transcript;
+        intent.tradeSession=t.session;intent.tradeRevision=t.revision;intent.tradeFingerprint=trade::fingerprint(t);
+    }
+    pending_=true;resetTouch();return intent;
+}
 Intent Controller::propose(const State& state, const Model& model, Action action, std::uint32_t value) {
-    if (!legal(state,model,action,value)) return {};
+    if (captureAction(action) ? (!canCapture(state,model) ||
+        (action==Action::Flick ? value>kFlickMaxValue : value>=capturering::kCycleMs)) : !legal(state,model,action,value)) return {};
     pending_=true; actionAt_=lastAt_; actionSequence_=state.sequence+1;
     lastAction_=action; actionValue_=value; resetTouch();
     return {IntentKind::GameAction,action,value};
@@ -519,6 +755,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         return activate(actions[static_cast<unsigned>(homePanel_)],state,model);
     }
     case Back:
+        if(screen_==Screen::TradeChoose) return navigate(activeTrade(model.trade) ? Screen::TradeReview : Screen::Nearby);
         if (!state.onboardingComplete) return {IntentKind::StarterBack};
         if (screen_==Screen::Capture) return navigate(Screen::Battle);
         if (screen_==Screen::Battle) return navigate(Screen::Encounter);
@@ -529,12 +766,33 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         if (screen_==Screen::EvolutionReview) { cancelEvolution(); return navigate(Screen::Evolution); }
         if (screen_==Screen::EvolutionResult) return navigate(Screen::Home);
         if (screen_==Screen::EncounterSettings) return navigate(Screen::Settings);
+        if (screen_==Screen::Sound) return navigate(Screen::Settings);
         if (screen_==Screen::ModeReview) { proposedMode_=255; return navigate(Screen::Settings); }
         return navigate(Screen::Home);
     case Care: return navigate(Screen::Care);
     case Explore: return navigate(Screen::Explore);
-    case Team: memberIndex_=0; return navigate(Screen::Collection);
+    case Team: memberIndex_=0; memberId_=state.activeCreatureId; return navigate(Screen::Collection);
     case Settings: return navigate(Screen::Settings);
+    case SoundOpen: return navigate(Screen::Sound);
+    case TradeOpen: {
+        if(!model.nearby || nearbyIndex_>=peerCount(model.nearby) || activeTrade(model.trade)) return {};
+        tradePeer_=peerIdentity(model.nearby->peers[nearbyIndex_].mac);
+        const auto* peer=tradingPeer(model,tradePeer_);if(!peer) return {};
+        tradePeerNonce_=peer->advertisement.nonce;tradeMemberId_=tradeCandidate(state,0,true);
+        return navigate(Screen::TradeChoose);
+    }
+    case TradeChange:
+        if(!changeTrade(model)) return {};
+        tradeMemberId_=model.trade->transcript.offers[model.trade->localSide].id;
+        return navigate(Screen::TradeChoose);
+    case TradeSelect:
+        if(!trade::canOffer(state,tradeMemberId_)) return {};
+        return proposeTrade(activeTrade(model.trade) ? IntentKind::TradeOffer : IntentKind::TradeInvite,model,tradeMemberId_);
+    case TradeConfirm:
+        if(!confirmTrade(state,model)) return {};
+        return proposeTrade(IntentKind::TradeConfirm,model);
+    case TradeCancel: return proposeTrade(IntentKind::TradeCancel,model);
+    case TradeClose: return proposeTrade(IntentKind::TradeClose,model);
     case Feed: return propose(state,model,Action::Feed);
     case Play: return propose(state,model,Action::Play);
     case Rest: return propose(state,model,Action::Rest);
@@ -543,17 +801,23 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case Heavy: battleSelection_=combat::Move::Heavy; return {IntentKind::Navigation};
     case Magic: battleSelection_=combat::Move::Magic; return {IntentKind::Navigation};
     case Capture: return navigate(Screen::Capture);
-    case Auto: return propose(state,model,Action::Auto);
+    case Auto: return propose(state,model,Action::AutoFight);
+    case AutoResume: return propose(state,model,Action::AutoResume);
     case Again: return navigate(Screen::Home);
-    case MemberNext: if(state.collectionCount<2) return {}; memberIndex_=(memberIndex_+1)%state.collectionCount; return {IntentKind::Navigation};
-    case MemberPrev: if(state.collectionCount<2) return {}; memberIndex_=(memberIndex_+state.collectionCount-1)%state.collectionCount; return {IntentKind::Navigation};
-    case MemberSelect: return propose(state,model,Action::Select,state.collection[memberIndex_].id);
+    case MemberNext: case MemberPrev: {
+        if(state.collectionCount<2) return {};
+        memberIndex_=(memberIndex_+(id==MemberNext ? 1 : state.collectionCount-1))%state.collectionCount;
+        const auto* member=collectionMemberAtDisplayIndex(state,memberIndex_);
+        memberId_=member ? member->id : 0; return {IntentKind::Navigation};
+    }
+    case MemberSelect: return propose(state,model,Action::Select,memberId_);
+    case PartyToggle: return propose(state,model,isPartyMember(state,memberId_) ? Action::PartyRemove : Action::PartyAdd,memberId_);
     case MemberStats: statsPage_=0; return navigate(Screen::Stats);
     case StatsPrevious: statsPage_=(statsPage_+3)%4; return {IntentKind::Navigation};
     case StatsNext: statsPage_=(statsPage_+1)%4; return {IntentKind::Navigation};
     case ReleaseOpen:
-        if (!state.collectionCount || memberIndex_>=state.collectionCount) return {};
-        releaseMember_=state.collection[memberIndex_].id;
+        if (!selectedMember(state)) return {};
+        releaseMember_=memberId_;
         return navigate(Screen::ReleaseReview);
     case ReleaseConfirm: {
         const auto id=releaseMember_; releaseMember_=0;
@@ -579,7 +843,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         return propose(state,model,Action::Evolve,target);
     }
     case EvolutionDone:
-        for (std::uint8_t i=0;i<state.collectionCount;++i) if (state.collection[i].id==state.activeCreatureId) memberIndex_=i;
+        memberIndex_=0; memberId_=state.activeCreatureId;
         statsPage_=0; return navigate(Screen::Stats);
     case NearbyOpen: nearbyIndex_=0; navigate(Screen::Nearby); return {IntentKind::OpenNearby};
     case NearbyPrevious: case NearbyNext:
@@ -587,8 +851,25 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         nearbyIndex_=static_cast<std::uint8_t>((nearbyIndex_+(id==NearbyNext ? 1 : peerCount(model.nearby)-1))%peerCount(model.nearby));
         return {IntentKind::Navigation};
     case NearbyReview: return navigate(Screen::NearbyReview);
-    case NearbyChallenge: navigate(Screen::Nearby); return {IntentKind::NearbyChallenge,Action::Feed,nearbyIndex_};
-    case NearbyAccept: return {IntentKind::NearbyAccept};
+    case NearbyTactical: case NearbyAuto:
+        if (!model.nearby || model.nearby->stage!=nearby::Stage::Discovering) return {};
+        nearbyMode_=id==NearbyAuto ? nearby::Mode::Auto : nearby::Mode::Tactical;
+        return {IntentKind::Navigation};
+    case NearbyChallenge: {
+        if (!model.nearby || model.nearby->stage!=nearby::Stage::Discovering || nearbyIndex_>=peerCount(model.nearby)) return {};
+        const auto& peer=model.nearby->peers[nearbyIndex_];
+        if (!peer.available || !peer.compatible || activeTrade(model.trade)) return {};
+        Intent result{IntentKind::NearbyChallenge,Action::Feed,nearbyIndex_};
+        result.peer=peerIdentity(peer.mac); result.nearbyOpenNonce=peer.openNonce; result.nearbyMode=nearbyMode_;
+        result.nearbyFighters[0]=model.nearbyLocalFighter; result.nearbyFighters[1]=peer.fighter;
+        navigate(Screen::Nearby); return result;
+    }
+    case NearbyAccept: {
+        if (!model.nearby || model.nearby->stage!=nearby::Stage::Incoming) return {};
+        const auto& offer=*model.nearby; Intent result{IntentKind::NearbyAccept};
+        result.peer=peerIdentity(offer.opponent); result.nearbySession=offer.session; result.nearbyMode=offer.offeredMode;
+        result.nearbyFighters[0]=offer.offered[0]; result.nearbyFighters[1]=offer.offered[1]; return result;
+    }
     case NearbyCancel: return {IntentKind::NearbyCancel};
     case NearbyClose: navigate(Screen::Home); return {IntentKind::CloseNearby};
     case NearbyPhysical: battleSelection_=combat::Move::Physical; return {IntentKind::Navigation};
@@ -617,7 +898,8 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         pending_=true; resetTouch();
         return {IntentKind::SleepTimeout,Action::Feed,seconds[(current+1)%5]};
     }
-    case Mute: return {IntentKind::ToggleMute};
+    case Mute: pending_=true; resetTouch(); return {IntentKind::ToggleMute};
+    case Music: pending_=true; resetTouch(); return {IntentKind::ToggleMusic};
     case Gyro: return {IntentKind::ToggleGyro};
     case Setup: return {IntentKind::OpenSetup};
     case Mode:
@@ -629,63 +911,65 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     default: return {};
     }
 }
-void Controller::append(Touch event) {
-    if (sampleCount_ && samples_[sampleCount_-1].atMs==event.atMs) {
-        samples_[sampleCount_-1]={event.x,event.y,event.atMs}; return;
-    }
-    // Retain a sample just before the last 100 ms for interpolation. At most
-    // 16 readings are retained even if a touch controller reports very fast.
-    while (sampleCount_>1 && samples_[1].atMs+100<event.atMs) {
-        for(unsigned i=1;i<sampleCount_;++i) samples_[i-1]=samples_[i];
-        --sampleCount_;
-    }
-    if(sampleCount_==16) {
-        for(unsigned i=1;i<sampleCount_;++i) samples_[i-1]=samples_[i];
-        --sampleCount_;
-    }
-    samples_[sampleCount_++]={event.x,event.y,event.atMs};
-}
 Intent Controller::touch(const State& state, const Model& model, Touch event) {
     update(state,model);
+    // A release must clear the latch even while save/presentation/input gates
+    // are closed. Nothing after accepted Down can undo or repeat that throw.
+    if(captureContactBlocked_) {
+        if(event.kind==TouchKind::Up) captureContactBlocked_=false;
+        resetTouch(); return {};
+    }
+    if(event.kind==TouchKind::Down && screen_==Screen::Capture &&
+        event.y>=80 && event.y<=330 && inside(event.x,event.y)) {
+        captureContactBlocked_=true;
+        if(down_ || !model.inputEnabled || model.encounterRecoveryRequired || pending_ || battleLocked_ ||
+            !canCapture(state,model) || event.atMs<lastAt_ ||
+            (captureAcceptedAt_!=UINT64_MAX && (event.atMs<captureAcceptedAt_ || event.atMs-captureAcceptedAt_<450))) {
+            resetTouch(); return {};
+        }
+        lastAt_=event.atMs;
+        const auto value=capturering::sample(captureElapsed(event.atMs),state.wildFormId).phaseMs;
+        captureAcceptedAt_=event.atMs;
+        return propose(state,model,Action::RingCapture,value);
+    }
     if (event.kind==TouchKind::Cancel) { cancelTouch(); return {}; }
     if (!model.inputEnabled || model.encounterRecoveryRequired || pending_ || battleLocked_) { resetTouch(); return {}; }
-    const bool inFlight = lastAction_==Action::Flick && state.sequence==actionSequence_ &&
+    const bool inFlight = captureAction(lastAction_) && state.sequence==actionSequence_ &&
         event.atMs>=actionAt_ && event.atMs-actionAt_<550;
     if (inFlight) { resetTouch(); return {}; }
+    if (screen_==Screen::Capture && event.atMs<lastAt_) { resetTouch(); return {}; }
     if (event.kind==TouchKind::Down) {
         if (down_) { resetTouch(); return {}; } // A second contact invalidates the first.
         if (!inside(event.x,event.y)) return {};
-        down_=true; cancelled_=tapMoved_=false; downX_=event.x; downY_=event.y; downAt_=lastAt_=event.atMs; sampleCount_=0;
+        down_=true; cancelled_=tapMoved_=false; downX_=event.x; downY_=event.y; downAt_=lastAt_=event.atMs;
         Button choices[8]; const auto n=buttons(state,model,choices);
         bool buttonOrigin=false;
         for (std::size_t i=0;i<n;++i) {
             const auto& b=choices[i];
             if (event.x>=b.x && event.x<b.x+b.w && event.y>=b.y && event.y<b.y+b.h) { buttonOrigin=true; if(b.enabled) downButton_=b.id; break; }
         }
-        const int dx=event.x-206,dy=event.y-300;
-        gesture_=!buttonOrigin && screen_==Screen::Capture && dx*dx+dy*dy<=30*30 && legal(state,model,Action::Flick,160*256+180);
         const bool nearbyPicker=screen_==Screen::Nearby && !nearbyFeedback(model) && model.nearby && model.nearby->stage==nearby::Stage::Playing &&
             model.nearby->match.mode==nearby::Mode::Tactical && !model.nearby->localChoicePending;
         battleGesture_=!buttonOrigin && event.y>=130 && event.y<336 && (nearbyPicker ||
             (screen_==Screen::Battle && state.battleMode==BattleMode::Tactical && state.phase==Phase::Encounter));
         browseGesture_=(screen_==Screen::Home && event.y>=112 && event.y<282) ||
             (!buttonOrigin && event.y>=100 && event.y<280 &&
-            (screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats ||
+            (screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats || screen_==Screen::Sound || screen_==Screen::TradeChoose || screen_==Screen::TradeReview ||
              (screen_==Screen::Evolution && evolutionPage_!=3) ||
              (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Discovering)));
-        append(event); return {};
+        return {};
     }
     if (!down_ || cancelled_) return {};
     if (event.atMs<lastAt_ || event.atMs-downAt_>10000 || !inside(event.x,event.y)) { resetTouch(); return {}; }
-    lastAt_=event.atMs; append(event);
+    lastAt_=event.atMs;
     if((event.x-downX_)*(event.x-downX_)+(event.y-downY_)*(event.y-downY_)>24*24) tapMoved_=true;
     if (event.kind==TouchKind::Move) {
-        if (!gesture_ && !battleGesture_ && !browseGesture_ && ((event.x-downX_)*(event.x-downX_)+(event.y-downY_)*(event.y-downY_)>24*24)) resetTouch();
+        if (!battleGesture_ && !browseGesture_ && tapMoved_) resetTouch();
         return {};
     }
     if (event.kind!=TouchKind::Up) return {};
-    const bool gesture=gesture_, battleGesture=battleGesture_, browseGesture=browseGesture_; const int pressed=downButton_;
-    down_=false; gesture_=battleGesture_=browseGesture_=false; downButton_=0;
+    const bool battleGesture=battleGesture_, browseGesture=browseGesture_; const int pressed=downButton_;
+    down_=false; battleGesture_=browseGesture_=false; downButton_=0;
     if (battleGesture || browseGesture) {
         const int dx=event.x-downX_,dy=event.y-downY_;
         const auto elapsed=event.atMs-downAt_;
@@ -707,35 +991,6 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
         if(!tapMoved_ && direction && direction==horizontalTap(event.x,event.y,battleGesture))
             return navigateHorizontal(direction>0,state,model);
         return {};
-    }
-    if (gesture) {
-        Sample first=samples_[0];
-        const auto end=samples_[sampleCount_-1];
-        const auto cutoff=end.atMs>100 ? end.atMs-100 : 0;
-        if (first.atMs<cutoff && sampleCount_>1) {
-            const auto second=samples_[1];
-            const auto delta=second.atMs-first.atMs;
-            if (delta) {
-                first.x+=static_cast<std::int16_t>((static_cast<std::int64_t>(second.x-first.x)*(cutoff-first.atMs))/delta);
-                first.y+=static_cast<std::int16_t>((static_cast<std::int64_t>(second.y-first.y)*(cutoff-first.atMs))/delta);
-                first.atMs=cutoff;
-            }
-        }
-        for (unsigned i=0;i<sampleCount_;++i)
-            if (samples_[i].atMs>=first.atMs && samples_[i].y>first.y) first=samples_[i];
-        const int travel=first.y-end.y;
-        const auto elapsed=std::max<std::uint64_t>(16,end.atMs-first.atMs);
-        // Pixel velocity * 180 ms is exactly the browser v1 trajectory scale.
-        // Require at least12px upward at >=0.18 screen widths/second.
-        if (travel<12 || static_cast<std::uint64_t>(travel)*100000 < elapsed*7416) {
-            notice("NO THROW - FLICK UPWARD"); return {};
-        }
-        auto rounded=[](std::int64_t numerator,std::int64_t denominator) {
-            return static_cast<int>(numerator>=0 ? (numerator+denominator/2)/denominator : -((-numerator+denominator/2)/denominator));
-        };
-        const int dx=std::clamp(rounded(static_cast<std::int64_t>(end.x-first.x)*180,elapsed),-160,160);
-        const int reach=std::clamp(rounded(static_cast<std::int64_t>(travel)*180,elapsed),0,255);
-        return propose(state,model,Action::Flick,static_cast<std::uint32_t>((dx+160)*256+reach));
     }
     if (!pressed || event.atMs-downAt_<20 || event.atMs-downAt_>1800 ||
         (event.x-downX_)*(event.x-downX_)+(event.y-downY_)*(event.y-downY_)>24*24) return {};
@@ -777,7 +1032,15 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
     case Screen::EvolutionResult:
         request.formId=member ? member->formId : 0; request.animation=sprite::Animation::Celebrate; break;
     case Screen::ReleaseReview: case Screen::Stats: case Screen::Collection:
-        request.formId=memberIndex_<state.collectionCount ? state.collection[memberIndex_].formId : 0; break;
+        request.formId=selectedMember(state) ? selectedMember(state)->formId : 0; break;
+    case Screen::TradeChoose: {
+        const auto* offered=findMember(state,tradeMemberId_);request.formId=offered ? offered->formId : 0;
+        request.sceneId=scenes[7];break;
+    }
+    case Screen::TradeReview:
+        if(model.trade && model.trade->localSide<2 && trade::valid(model.trade->transcript))
+            request.formId=model.trade->transcript.offers[1-model.trade->localSide].formId;
+        request.sceneId=scenes[7];break;
     case Screen::Nearby: case Screen::NearbyReview:
         if (model.nearby) {
             const auto& n=*model.nearby;
@@ -786,7 +1049,7 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
             else if (n.stage==nearby::Stage::Playing || n.stage==nearby::Stage::Reconnecting || n.stage==nearby::Stage::Finished) request.formId=n.match.fighters[n.host ? 1 : 0].formId;
         }
         request.sceneId=scenes[7]; break;
-    case Screen::EncounterSettings: case Screen::Settings: case Screen::ModeReview:
+    case Screen::EncounterSettings: case Screen::Settings: case Screen::ModeReview: case Screen::Sound:
         request.sceneId=scenes[7]; break;
     case Screen::Egg: break;
     }
@@ -816,10 +1079,25 @@ ArtRequest Controller::partnerArtRequest(const State& state,const Model& model,s
         const auto& view=*model.nearby;
         if(view.stage==nearby::Stage::Playing || view.stage==nearby::Stage::Reconnecting || view.stage==nearby::Stage::Finished)
             request.formId=view.match.fighters[view.host ? 0 : 1].formId;
+    } else if(screen_==Screen::TradeReview && model.trade && model.trade->localSide<2 && trade::valid(model.trade->transcript)) {
+        request.formId=model.trade->transcript.offers[model.trade->localSide].formId;
     }
     return request;
 }
 
+bool Controller::captureAnimating(const State& state,const Model& model) const {
+    return screen_==Screen::Capture && downButton_==0 && !pending_ && !battleLocked_ && !notice_[0] && canCapture(state,model);
+}
+bool Controller::renderCaptureRegion(const State& state,const Model& model,std::uint16_t* pixels,
+                                     std::size_t capacity,std::uint64_t now) const {
+    if(!pixels || capacity<kPixels || !captureAnimating(state,model) ||
+        (captureAction(lastAction_) && state.sequence==actionSequence_ && now>=actionAt_ && now-actionAt_<550)) return false;
+    const auto art=artRequest(state,model,now);
+    Canvas c{pixels,kCaptureX,kCaptureY,kCaptureX+kCaptureWidth,kCaptureY+kCaptureHeight};
+    if(!c.scene(model.artwork,art)) c.circle(206,206,204,bg);
+    captureScene(c,state,model,art,capturering::sample(captureElapsed(now),state.wildFormId));
+    return true;
+}
 bool Controller::render(const State& state, const Model& model, std::uint16_t* pixels,
                         std::size_t capacity, std::uint64_t now) const {
     if (!pixels || capacity<kPixels) return false;
@@ -864,9 +1142,12 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::EvolutionResult: break;
     case Screen::Encounter: break;
     case Screen::Battle: break;
-    case Screen::Capture: plate(62,49,288,28); plate(62,186,288,43); break;
+    case Screen::Capture: plate(62,49,288,28); break;
     case Screen::Result: plate(62,69,288,33); plate(62,228,288,28); break;
     case Screen::Settings: plate(62,63,288,49); break;
+    case Screen::Sound: plate(62,63,288,165); break;
+    case Screen::TradeChoose: break;
+    case Screen::TradeReview: if(tradePage_) plate(50,61,312,218); break;
     case Screen::EncounterSettings: plate(50,66,312,163); break;
     case Screen::ModeReview: plate(50,67,312,170); break;
     case Screen::NearbyReview: plate(50,67,312,204); break;
@@ -874,10 +1155,13 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         if(!model.nearby || (model.nearby->stage!=nearby::Stage::Playing && model.nearby->stage!=nearby::Stage::Finished && model.nearby->stage!=nearby::Stage::Reconnecting && model.nearby->stage!=nearby::Stage::Discovering)) plate(50,90,312,180);
         break;
     }
-    const bool browse=screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats ||
+    const bool browse=screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats || screen_==Screen::Sound ||
+        (screen_==Screen::TradeChoose && tradeMemberId_ && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::TradeReview && model.trade && trade::valid(model.trade->transcript)) ||
         (screen_==Screen::Evolution && evolutionPage_!=3) || (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Discovering && peerCount(model.nearby)>1);
     const bool picker=!battleLocked_ && ((screen_==Screen::Battle && state.battleMode==BattleMode::Tactical) ||
         (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Playing && model.nearby->match.mode==nearby::Mode::Tactical && !model.nearby->localChoicePending && !nearbyFeedback(model)));
+    const bool fullRosterBattle=screen_==Screen::Battle && !(model.battle && model.battle->locked) &&
+        state.collectionCount>=kCollectionCapacity;
     const std::uint8_t hint=browse ? 1 : picker ? 2 : 0;
     if(hint!=hintContext_) { hintSeen_|=hintContext_; hintContext_=hint; hintAt_=(hint && !(hintSeen_&hint)) ? now : UINT64_MAX; }
     if(hint && hintAt_!=UINT64_MAX && now>=hintAt_ && now-hintAt_>=7000) { hintSeen_|=hint; hintAt_=UINT64_MAX; }
@@ -899,7 +1183,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::Egg:
         c.center(74,"SOMETHING IS STIRRING",2);
         c.egg(206+tx,166+ty,static_cast<int>(now/600)%2);
-        c.center(222,"CHOOSE YOUR FIRST FRIEND",1,dim);
+        c.center(222,"CHOOSE YOUR FIRST DIGIMON",1,dim);
         break;
     case Screen::Starter: case Screen::StarterReview: {
         const auto count=model.starterCount==11 ? 11u : 8u;
@@ -919,12 +1203,14 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         c.badge(84,creatureName(state),std::strlen(creatureName(state))<=24 ? 2 : 1,ink,36);
         if(!c.spriteFrame(206+tx/2,196+ty/2,176,model.artwork.sprite,art))
             c.missingArt(206+tx/2,196+ty/2);
-        for(unsigned i=0;i<4;++i) c.circle(179+static_cast<int>(i)*18,360,4,
+        for(unsigned i=0;i<4;++i) c.circle(179+static_cast<int>(i)*18,354,4,
             i==static_cast<unsigned>(homePanel_) ? mint : edge);
-        if(state.encounterRate==EncounterRate::Off) std::snprintf(label,sizeof(label),"ENCOUNTERS PAUSED");
-        else if(!model.stepsAvailable) std::snprintf(label,sizeof(label),"STEP SENSOR UNAVAILABLE");
-        else std::snprintf(label,sizeof(label),"%llu LIFETIME STEPS",static_cast<unsigned long long>(model.lifetimeSteps));
-        c.badge(377,label,1,dim,32);
+        std::snprintf(label,sizeof(label),"STEPS %llu",static_cast<unsigned long long>(model.lifetimeSteps));
+        c.badge(369,label,1,dim,27);
+        const char* status=model.stepStatus && std::strcmp(model.stepStatus,"STEP SAVE RECOVERY")==0 ? "STEP SAVE RECOVERY" :
+            model.stepsRecovering ? "SENSOR RECOVERING" : !model.stepsAvailable ? "SENSOR UNAVAILABLE" :
+            state.encounterRate==EncounterRate::Off ? "ENCOUNTERS PAUSED" : "LIFETIME TOTAL";
+        c.badge(384,status,1,dim,24);
         break;
     }
     case Screen::Care: {
@@ -943,7 +1229,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         std::snprintf(label,sizeof(label),"THIS SESSION %u",static_cast<unsigned>(model.sessionSteps)); c.center(198,label,1,dim);
         c.center(218,model.stepStatus ? model.stepStatus : model.stepsAvailable ? "PEDOMETER READY" : "PEDOMETER UNAVAILABLE",1,dim,40);
         c.center(240,state.encounterRate==EncounterRate::Off ? "ENCOUNTERS PAUSED" :
-            model.encounterReady ? "WALK TO MEET FRIENDS" : "SENSOR NOT READY",2,amber,40); break;
+            model.encounterReady ? "WALK TO MEET DIGIMON" : "SENSOR NOT READY",2,amber,40); break;
     case Screen::Encounter: {
         c.badge(68,wildName(state),2,amber);
         std::snprintf(label,sizeof(label),"WILD LV %u   HP %u/%u",static_cast<unsigned>(state.wildLevel),static_cast<unsigned>(state.wildHp),static_cast<unsigned>(state.wildMaxHp));
@@ -957,7 +1243,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             const auto elapsed=playback->captureElapsedMs;
             const auto* target=forms::find(playback->enemyFormId);
             const bool revealed=elapsed>=(playback->captureMiss ? 500u : 2300u);
-            c.badge(65,target ? target->name : "WILD FRIEND",2,amber,25);
+            c.badge(65,target ? target->name : "WILD DIGIMON",2,amber,25);
             std::snprintf(label,sizeof(label),"THROW %u / 3",static_cast<unsigned>(playback->captureAttempt)); c.badge(91,label,1,dim);
             if(elapsed>=500 && !playback->captureMiss && playback->captureChance) {
                 std::snprintf(label,sizeof(label),"THAT THROW: %u%%",static_cast<unsigned>(playback->captureChance)); c.badge(113,label,1,dim);
@@ -979,12 +1265,12 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
                 c.circle(x,192,44+static_cast<int>(phase/100),edge,false);
                 for(unsigned i=0;i<3;++i)c.circle(182+static_cast<int>(i)*24,267,4,i<=beat ? mint : edge);
             } else {
-                c.badge(268,playback->captureMiss ? "MISS" : playback->captureCaught ? "NEW FRIEND!" : "BROKE FREE",2,playback->captureCaught ? mint : amber);
+                c.badge(268,playback->captureMiss ? "MISS" : playback->captureCaught ? "NEW DIGIMON!" : "BROKE FREE",2,playback->captureCaught ? mint : amber);
                 if(playback->captureMiss)c.badge(295,"NO CAPTURE ROLL",1,dim);
                 else if(playback->captureCaught)c.badge(295,"PARTNER SAVED",1,dim);
             }
             if(!playback->captureCaught || !revealed) {
-                std::snprintf(label,sizeof(label),playback->captureRemaining ? "%u THROWS REMAIN" : "THE WILD FRIEND LEAVES",static_cast<unsigned>(playback->captureRemaining));
+                std::snprintf(label,sizeof(label),playback->captureRemaining ? "%u THROWS REMAIN" : "THE WILD DIGIMON LEAVES",static_cast<unsigned>(playback->captureRemaining));
                 // A terminal result is not disclosed until the cinematic reveal.
                 if(playback->captureRemaining || revealed)c.badge(322,label,1,dim,36);
             }
@@ -998,7 +1284,11 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const auto enemyHp=playback ? playback->enemyHp : state.wildHp;
         const auto playerMaximum=playback ? playback->playerMaxHp : maxHp(state);
         const auto enemyMaximum=playback ? playback->enemyMaxHp : state.wildMaxHp;
-        c.badge(65,state.battleMode==BattleMode::Auto ? "AUTO BATTLE" : "TACTICAL BATTLE",1,mint);
+        if(fullRosterBattle) {
+            std::snprintf(label,sizeof(label),"%s - DIGIMON %u/%u FULL",state.battleMode==BattleMode::Auto ? "AUTO" : "TACTICAL",
+                static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(kCollectionCapacity));
+            c.badge(65,label,1,amber);
+        } else c.badge(65,state.battleMode==BattleMode::Auto ? "AUTO BATTLE" : "TACTICAL BATTLE",1,mint);
         auto sideText=[&](int x,int y,const char* value,std::uint16_t color) {
             const auto length=std::min<std::size_t>(value ? std::strlen(value) : 0,22);
             c.rect(x-static_cast<int>(length)*3-4,y-3,static_cast<int>(length)*6+8,13,panel);
@@ -1045,45 +1335,39 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         }
         break;
     }
-    case Screen::Capture: {
-        c.center(55,"FLICK TO CAPTURE",2,amber);
-        std::snprintf(label,sizeof(label),"%u THROWS LEFT",static_cast<unsigned>(3-std::min<std::uint32_t>(3,state.captureAttempts)));c.badge(166,label,1,dim);
-        c.circle(206,120,48,amber,false);
-        if(!c.spriteFrame(206,120,88,model.artwork.sprite,art)) c.missingArt(206,120);
-        c.center(192,"TOUCH ORB - FLICK UP",2);
-        c.center(216,"AIM FOR THE RING",1,dim);
-        int x=206,y=300;
-        if(gesture_ && sampleCount_) { x=samples_[sampleCount_-1].x; y=samples_[sampleCount_-1].y; }
-        c.circle(x,y,24,mint); c.circle(x,y,19,ink,false); c.rect(x-9,y-2,18,4,bg);
+    case Screen::Capture:
+        captureScene(c,state,model,art,capturering::sample(captureElapsed(now),state.wildFormId));
         break;
-    }
     case Screen::Result:
         c.center(78,shortMessage(state.message),2,mint);
         actor(206+tx,166+ty,5);
-        std::snprintf(label,sizeof(label),"LEVEL %u   FRIENDS %u/%u",static_cast<unsigned>(state.level),static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(kCollectionCapacity));
+        std::snprintf(label,sizeof(label),"LEVEL %u   DIGIMON %u/%u",static_cast<unsigned>(state.level),static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(kCollectionCapacity));
         c.center(235,label,1,dim); break;
     case Screen::Collection:
-        if(state.collectionCount) {
-            const auto& member=state.collection[memberIndex_];
+        if(selectedMember(state)) {
+            const auto& member=*selectedMember(state);
             c.badge(72,memberName(member),std::strlen(memberName(member))<=24 ? 2 : 1,mint,36);
-            actor(206+tx,169+ty,9);
-            std::snprintf(label,sizeof(label),"%u/%u  LV %u%s",memberIndex_+1,static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(member.level),member.id==state.activeCreatureId ? "  ACTIVE" : "");
-            c.badge(242,label,2,dim);
-            std::snprintf(label,sizeof(label),"OWNED ID %u",static_cast<unsigned>(member.id)); c.badge(266,label,1,dim);
+            std::snprintf(label,sizeof(label),"XP COMPANIONS %u/%u",static_cast<unsigned>(partyCount(state)),static_cast<unsigned>(kPartyCapacity));
+            c.badge(94,label,1,partyCount(state)==kPartyCapacity ? amber : dim);
+            actor(206+tx,162,7); // Fixed vertical stage keeps roster controls clear at any gyro tilt.
+            std::snprintf(label,sizeof(label),"%u/%u  LV %u%s",memberIndex_+1,static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(member.level),
+                member.id==state.activeCreatureId ? "  ACTIVE" : isPartyMember(state,member.id) ? "  XP" : "");
+            c.badge(222,label,1,member.id==state.activeCreatureId || isPartyMember(state,member.id) ? mint : dim);
+            std::snprintf(label,sizeof(label),"OWNED ID %u",static_cast<unsigned>(member.id)); c.badge(235,label,1,dim);
         }
         break;
     case Screen::ReleaseReview: {
         const auto* member=findMember(state,releaseMember_);
-        c.center(75,"RELEASE THIS FRIEND?",2,amber);
-        c.center(127,member ? memberName(*member) : "UNKNOWN FRIEND",1,ink,36);
+        c.center(75,"RELEASE THIS DIGIMON?",2,amber);
+        c.center(127,member ? memberName(*member) : "UNKNOWN DIGIMON",1,ink,36);
         std::snprintf(label,sizeof(label),"OWNED ID %u",static_cast<unsigned>(releaseMember_)); c.center(153,label,2,mint);
         c.center(191,"THIS FREES ONE PARTNER SLOT",1,dim,36);
         c.center(215,"RELEASE CANNOT BE UNDONE",1,amber,36);
-        c.center(245,"BACK KEEPS THIS FRIEND",1,dim,36); break;
+        c.center(245,"BACK KEEPS THIS DIGIMON",1,dim,36); break;
     }
     case Screen::Stats: {
-        if (!state.collectionCount || memberIndex_>=state.collectionCount) break;
-        const auto& member=state.collection[memberIndex_];
+        if (!selectedMember(state)) break;
+        const auto& member=*selectedMember(state);
         const auto profile=combat::formProfile(member.formId,member.level);
         const auto effective=memberBattleProfile(state,member);
         const auto care=memberCare(member);
@@ -1192,6 +1476,95 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         else std::snprintf(label,sizeof(label),"SCREEN IDLE: OFF");
         c.center(69,label,2,ink,25);
         c.center(96,"TAP OR MOVE TO WAKE",1,dim,32); break;
+    case Screen::Sound:
+        c.center(72,"SOUND",2,mint);
+        c.center(108,"VOLUME",1,dim);
+        std::snprintf(label,sizeof(label),"%u%%",static_cast<unsigned>(model.volumePercent));
+        c.center(148,label,3,ink); c.bar(126,192,160,model.volumePercent,100,mint);
+        c.center(211,model.muted ? "SOUND IS MUTED" : model.volumePercent ? "QUIET TO LOUD" : "SILENT",1,dim);
+        c.badge(294,"MUSIC IS OPTIONAL",1,dim,36);
+        c.badge(317,!model.audioPreferencesWritable ? "SOUND SETTINGS NOT SAVED" :
+            !model.audioAvailable ? "SPEAKER NOT READY" : "SAVES AS YOU CHANGE",1,
+            !model.audioPreferencesWritable ? amber : dim,36); break;
+    case Screen::TradeChoose: {
+        const auto* member=findMember(state,tradeMemberId_);
+        c.badge(67,"CHOOSE YOUR OFFER",2,mint);
+        if(member && trade::canOffer(state,member->id)) {
+            c.badge(95,memberName(*member),std::strlen(memberName(*member))>21 ? 1 : 2,ink,36);
+            actor(206,185,7);
+            std::snprintf(label,sizeof(label),"LV %u  HP %u/%u  ID %u",static_cast<unsigned>(member->level),static_cast<unsigned>(member->hp),
+                static_cast<unsigned>(combat::formProfile(member->formId,member->level).stats.maxHp),static_cast<unsigned>(member->id));c.badge(248,label,1,dim,42);
+            c.badge(268,"ONE OTHER PARTNER STAYS WITH YOU",1,mint,40);
+        } else {
+            c.center(126,"KEEP ONE PLAYABLE PARTNER",1,amber,40);
+            c.center(159,"CATCH ANOTHER BEFORE TRADING",1,ink,40);
+            c.center(202,"YOUR COLLECTION HAS NOT CHANGED",1,dim,40);
+        }
+        break;
+    }
+    case Screen::TradeReview: {
+        const auto* v=model.trade;
+        const bool valid=v && v->localSide<2 && trade::valid(v->transcript);
+        if(!valid) {
+            c.badge(78,"TRADE UNAVAILABLE",2,amber);
+            c.center(144,"WAIT FOR BOTH CURRENT OFFERS",1,dim,40);
+            c.center(183,"NO PARTNERS HAVE BEEN EXCHANGED",1,dim,40);break;
+        }
+        const auto& give=v->transcript.offers[v->localSide];const auto& get=v->transcript.offers[1-v->localSide];
+        const bool applied=v->durable==tradewire::Durable::Applied;
+        const bool aborted=v->stage==tradewire::Stage::Aborted || v->stage==tradewire::Stage::Cancelled;
+        c.badge(67,applied ? "PARTNER RECEIVED" : aborted ? "TRADE CANCELED" : "REVIEW BOTH OFFERS",2,applied ? mint : amber);
+        if(!tradePage_) {
+            auto side=[&](int x,int y,const char* text,std::uint16_t color) {
+                const auto length=std::min<std::size_t>(std::strlen(text),22);
+                c.rect(x-static_cast<int>(length)*3-4,y-3,static_cast<int>(length)*6+8,13,panel);
+                c.text(x-static_cast<int>(length)*3,y,text,1,color,22);
+            };
+            side(118,91,"YOU GIVE",dim);side(294,91,"YOU GET",dim);
+            side(118,107,memberName(give),mint);side(294,107,memberName(get),amber);
+            std::snprintf(label,sizeof(label),"LV %u HP %u/%u",static_cast<unsigned>(give.level),static_cast<unsigned>(give.hp),static_cast<unsigned>(combat::formProfile(give.formId,give.level).stats.maxHp));side(118,122,label,dim);
+            std::snprintf(label,sizeof(label),"LV %u HP %u/%u",static_cast<unsigned>(get.level),static_cast<unsigned>(get.hp),static_cast<unsigned>(combat::formProfile(get.formId,get.level).stats.maxHp));side(294,122,label,dim);
+            const auto own=partnerArtRequest(state,model,now);
+            if(!c.spriteFrame(118,188,104,model.partnerArtwork,own,model.partnerArtwork.nativeFacing==SpriteFacing::Left))c.missingArt(118,188);
+            if(!c.spriteFrame(294,188,104,model.artwork.sprite,art,model.artwork.sprite.nativeFacing==SpriteFacing::Right))c.missingArt(294,188);
+            std::snprintf(label,sizeof(label),"XP %u BOND %u",static_cast<unsigned>(give.xp),static_cast<unsigned>(give.bond));side(118,248,label,dim);
+            std::snprintf(label,sizeof(label),"XP %u BOND %u",static_cast<unsigned>(get.xp),static_cast<unsigned>(get.bond));side(294,248,label,dim);
+        } else {
+            const auto& member=tradePage_<3 ? give : get;const bool care=tradePage_==2 || tradePage_==4;
+            const auto profile=combat::formProfile(member.formId,member.level);const auto bonus=memberCare(member);
+            c.badge(94,memberName(member),std::strlen(memberName(member))>21 ? 1 : 2,ink,36);
+            std::snprintf(label,sizeof(label),"%s  LV %u  %s",tradePage_<3 ? "YOU GIVE" : "YOU GET",static_cast<unsigned>(member.level),care ? "PROGRESS" : "BASE STATS");c.center(117,label,1,dim,40);
+            if(!care) {
+                std::snprintf(label,sizeof(label),"HP %u / %u",static_cast<unsigned>(member.hp),static_cast<unsigned>(profile.stats.maxHp));c.center(141,label,2,ink);
+                std::snprintf(label,sizeof(label),"ATK %u  DEF %u",static_cast<unsigned>(profile.stats.attack),static_cast<unsigned>(profile.stats.defense));c.center(167,label,2,ink);
+                std::snprintf(label,sizeof(label),"MAG %u  RES %u",static_cast<unsigned>(profile.stats.magic),static_cast<unsigned>(profile.stats.resistance));c.center(193,label,2,ink);
+                std::snprintf(label,sizeof(label),"CARE OFF +%u  GUARD +%u",static_cast<unsigned>(bonus.offense),static_cast<unsigned>(bonus.protection));c.center(225,label,1,mint,40);
+            } else {
+                std::snprintf(label,sizeof(label),"XP %u  NEXT +%u",static_cast<unsigned>(member.xp),static_cast<unsigned>(member.level<kMaxLevel ? xpForLevel(member.level+1)-member.xp : 0));c.center(141,label,1,ink,40);
+                std::snprintf(label,sizeof(label),"BOND %u  ENERGY %u",static_cast<unsigned>(member.bond),static_cast<unsigned>(member.energy));c.center(167,label,1,ink,40);
+                std::snprintf(label,sizeof(label),"FOOD %u  MOOD %u",static_cast<unsigned>(member.fullness),static_cast<unsigned>(member.mood));c.center(193,label,1,ink,40);
+                c.center(225,"LEVEL XP AND CARE TRAVEL WITH THEM",1,mint,40);
+            }
+            std::snprintf(label,sizeof(label),"DETAILS %u/4",static_cast<unsigned>(tradePage_));c.center(248,label,1,dim,40);
+        }
+        const char* status="CHECK BOTH OFFERS BEFORE CONFIRMING";
+        if(applied)status=v->peerDurable==tradewire::Durable::Applied ? "BOTH DEVICES SAVED THE TRADE" : "SAVED HERE - WAITING FOR OTHER DEVICE";
+        else if(aborted)status="YOUR ORIGINAL PARTNER STAYS WITH YOU";
+        else if(v->recoveryOffer)status="PAST TRADE - REVIEW BEFORE CANCELING";
+        else if(!v->connected)status="RECONNECT THE SAME TWO DEVICES";
+        else if(v->stage==tradewire::Stage::Inviting)status="WAITING FOR THE OTHER PLAYER";
+        else if(v->durable==tradewire::Durable::Prepared)status="OFFER LOCKED - KEEP DEVICES NEARBY";
+        else if(v->stage==tradewire::Stage::Committing || v->stage==tradewire::Stage::Applying)status="SAVING TRADE - KEEP DEVICES NEARBY";
+        else if(v->offerPending || !v->peerReviewed)status="WAITING FOR BOTH CURRENT OFFERS";
+        else if(v->localConfirmed)status=v->peerConfirmed ? "BOTH CONFIRMED - PREPARING TRADE" : "YOU CONFIRMED - WAITING FOR THEM";
+        else if(v->peerConfirmed)status="THEY CONFIRMED - YOUR CHOICE";
+        c.badge(268,status,1,dim,44);
+        if(v->stage!=tradewire::Stage::Reviewing || v->durable!=tradewire::Durable::None) {
+            if(v->durable==tradewire::Durable::Prepared)c.badge(310,"CANCEL MAY NEED THE OTHER DEVICE",1,amber,44);
+            else if(model.tradeStatus)c.badge(310,model.tradeStatus,1,amber,44);
+        }
+        break;
+    }
     case Screen::EncounterSettings: {
         c.center(76,"WILD ENCOUNTERS",2);
         std::snprintf(label,sizeof(label),"PACE: %s",encounterRateName(state.encounterRate)); c.center(108,label,2,mint);
@@ -1200,7 +1573,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         else std::snprintf(label,sizeof(label),"ENCOUNTERS ARE PAUSED");
         c.center(139,label,1,dim,40);
         c.center(158,"STEPS COUNT ON EVERY SCREEN",1,dim,40);
-        c.center(177,"ONE FRIEND CAN WAIT AT A TIME",1,dim,36);
+        c.center(177,"ONE DIGIMON CAN WAIT AT A TIME",1,dim,36);
         c.center(196,"NEW ENCOUNTERS WAIT FOR HOME",1,dim,36);
         c.center(215,"CHANGE SAVES IMMEDIATELY",1,amber,32); break;
     }
@@ -1213,10 +1586,10 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         if (peer) {
             std::snprintf(label,sizeof(label),"DEVICE %02X%02X  LV %u",peer->mac.bytes[4],peer->mac.bytes[5],static_cast<unsigned>(peer->fighter.level)); c.center(146,label,1,dim,40);
         }
-        c.center(178,creatureName(state),1,mint,40);
-        std::snprintf(label,sizeof(label),"YOUR PARTNER LV %u",static_cast<unsigned>(state.level)); c.center(200,label,1,dim,36);
-        c.center(227,state.battleMode==BattleMode::Auto ? "AUTO - BOTH PLAYERS MUST AGREE" : "TACTICAL - BOTH PLAYERS MUST AGREE",1,amber,42);
-        c.center(251,"FULL HP DUEL - NO XP OR SAVE REWARDS",1,dim,42); break;
+        const auto* local=forms::find(model.nearbyLocalFighter.formId);
+        std::snprintf(label,sizeof(label),"YOU: %s LV %u",local ? local->name : creatureName(state),static_cast<unsigned>(model.nearbyLocalFighter.level)); c.center(172,label,1,mint,40);
+        c.center(195,"CHOOSE THIS DUEL'S MODE",1,amber,36);
+        c.center(268,"NO CAPTURE / XP - BOTH MUST AGREE",1,dim,40); break;
     }
     case Screen::Nearby: {
         const auto* n=model.nearby;
@@ -1243,7 +1616,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.center(159,"VS",1,dim);
             std::snprintf(label,sizeof(label),"%s LV %u",guest ? guest->name : "GUEST",static_cast<unsigned>(n->offered[1].level)); c.center(179,label,1,ink,42);
             c.center(198,n->offeredMode==nearby::Mode::Auto ? "AUTO FRIENDLY DUEL" : "TACTICAL FRIENDLY DUEL",1,mint,36);
-            c.center(217,"FULL HP - NO XP OR SAVE REWARDS",1,dim,40);
+            c.center(217,"FULL HP - NO CAPTURE OR XP",1,dim,40);
         } else if (stage==nearby::Stage::Playing || stage==nearby::Stage::Reconnecting || stage==nearby::Stage::Finished) {
             const auto& match=n->match; const unsigned local=n->host ? 0 : 1, remote=1-local;
             const auto player=combat::formProfile(match.fighters[local].formId,match.fighters[local].level);
@@ -1348,17 +1721,22 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     }
     case Screen::ModeReview:
         c.center(78,proposedMode_==1 ? "SWITCH TO AUTO?" : "SWITCH TO TACTICAL?",2,amber);
-        c.center(127,proposedMode_==1 ? "THE WHOLE FIGHT RUNS" : "YOU CHOOSE EACH",2);
-        c.center(153,proposedMode_==1 ? "AUTOMATICALLY" : "BATTLE ACTION",2);
+        c.center(127,proposedMode_==1 ? "ATTACKS RUN FOR YOU" : "YOU CHOOSE EACH",2);
+        c.center(153,proposedMode_==1 ? "YOU FLICK TO CAPTURE" : "BATTLE ACTION",2);
         c.center(203,"THIS SETTING IS SAVED",1,dim);
         c.center(224,"BACK KEEPS THE CURRENT MODE",1,dim,36); break;
     }
     if(browse || picker) {
-        const bool multiple=picker || screen_==Screen::Starter || screen_==Screen::Stats || (screen_==Screen::Collection && state.collectionCount>1) ||
+        const bool multiple=picker || screen_==Screen::Starter || screen_==Screen::Stats || screen_==Screen::Sound || screen_==Screen::TradeReview ||
+            (screen_==Screen::TradeChoose && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::Collection && state.collectionCount>1) ||
             (screen_==Screen::Evolution && (evolutionPage_ || (activeMember(state) && forms::outgoing(activeMember(state)->formId,1)))) || screen_==Screen::Nearby;
-        if(multiple) { c.chevron(49,180,-1,arrowColor); c.chevron(352,180,1,arrowColor); }
+        if(multiple) {
+            c.chevron(49,180,-1,screen_==Screen::Sound && !model.volumePercent ? dim : arrowColor);
+            c.chevron(352,180,1,screen_==Screen::Sound && model.volumePercent>=100 ? dim : arrowColor);
+        }
     }
-    if(hintAge<7000) {
+    if(fullRosterBattle) c.badge(337,"FINISH BATTLE TO RELEASE",1,amber);
+    else if(hintAge<7000) {
         const auto color=hintAge<5000 ? dim : rgb(173-static_cast<int>((hintAge-5000)*115/2000),196-static_cast<int>((hintAge-5000)*112/2000),190-static_cast<int>((hintAge-5000)*110/2000));
         c.badge(337,picker ? "TAP / SWIPE TO CHOOSE - UP TO COMMIT" : "TAP ARROWS OR SWIPE",1,color,36);
     }
@@ -1371,15 +1749,18 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.chevron(b.x+b.w/2,190,b.id==HomePrevious ? -1 : 1,color);
             continue;
         }
-        c.rect(b.x,b.y,b.w,b.h,b.enabled ? edge : panel);
+        const bool modeSelected=(b.id==NearbyTactical && nearbyMode_==nearby::Mode::Tactical) ||
+            (b.id==NearbyAuto && nearbyMode_==nearby::Mode::Auto);
+        c.rect(b.x,b.y,b.w,b.h,b.enabled ? (modeSelected ? mint : edge) : panel);
         c.rect(b.x+2,b.y+2,b.w-4,b.h-4,b.enabled && down_ && b.id==downButton_ ? edge : panel);
         const int scale=std::strlen(b.label)*12 <= static_cast<std::size_t>(b.w-10) ? 2 : 1;
         const int width=static_cast<int>(std::strlen(b.label))*6*scale-scale;
         c.text(b.x+(b.w-width)/2,b.y+(b.h-7*scale)/2,b.label,scale,b.enabled ? ink : dim);
     }
-    if(recent && lastAction_==Action::Flick && !(model.battle && model.battle->locked && model.battle->capturePresentation)) {
+    if(recent && captureAction(lastAction_) && !(model.battle && model.battle->locked && model.battle->capturePresentation)) {
         FlickTrajectory flight;
-        if(decodeFlick(actionValue_,flight)) {
+        if(lastAction_==Action::RingCapture || decodeFlick(actionValue_,flight)) {
+            if(lastAction_==Action::RingCapture) { flight.landingX=206;flight.landingY=176;flight.hit=true; }
             const int progress=std::min<int>(500,static_cast<int>(now-actionAt_));
             const int x=206+(flight.landingX-206)*progress/500;
             const int y=300+(flight.landingY-300)*progress/500-4*28*progress*(500-progress)/(500*500);
@@ -1393,7 +1774,11 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         // represented by the persistent read-only footer below.
         c.center(131,notice_,1,amber,47);
     }
-    if(!model.writable) c.center(388,"SAVE READ ONLY",1,red,16);
+    if(!model.writable) {
+        const bool tradeLock=model.tradeWritable && model.trade &&
+            (model.trade->durable==tradewire::Durable::Prepared || model.trade->durable==tradewire::Durable::Committed);
+        c.center(388,tradeLock ? "TRADE IN PROGRESS" : "SAVE READ ONLY",1,tradeLock ? amber : red,20);
+    }
     else if(!model.inputEnabled) c.center(388,"INPUT PAUSED",1,amber,16);
     return true;
 }
@@ -1418,6 +1803,9 @@ const char* screenName(Screen screen) {
     case Screen::EvolutionResult: return "digivolution-result";
     case Screen::EncounterSettings: return "encounter-settings";
     case Screen::Settings: return "settings";
+    case Screen::Sound: return "sound";
+    case Screen::TradeChoose: return "trade-choose";
+    case Screen::TradeReview: return "trade-review";
     case Screen::ModeReview: return "mode-review";
     case Screen::Nearby: return "nearby";
     case Screen::NearbyReview: return "nearby-review";

@@ -13,25 +13,26 @@ void encounterRelease(bool automatic,bool uncertain) {
     using namespace digivice;
     using namespace digivice::storage;
     auto state=stableMemberFixture(223);
-    // Valid captured history with eight occupied slots, permanent IDs not indices.
+    // Valid full roster with earlier releases; permanent IDs are not slot indices.
     const auto active=state.collection[1];
-    for(std::size_t i=1;i<kCollectionCapacity-1;++i) {
-        state.collection[i]=active;state.collection[i].id=static_cast<std::uint32_t>(i+2);
-        state.collection[i].capturedAtSequence=static_cast<std::uint32_t>(80+i);
+    for(std::size_t i=2;i<kCollectionCapacity;++i) {
+        state.collection[i]=active;state.collection[i].id=static_cast<std::uint32_t>(19+i);
+        state.collection[i].capturedAtSequence=static_cast<std::uint32_t>(100+i);
     }
-    state.collection[kCollectionCapacity-1]=active;
     state.collectionCount=kCollectionCapacity;
+    state.sequence=state.foregroundSequence=200;
+    state.nextMemberId=kCollectionCapacity+19;state.captures=state.encounters=state.nextMemberId-2;state.steps=100*state.encounters;
     CHECK(isValid(state));
     if(automatic)CHECK(apply(state,Action::Mode,1)==Error::None);
-    CHECK(apply(state,Action::Walk,100)==Error::None && state.wildRules==10);
+    CHECK(apply(state,Action::Walk,100)==Error::None && state.wildRules==kRulesVersion);
     CHECK(captureChance(state)==0);
     const auto before=state;
-    std::uint32_t id=0;CHECK(controls::parseReleaseConfirmation("3 confirm",id));
+    std::uint32_t id=0;CHECK(controls::parseReleaseConfirmation("21 confirm",id));
     ParkSaveBackend flash;SaveStore saves(flash);
     CHECK(saves.restore(state)==BootStatus::Empty && saves.checkpoint(state));
     auto candidate=state;
     CHECK(apply(candidate,Action::Release,id)==Error::None);
-    CHECK(candidate.collectionCount==7 && findMember(candidate,3)==nullptr && candidate.activeCreatureId==19);
+    CHECK(candidate.collectionCount==kCollectionCapacity-1 && findMember(candidate,21)==nullptr && candidate.activeCreatureId==19);
     CHECK(candidate.sequence==before.sequence+1 && candidate.phase==Phase::Encounter && candidate.battleMode==before.battleMode);
     CHECK(candidate.rngState==before.rngState && candidate.hp==before.hp && candidate.energy==before.energy &&
         candidate.wildHp==before.wildHp && candidate.wildMaxHp==before.wildMaxHp && candidate.wildTurn==before.wildTurn &&

@@ -1,0 +1,10 @@
+{
+  "cycleMs": 2400,
+  "minRadius": 20,
+  "maxRadius": 100,
+  "bandHalfWidth": 12,
+  "orangeHalfWidth": 24,
+  "gradeFactors": {"red": 10, "orange": 50, "green": 100},
+  "targetRadii": [52, 60, 68, 76],
+  "onTargetFlickValue": 41140
+}

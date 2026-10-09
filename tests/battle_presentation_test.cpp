@@ -1,4 +1,5 @@
 #include "battle_presentation.hpp"
+#include "capture_ring.hpp"
 #include "combat.hpp"
 #include <cstdio>
 #include <cstdlib>
@@ -169,6 +170,7 @@ void captureChecks() {
         CHECK(player.startAuto(trace,0));player.consumeCue();drain(player,0);
         auto bad=trace;bad.playerOffenseBonus=6;CHECK(!player.startAuto(bad,0));
         for(std::size_t i=0;i<trace.count;++i) if(trace.steps[i].action==autobattle::Move::Capture) {
+            bad=trace;bad.steps[i].captureChance=9;CHECK(!player.startAuto(bad,0));
             bad=trace;bad.steps[i].opponentAction=autobattle::Move::Physical;CHECK(!player.startAuto(bad,0));
             bad=trace;bad.steps[i].captureResult=0;CHECK(!player.startAuto(bad,0));
             bad=trace;bad.steps[i].captureAttempt=4;CHECK(!player.startAuto(bad,0));break;
@@ -189,6 +191,125 @@ void captureChecks() {
         }
         CHECK(!player.locked());
     }
+}
+void autoFlickChecks() {
+    bp::Sequencer player;
+    unsigned pauses=0;
+    for(unsigned rules=7;rules<=13;++rules) for(unsigned seed=1;seed<=16;++seed) {
+        auto before=encounter(seed);before.battleMode=BattleMode::Auto;before.wildRules=rules;
+        CHECK(isValid(before));auto after=before;autobattle::Trace chunk;
+        CHECK(applyAutoFight(after,&chunk)==Error::None);
+        for(std::size_t i=0;i<chunk.count;++i)CHECK(chunk.steps[i].action!=autobattle::Move::Capture);
+        CHECK(player.startAuto(chunk,0));player.consumeCue();drain(player,0);
+        if(after.autoCapture!=AutoCapture::Awaiting)continue;
+        ++pauses;CHECK(chunk.outcome==autobattle::Outcome::None && after.phase==digivice::Phase::Encounter);
+        CHECK(player.view().enemyHp==after.wildHp && player.view().playerHp==after.hp);
+        CHECK(after.captureAttempts==0 && after.lastCapture.result==CaptureResult::None);
+        // The committed crossing turn has ended before an actual throw exists.
+        auto resumed=after;autobattle::Trace rest;CHECK(applyAutoResume(resumed,&rest)==Error::None);
+        CHECK(resumed.autoCapture==AutoCapture::None && resumed.phase==digivice::Phase::Home);
+        for(std::size_t i=0;i<rest.count;++i)CHECK(rest.steps[i].action!=autobattle::Move::Capture);
+        CHECK(player.startAuto(rest,0));player.consumeCue();drain(player,0);
+        // Three user misses each have one calm saved reveal, including old
+        // frozen enemy profiles; there is no automatic throw or retaliation.
+        for(unsigned attempt=1;attempt<=3;++attempt) {
+            const auto throwing=after;CHECK(apply(after,Action::Flick,0)==Error::None);
+            CHECK(after.lastCapture.result==CaptureResult::Miss && after.lastCapture.attempt==attempt);
+            CHECK(after.hp==throwing.hp);
+            CHECK(player.startTactical(throwing,after,Action::Flick,0,0));
+            CHECK(player.view().capturePresentation && player.consumeCue()==bp::Cue::CaptureThrow);
+            drain(player,0);CHECK(player.view().captureMiss);
+            CHECK(player.startSavedCapture(after,0));CHECK(player.consumeCue()==bp::Cue::CaptureThrow);drain(player,0);
+            CHECK(attempt==3 ? after.phase==digivice::Phase::Home : after.autoCapture==AutoCapture::Awaiting);
+        }
+    }
+    CHECK(pauses>10);
+}
+std::uint32_t phaseForGrade(const State& state,capturering::Grade grade) {
+    for(std::uint32_t phase=0;phase<capturering::kCycleMs;++phase)
+        if(capturering::sample(phase,state.wildFormId).grade==grade)return phase;
+    CHECK(false);return 0;
+}
+CaptureFixture ringFixture(CaptureResult wanted,unsigned attempt,capturering::Grade grade,
+                           bool automatic,unsigned rules,bool lowChance=false) {
+    for(unsigned seed=1;seed<=4096;++seed) {
+        auto before=encounter(seed);before.wildRules=rules;
+        if(lowChance) {
+            before.wildLevel=10;
+            before.wildMaxHp=combat::formProfile(before.wildFormId,before.wildLevel).stats.maxHp;
+        }
+        before.wildHp=before.wildMaxHp/2;before.captureAttempts=attempt-1;
+        if(automatic) { before.battleMode=BattleMode::Auto;before.autoCapture=AutoCapture::Awaiting;before.wildTurn=1; }
+        const auto phase=phaseForGrade(before,grade);
+        CHECK(isValid(before));
+        if(lowChance && ringCaptureChance(before,phase)!=1)continue;
+        auto after=before;CHECK(apply(after,Action::RingCapture,phase)==Error::None);
+        if(after.lastCapture.result==wanted)return {before,after,Action::RingCapture,phase};
+    }
+    CHECK(false);return {};
+}
+void ringCaptureChecks() {
+    bp::Sequencer player;
+    for(const auto grade:{capturering::Grade::Red,capturering::Grade::Orange,capturering::Grade::Green})
+    for(const auto result:{CaptureResult::Escaped,CaptureResult::Captured})
+    for(unsigned attempt=1;attempt<=3;++attempt)for(bool automatic:{false,true}) {
+        const auto f=ringFixture(result,attempt,grade,automatic,kRulesVersion);
+        const auto chance=ringCaptureChance(f.before,f.value);
+        CHECK(chance>=1 && chance<=captureChance(f.before));
+        CHECK(grade!=capturering::Grade::Green || chance==captureChance(f.before));
+        CHECK(f.after.rngState!=f.before.rngState && f.after.lastCapture.chance==chance);
+        Snapshot committed;CHECK(encodeSnapshot(f.after,committed));
+        CHECK(player.startTactical(f.before,f.after,f.action,f.value,0));
+        CHECK(player.view().capturePresentation && !player.view().aimMiss && !player.view().captureMiss);
+        CHECK(player.view().captureAttempt==attempt && player.view().captureRemaining==3-attempt);
+        CHECK(player.consumeCue()==bp::Cue::CaptureThrow);
+        CHECK(!player.startTactical(f.before,f.after,f.action,f.value,1));
+        player.poll(500);CHECK(player.view().captureChance==chance && !player.view().captureMiss);
+        CHECK(player.consumeCue()==bp::Cue::None); // Red connects and has real wiggles.
+        player.poll(2299);CHECK(player.locked() && !player.view().captureCaught && player.consumeCue()==bp::Cue::None);
+        player.poll(2300);CHECK(player.view().captureCaught==(result==CaptureResult::Captured));
+        CHECK(player.consumeCue()==(result==CaptureResult::Captured?bp::Cue::CaptureSuccess:bp::Cue::CaptureFail));
+        player.poll(3900);CHECK(!player.locked() && !player.view().captureMiss);
+        State reboot;CHECK(decodeSnapshot(committed.bytes,kSnapshotSize,reboot)==SnapshotStatus::Ok);
+        CHECK(player.startSavedCapture(reboot,0));player.consumeCue();player.poll(500);
+        CHECK(player.view().captureChance==chance && !player.view().aimMiss && !player.view().captureMiss);
+        drain(player,500);CHECK(player.view().captureCaught==(result==CaptureResult::Captured));
+        Snapshot replayed;CHECK(encodeSnapshot(reboot,replayed));
+        CHECK(!std::memcmp(committed.bytes,replayed.bytes,sizeof(committed.bytes)));
+        CHECK(!player.startTactical(f.before,f.after,f.action,capturering::kCycleMs,0));
+        auto bad=f.after;bad.lastCapture.chance=chance==1?2:chance-1;
+        CHECK(isValid(bad));CHECK(!player.startTactical(f.before,bad,f.action,f.value,0));
+    }
+    // New timing input also gives old saved foes a calm, replayable result.
+    // The existing legacy Flick/Auto tests above retain their frozen behavior.
+    for(unsigned rules=7;rules<=11;++rules)for(bool automatic:{false,true})
+    for(const auto result:{CaptureResult::Escaped,CaptureResult::Captured})for(unsigned attempt:{1u,3u}) {
+        const auto f=ringFixture(result,attempt,capturering::Grade::Red,automatic,rules);
+        if(result==CaptureResult::Escaped)CHECK(f.after.hp==f.before.hp);
+        if(f.after.phase==digivice::Phase::Encounter)CHECK(f.after.wildHp==f.before.wildHp);
+        CHECK(player.startTactical(f.before,f.after,f.action,f.value,0));
+        player.consumeCue();drain(player,0);
+        CHECK(player.view().captureChance==f.after.lastCapture.chance && !player.view().captureMiss);
+        Snapshot committed;State reboot;
+        CHECK(encodeSnapshot(f.after,committed) && decodeSnapshot(committed.bytes,kSnapshotSize,reboot)==SnapshotStatus::Ok);
+        CHECK(player.startSavedCapture(reboot,0));player.consumeCue();drain(player,0);
+        CHECK(player.view().captureChance==f.after.lastCapture.chance && !player.view().captureMiss);
+    }
+    // A 1% red record must survive pause, reboot and background walking without
+    // the historical 10% trace floor dropping its reveal or recomputing odds.
+    auto low=ringFixture(CaptureResult::Escaped,1,capturering::Grade::Red,false,kRulesVersion,true);
+    CHECK(low.after.lastCapture.chance==1);
+    CHECK(player.startTactical(low.before,low.after,low.action,low.value,0));
+    player.consumeCue();player.poll(500);CHECK(player.view().captureChance==1);
+    player.pause(true,500);player.poll(10000);CHECK(player.view().captureChance==1 && player.locked());
+    player.pause(false,10000);player.cancel();
+    CHECK(apply(low.after,Action::AccrueSteps,7)==Error::None);
+    Snapshot committed;State reboot;
+    CHECK(encodeSnapshot(low.after,committed) && decodeSnapshot(committed.bytes,kSnapshotSize,reboot)==SnapshotStatus::Ok);
+    CHECK(player.startSavedCapture(reboot,0));player.consumeCue();player.poll(500);
+    CHECK(player.view().captureChance==1);drain(player,500);
+    auto invalid=reboot;invalid.lastCapture.chance=0;CHECK(!player.startSavedCapture(invalid,0));
+    invalid=reboot;invalid.lastCapture.chance=91;CHECK(!player.startSavedCapture(invalid,0));
 }
 int main() {
     CHECK(sizeof(bp::Sequencer)<=2048);
@@ -322,5 +443,7 @@ int main() {
     CHECK(player.startTactical(before,after,Action::Attack,0,0));CHECK(player.view().damage==expected);
     player.consumeCue();player.poll(350);CHECK(player.view().enemyHp==before.wildHp-expected);player.cancel();
     captureChecks();
+    autoFlickChecks();
+    ringCaptureChecks();
     std::printf("Battle presentation: %u checks passed; sequencer %zu bytes\n",checks,sizeof(bp::Sequencer));
 }

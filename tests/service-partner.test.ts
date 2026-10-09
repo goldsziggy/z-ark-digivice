@@ -10,7 +10,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-partner-http-'));
   const historical = namedFixture(2);
   await writeFile(join(dataDir, 'store.json'), JSON.stringify(historical.store));
-  let app = await startServer({ corePath: process.env.DIGIVICE_TEST_CORE_PATH, battleCorePath: process.env.DIGIVICE_TEST_BATTLE_PATH, dataDir, port: 0 });
+  let app = await startServer({ seedSource: () => 12345, corePath: process.env.DIGIVICE_TEST_CORE_PATH, battleCorePath: process.env.DIGIVICE_TEST_BATTLE_PATH, dataDir, port: 0 });
   const close = () => new Promise<void>((resolve, reject) => app.server.close(error => error ? reject(error) : resolve()));
   t.after(async () => { if (app.server.listening) await close(); await rm(dataDir, { recursive: true, force: true }); });
   const request = async (path: string, token?: string, body?: unknown) => {
@@ -27,13 +27,13 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
     assert.equal(saved.status, 200);
     return { ...saved.body, ...identity };
   };
-  return { request, pair, dataDir, restart: async () => { await close(); app = await startServer({ corePath: process.env.DIGIVICE_TEST_CORE_PATH, battleCorePath: process.env.DIGIVICE_TEST_BATTLE_PATH, dataDir, port: 0 }); } };
+  return { request, pair, dataDir, restart: async () => { await close(); app = await startServer({ seedSource: () => 12345, corePath: process.env.DIGIVICE_TEST_CORE_PATH, battleCorePath: process.env.DIGIVICE_TEST_BATTLE_PATH, dataDir, port: 0 }); } };
 }
 
 test('SetPartner locks new selections during practice while preserving receipts, per-member care and other devices', async t => {
   const f = await fixture(t), owner = await f.pair(), other = await f.pair();
   let revision = 1, serial = 0;
-  const batch = (events: Array<{ type: string; value: number }>) => ({ rulesVersion: 13, baseRevision: revision, batchId: `partner-http-${++serial}`, events });
+  const batch = (events: Array<{ type: string; value: number }>) => ({ rulesVersion: 15, baseRevision: revision, batchId: `partner-http-${++serial}`, events });
   const submit = async (body: ReturnType<typeof batch>) => {
     const result = await f.request('/api/save-sync', owner.token, body);
     if (result.status === 200) revision = result.body.revision;
@@ -62,7 +62,7 @@ test('SetPartner locks new selections during practice while preserving receipts,
   assert.deepEqual(await f.request('/api/save-sync', owner.token, restoreFounderBody), restoredFounder, 'historical selection retry must bypass the new-batch guard');
   assert.deepEqual((await f.request('/api/battle', owner.token)).body, start.body);
 
-  const otherSelection = await f.request('/api/save-sync', other.token, { rulesVersion: 13, baseRevision: 1, batchId: 'other-device-selection', events: [{ type: 'select', value: 1 }] });
+  const otherSelection = await f.request('/api/save-sync', other.token, { rulesVersion: 15, baseRevision: 1, batchId: 'other-device-selection', events: [{ type: 'select', value: 1 }] });
   assert.equal(otherSelection.status, 200); assert.equal(otherSelection.body.revision, 2);
   assert.equal(otherSelection.body.state.sequence, 2, 'selecting the already-active member retains existing event semantics');
   assert.equal((await submit(batch([{ type: 'feed', value: 0 }]))).status, 200, 'unrelated care remains allowed');
@@ -81,7 +81,7 @@ test('SetPartner locks new selections during practice while preserving receipts,
 
 test('unavailable practice state fails new partner selection closed without blocking care or historical receipts', async t => {
   const f = await fixture(t), owner = await f.pair();
-  const selected = { rulesVersion: 13, baseRevision: 1, batchId: 'selection-before-corruption', events: [{ type: 'select', value: 1 }] };
+  const selected = { rulesVersion: 15, baseRevision: 1, batchId: 'selection-before-corruption', events: [{ type: 'select', value: 1 }] };
   const accepted = await f.request('/api/save-sync', owner.token, selected);
   assert.equal(accepted.status, 200);
   for (const name of ['battle-store.json', 'battle-store.backup.json']) await writeFile(join(f.dataDir, name), '{corrupt-practice');
@@ -89,6 +89,6 @@ test('unavailable practice state fails new partner selection closed without bloc
   assert.deepEqual(await f.request('/api/save-sync', owner.token, selected), accepted);
   const fresh = await f.request('/api/save-sync', owner.token, { ...selected, baseRevision: 2, batchId: 'selection-after-corruption' });
   assert.equal(fresh.status, 503); assert.equal(fresh.body.error, 'battle_store_invalid');
-  const care = await f.request('/api/save-sync', owner.token, { rulesVersion: 13, baseRevision: 2, batchId: 'care-after-corruption', events: [{ type: 'feed', value: 0 }] });
+  const care = await f.request('/api/save-sync', owner.token, { rulesVersion: 15, baseRevision: 2, batchId: 'care-after-corruption', events: [{ type: 'feed', value: 0 }] });
   assert.equal(care.status, 200); assert.equal(care.body.revision, 3);
 });

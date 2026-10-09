@@ -4,6 +4,7 @@
 #include "evolution_choice.hpp"
 #include "battle_presentation.hpp"
 #include "nearby_protocol.hpp"
+#include "trade_protocol.hpp"
 #include "sprite.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -14,12 +15,13 @@
 namespace digivice::deviceui {
 constexpr int kSize = 412;
 constexpr std::size_t kPixels = kSize * kSize;
+static_assert(kCollectionCapacity<=UINT8_MAX,"Collection navigation stores a bounded slot index");
 constexpr std::uint32_t kNoNearbyTurn = UINT32_MAX;
 constexpr std::uint32_t kNearbyFeedbackMs = 2400;
 enum class Screen : std::uint8_t {
     Egg, Starter, StarterReview, Home, Care, Explore,
     Encounter, Battle, Capture, Result, Collection, Stats, ReleaseReview, Evolution, EvolutionReview, EvolutionResult,
-    Settings, EncounterSettings, ModeReview, Nearby, NearbyReview
+    Settings, EncounterSettings, ModeReview, Nearby, NearbyReview, Sound, TradeChoose, TradeReview
 };
 enum class TouchKind : std::uint8_t { Down, Move, Up, Cancel };
 enum class HomePanel : std::uint8_t { Care, Partners, Settings, Nearby };
@@ -57,10 +59,13 @@ struct Model {
     std::uint16_t sleepTimeoutSeconds = 60;
     std::uint32_t starterFormId = 0; // Exact persisted offer; zero retains fixed starter lookup.
     bool writable = false, inputEnabled = true;
+    bool partyEditable = true; // Runtime practice/Nearby locks supplement core Home legality.
     bool encounterRecoveryRequired = false; // A boot repair could not be verified durable; no gameplay.
     bool motionAvailable = false, gyroEnabled = false, muted = false;
+    std::uint8_t volumePercent = 15;
+    bool musicEnabled = false, audioAvailable = false, audioPreferencesWritable = true;
     // Raw IMU availability does not imply a verified step counter.
-    bool stepsAvailable = false, encounterReady = false;
+    bool stepsAvailable = false, stepsRecovering = false, encounterReady = false;
     std::uint64_t lifetimeSteps = 0;
     std::uint32_t sessionSteps = 0;
     const char* stepStatus = nullptr; // Short caller-owned sensor status; never assumed from gyro.
@@ -69,7 +74,11 @@ struct Model {
     SpriteFrame partnerArtwork{}; // Exact second actor; unavailable art uses a neutral indicator.
     const battlepresentation::View* battle = nullptr; // Immutable runtime-owned presentation snapshot.
     const nearby::View* nearby = nullptr;
+    nearby::Fighter nearbyLocalFighter{}; // Frozen when this live Nearby session opens.
     const char* nearbyStatus = nullptr;
+    const tradewire::View* trade = nullptr;
+    bool tradeWritable = false;
+    const char* tradeStatus = nullptr;
     // Runtime supplies monotonic elapsed time for the current session/sequence.
     // Sentinel means no result to animate. Existing sprite fields hold the
     // local (partnerArtwork) and remote (artwork.sprite) frozen fighters, Idle.
@@ -78,12 +87,21 @@ struct Model {
 enum class IntentKind : std::uint8_t {
     None, GameAction, StarterNext, StarterPrevious, StarterConfirm,
     StarterBack, ToggleMute, ToggleGyro, Navigation, OpenSetup,
-    OpenNearby, NearbyChallenge, NearbyAccept, NearbyChoose, NearbyCancel, CloseNearby, SleepTimeout
+    OpenNearby, NearbyChallenge, NearbyAccept, NearbyChoose, NearbyCancel, CloseNearby, SleepTimeout,
+    Volume, ToggleMusic, TradeInvite, TradeOffer, TradeConfirm, TradeCancel, TradeClose
 };
 struct Intent {
     IntentKind kind = IntentKind::None;
     Action action = Action::Feed;
     std::uint32_t value = 0;
+    trade::Identity peer{}; // Nearby and trade intents bind the exact radio peer.
+    std::uint64_t tradeSession = 0;
+    std::uint32_t tradeRevision = 0, tradeFingerprint = 0;
+    // Explicit, ephemeral friendly-duel consent. Never inherited from wild mode.
+    nearby::Mode nearbyMode = nearby::Mode::Tactical;
+    nearby::Fighter nearbyFighters[2]{};
+    std::uint64_t nearbySession = 0;
+    std::uint32_t nearbyOpenNonce = 0;
     explicit operator bool() const { return kind != IntentKind::None; }
 };
 class Controller {
@@ -96,59 +114,79 @@ public:
     void resolve(const char* message = nullptr);
     void notice(const char* message);
     void cancelTouch();
+    // Call only after a fresh successful hardware sample reports released.
+    void acknowledgeContactReleased();
     ArtRequest artRequest(const State& state, const Model& model, std::uint64_t nowMs) const;
     // Use this same request for loading and rendering the second actor, including
     // the unlocked move picker between turns. Never guess animation in the HAL.
     ArtRequest partnerArtRequest(const State& state, const Model& model, std::uint64_t nowMs) const;
+    static constexpr int kCaptureX=102, kCaptureY=76, kCaptureWidth=208, kCaptureHeight=208;
+    bool captureAnimating(const State&, const Model&) const;
+    // Reconstruct only this fixed region in an already rendered framebuffer.
+    bool renderCaptureRegion(const State&, const Model&, std::uint16_t*, std::size_t, std::uint64_t nowMs) const;
     bool render(const State& state, const Model& model, std::uint16_t* pixels,
                 std::size_t pixelCapacity, std::uint64_t nowMs) const;
     Screen screen() const { return screen_; }
     HomePanel homePanel() const { return homePanel_; }
+    std::uint32_t selectedMemberId() const { return memberId_; }
     bool pending() const { return pending_; }
     // Background walking is independent of the current screen. Only revealing
     // its saved encounter waits for a quiet Home panel.
     bool encounterPresentationEligible() const { return !battleLocked_ && screen_ == Screen::Home; }
     bool walkingEligible() const { return encounterPresentationEligible(); } // Compatibility for older callers.
-    bool interactionIdle() const { return !down_ && !pending_; }
+    bool interactionIdle() const { return !down_ && !captureContactBlocked_ && !pending_; }
     static bool inside(int x, int y);
 private:
-    struct Sample { std::int16_t x = 0, y = 0; std::uint64_t atMs = 0; };
     struct Button { int x, y, w, h; const char* label; int id; bool enabled; };
     std::size_t buttons(const State&, const Model&, Button* out) const;
     Intent activate(int id, const State&, const Model&);
     Intent propose(const State&, const Model&, Action, std::uint32_t value = 0);
     Intent navigate(Screen);
     Intent navigateHorizontal(bool next,const State&,const Model&);
-    void append(Touch);
+    Intent proposeTrade(IntentKind,const Model&,std::uint32_t memberId=0);
     void resetTouch();
+    std::uint64_t captureElapsed(std::uint64_t now) const;
     void cancelEvolution();
+    const CreatureMember* selectedMember(const State& state) const { return findMember(state,memberId_); }
     Screen screen_ = Screen::Egg;
     HomePanel homePanel_ = HomePanel::Care;
     Phase phase_ = Phase::Egg;
     onboarding::Stage starterStage_ = onboarding::Stage::Egg;
-    std::uint32_t sequence_ = UINT32_MAX, starterForm_ = 0;
+    std::uint32_t sequence_ = UINT32_MAX, starterForm_ = 0, memberId_ = 0;
     std::uint8_t starterCount_ = 8;
     std::uint8_t selectedId_ = 0, memberIndex_ = 0, proposedMode_ = 255;
     std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0;
+    trade::Identity tradePeer_{};
+    std::uint32_t tradeMemberId_ = 0, tradeFingerprint_ = 0, tradeContext_ = 0, tradePeerNonce_ = 0;
+    std::uint8_t tradePage_ = 0;
     nearby::Stage nearbyStage_ = nearby::Stage::Closed;
     nearby::Mac nearbyPeer_{};
     nearby::Fighter nearbyFighter_{};
+    nearby::Fighter nearbyOffered_[2]{};
+    nearby::Mac nearbyOpponent_{};
+    nearby::Mode nearbyMode_ = nearby::Mode::Tactical, nearbyOfferedMode_ = nearby::Mode::Tactical;
+    std::uint32_t nearbyPeerNonce_ = 0;
     std::uint64_t nearbySession_ = 0;
     std::uint32_t nearbySequence_ = 0;
     bool nearbyPending_ = false, nearbyFeedback_ = false;
     std::uint8_t nearbyRole_ = 255;
     controls::EvolutionChoice evolution_{};
     std::uint32_t evolutionMember_ = 0, evolutionForm_ = 0, evolutionTarget_ = 0, releaseMember_ = 0;
-    bool writable_ = false, enabled_ = false, initialized_ = false, battleLocked_ = false;
-    bool down_ = false, gesture_ = false, battleGesture_ = false, browseGesture_ = false, cancelled_ = false, pending_ = false, tapMoved_ = false;
+    bool writable_ = false, enabled_ = false, partyEditable_ = true, initialized_ = false, battleLocked_ = false;
+    bool down_ = false, battleGesture_ = false, browseGesture_ = false, cancelled_ = false, pending_ = false, tapMoved_ = false;
     combat::Move battleSelection_ = combat::Move::Physical;
     std::uint8_t defenseSelection_ = 0;
     // Presentation-only first-use clocks. No save writes or gameplay mutation.
     mutable std::uint64_t hintAt_ = UINT64_MAX;
     mutable std::uint8_t hintSeen_ = 0, hintContext_ = 0;
     int downButton_ = 0;
-    Sample samples_[16]{};
-    std::uint8_t sampleCount_ = 0;
+    std::uint32_t captureEpochForm_ = 0;
+    // Survives resolve/context changes until an observed physical release.
+    bool captureContactBlocked_ = false;
+    std::uint64_t captureAcceptedAt_ = UINT64_MAX;
+    // Set once per eligible entry/retry, never advanced by frame count.
+    mutable std::uint64_t captureEpoch_ = UINT64_MAX;
+    bool captureEligible_ = false;
     std::uint64_t downAt_ = 0, lastAt_ = 0, actionAt_ = 0;
     std::uint32_t actionSequence_ = UINT32_MAX, actionValue_ = 0;
     Action lastAction_ = Action::Feed;

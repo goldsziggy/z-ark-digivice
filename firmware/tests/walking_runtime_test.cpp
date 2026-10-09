@@ -46,7 +46,8 @@ struct Harness {
     HandheldRuntime runtime{state,saves,usage};
     Harness() {
         fake::now=0;fake::randomCalls=fake::delays=0;fake::delayed={};fake::order.clear();
-        CHECK(saves.restore(state)==storage::BootStatus::Empty);CHECK(saves.checkpoint(state));
+        CHECK(saves.restore(state)==storage::BootStatus::Empty);
+        CHECK(apply(state,Action::WorldSeed,state.seed)==Error::None);CHECK(saves.checkpoint(state));
         CHECK(runtime.usage_.restore(0));runtime.imu_.sample.status=motion::StepStatus::Tracking;
         game.writes=0;fake::order.clear();
     }
@@ -79,6 +80,16 @@ void firstPeerExchange(Harness& h) {
     deliver(h.runtime.nearby_,peer,local,2401);deliver(peer,h.runtime.nearby_,other,2401);
     CHECK(h.runtime.nearby_.view().match.sequence==1);
     h.runtime.pollNearby(2401);CHECK(h.runtime.audio_.cues==1 && h.runtime.nearbyCuePhase_==1);
+}
+void unseededWorldIsLifetimeOnly() {
+    for(bool forced:{false,true}) {
+        Harness h;h.state.worldSeed=0;h.runtime.walkingPending_=15;
+        h.runtime.tradeSession_.foregroundBlocked=true; // Old prepared trade defers world initialization.
+        const auto before=h.state;
+        CHECK(h.tick(1000,100,forced));
+        CHECK(h.runtime.usage_.total()==1000&&!h.runtime.walkingPending_&&!h.game.writes&&!fake::randomCalls);
+        Snapshot a,b;CHECK(encodeSnapshot(before,a)&&encodeSnapshot(h.state,b));CHECK(!std::memcmp(a.bytes,b.bytes,sizeof(a.bytes)));
+    }
 }
 void homePanels() {
     // Real shared UI, real walking method and real core; only physical step
@@ -119,7 +130,7 @@ void homePanels() {
         CHECK(h.state.phase==Phase::Encounter && h.state.walkingEncounters==1 && h.state.battleMode==BattleMode::Tactical);
         CHECK(baseline || (first>=40 && first<=80));
         CHECK(h.state.explorationSteps==baseline+200 && h.state.pendingEncounter.formId);
-        CHECK(!h.runtime.walkingPending_ && fake::randomCalls==1);
+        CHECK(!h.runtime.walkingPending_ && fake::randomCalls==0);
         const auto saved=h.state; const auto writes=h.game.writes;
         for(unsigned n=0;n<20;++n) CHECK(h.tick(baseline+200,23000+n));
         CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0 && h.game.writes==writes);
@@ -130,7 +141,7 @@ void homePanels() {
     CHECK(!ui.touch(h.state,model,{TouchKind::Down,250,190,10}));
     CHECK(ui.walkingEligible() && !ui.interactionIdle());
     CHECK(h.tick(200,100,true));
-    CHECK(!h.runtime.walkingPending_ && fake::randomCalls==1 && h.state.pendingEncounter.formId && h.state.phase==Phase::Home);
+    CHECK(!h.runtime.walkingPending_ && fake::randomCalls==0 && h.state.pendingEncounter.formId && h.state.phase==Phase::Home);
     const auto queued=h.state.pendingEncounter; const auto backgroundWrites=h.game.writes;
     CHECK(h.tick(200,200,true)); CHECK(!h.runtime.walkingPending_ && h.game.writes==backgroundWrites);
     CHECK(ui.screen()==Screen::Home && !ui.interactionIdle());
@@ -138,7 +149,7 @@ void homePanels() {
     CHECK(ui.touch(h.state,model,{TouchKind::Up,160,190,260}).kind==IntentKind::Navigation);
     ui.resolve(); CHECK(ui.screen()==Screen::Home && ui.interactionIdle());
     CHECK(h.tick(200,261)); CHECK(h.state.phase==Phase::Encounter && h.state.walkingEncounters==1);
-    CHECK(h.state.explorationSteps==200 && !h.runtime.walkingPending_ && fake::randomCalls==1 && h.state.wildFormId==queued.formId);
+    CHECK(h.state.explorationSteps==200 && !h.runtime.walkingPending_ && fake::randomCalls==0 && h.state.wildFormId==queued.formId);
     const auto writes=h.game.writes; CHECK(h.tick(200,262)); CHECK(h.game.writes==writes);
 }
 void queuedRecovery() {
@@ -203,14 +214,15 @@ void queuedRecovery() {
     }
 }
 int main() {
+    unseededWorldIsLifetimeOnly();
     homePanels();queuedRecovery();
     {
         Harness h;
         CHECK(h.tick(3,100));CHECK(h.runtime.usage_.total()==3 && h.runtime.usage_.session()==3);
-        CHECK(h.runtime.walkingPending_==3 && fake::randomCalls==1 && h.game.writes==1);
+        CHECK(h.runtime.walkingPending_==3 && fake::randomCalls==0 && h.game.writes==1);
         const auto seed=h.state.encounterRng,target=h.state.encounterTarget;
         for(unsigned i=0;i<100;++i)CHECK(h.tick(3,101+i));
-        CHECK(h.runtime.usage_.total()==3 && h.runtime.walkingPending_==3 && fake::randomCalls==1);
+        CHECK(h.runtime.usage_.total()==3 && h.runtime.walkingPending_==3 && fake::randomCalls==0);
         CHECK(h.state.encounterRng==seed && h.state.encounterTarget==target && h.game.writes==1 && h.usage.writes==0);
         h.runtime.imu_.reads=0;h.runtime.imu_.sample={4,motion::StepStatus::Tracking,250};
         CHECK(h.runtime.pollUsage(249)); // Worker published just after caller read the clock.
@@ -254,13 +266,13 @@ int main() {
             h.runtime.touchPressed_=blocker==0; h.runtime.ui_.idle=blocker==0;
             CHECK(h.tick(1200,100,true));
             CHECK(h.runtime.usage_.total()==1200 && h.restoredUsage()==1200);
-            CHECK(!h.runtime.walkingPending_ && h.state.pendingEncounter.formId && fake::randomCalls==1 && h.state.phase==Phase::Home);
+            CHECK(!h.runtime.walkingPending_ && h.state.pendingEncounter.formId && fake::randomCalls==0 && h.state.phase==Phase::Home);
             const auto writes=h.game.writes;
             for(unsigned n=0;n<20;++n) CHECK(h.tick(1200,101+n,true));
-            CHECK(!h.runtime.walkingPending_ && h.game.writes==writes && fake::randomCalls==1);
+            CHECK(!h.runtime.walkingPending_ && h.game.writes==writes && fake::randomCalls==0);
             h.runtime.touchPressed_=false;h.runtime.ui_.idle=true;
             CHECK(h.tick(1200,200)); CHECK(h.state.phase==Phase::Encounter && h.state.walkingEncounters==1);
-            CHECK(!h.runtime.walkingPending_ && h.state.explorationSteps==1000 && fake::randomCalls==1);
+            CHECK(!h.runtime.walkingPending_ && h.state.explorationSteps==1000 && fake::randomCalls==0);
         }
     }
     {
@@ -309,7 +321,7 @@ int main() {
     {
         Harness h;h.state=newDevice(12345);CHECK(h.tick(10,100));
         CHECK(h.state.phase==Phase::Egg && h.runtime.usage_.total()==10 && h.runtime.walkingPending_==0 && !fake::randomCalls);
-        CHECK(apply(h.state,Action::Hatch,2)==Error::None);CHECK(h.saves.checkpoint(h.state));
+        CHECK(apply(h.state,Action::Hatch,2)==Error::None);CHECK(apply(h.state,Action::WorldSeed,h.state.seed)==Error::None);CHECK(h.saves.checkpoint(h.state));
         CHECK(h.tick(10,101));CHECK(!h.runtime.walkingPending_ && h.state.explorationSteps==0);
     }
     {
@@ -342,11 +354,11 @@ int main() {
         CHECK(!h.tick(65,101));CHECK(h.state.explorationSteps==0);
     }
     {
-        Harness h;h.game.failAfter=true;CHECK(!h.tick(3,100));CHECK(fake::randomCalls==1 && h.runtime.walkingFault_);
+        Harness h;h.game.failAfter=true;CHECK(!h.tick(3,100));CHECK(fake::randomCalls==0 && h.runtime.walkingFault_);
         h.game.failAfter=false;auto restored=h.restoredGame();CHECK(restored.encounterRng!=0 && h.state.encounterRng==0);
         storage::SaveStore rebootGame(h.game);CHECK(rebootGame.restore(restored)==storage::BootStatus::Loaded);
         HandheldRuntime reboot(restored,rebootGame,h.usage);CHECK(reboot.usage_.restore(0));
-        reboot.imu_.sample={3,motion::StepStatus::Tracking,100};CHECK(reboot.pollUsage(100));CHECK(fake::randomCalls==1);
+        reboot.imu_.sample={3,motion::StepStatus::Tracking,100};CHECK(reboot.pollUsage(100));CHECK(fake::randomCalls==0);
     }
     {
         Harness h;h.seeded();h.game.failAfter=true;CHECK(!h.tick(64,100));
@@ -441,7 +453,27 @@ int main() {
         CHECK(peer.receive(local,h.runtime.nearbyRadio_.lastSent,h.runtime.nearbyRadio_.lastSize,1));
         CHECK(nearby::sameFighter(peer.view().peers[0].fighter,frozen));
         deliver(peer,h.runtime.nearby_,other,1);
-        CHECK(h.runtime.nearby_.challenge(0,nearby::Mode::Auto,999,42,1));
+        deviceui::Controller ui;deviceui::Model model;model.writable=true;
+        model.nearby=&h.runtime.nearby_.view();model.nearbyLocalFighter=frozen;
+        ui.update(h.state,model);std::uint64_t at=100;
+        const auto tap=[&](int x,int y) {
+            CHECK(!ui.touch(h.state,model,{deviceui::TouchKind::Down,static_cast<std::int16_t>(x),static_cast<std::int16_t>(y),at+=30}));
+            auto intent=ui.touch(h.state,model,{deviceui::TouchKind::Up,static_cast<std::int16_t>(x),static_cast<std::int16_t>(y),at+=60});
+            ui.resolve();ui.update(h.state,model);return intent;
+        };
+        for(unsigned i=0;i<3;++i)CHECK(tap(355,190).kind==deviceui::IntentKind::Navigation);
+        CHECK(tap(206,323).kind==deviceui::IntentKind::OpenNearby);
+        CHECK(tap(120,312).kind==deviceui::IntentKind::Navigation);
+        CHECK(tap(280,240).kind==deviceui::IntentKind::Navigation);
+        const auto invite=tap(206,302);CHECK(invite.kind==deviceui::IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Auto);fake::now=1;
+        for(unsigned changed=0;changed<6;++changed) {
+            auto stale=invite;
+            if(changed==0)++stale.peer.bytes[5];if(changed==1)++stale.nearbyOpenNonce;
+            if(changed==2)++stale.nearbyFighters[0].level;if(changed==3)++stale.nearbyFighters[1].level;
+            if(changed==4)stale.value=nearby::kMaxPeers;if(changed==5)stale.nearbyMode=static_cast<nearby::Mode>(2);
+            h.runtime.nearbyIntent(stale);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Discovering);
+        }
+        h.runtime.nearbyIntent(invite);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Outgoing && h.runtime.nearby_.view().offeredMode==nearby::Mode::Auto);
         deliver(h.runtime.nearby_,peer,local,1);CHECK(peer.accept(1));
         deliver(peer,h.runtime.nearby_,other,1);deliver(h.runtime.nearby_,peer,local,1);deliver(peer,h.runtime.nearby_,other,1);
         for(unsigned turn=1;turn<=nearby::kMaxExchanges&&h.runtime.nearby_.view().stage==nearby::Stage::Playing;++turn){
@@ -456,6 +488,41 @@ int main() {
         h.runtime.beginNearby();const auto updated=memberCare(*activeMember(h.state));
         CHECK(h.runtime.nearbyFighter_.offenseBonus==updated.offense&&h.runtime.nearbyFighter_.protectionBonus==updated.protection);
         CHECK(!nearby::sameFighter(h.runtime.nearbyFighter_,frozen));
+    }
+    {
+        // Guest acceptance also binds the actually reviewed invitation; it is
+        // independent of wild mode and cannot mutate either care store.
+        Harness h;h.seeded();h.runtime.beginNearby();h.runtime.pollNearby(1);
+        nearby::Mac local{{2,4,6,8,10,12}},other{{2,4,6,8,10,14}};
+        nearby::Protocol peer;CHECK(peer.open(other,{1,4,1,2,5},1,77));
+        CHECK(peer.receive(local,h.runtime.nearbyRadio_.lastSent,h.runtime.nearbyRadio_.lastSize,1));
+        deliver(peer,h.runtime.nearby_,other,1);CHECK(peer.challenge(0,nearby::Mode::Auto,8877,123,1));
+        deliver(peer,h.runtime.nearby_,other,1);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Incoming);
+        Snapshot before;CHECK(encodeSnapshot(h.state,before));const auto writes=h.game.writes;
+        deviceui::Controller ui;deviceui::Model model;model.writable=true;model.nearby=&h.runtime.nearby_.view();model.nearbyLocalFighter=h.runtime.nearbyFighter_;
+        ui.update(h.state,model);std::uint64_t at=100;
+        const auto tap=[&](int x,int y) {
+            CHECK(!ui.touch(h.state,model,{deviceui::TouchKind::Down,static_cast<std::int16_t>(x),static_cast<std::int16_t>(y),at+=30}));
+            auto intent=ui.touch(h.state,model,{deviceui::TouchKind::Up,static_cast<std::int16_t>(x),static_cast<std::int16_t>(y),at+=60});
+            ui.resolve();ui.update(h.state,model);return intent;
+        };
+        for(unsigned i=0;i<3;++i)CHECK(tap(355,190).kind==deviceui::IntentKind::Navigation);
+        CHECK(tap(206,323).kind==deviceui::IntentKind::OpenNearby);
+        const auto accept=tap(120,252);CHECK(accept.kind==deviceui::IntentKind::NearbyAccept && accept.nearbyMode==nearby::Mode::Auto);fake::now=1;
+        for(unsigned changed=0;changed<5;++changed) {
+            auto stale=accept;
+            if(changed==0)++stale.peer.bytes[5];if(changed==1)++stale.nearbySession;
+            if(changed==2)++stale.nearbyFighters[0].level;if(changed==3)++stale.nearbyFighters[1].level;
+            if(changed==4)stale.nearbyMode=nearby::Mode::Tactical;
+            h.runtime.nearbyIntent(stale);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Incoming);
+        }
+        h.runtime.nearbyIntent(accept);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Accepting);
+        deliver(h.runtime.nearby_,peer,local,1);deliver(peer,h.runtime.nearby_,other,1);deliver(h.runtime.nearby_,peer,local,1);
+        for(unsigned turn=1;turn<=nearby::kMaxExchanges && peer.view().stage==nearby::Stage::Playing;++turn) {
+            const auto now=1+turn*nearby::kAutoPaceMs;peer.tick(now);deliver(peer,h.runtime.nearby_,other,now);deliver(h.runtime.nearby_,peer,local,now);
+        }
+        CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Finished && peer.view().stage==nearby::Stage::Finished);
+        Snapshot after;CHECK(encodeSnapshot(h.state,after));CHECK(!std::memcmp(before.bytes,after.bytes,kSnapshotSize) && h.game.writes==writes);
     }
     {
         Harness h;h.seeded();h.runtime.network_.quiet=ESP_ERR_NOT_FINISHED;

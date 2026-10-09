@@ -57,6 +57,7 @@ void basicAndRetry() {
     CHECK(s.restore()==d::Result::Empty && s.writable() && !s.hasBattle());
     CHECK(!s.blocksPartner() && s.allowsCareAction(digivice::Action::Select));
     CHECK(s.allowsCareAction(digivice::Action::Explore));
+    CHECK(s.allowsCareAction(digivice::Action::PartyAdd) && s.allowsCareAction(digivice::Action::PartyRemove));
     CHECK(s.allowsCareAction(digivice::Action::PresentEncounter));
     CHECK(command(s,"practice start 1 0 auto",care).result==d::Result::Applied);
     CHECK(s.revision()==1 && s.lastCommandId()==1 && s.mode()==d::Mode::Auto && s.companionId()==1);
@@ -82,6 +83,7 @@ void basicAndRetry() {
     CHECK(restarted.blocksPartner() && !restarted.allowsCareAction(digivice::Action::Select) && !restarted.allowsCareAction(digivice::Action::Walk));
     CHECK(!restarted.allowsCareAction(digivice::Action::Explore));
     CHECK(!restarted.allowsCareAction(digivice::Action::PresentEncounter));
+    CHECK(!restarted.allowsCareAction(digivice::Action::PartyAdd) && !restarted.allowsCareAction(digivice::Action::PartyRemove));
     CHECK(restarted.allowsCareAction(digivice::Action::AccrueSteps) && restarted.allowsCareAction(digivice::Action::EncounterSeed));
     {
         d::PracticeSession restoredActive(memory);
@@ -158,6 +160,7 @@ void failureCases() {
     m.unreadable=true; d::PracticeSession unreadable(m);
     CHECK(unreadable.restore()==d::Result::RecoveryRequired && !unreadable.writable());
     CHECK(!unreadable.allowsCareAction(digivice::Action::Explore));
+    CHECK(!unreadable.allowsCareAction(digivice::Action::PartyAdd) && !unreadable.allowsCareAction(digivice::Action::PartyRemove));
 }
 void parsingAndStarts() {
     Memory m; d::PracticeSession s(m); auto care=productionCare();

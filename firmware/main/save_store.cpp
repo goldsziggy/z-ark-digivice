@@ -7,34 +7,32 @@ BootStatus SaveStore::restore(State& state) {
     writable_ = false;
     activeSlot_ = -1;
     sequence_ = 0;
-    Slot slots[2];
-    State decoded[2];
-    SnapshotStatus decodedStatus[2] = {SnapshotStatus::InvalidLength,
-                                       SnapshotStatus::InvalidLength};
-    bool valid[2] = {false, false};
+    bool migrated = false;
     bool damaged = false;
     for (unsigned i = 0; i < 2; ++i) {
-        const auto read = backend_.readSlot(i, slots[i]);
+        slot_ = {};
+        const auto read = backend_.readSlot(i, slot_);
         if (read == ReadStatus::Missing) continue;
-        if (read != ReadStatus::Present || slots[i].length > kSnapshotSize) {
+        if (read != ReadStatus::Present || slot_.length > kSnapshotSize) {
             damaged = true;
             continue;
         }
-        decodedStatus[i] = decodeSnapshot(slots[i].bytes, slots[i].length, decoded[i]);
-        valid[i] = decodedStatus[i] == SnapshotStatus::Ok ||
-                   decodedStatus[i] == SnapshotStatus::Migrated;
-        damaged |= !valid[i];
-    }
-    if (valid[0] && valid[1] && decoded[0].sequence == decoded[1].sequence) {
-        Snapshot left, right;
-        encodeSnapshot(decoded[0], left);
-        encodeSnapshot(decoded[1], right);
-        damaged |= std::memcmp(left.bytes, right.bytes, kSnapshotSize) != 0;
-    }
-    if (valid[0] || valid[1]) {
-        activeSlot_ = valid[1] && (!valid[0] || decoded[1].sequence > decoded[0].sequence) ? 1 : 0;
-        state = decoded[activeSlot_];
-        sequence_ = state.sequence;
+        const auto status = decodeSnapshot(slot_.bytes, slot_.length, decoded_);
+        if (status != SnapshotStatus::Ok && status != SnapshotStatus::Migrated) {
+            damaged = true;
+            continue;
+        }
+        if (activeSlot_ >= 0 && decoded_.sequence == sequence_) {
+            encodeSnapshot(state, canonical_[0]);
+            encodeSnapshot(decoded_, canonical_[1]);
+            damaged |= std::memcmp(canonical_[0].bytes, canonical_[1].bytes, kSnapshotSize) != 0;
+        }
+        if (activeSlot_ < 0 || decoded_.sequence > sequence_) {
+            activeSlot_ = static_cast<int>(i);
+            state = decoded_;
+            sequence_ = state.sequence;
+            migrated = status == SnapshotStatus::Migrated;
+        }
     }
     if (damaged) {
         diagnostic_ = "slot unreadable, invalid, conflicting or unsupported; saves preserved; writes disabled";
@@ -45,7 +43,7 @@ BootStatus SaveStore::restore(State& state) {
         diagnostic_ = "empty storage; new game may be saved";
         return BootStatus::Empty;
     }
-    if (decodedStatus[activeSlot_] == SnapshotStatus::Migrated) {
+    if (migrated) {
         diagnostic_ = "older snapshot migrated in RAM; original retained until next checkpoint";
         return BootStatus::Migrated;
     }
@@ -55,7 +53,7 @@ BootStatus SaveStore::restore(State& state) {
 
 bool SaveStore::checkpoint(const State& state) {
     if (!writable_) return false;
-    Snapshot snapshot;
+    auto& snapshot = canonical_[0];
     if (!encodeSnapshot(state, snapshot) || (activeSlot_ >= 0 && state.sequence < sequence_)) {
         diagnostic_ = "invalid state or sequence regression rejected";
         return false;
@@ -66,7 +64,7 @@ bool SaveStore::checkpoint(const State& state) {
         diagnostic_ = "save commit failed or uncertain; reboot into recovery before continuing";
         return false;
     }
-    Slot verified;
+    auto& verified = slot_;
     if (backend_.readSlot(next, verified) != ReadStatus::Present ||
         verified.length != kSnapshotSize ||
         std::memcmp(verified.bytes, snapshot.bytes, kSnapshotSize) != 0) {
@@ -78,6 +76,10 @@ bool SaveStore::checkpoint(const State& state) {
     sequence_ = state.sequence;
     diagnostic_ = "checkpoint committed and read back";
     return true;
+}
+
+bool SaveStore::checkpointMirrored(const State& state) {
+    return checkpoint(state) && checkpoint(state);
 }
 
 } // namespace digivice::storage

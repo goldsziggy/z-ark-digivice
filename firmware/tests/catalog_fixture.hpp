@@ -3,7 +3,7 @@
 #include "forms.hpp"
 
 // Synthetic valid history with released IDs2..18 and a selected member19.
-// Exercises stable identity independently of the eight physical collection slots.
+// Exercises stable identity independently of the bounded carried collection slots.
 inline digivice::State stableMemberFixture(std::uint32_t formId) {
     using namespace digivice;
     auto state = newGame();

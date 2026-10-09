@@ -19,14 +19,15 @@ for name in ['handheld_walking.cpp','handheld_nearby.cpp']:
  print('Testing exact runtime method body '+name+' SHA256 '+entries[-1]['sha256'])
 manifest={'sources':entries,
           'linked_ui':[{'source':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in [Path('firmware/runtime/device_ui.cpp'),Path('firmware/runtime/device_ui.hpp')]],
+          'linked_trade':[{'source':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in [Path('core/trade.cpp'),Path('firmware/runtime/trade_protocol.cpp')]],
           'transform':'Replace first include only; every subsequent byte is exact production source.',
-          'doubles':'Runtime declaration, published sampler snapshots, optional UI gate overrides, radio/network lifecycle, audio, SDK clock/random/delay; actual shared UI (Home panel tests), game, save, lifetime persistence and nearby protocol/match linked.'}
+          'doubles':'Runtime declaration, published sampler snapshots, optional UI gate overrides, radio/network lifecycle, audio, trade Session ownership gates and disabled trade radio/persistence hooks, SDK clock/random/delay; actual shared UI (Home panel tests), game, save, lifetime persistence, nearby protocol/match and trade packet protocol linked. Trade Session/store recovery is outside this harness and tested separately.'}
 Path('build/walking-runtime/source-scope.json').write_text(json.dumps(manifest,indent=2)+'\n')
 PY
 sources=(firmware/tests/walking_runtime_test.cpp build/walking-runtime/handheld_walking.cpp build/walking-runtime/handheld_nearby.cpp
   firmware/main/save_store.cpp firmware/runtime/usage_store.cpp firmware/runtime/battle_presentation.cpp
   firmware/runtime/device_ui.cpp firmware/runtime/starter.cpp firmware/runtime/evolution_choice.cpp
-  core/game.cpp core/combat.cpp core/encounters.cpp core/forms.cpp core/battle_trace.cpp core/nearby_match.cpp firmware/runtime/nearby_protocol.cpp
+  core/game.cpp core/trade.cpp core/combat.cpp core/encounters.cpp core/forms.cpp core/battle_trace.cpp core/nearby_match.cpp firmware/runtime/nearby_protocol.cpp firmware/runtime/trade_protocol.cpp
   core/legacy_combat_v3.cpp core/legacy_forms_v5.cpp core/legacy_combat_v5.cpp
   core/legacy_forms_v6.cpp core/legacy_combat_v6.cpp core/legacy_forms_v7.cpp core/legacy_combat_v7.cpp
   core/legacy_forms_v8.cpp core/legacy_combat_v8.cpp core/legacy_forms_v9.cpp core/legacy_combat_v9.cpp)

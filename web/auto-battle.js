@@ -27,7 +27,7 @@ export function validateAutoTrace(value, kind) {
   if (!['wild', 'practice'].includes(kind) || !exact(value, [...TRACE_KEYS, ...(current ? ['combatRulesVersion', 'playerCare', 'enemyCare'] : [])]) || value.formatVersion !== 1 || value.mode !== 'auto' || value.kind !== kind
     || !integer(value.startSequence, 0, 10000) || !integer(value.endSequence, value.startSequence + 1, 10000)
     || !participant(value.player) || !participant(value.enemy)
-    || !(kind === 'wild' ? ['won', 'captured', 'retreated'] : ['won', 'lost', 'draw']).includes(value.outcome)
+    || !(kind === 'wild' ? ['none', 'won', 'captured', 'retreated'] : ['won', 'lost', 'draw']).includes(value.outcome)
     || !Array.isArray(value.steps) || value.steps.length < 1 || value.steps.length > (kind === 'wild' ? 48 : 40)) throw new Error('Unsupported Auto battle record.');
   for (const [index, step] of value.steps.entries()) {
     const guarded = object(step) && Object.hasOwn(step, 'guard');
@@ -37,6 +37,13 @@ export function validateAutoTrace(value, kind) {
       || typeof step.reflected !== 'boolean' || typeof step.captured !== 'boolean'
       || current && step.action === 'capture' && !validTraceCapture(step.capture, step.captured)
       || kind === 'practice' && (step.captured || step.action === 'capture')) throw new Error('Unsupported Auto battle step.');
+  }
+  if (value.outcome === 'none' && (value.endSequence !== value.startSequence + 1 || value.steps.some((step, index) =>
+    step.phase !== 'attack' || !['physical', 'heavy', 'magic'].includes(step.action) || step.captured || step.capture
+    || step.playerHpAfter < 1 || step.enemyHpAfter < 1 || step.playerHpBefore < step.playerHpAfter || step.enemyHpBefore < step.enemyHpAfter
+    || step.playerHpBefore > value.player.combat.maxHp || step.enemyHpBefore > value.enemy.combat.maxHp
+    || index > 0 && (step.playerHpBefore !== value.steps[index - 1].playerHpAfter || step.enemyHpBefore !== value.steps[index - 1].enemyHpAfter)))) {
+    throw new Error('Unsupported paused Auto battle record.');
   }
   return structuredClone(value);
 }
@@ -64,15 +71,31 @@ export function autoStepText(step, trace = null) {
 }
 
 export function autoResultTitle(trace) {
-  return { won: 'Auto victory!', captured: 'A new companion!', retreated: 'Safely back home.', lost: 'A lesson learned.', draw: 'An even match.' }[trace?.outcome] || 'Auto battle saved';
+  return { none: 'Ready for your tap.', won: 'Auto victory!', captured: 'A new companion!', retreated: 'Safely back home.', lost: 'A lesson learned.', draw: 'An even match.' }[trace?.outcome] || 'Auto battle saved';
 }
 
 // Read the authoritative eligibility/chance, including migrated old encounters.
 // This presentation helper deliberately does not derive odds from remaining HP.
 export function captureChoice(state) {
   const chance = state?.wildCaptureChance;
-  const available = state?.phase === 'encounter' && Number.isInteger(chance) && chance > 0 && chance <= 100;
-  const detail = available ? `${Math.max(0, 3 - (state.captureAttempts || 0))} throws left · Odds after throwing` : state?.phase !== 'encounter' ? 'Find a wild companion first'
-    : state.collection?.length >= state.collectionCapacity ? 'Collection full' : state.captureAttempts >= 3 ? 'No attempts left' : 'Weaken your new friend first';
+  const full = state?.collection?.length >= state?.collectionCapacity;
+  const available = state?.phase === 'encounter' && !full && Number.isInteger(chance) && chance > 0 && chance <= 100;
+  const detail = available ? `${Math.max(0, 3 - (state.captureAttempts || 0))} throws left · Green gives full eligible odds` : state?.phase !== 'encounter' ? 'Find a wild companion first'
+    : full ? 'Collection full' : state.captureAttempts >= 3 ? 'No attempts left' : 'Weaken the wild Digimon first';
   return { available, label: available ? `Capture · ${Math.max(0, 3 - (state.captureAttempts || 0))} left` : 'Capture', detail };
+}
+
+// Only the durable wild-battle checkpoint permits a manual Auto throw. Practice
+// records and old terminal Auto traces can never arm this interaction.
+export function awaitingAutoCapture(state) {
+  return state?.battleMode === 'auto' && state?.autoCapture === 1 && captureChoice(state).available;
+}
+
+export function pausedAutoTraceMatchesState(trace, state) {
+  if (trace?.outcome !== 'none') return true;
+  const last = trace.steps.at(-1);
+  return awaitingAutoCapture(state) && trace.endSequence === state.foregroundSequence
+    && trace.player.formId === state.formId && trace.player.level === state.level
+    && trace.enemy.formId === state.wildFormId && trace.enemy.level === state.wildLevel
+    && last.playerHpAfter === state.hp && last.enemyHpAfter === state.wildHp;
 }

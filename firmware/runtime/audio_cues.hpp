@@ -12,7 +12,10 @@ enum class AudioCue : std::uint8_t {
 };
 unsigned cuePriority(AudioCue cue);
 const char* cueName(AudioCue cue);
-constexpr unsigned kAudioSampleRate = 22050;
+// PCM5101A runs from BCLK on this board (no MCLK). 44.1 kHz / 16-bit
+// stereo supplies the documented 1.4112 MHz BCLK PLL reference; 22.05 kHz
+// with 32 clocks/frame was below its documented PLL configurations.
+constexpr unsigned kAudioSampleRate = 44100;
 
 // Original motifs from web/audio-engine.js; no sampled/downloaded audio. Fixed
 // voices and state, no allocations; each call generates one signed mono frame.

@@ -1,10 +1,28 @@
-# USB boot reliability — unresolved physical acceptance
+# USB boot reliability — successful installation, unresolved intermittent silence
 
-> Publication checkpoint: source and previously installed firmware are f74ee4c (schema 17 / rules 13). Both units passed bounded installation/save/SD/reboot checks; older entries below are historical. No hardware was accessed for this export. See [verified images and remaining acceptance](../releases/firmware-f74ee4c/README.md).
+> Current exported source: `66ceaaf` (schema21/rules14, 60 Digimon). [Current build and migration guide](ROSTER60.md) · [Publication validation](../PUBLICATION_VALIDATION.json). Installation statements below describe their named historical checkpoints; this export preparation does not assert a new physical installation.
 
-Unit 2 stopped replying through USB during the later rules-12 preflight. This is an **open release reliability issue**, even though both units previously passed the `6e058e1` installation, migration, asset, reboot and idle checkpoints. Those results remain historical evidence. No current save corruption, application crash or radio failure has been established.
+Both devices passed the **`8be26c6`** save-preserving installation and bounded
+reboot checks on 2026-10-09. First boot was captured on the same descriptor as
+each app-only flash, followed by exact own-save/settings, 261-file SD and reboot
+verification. No silent connection, recovery flash or blind retry occurred in
+this run. All serial handles are closed. Earlier intermittent USB silence
+remains unexplained; this success does not establish long-term reliability.
+Current sanitized installation evidence (historical local evidence omitted).
 
-## What the existing traces establish
+## Previous f9 installation evidence
+
+At that earlier checkpoint, both installed applications matched the approved 1,584,592-byte f9 image. Each device preserved its own 640-byte care payload through schema17 → schema19 migration, matched durable settings across upgrade and reboot, and restored an identical 660-byte snapshot after verification reboot. Both SD packs passed all 261 file checks with no asset payload writes. Final serial connections were closed and the installation owner confirmed no remaining port owners.
+
+Unit 1 initially returned zero USB bytes after the app-only write. A later attempt to download the full application for diagnosis timed out; its failure evidence was retained. A subsequent bounded device-checksum verification and boot capture on the same open descriptor succeeded, with no recovery firmware rewrite. The full post-installation check then passed. Success on a later attempt does not establish why the earlier connections were silent.
+
+Unit 2 completed its app-only upgrade, protected-region readback, boot capture and exact own-save migration on one descriptor. An already saved capture result replay temporarily returned a read-only BUSY response during inspection. One eight-second wait and deferred diagnostic completed successfully; no new capture or gameplay command was sent. This explicit playback refusal is separate from receiving no USB bytes.
+
+The private observers omit serial `flush()`/`tcdrain()` calls because those can outlive the intended diagnostic deadline. Requests retain bounded writes and reads; faults, transport timeouts and disconnects stop rather than automatically reopen. The successful checks do not establish repeated-open reliability, physical audio, radio/trade acceptance or long-term stability.
+
+## Earlier traces retained
+
+Unit 2 also stopped replying during the earlier rules-12 preflight, after both units had passed the historical `6e058e1` installation, migration, asset, reboot and idle checkpoints. Those earlier passes and failures remain evidence; `6e058e1` is not the current installed version.
 
 The failed Unit 2 attempt reports `USB_UART_CHIP_RESET`, normal `SPI_FAST_FLASH_BOOT`, a loaded application image, then the bootloader's RNG-disable message at 333 ms. A successful boot of the **same installed image** continues with PSRAM messages at 334 ms and calls `app_main` at 816 ms. One later bounded reopen produced no received bytes. Probing stopped.
 
@@ -20,15 +38,15 @@ The old installer cached `DTR=False`, `RTS=False` before opening. Installed pySe
 
 The [installer](../scripts/install-sd-usb.py) now follows the ordering in [Espressif monitor 1.10.0](https://github.com/espressif/esp-idf-monitor/blob/v1.10.0/esp_idf_monitor/base/serial_reader.py#L101): cache both asserted, open once, release RTS before DTR. It retains Espressif's unchanged-DTR reapplication after RTS for the Windows driver workaround. On failure it closes best effort and preserves the original error; there is no retry, reopening or deliberate reset.
 
-This is a correction of a demonstrated host-side risk. **It has not been physically tested and cannot guarantee reset-free OS open/close behavior.** pySerial itself also discards queued input during open; later captured bytes cannot prove no earlier output occurred. Firmware and installed app hashes are unchanged. The existing `6e058e1` installer ZIP is an immutable historical package and does not contain this later host correction.
+This corrects a demonstrated host-side risk. The ordering has now been exercised during the physical f9 checks, but **cannot guarantee reset-free OS open/close behavior**. pySerial itself also discards queued input during open; later captured bytes cannot prove no earlier output occurred. The host correction did not change firmware by itself. The existing `6e058e1` installer ZIP is an immutable historical package and does not contain this later host correction.
 
-## Next bounded diagnostic
+## If silence recurs
 
-1. Keep Unit 1 idle. Observe Unit 2 without changing USB/BOOT/PWR. Record whether the screen is displaying and responding; if it is blank at the known egg screen, one touch/release can distinguish ordinary backlight idle from a failed wake. Preserve the hatch choice.
-2. If the screen responds, a live application is established. Use one exact-serial-selected open with the corrected ordering, record a bounded receive window, then at most one framed identity request on that same descriptor. Retain received bytes privately; stop on error, disconnect or timeout. Do not invoke esptool or automatically reopen.
-3. If the screen does not respond, that still does not uniquely diagnose a startup failure. Record that observation before selecting a different diagnostic. Do not repeat the identical cable reconnect, erase, reflash or substitute saves merely to obtain another log.
+1. Observe the affected screen before another USB probe. Record whether it displays and responds; one touch/release can distinguish normal backlight idle from a failed wake. Keep the other unit idle and preserve each device's own save.
+2. Use a separately reviewed, bounded diagnostic selected by the complete device identity. Keep identity, receive capture and any subsequent inspection on the same open descriptor where practical. Preserve each failed attempt in a separate private directory; stop on faults, disconnects or timeouts.
+3. A silent connection or nonresponsive screen does not uniquely diagnose startup failure. Establish the next diagnostic from the evidence. Do not erase, substitute saves, roll back newer schemas or repeatedly reflash merely to obtain another log.
 
-A private Unit 2-only single-open script is prepared in `/tmp/digivice-unit2-single-open-diagnostic.py`. Its default mode is a local plan with zero USB access. Execution requires the live-screen observation; it allows one open, an 8-second receive window, a discard fence and one identity request with a 15-second response deadline. It limits all received data to 128 KiB, refuses existing evidence paths, checks the complete enumerated identity and expected application reply, and sends no game/save/firmware-write commands. It has **not been executed against a device**. A successful identity reply would not by itself verify the current save or close reliability acceptance.
+A successful identity reply alone does not verify save preservation or close reliability acceptance. The current checkpoint additionally verified the app, each own-save migration, durable settings, SD contents and reboot restoration. No further hardware diagnostic is pending for this installation.
 
 ## Verification boundary
 
@@ -38,4 +56,4 @@ Thirty installer tests pass with temporary files and fake serial. They cover the
 python3 -m unittest discover -s tests -p 'test_install_sd_usb.py' -v
 ```
 
-During this investigation: **zero hardware opens, flashes, resets or game commands**; Unit 1 remained idle. Both installed apps remain `6e058e1`. Unit 2's current save has not been re-read. Physical recovery and repeatability remain unverified. Nearby's separate egg/owned-partner testing gate remains in effect; cloud pairing is not a prerequisite for ESP-NOW.
+The original host-opening investigation used no hardware and remains historical. The later f9 installation used authorized app-only writes, ROM/reset transitions, captured boots and software verification reboots; it performed no factory reset, NVS erase, save replacement, trade or new capture. Audio initialization and unchanged defaults passed, but changed-preference durability and acoustic behavior remain untested. The measured main-stack minimum free values were 8,944 / 8,848 bytes for units 1 / 2 during the bounded checks, not a trading-load or long-duration guarantee. Nearby's separate physical acceptance gates remain in effect; cloud pairing is not a prerequisite for ESP-NOW.

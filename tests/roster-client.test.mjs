@@ -80,8 +80,9 @@ test('private artwork loads only requested forms with two-pack memory and no abs
       const id = Number(path.split('/').at(-1)); return id === 276 ? new Response('', { status: 404 }) : Response.json(formFixture(id));
     } });
   assert.deepEqual(requests, []);
-  client.select([18, 19, 20]); await settle(() => client.state().loaded.length === 2);
+  client.select(Array.from({ length: 60 }, (_, index) => index + 18)); await settle(() => client.state().loaded.length === 2);
   assert.deepEqual(requests, ['/api/roster/art/18', '/api/roster/art/19']);
+  assert.deepEqual(client.state().requested, [18, 19], 'sixty proposed forms never bypass the two-pack request/cache limit');
   client.select([276]); await settle(() => client.state().unavailable.includes(276));
   for (let n = 0; n < 10; n++) client.select([276]);
   assert.equal(requests.length, 3); assert.deepEqual(client.state().loaded, []);

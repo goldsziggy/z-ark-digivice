@@ -29,10 +29,10 @@
     "test:browser:navigation": "./scripts/node.sh tests/browser-navigation.mjs",
     "test:battle": "npm run build && ctest --test-dir build --output-on-failure -R battle && ./scripts/node.sh --test tests/battle-client.test.mjs tests/battle-service.test.ts tests/battle-http.test.ts",
     "test:browser:battle": "./scripts/node.sh tests/browser-battle.mjs",
-    "test:modules": "./scripts/node.sh --test tests/service*.ts tests/assets-service.test.ts tests/asset-cache.test.mjs tests/personal-art.test.mjs tests/audio-engine.test.mjs tests/garage*.ts tests/garage-library.test.mjs tests/device-navigation.test.mjs tests/battle-client.test.mjs tests/battle-service.test.ts tests/battle-http.test.ts tests/two-button-input.test.mjs tests/background*.test.* tests/device-assets.test.ts tests/starter-onboarding.test.mjs tests/auto-battle.test.mjs tests/progression.test.mjs tests/world-ds-assets.test.ts tests/roster-client.test.mjs tests/auto-tuning-compat.test.mjs tests/care-actions.test.mjs tests/capture-gesture.test.mjs tests/capture-trajectory.test.mjs tests/care-capture-state.test.mjs",
+    "test:modules": "./scripts/node.sh --test --test-concurrency=4 tests/service*.ts tests/assets-service.test.ts tests/asset-cache.test.mjs tests/personal-art.test.mjs tests/audio-engine.test.mjs tests/garage*.ts tests/garage-library.test.mjs tests/device-navigation.test.mjs tests/battle-client.test.mjs tests/battle-service.test.ts tests/battle-http.test.ts tests/two-button-input.test.mjs tests/background*.test.* tests/device-assets.test.ts tests/starter-onboarding.test.mjs tests/auto-battle.test.mjs tests/progression.test.mjs tests/world-ds-assets.test.ts tests/roster-client.test.mjs tests/auto-tuning-compat.test.mjs tests/care-actions.test.mjs tests/capture-gesture.test.mjs tests/capture-trajectory.test.mjs tests/care-capture-state.test.mjs tests/capture-ring-model.test.mjs tests/capture-ring-input.test.mjs tests/party.test.mjs",
     "build:direct": "bash scripts/build-host-direct.sh",
     "dev:direct": "npm run build:direct && npm start",
-    "test:direct": "npm run build:direct && ./build/combat-test && ./build/core-test && ./build/legacy-v3-test && ./build/legacy-v4-test && ./build/world-ds-catalog-test && ./build/practice-battle-test && python3 tests/core_cli_test.py ./build/digivice-core && python3 tests/practice_cli_test.py ./build/digivice-battle && ./firmware/tests/run.sh && npm run test:modules",
+    "test:direct": "npm run build:direct && ./build/capture-ring-model-test && ./build/ring-capture-core-test && ./build/world-seed-core-test && ./build/combat-test && ./build/core-test && ./build/legacy-v3-test && ./build/legacy-v4-test && ./build/world-ds-catalog-test && ./build/practice-battle-test && python3 tests/core_cli_test.py ./build/digivice-core && python3 tests/practice_cli_test.py ./build/digivice-battle && ./firmware/tests/run.sh && npm run test:modules",
     "test:browser:stats": "./scripts/node.sh tests/browser-stats.mjs",
     "demo:direct": "npm run build:direct && ./scripts/demo.sh",
     "test:browser:partners": "./scripts/node.sh tests/browser-partners.mjs",
@@ -71,6 +71,7 @@
     "test:browser:touch-gameplay": "./scripts/node.sh tests/browser-touch-gameplay.mjs",
     "test:browser:touch-battle": "DIGIVICE_TOUCH_ONLY=1 ./scripts/node.sh tests/browser-battle-modes.mjs",
     "test:browser:touch-recovery": "./scripts/node.sh tests/browser-touch-recovery.mjs",
+    "test:browser:auto-capture": "./scripts/node.sh tests/browser-auto-capture.mjs",
     "test:browser:flick": "./scripts/node.sh tests/browser-flick-capture.mjs",
     "test:browser:audio": "./scripts/node.sh tests/browser-audio.mjs",
     "test:browser:audio-integration": "./scripts/node.sh tests/browser-audio-integration.mjs",
@@ -81,6 +82,12 @@
     "test:sprite-bounds": "bash firmware/tests/test_sprite_bounds.sh",
     "test:browser:rules12": "./scripts/node.sh tests/browser-rules12.mjs",
     "build:test-assets": "python3 scripts/build-assets.py --include-test-fixtures && ./scripts/node.sh scripts/sign-assets.ts --include-test-fixtures",
-    "test:publication": "bash scripts/check-publication.sh"
+    "test:capture-ring": "npm run build && ctest --test-dir build --output-on-failure -R \"capture-ring|ring-capture-core|device-ui|auto-capture|care-capture\" && ./scripts/node.sh --test tests/capture-ring*.test.mjs && ./scripts/node.sh tests/browser-ring-capture.mjs",
+    "test:browser:ring": "./scripts/node.sh tests/browser-ring-capture.mjs",
+    "check:capture-ring": "python3 scripts/generate-capture-ring.py --check",
+    "test:entropy": "bash firmware/tests/test_device_entropy.sh",
+    "test:capture-runtime": "bash firmware/tests/test_capture_runtime.sh",
+    "test:publication": "bash scripts/check-publication.sh",
+    "test:browser:party": "./scripts/node.sh tests/browser-party.mjs"
   }
 }

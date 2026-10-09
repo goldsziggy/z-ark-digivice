@@ -4,10 +4,14 @@
 #include "board_hal.hpp"
 #include "device_assets_client.hpp"
 #include "game.hpp"
+#include "../runtime/entropy_seed.hpp"
 #include "motion_adapter.hpp"
 #include "network_adapter.hpp"
 #include "save_store.hpp"
 #include "practice_nvs.hpp"
+#include "trade_nvs.hpp"
+#include "../runtime/trade_session.hpp"
+#include "../runtime/trade_protocol.hpp"
 #include "../runtime/motion.hpp"
 #include "../runtime/power.hpp"
 #include "../runtime/step_delivery.hpp"
@@ -37,20 +41,32 @@ namespace digivice {
 // has bounded ~20 KiB work buffers which do not belong on the main task stack.
 class HandheldRuntime {
 public:
-    HandheldRuntime(State& state, storage::SaveStore& saves) : state_(state), saves_(saves), cache_(sd_), steps_(1), practice_(practiceBackend_) {}
+    HandheldRuntime(State& state, storage::SaveStore& saves, entropy::Seeds startupSeeds = {})
+        : state_(state), saves_(saves), startupSeeds_(startupSeeds), cache_(sd_), steps_(1), practice_(practiceBackend_) {}
     void begin();
     void poll();
+    // Cooperative console/runtime wait; only a healthy active capture animation
+    // needs the shorter wait. This is a cadence request, not measured FPS.
+    std::uint32_t recommendedPollDelayMs() const {
+#if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
+        return captureFrameActive_ && !interfacePaused_ && !powerFrozen() ? 10u : 20u;
+#else
+        return 20u;
+#endif
+    }
     bool command(char* line);
     // Console discards partial input when this epoch changes (shutdown/resume).
     std::uint32_t inputEpoch() const { return inputEpoch_; }
     bool powerFrozen() const { return powerFrozen_ || power_.frozen(); }
     board::Capabilities capabilities(board::Capabilities base) const;
     bool allowsCareAction(Action action) const {
-        return !encounterRecoveryRequired_ && (action != Action::Hatch || state_.starterOfferSeed) &&
+        return !encounterRecoveryRequired_ && (!state_.onboardingComplete || state_.worldSeed) && !tradeSession_.blocksForeground() && (action != Action::Hatch || state_.starterOfferSeed) &&
             practice_.allowsCareAction(action) && !battlePlaybackLocked() && !nearbyBusy();
     }
 private:
+    void beginTradeStorage();
     void resolveTestEncounterAtBoot();
+    bool ensureWorldSeed();
     bool encounterRecoveryRequired_ = false;
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
     void beginInterface();
@@ -67,9 +83,14 @@ private:
     bool battlePlaybackLocked() const { return battle_.locked(); }
     void pollBattlePresentation(std::uint64_t now);
     void pollIdle(std::uint64_t now);
+    void updateMusicScene();
     void interfaceActivity(std::uint64_t now);
     bool idleBlocked() const;
     void beginNearby();
+    bool openTradeRadio(std::uint64_t now);
+    void pollTradePersistence(std::uint64_t now);
+    void tradeIntent(deviceui::Intent intent);
+    bool tradeNegotiating() const;
     void closeNearby();
     void pollNearby(std::uint64_t now);
     void nearbyIntent(deviceui::Intent intent);
@@ -79,6 +100,9 @@ private:
     enum class NearbyPhase : std::uint8_t { Idle, Starting, Active, Stopping, Fault };
     nearby::Radio nearbyRadio_;
     nearby::Protocol nearby_;
+    tradewire::Protocol tradeWire_;
+    bool tradePeerTerminal_ = false, tradeTxTurn_ = false;
+    const char* tradeStatus_ = "Nearby trade is closed";
     nearby::Fighter nearbyFighter_{};
     NearbyPhase nearbyPhase_ = NearbyPhase::Idle;
     std::uint64_t nearbyDeadline_ = 0, nearbyTurnAt_ = 0, nearbyAttackCueAt_ = 0;
@@ -106,6 +130,10 @@ private:
     std::uint32_t uiSequence_ = UINT32_MAX, touchPresses_ = 0, touchReleases_ = 0;
     std::uint32_t renderedFrames_ = 0, maxFrameUs_ = 0;
     std::uint32_t maxRenderUs_ = 0, maxFlushUs_ = 0;
+    std::uint64_t captureFrameStartedMs_ = 0;
+    std::uint32_t captureFrames_ = 0, maxCaptureRenderUs_ = 0, maxCaptureFlushUs_ = 0;
+    std::uint32_t lastFrameSequence_ = UINT32_MAX;
+    bool captureFrameActive_ = false, captureFrameValid_ = false, lastArtStorageReady_ = false;
     std::int16_t touchX_ = 0, touchY_ = 0;
     bool touchPressed_ = false, touchNeedsRelease_ = true, gyroEnabled_ = false;
     bool interfacePaused_ = false, interfaceDirty_ = true;
@@ -171,6 +199,9 @@ private:
     bool previousNetworkPaused_ = false, previousAssetsPaused_ = false, sdPowerPrepared_ = false;
     State& state_;
     storage::SaveStore& saves_;
+    entropy::Seeds startupSeeds_{};
+    devicetrade::NvsBackend tradeBackend_;
+    devicetrade::Session tradeSession_{state_, saves_, tradeBackend_};
     assets::SdAssetStorage sd_;
     assets::Cache cache_;
     assets::DeviceAssetsClient assets_;

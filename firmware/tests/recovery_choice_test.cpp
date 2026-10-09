@@ -12,6 +12,11 @@ unsigned checks=0,failures=0;
 #define CHECK(x) do {++checks;if(!(x)){++failures;std::fprintf(stderr,"%s:%d %s\n",__FILE__,__LINE__,#x);}}while(false)
 State tired() {
     auto state=stableMemberFixture(223); // High HP form + stable member19, not array-index identity.
+    // The selectable alternate must be a production partner. The shared
+    // stable-ID history fixture deliberately retains the old Mote test starter.
+    auto rookie=newDevice(223);(void)apply(rookie,Action::Hatch,1);
+    state.collection[0]=rookie.collection[0];state.starterId=rookie.starterId;
+    state.journal[(rookie.collection[0].formId-1)/32]|=1u<<((rookie.collection[0].formId-1)%32);
     state.hp=state.collection[1].hp=1;state.energy=state.collection[1].energy=0;
     return state;
 }

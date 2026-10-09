@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { startServer } from '../service/server.ts';
+import { gameReady, flickBall } from './manual-auto-browser-tools.mjs';
 import { holdDeviceBack } from './browser-tools.mjs';
 
 if (!process.env.PLAYWRIGHT_MODULE) throw new Error('Set PLAYWRIGHT_MODULE to an existing playwright/index.mjs.');
@@ -64,7 +65,7 @@ async function gameCommand(id) {
   await choose(id, false);
   const reply = page.waitForResponse(response => response.url().endsWith('/api/save-sync') && response.request().method() === 'POST' && response.status() === 200);
   await confirm(); const result = await (await reply).json();
-  await page.waitForFunction(() => localStorage.getItem('digivice.dev.pending.v1') === null && !document.querySelector('#device-confirm-button').disabled);
+  await gameReady(page);
   return result;
 }
 async function practiceCommand(id) {
@@ -182,18 +183,18 @@ try {
     await page.waitForTimeout(180); await route.abort('failed');
   });
   await choose('wild-auto-start', false); if (touchOnly) await confirm(); else await right.dblclick({ delay: 25 }); await onScreen('saving');
-  await page.waitForFunction(() => !document.querySelector('[data-device-action="retry"]')?.disabled);
+  await page.waitForFunction(() => document.querySelector('[data-device-action="retry"]')?.disabled === false);
   assert.equal(gamePosts.length, confirmationPosts + 1);
   const wildPending = await page.evaluate(() => localStorage.getItem('digivice.dev.pending.v1'));
-  assert.deepEqual(JSON.parse(wildPending).events, [{ type: 'auto', value: 0 }]);
-  assert.deepEqual(wildCommitted.state, nativeNext(encounter, 'auto'));
+  assert.deepEqual(JSON.parse(wildPending).events, [{ type: 'auto-fight', value: 0 }]);
+  assert.deepEqual(wildCommitted.state, nativeNext(encounter, 'auto-fight'));
   assert.equal(wildCommitted.revision, encounter.revision + 1);
   assert.equal(wildCommitted.state.sequence, encounter.state.sequence + 1);
   checkTrace(wildCommitted.autoTrace, 'wild');
-  // This seeded native fixture really captures, so the retry exercises the
-  // collection/reward boundary rather than only an ordinary victory.
-  assert.equal(wildCommitted.autoTrace.outcome, 'captured');
-  assert.equal(wildCommitted.state.collection.length, encounter.state.collection.length + 1);
+  assert.equal(wildCommitted.autoTrace.outcome, 'none');
+  assert.equal(wildCommitted.state.autoCapture, 1);
+  assert.equal(wildCommitted.state.collection.length, encounter.state.collection.length);
+  assert.ok(wildCommitted.autoTrace.steps.every(step => step.action !== 'capture'));
   await back('saving');
   assert.equal(await page.evaluate(() => localStorage.getItem('digivice.dev.pending.v1')), wildPending);
   await page.unroute('**/api/save-sync'); await restart(); await page.reload(); await onScreen('saving');
@@ -202,12 +203,30 @@ try {
   assert.deepEqual(gamePosts.at(-1), gamePosts.at(-2));
   const recoveredWild = await read();
   for (const key of Object.keys(wildCommitted)) assert.deepEqual(recoveredWild[key], wildCommitted[key]);
-  // Equal-revision receipt after reload may go Home instead of replaying old
-  // animation. The saved native result remains explicitly reachable.
-  await home(); await choose('wild-auto-result'); await onScreen('wild-auto-result');
-  await bothSizes('wild-result'); await noManualControls();
-  await choose('wild-auto-done'); await onScreen('home');
-  console.log('PASS wild: confirmation/Back, immutable mode, native capture, durable exact retry across restart, one collection award.');
+  await onScreen('capture-aim'); await bothSizes('wild-manual-capture'); await noManualControls();
+  // Keep the original exactly-once reward assertion, now on a physical flick.
+  const captureBefore = await read(), capturePosts = gamePosts.length;
+  let captureCommitted;
+  await page.route('**/api/save-sync', async route => {
+    const response = await route.fetch(); captureCommitted = await response.json(); await route.abort('failed');
+  }, { times: 1 });
+  const cdp = await page.context().newCDPSession(page); await flickBall(page, cdp);
+  await onScreen('saving'); await page.waitForFunction(() => document.querySelector('[data-device-action="retry"]')?.disabled === false);
+  for(let n=0;n<150&&!captureCommitted;n++) await page.waitForTimeout(20);
+  assert.ok(captureCommitted, 'the intercepted physical flick reached a committed response');
+  assert.equal(gamePosts.length, capturePosts + 1);
+  const captureEvent = gamePosts.at(-1).events[0]; assert.equal(captureEvent.type, 'flick');
+  assert.deepEqual(captureCommitted.state, nativeNext(captureBefore, 'flick', captureEvent.value));
+  assert.equal(captureCommitted.state.lastCapture.result, 'captured');
+  assert.equal(captureCommitted.state.collection.length, captureBefore.state.collection.length + 1);
+  const capturePending = await page.evaluate(() => localStorage.getItem('digivice.dev.pending.v1'));
+  await back('saving'); await restart(); await page.reload(); await onScreen('saving');
+  assert.equal(await page.evaluate(() => localStorage.getItem('digivice.dev.pending.v1')), capturePending);
+  const captureRetried = await gameCommand('retry'); assert.deepEqual(captureRetried, captureCommitted);
+  assert.deepEqual(gamePosts.at(-1), gamePosts.at(-2));
+  await onScreen('home'); await bothSizes('wild-captured-home');
+  assert.equal((await read()).state.collection.length, captureBefore.state.collection.length + 1);
+  console.log('PASS wild: confirmation/Back, immutable mode, durable manual capture pause, trusted flick, exact restart retries, one collection award.');
 
   // Practice selectors and their Back path do not create even an initial fight.
   const petBeforePractice = await read(), practiceBefore = await read('/api/battle');
@@ -295,8 +314,8 @@ try {
   assert.equal(practicePosts.length, playbackPosts, 'Pause/resume/skip must never resubmit the saved battle');
   assert.deepEqual(await read('/api/battle'), practiceCommitted);
   assert.deepEqual(await read(), petBeforePractice); assert.deepEqual(errors, []);
-  console.log('PASS native Tactical/Auto browser: explicit starts, fixed modes, real captured reward once, two lost ACK/server+browser restart exact retries, Tactical exchange/retreat, mid-replay and final-turn pause/resume/skip without writes, unchanged practice pet.');
-  console.log(JSON.stringify({ input: touchOnly ? 'touch taps only' : 'two buttons', measurements, screenshots, wildTurns: wildCommitted.autoTrace.steps.length, practiceTurns: practiceCommitted.autoTrace.steps.length, physicalScale: touchOnly ? '412 logical CSS pixels; not a physical finger-fit measurement' : '201.6 CSS px nominal at 96 CSS px/in; not a calibrated hardware measurement' }, null, 2));
+  console.log('PASS native Tactical/Auto browser: explicit starts, fixed modes, real captured reward once, three lost ACK/server+browser restart exact retries, Tactical exchange/retreat, mid-replay and final-turn pause/resume/skip without writes, unchanged practice pet.');
+  console.log(JSON.stringify({ input: touchOnly ? 'touch taps and capture flick' : 'two buttons plus capture flick', measurements, screenshots, wildTurns: wildCommitted.autoTrace.steps.length, practiceTurns: practiceCommitted.autoTrace.steps.length, physicalScale: touchOnly ? '412 logical CSS pixels; not a physical finger-fit measurement' : '201.6 CSS px nominal at 96 CSS px/in; not a calibrated hardware measurement' }, null, 2));
 } finally {
   await browser.close(); if (app.server.listening) await new Promise(resolve => app.server.close(resolve)); app.close();
   rmSync(dataDir, { recursive: true, force: true });

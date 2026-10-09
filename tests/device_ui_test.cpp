@@ -1,4 +1,5 @@
 #include "device_ui.hpp"
+#include "capture_ring.hpp"
 #include "forms.hpp"
 #include "local_form_facing.hpp"
 #include "../firmware/main/display_orientation.hpp"
@@ -21,14 +22,26 @@ struct Harness {
     Controller ui;
     std::uint64_t now=100;
     unsigned gameWrites=0;
+    std::uint64_t captureEpoch=0;
+    std::uint32_t captureSequence=UINT32_MAX;
+    bool captureVisible=false;
     Harness() { model.writable=true; sync(); }
-    void sync() { if(state.starterOfferSeed) { model.starterCount=11; starter.configureChoices(11); model.starterFormId=starterForm(state,starter.selectedId()); } model.starterStage=starter.stage(); model.selectedId=starter.selectedId(); ui.update(state,model); }
+    void sync() { if(state.starterOfferSeed) { model.starterCount=11; starter.configureChoices(11); model.starterFormId=starterForm(state,starter.selectedId()); } model.starterStage=starter.stage(); model.selectedId=starter.selectedId(); ui.update(state,model);
+        if(ui.screen()==Screen::Capture) {
+            if(!captureVisible || captureSequence!=state.sequence) captureEpoch=now;
+            std::array<std::uint16_t,kPixels> frame;
+            CHECK(ui.render(state,model,frame.data(),kPixels,now)); // First visible frame starts Auto entry/retry.
+        }
+        captureVisible=ui.screen()==Screen::Capture;captureSequence=state.sequence;
+    }
     Intent event(TouchKind kind,int x,int y,std::uint64_t delta=30) {
         now+=delta; return ui.touch(state,model,{kind,static_cast<std::int16_t>(x),static_cast<std::int16_t>(y),now});
     }
     Intent tap(int x,int y) {
-        CHECK(!event(TouchKind::Down,x,y));
-        return event(TouchKind::Up,x,y,60);
+        const auto down=event(TouchKind::Down,x,y);
+        const auto up=event(TouchKind::Up,x,y,60);
+        CHECK(!down || (down.kind==IntentKind::GameAction && down.action==Action::RingCapture && !up));
+        return down ? down : up;
     }
     Intent swipe(int x,int y,int endX,int endY) {
         CHECK(!event(TouchKind::Down,x,y));
@@ -53,6 +66,8 @@ struct Harness {
         case IntentKind::StarterBack: starter.input(onboarding::Input::HoldBack); break;
         case IntentKind::SleepTimeout: if(commit) model.sleepTimeoutSeconds=static_cast<std::uint16_t>(intent.value); break;
         case IntentKind::ToggleMute: model.muted=!model.muted; break;
+        case IntentKind::ToggleMusic: model.musicEnabled=!model.musicEnabled; break;
+        case IntentKind::Volume: model.volumePercent=static_cast<std::uint8_t>(intent.value); break;
         case IntentKind::ToggleGyro: model.gyroEnabled=!model.gyroEnabled; break;
         default: break;
         }
@@ -76,6 +91,11 @@ struct Harness {
     void openHome(HomePanel panel) {
         selectHome(panel); dispatch(tap(206,323));
     }
+    void browseMember(std::uint32_t id) {
+        CHECK(ui.screen()==Screen::Collection && findMember(state,id));
+        for(unsigned i=0;i<state.collectionCount && ui.selectedMemberId()!=id;++i) dispatch(tap(355,180));
+        CHECK(ui.selectedMemberId()==id);
+    }
     void encounter() {
         CHECK(ui.screen()==Screen::Home && ui.walkingEligible() && ui.interactionIdle());
         // Test-only injection is deliberately outside the release UI.
@@ -83,6 +103,15 @@ struct Harness {
         dispatch(tap(206,274)); CHECK(ui.screen()==Screen::Battle);
     }
 };
+
+void nextCapturePhase(Harness& h,bool hit) {
+    const auto target=capturering::sample(0,h.state.wildFormId).targetRadius;
+    const std::uint64_t phase=hit ? (100-target)*capturering::kCycleMs/80 : 0;
+    h.now=h.captureEpoch+((h.now-h.captureEpoch)/capturering::kCycleMs+1)*capturering::kCycleMs+phase-30;
+}
+Intent timedThrow(Harness& h,bool hit,int x=206,int y=306) {
+    nextCapturePhase(h,hit);return h.tap(x,y);
+}
 
 void orientationGestures() {
     using display::Orientation;
@@ -111,8 +140,9 @@ void orientationGestures() {
             return h.event(kind,logical.x,logical.y,dt);
         };
         auto tap=[&](Harness& h,Point native) {
-            CHECK(!event(h,TouchKind::Down,native));
-            return event(h,TouchKind::Up,native,60);
+            const auto down=event(h,TouchKind::Down,native);
+            const auto up=event(h,TouchKind::Up,native,60);
+            CHECK(!down || (down.action==Action::RingCapture && !up));return down ? down : up;
         };
         auto swipe=[&](Harness& h,Point start,Point middle,Point end) {
             CHECK(!event(h,TouchKind::Down,start));
@@ -156,14 +186,9 @@ void orientationGestures() {
         while(capture.state.wildHp>capture.state.wildMaxHp/2) capture.strike();
         capture.dispatch(capture.tap(280,306)); CHECK(capture.ui.screen()==Screen::Capture);
         const auto beforeFlick=capture.state;
-        CHECK(!tap(capture,c.orb));
-        CHECK(!event(capture,TouchKind::Down,c.orb));
-        CHECK(!event(capture,TouchKind::Up,c.downward,100));
-        CHECK(!event(capture,TouchKind::Down,c.orb));
-        CHECK(!event(capture,TouchKind::Cancel,c.orb));
-        CHECK(!event(capture,TouchKind::Up,c.flickEnd,100));
-        const auto flick=swipe(capture,c.orb,c.flickMiddle,c.flickEnd);
-        CHECK(flick.kind==IntentKind::GameAction && flick.action==Action::Flick && flick.value==160*256+180);
+        CHECK(!event(capture,TouchKind::Up,c.orb));
+        nextCapturePhase(capture,true);const auto flick=tap(capture,c.orb);
+        CHECK(flick.kind==IntentKind::GameAction && flick.action==Action::RingCapture && capturering::sample(flick.value,capture.state.wildFormId).grade==capturering::Grade::Green);
         CHECK(!event(capture,TouchKind::Up,c.flickEnd));
         CHECK(std::memcmp(&beforeFlick,&capture.state,sizeof(State))==0);
         capture.dispatch(flick);
@@ -285,7 +310,7 @@ void walkingCheckpoints() {
     Harness evolution; evolution.state=stableMemberFixture(67); evolution.sync();
     const auto* edge=forms::outgoing(67,0); CHECK(edge);
     evolution.state.bond=evolution.state.collection[1].bond=edge->minBond; evolution.sync();
-    evolution.openHome(HomePanel::Partners); evolution.dispatch(evolution.swipe(250,180,160,180));
+    evolution.openHome(HomePanel::Partners); evolution.browseMember(evolution.state.activeCreatureId);
     evolution.dispatch(evolution.tap(120,312)); evolution.dispatch(evolution.tap(206,312));
     evolution.dispatch(evolution.tap(280,312)); CHECK(evolution.ui.screen()==Screen::EvolutionReview);
     CHECK(!evolution.event(TouchKind::Down,206,302));
@@ -297,7 +322,7 @@ void walkingCheckpoints() {
     evolution.dispatch(evolve); CHECK(evolution.ui.screen()==Screen::EvolutionResult);
 
     Harness release; release.state=stableMemberFixture(67); release.sync();
-    release.openHome(HomePanel::Partners); release.dispatch(release.tap(120,312));
+    release.openHome(HomePanel::Partners); release.browseMember(1); release.dispatch(release.tap(120,312));
     release.dispatch(release.tap(206,312)); CHECK(release.ui.screen()==Screen::ReleaseReview);
     const auto released=release.state.collection[0].id;
     CHECK(!release.event(TouchKind::Down,206,302)); checkpoint(release,Action::AccrueSteps,1);
@@ -320,11 +345,11 @@ void walkingCheckpoints() {
     fight.model.battle=nullptr; fight.sync();
     while(fight.state.wildHp>fight.state.wildMaxHp/2) fight.strike();
     fight.dispatch(fight.tap(280,306)); CHECK(fight.ui.screen()==Screen::Capture);
-    CHECK(!fight.event(TouchKind::Down,206,300)); checkpoint(fight,Action::AccrueSteps,1);
+    const auto flick=fight.event(TouchKind::Down,206,300);CHECK(flick.kind==IntentKind::GameAction && flick.action==Action::RingCapture);
+    checkpoint(fight,Action::AccrueSteps,1);
     CHECK(fight.ui.screen()==Screen::Capture && !fight.ui.interactionIdle());
-    CHECK(!fight.event(TouchKind::Move,206,250,50));
-    const auto flick=fight.event(TouchKind::Up,206,200,50);
-    CHECK(flick.kind==IntentKind::GameAction && flick.action==Action::Flick);
+    CHECK(!fight.event(TouchKind::Move,208,302,50));
+    CHECK(!fight.event(TouchKind::Up,206,300,50));
     fight.dispatch(flick);
 
     // No broad sequence bypass: foreground commands and altered gameplay,
@@ -391,7 +416,7 @@ void horizontalTaps() {
     Harness one;one.choose();one.openHome(HomePanel::Partners);equivalent(one,1);
     CHECK(!one.tap(55,180) && !one.tap(355,180));
     Harness partners;partners.choose();partners.state=stableMemberFixture(18);partners.sync();partners.openHome(HomePanel::Partners);equivalent(partners,2);
-    partners.dispatch(partners.tap(355,180));CHECK(partners.ui.artRequest(partners.state,partners.model,0).formId==18);
+    partners.browseMember(partners.state.activeCreatureId);CHECK(partners.ui.artRequest(partners.state,partners.model,0).formId==18);
     partners.dispatch(partners.tap(120,312));CHECK(partners.ui.screen()==Screen::Stats);equivalent(partners,4);
     partners.dispatch(partners.tap(206,312));CHECK(partners.ui.screen()==Screen::Evolution);equivalent(partners,2);
     partners.dispatch(partners.tap(120,312));equivalent(partners,2); // Stats/skills info pages.
@@ -404,10 +429,10 @@ void horizontalTaps() {
     CHECK(!battle.tap(55,180) && !battle.tap(355,180));battle.dispatch(heavy,false);
     battle.dispatch(battle.tap(55,180));
     auto physical=battle.swipe(206,220,206,150);CHECK(physical.action==Action::Attack);battle.dispatch(physical,false);
-    // Existing center controls and vertical capture remain separate actions.
+    // Capture uses its own direct Down; side targets no longer browse skills.
     battle.state.wildHp=battle.state.wildMaxHp/2;battle.sync();battle.dispatch(battle.tap(280,306));
-    CHECK(battle.ui.screen()==Screen::Capture && !battle.tap(55,180) && !battle.tap(355,180));
-    CHECK(!battle.tap(206,300));const auto flick=battle.swipe(206,300,206,200);CHECK(flick.action==Action::Flick);
+    CHECK(battle.ui.screen()==Screen::Capture && !battle.tap(206,60));
+    CHECK(!battle.event(TouchKind::Up,206,300));const auto flick=timedThrow(battle,true);CHECK(flick.action==Action::RingCapture);
     Harness nearbyUi;nearbyUi.choose();nearbyUi.openHome(HomePanel::Nearby);
     nearby::View network;network.stage=nearby::Stage::Discovering;network.host=true;network.peerCount=2;
     network.peers[0].fighter={1,18,1};network.peers[0].available=true;network.peers[0].mac.bytes[5]=1;
@@ -439,6 +464,549 @@ void horizontalTaps() {
     CHECK(!edges.event(TouchKind::Up,355,180));
     CHECK(!edges.event(TouchKind::Down,355,180));CHECK(!edges.event(TouchKind::Move,351,184,40));edges.dispatch(edges.event(TouchKind::Up,355,180,40));
     CHECK(edges.ui.homePanel()==HomePanel::Care);
+}
+
+void nearbyModeConsent() {
+    Harness h;h.choose();CHECK(apply(h.state,Action::Mode,1)==Error::None);h.sync();
+    const auto saved=h.state;const auto writes=h.gameWrites;
+    nearby::View view;view.stage=nearby::Stage::Discovering;view.peerCount=1;
+    view.peers[0].mac={{2,1,2,3,4,5}};view.peers[0].fighter={21,18,2};view.peers[0].openNonce=77;view.peers[0].available=true;
+    const auto* member=activeMember(h.state);const auto care=memberCare(*member);
+    h.model.nearbyLocalFighter={member->id,member->formId,member->level,care.offense,care.protection};
+    h.model.nearby=&view;h.sync();h.openHome(HomePanel::Nearby);h.dispatch(h.tap(120,312));
+    CHECK(h.ui.screen()==Screen::NearbyReview);
+    auto invite=h.tap(206,302);CHECK(invite.kind==IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Tactical);
+    CHECK(invite.nearbyOpenNonce==77 && !std::memcmp(invite.peer.bytes,view.peers[0].mac.bytes,6));
+    CHECK(nearby::sameFighter(invite.nearbyFighters[0],h.model.nearbyLocalFighter));
+    CHECK(nearby::sameFighter(invite.nearbyFighters[1],view.peers[0].fighter));h.dispatch(invite);
+    h.dispatch(h.tap(120,312));
+    // Independent CCW90 raw point selects Auto; release does not also invite.
+    std::array<std::uint16_t,kPixels> tacticalPixels,autoPixels;
+    CHECK(h.ui.render(h.state,h.model,tacticalPixels.data(),kPixels,90000));
+    const auto autoPoint=display::panelToLogical(display::Orientation::Ccw90,{240,131});
+    auto choice=h.tap(autoPoint.x,autoPoint.y);CHECK(choice.kind==IntentKind::Navigation);h.dispatch(choice);
+    CHECK(h.ui.render(h.state,h.model,autoPixels.data(),kPixels,90000));
+    CHECK(tacticalPixels[218*kSize+62]!=tacticalPixels[218*kSize+210]);
+    CHECK(tacticalPixels[218*kSize+62]==autoPixels[218*kSize+210]);
+    CHECK(tacticalPixels[218*kSize+210]==autoPixels[218*kSize+62]);
+    CHECK(!h.event(TouchKind::Up,206,302));
+    h.dispatch(h.tap(206,365));h.dispatch(h.tap(120,312)); // Retain mode within this live session.
+    invite=h.tap(206,302);CHECK(invite.kind==IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Auto);h.dispatch(invite);
+    h.dispatch(h.tap(120,312));CHECK(!h.event(TouchKind::Down,206,302));
+    ++view.peers[0].openNonce;h.sync();CHECK(h.ui.screen()==Screen::Nearby && !h.event(TouchKind::Up,206,302));
+    // A replacement invitation cannot inherit a held acceptance, even if its
+    // stage and session are unchanged while the mode or either fighter changes.
+    view.stage=nearby::Stage::Incoming;view.session=42;view.opponent=view.peers[0].mac;
+    view.offered[0]=view.peers[0].fighter;view.offered[1]=h.model.nearbyLocalFighter;view.offeredMode=nearby::Mode::Auto;
+    const auto offer=view;
+    for(unsigned change=0;change<5;++change) {
+        view=offer;h.sync();CHECK(!h.event(TouchKind::Down,120,252));
+        if(change==0)view.offeredMode=nearby::Mode::Tactical;
+        if(change==1)++view.session;
+        if(change==2)++view.opponent.bytes[5];
+        if(change==3)++view.offered[0].level;
+        if(change==4)++view.offered[1].protectionBonus;
+        h.sync();CHECK(!h.event(TouchKind::Up,120,252));
+    }
+    view=offer;h.sync();auto accept=h.tap(120,252);CHECK(accept.kind==IntentKind::NearbyAccept && accept.nearbyMode==nearby::Mode::Auto);
+    CHECK(accept.nearbySession==42 && !std::memcmp(accept.peer.bytes,view.opponent.bytes,6));
+    CHECK(nearby::sameFighter(accept.nearbyFighters[0],view.offered[0]) && nearby::sameFighter(accept.nearbyFighters[1],view.offered[1]));h.dispatch(accept);
+    CHECK(nearby::begin(view.offered[0],view.offered[1],nearby::Mode::Auto,123,view.match));view.stage=nearby::Stage::Playing;h.sync();
+    CHECK(!h.tap(280,240) && !h.tap(280,306) && !h.swipe(206,300,206,180)); // No mode edits, attack input or PvP capture.
+    CHECK(h.gameWrites==writes && !std::memcmp(&saved,&h.state,sizeof(State)));
+}
+
+void captureTimingControls() {
+    auto ready=[](Harness& h) {
+        h.choose();CHECK(apply(h.state,Action::Explore,100)==Error::None);h.sync();h.dispatch(h.tap(206,274));
+        h.state.wildHp=h.state.wildMaxHp/2;h.sync();h.dispatch(h.tap(280,306));
+        CHECK(h.ui.screen()==Screen::Capture && isValid(h.state));
+    };
+    // Main play-area Down commits the sampled intent immediately. Frame polling
+    // and subsequent movement/release never change that accepted proposal.
+    for(bool hit:{false,true}) for(const auto point:std::array<std::array<int,2>,6>{{{206,176},{403,206},{95,200},{206,330},{206,80},{206,306}}}) {
+        Harness sparse,dense;ready(sparse);ready(dense);const auto before=sparse.state;
+        nextCapturePhase(sparse,hit);dense.now=sparse.now;
+        std::array<std::uint16_t,kPixels> frame;
+        for(unsigned i=0;i<35;++i)CHECK(dense.ui.render(dense.state,dense.model,frame.data(),kPixels,dense.now-350+i*10));
+        const auto a=sparse.event(TouchKind::Down,point[0],point[1]),b=dense.event(TouchKind::Down,point[0],point[1]);
+        CHECK(a.kind==IntentKind::GameAction && a.action==Action::RingCapture && a.value==capturering::sample(sparse.now-sparse.captureEpoch,sparse.state.wildFormId).phaseMs);
+        CHECK(a.value==b.value && sparse.ui.pending() && dense.ui.pending());
+        CHECK(!sparse.event(TouchKind::Move,411,411) && !sparse.event(TouchKind::Cancel,206,176));
+        CHECK(!sparse.event(TouchKind::Down,point[0],point[1]));
+        CHECK(trade::sameState(sparse.state,before));
+        sparse.dispatch(a,false);CHECK(trade::sameState(sparse.state,before));
+        sparse.now+=600;CHECK(!sparse.event(TouchKind::Down,206,176)); // Failed save cannot re-arm held contact.
+        sparse.model.writable=false;sparse.sync();CHECK(!sparse.event(TouchKind::Up,411,411)); // Release survives gates.
+        sparse.model.writable=true;sparse.sync();nextCapturePhase(sparse,hit);
+        CHECK(sparse.event(TouchKind::Down,206,176).action==Action::RingCapture);
+        dense.dispatch(b);CHECK(dense.state.sequence==before.sequence+1);
+        CHECK(!dense.event(TouchKind::Down,206,176) && !dense.event(TouchKind::Up,206,365));
+        CHECK(dense.state.lastCapture.chance==ringCaptureChance(before,a.value) && dense.state.rngState!=before.rngState);
+        CHECK(dense.state.lastCapture.result!=CaptureResult::Miss);
+    }
+    // Exact timing boundaries reach the core unchanged, including orange.
+    // The same helper used for the visible percentage matches each saved roll.
+    for(int offset:{-25,-24,-13,-12,0,12,13,24,25}) {
+        Harness h;ready(h);const auto before=h.state;
+        const int radius=capturering::sample(0,h.state.wildFormId).targetRadius+offset;
+        if(radius<21 || radius>100)continue;
+        const auto phase=static_cast<std::uint32_t>((100-radius)*30);
+        h.now=h.captureEpoch+capturering::kCycleMs+phase-30;
+        const auto expected=std::abs(offset)<=12 ? capturering::Grade::Green :
+            std::abs(offset)<=24 ? capturering::Grade::Orange : capturering::Grade::Red;
+        const auto proposal=h.event(TouchKind::Down,95,200);
+        CHECK(proposal.action==Action::RingCapture&&proposal.value==phase);
+        CHECK(capturering::sample(proposal.value,h.state.wildFormId).grade==expected);
+        const auto displayed=ringCaptureChance(before,phase);
+        h.dispatch(proposal);
+        CHECK(h.state.lastCapture.chance==displayed&&displayed>0&&displayed<=captureChance(before));
+        CHECK(h.state.lastCapture.result!=CaptureResult::Miss&&h.state.lastCapture.attempt==1);
+    }
+    // Header, lower gap, circle exterior and navigation never propose a throw.
+    for(const auto point:std::array<std::array<int,2>,4>{{{206,79},{206,331},{0,0},{411,411}}}) {
+        Harness h;ready(h);CHECK(!h.event(TouchKind::Down,point[0],point[1]));CHECK(!h.event(TouchKind::Up,206,176));
+    }
+    Harness back;ready(back);const auto saved=back.state;CHECK(!back.event(TouchKind::Down,206,365));
+    const auto nav=back.event(TouchKind::Up,206,365);CHECK(nav.kind==IntentKind::Navigation && trade::sameState(back.state,saved));
+    // Bottom navigation has a pressed visual outside the partial arena. It
+    // requires a full frame until canceled/released, with no accidental throw.
+    for(bool automatic:{false,true}) {
+        Harness visual;ready(visual);
+        if(automatic){visual.state.battleMode=BattleMode::Auto;visual.state.autoCapture=AutoCapture::Awaiting;visual.state.wildTurn=1;visual.sync();CHECK(isValid(visual.state));}
+        const auto saved=visual.state;std::array<std::uint16_t,kPixels> idle,pressed,released;
+        CHECK(visual.ui.render(visual.state,visual.model,idle.data(),kPixels,visual.now));
+        CHECK(!visual.event(TouchKind::Down,206,365));CHECK(!visual.ui.captureAnimating(visual.state,visual.model));
+        CHECK(!visual.ui.renderCaptureRegion(visual.state,visual.model,pressed.data(),kPixels,visual.now));
+        CHECK(visual.ui.render(visual.state,visual.model,pressed.data(),kPixels,visual.now));
+        CHECK(!std::equal(idle.begin()+348*kSize,idle.begin()+386*kSize,pressed.begin()+348*kSize));
+        CHECK(!visual.event(TouchKind::Cancel,206,365));CHECK(visual.ui.captureAnimating(visual.state,visual.model));
+        CHECK(visual.ui.render(visual.state,visual.model,released.data(),kPixels,visual.now));
+        CHECK(std::equal(idle.begin()+348*kSize,idle.begin()+386*kSize,released.begin()+348*kSize));
+        CHECK(!visual.event(TouchKind::Up,206,365));CHECK(trade::sameState(saved,visual.state));
+        CHECK(!visual.event(TouchKind::Down,206,365));CHECK(!visual.ui.captureAnimating(visual.state,visual.model));
+        const auto navigation=visual.event(TouchKind::Up,206,365);
+        CHECK(automatic ? navigation.kind==IntentKind::GameAction&&navigation.action==Action::AutoResume : navigation.kind==IntentKind::Navigation);
+        CHECK(!visual.ui.captureAnimating(visual.state,visual.model));CHECK(trade::sameState(saved,visual.state));
+    }
+    // Guard before submission; an accepted Down is deliberately final.
+    for(unsigned fault=0;fault<5;++fault) {
+        Harness h;ready(h);const auto before=h.state;
+        if(fault==0)h.model.writable=false;
+        if(fault==1)h.model.inputEnabled=false;
+        if(fault==2)h.model.encounterRecoveryRequired=true;
+        if(fault==3)h.state.wildHp=h.state.wildMaxHp;
+        if(fault==4)h.now-=100;
+        CHECK(!h.event(TouchKind::Down,206,176));CHECK(!h.event(TouchKind::Up,206,176));CHECK(h.gameWrites==1);
+        if(fault!=3)CHECK(trade::sameState(before,h.state));
+    }
+    Harness debounce;ready(debounce);auto first=debounce.event(TouchKind::Down,206,176);CHECK(first.action==Action::RingCapture);
+    debounce.dispatch(first,false);CHECK(!debounce.event(TouchKind::Up,206,176));
+    CHECK(!debounce.event(TouchKind::Down,206,176,100));CHECK(!debounce.event(TouchKind::Up,206,176));
+    debounce.now+=450;CHECK(debounce.event(TouchKind::Down,206,176).action==Action::RingCapture);
+    // A verified hardware release after read failure/pause re-arms directly;
+    // mere cancellation cannot clear an uncertain held contact.
+    Harness released;ready(released);const auto proposed=released.event(TouchKind::Down,206,176);
+    CHECK(proposed.action==Action::RingCapture);released.dispatch(proposed,false);released.ui.cancelTouch();
+    released.now+=600;CHECK(!released.event(TouchKind::Down,206,176));
+    released.ui.acknowledgeContactReleased();CHECK(released.ui.interactionIdle());
+    CHECK(released.event(TouchKind::Down,206,176).action==Action::RingCapture);
+    // Leaving and re-entering starts large; time is independent of frame rate.
+    Harness epoch;ready(epoch);std::array<std::uint16_t,kPixels> initial,later;
+    CHECK(epoch.ui.render(epoch.state,epoch.model,initial.data(),kPixels,epoch.now));
+    epoch.now+=1000;CHECK(epoch.ui.render(epoch.state,epoch.model,later.data(),kPixels,epoch.now));CHECK(initial!=later);
+    epoch.dispatch(epoch.tap(206,365));epoch.dispatch(epoch.tap(280,306));
+    CHECK(epoch.ui.render(epoch.state,epoch.model,later.data(),kPixels,epoch.now));CHECK(initial==later);
+    // Partial redraw is pixel-identical to a full frame, including moving rings,
+    // changing sprite frames, real-shaped background storage and clipping.
+    Harness region;ready(region);std::array<std::uint16_t,kPixels> background,full;
+    std::array<std::uint16_t,kPixels+2> partial;partial.fill(0xbeef);
+    std::array<std::uint16_t,32*32> spritePixels;std::array<std::uint8_t,128> spriteMask;spriteMask.fill(255);
+    for(std::size_t i=0;i<background.size();++i)background[i]=static_cast<std::uint16_t>(i*17);
+    region.model.artwork.background=background.data();region.model.artwork.backgroundPixels=kPixels;
+    region.model.artwork.backgroundId=region.ui.artRequest(region.state,region.model,region.now).sceneId;
+    auto& frame=region.model.artwork.sprite;frame.formId=region.state.wildFormId;frame.width=frame.height=32;
+    frame.pixels=spritePixels.data();frame.pixelCount=spritePixels.size();frame.mask=spriteMask.data();frame.maskBytes=spriteMask.size();
+    CHECK(region.ui.captureAnimating(region.state,region.model));
+    spritePixels.fill(0x9876);CHECK(region.ui.render(region.state,region.model,partial.data()+1,kPixels,region.now));
+    unsigned gradesSeen=0;
+    for(unsigned phase=0;phase<=2400;phase+=37){
+        spritePixels.fill(static_cast<std::uint16_t>(0x1234+phase));
+        CHECK(region.ui.render(region.state,region.model,full.data(),kPixels,region.now+phase));
+        CHECK(region.ui.renderCaptureRegion(region.state,region.model,partial.data()+1,kPixels,region.now+phase));
+        CHECK(std::equal(full.begin(),full.end(),partial.begin()+1));CHECK(partial.front()==0xbeef&&partial.back()==0xbeef);
+        const auto ring=capturering::sample(phase,region.state.wildFormId);
+        gradesSeen|=1u<<static_cast<unsigned>(ring.grade);
+        const auto rgb=[](int r,int g,int b){return static_cast<std::uint16_t>(((r>>3)<<11)|((g>>2)<<5)|(b>>3));};
+        const auto color=ring.grade==capturering::Grade::Green ? rgb(84,234,134) :
+            ring.grade==capturering::Grade::Orange ? rgb(255,164,60) : rgb(246,83,74);
+        const int radius=(ring.radiusQ8+128)/256;
+        CHECK(full[(176-radius)*kSize+206]==color); // Moving ring above every sprite frame.
+
+    }
+    CHECK(gradesSeen==7); // Red, orange and green dynamic labels all stay in the208px region.
+    partial.fill(0xbeef);const auto finalTime=region.now+2400;
+    CHECK(region.ui.render(region.state,region.model,full.data(),kPixels,finalTime));
+    CHECK(region.ui.renderCaptureRegion(region.state,region.model,partial.data()+1,kPixels,finalTime));
+    bool untouched=true,identical=true;
+    for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x) {
+        const bool inside=x>=Controller::kCaptureX&&x<Controller::kCaptureX+Controller::kCaptureWidth&&
+            y>=Controller::kCaptureY&&y<Controller::kCaptureY+Controller::kCaptureHeight;
+        if(inside)identical&=partial[1+y*kSize+x]==full[y*kSize+x];
+        else untouched&=partial[1+y*kSize+x]==0xbeef;
+    }
+    CHECK(untouched&&identical&&partial.front()==0xbeef&&partial.back()==0xbeef);
+    CHECK(!region.ui.renderCaptureRegion(region.state,region.model,nullptr,kPixels,region.now));
+    CHECK(!region.ui.renderCaptureRegion(region.state,region.model,partial.data()+1,kPixels-1,region.now));
+    region.model.inputEnabled=false;region.sync();CHECK(!region.ui.captureAnimating(region.state,region.model));
+    CHECK(!region.ui.renderCaptureRegion(region.state,region.model,partial.data()+1,kPixels,region.now));
+    // The target is one75% translucent field over the background, drawn below
+    // exact-form sprite pixels. It remains visible away from the moving ring.
+    Harness shade;ready(shade);std::array<std::uint16_t,kPixels> shaded;
+    background.fill(0x3186);spritePixels.fill(0xf81f);spriteMask.fill(0);
+    for(unsigned y=15;y<17;++y)for(unsigned x=15;x<17;++x){const auto i=y*32+x;spriteMask[i/8]|=1u<<(i%8);}
+    shade.model.artwork.background=background.data();shade.model.artwork.backgroundPixels=kPixels;
+    shade.model.artwork.backgroundId=shade.ui.artRequest(shade.state,shade.model,shade.now).sceneId;
+    shade.model.artwork.sprite=frame;shade.model.artwork.sprite.formId=shade.state.wildFormId;
+    CHECK(shade.ui.render(shade.state,shade.model,shaded.data(),kPixels,shade.now));
+    const auto target=capturering::sample(0,shade.state.wildFormId).targetRadius;
+    constexpr std::uint16_t green=((84>>3)<<11)|((234>>2)<<5)|(134>>3);
+    constexpr auto blend=static_cast<std::uint16_t>(((((green>>11)*3+(0x3186>>11))/4)<<11)|
+        (((((green>>5)&63)*3+((0x3186>>5)&63))/4)<<5)|(((green&31)*3+(0x3186&31))/4));
+    CHECK(shaded[176*kSize+206+target]==blend);
+    CHECK(shaded[176*kSize+206+target-13]==0x3186);
+    CHECK(shaded[176*kSize+206+target+13]==0x3186);
+    CHECK(shaded[176*kSize+206]==0xf81f); // Creature stays opaque and untinted.
+    // Synthetic wide/tall/full original masks fit the176px arena without
+    // touching title, throw button, footer or circular screen boundary.
+    Harness art;ready(art);std::array<std::uint16_t,32*32> pixels;pixels.fill(0xf81f);
+    std::array<std::uint8_t,32*32/8> mask{};std::array<std::uint16_t,kPixels+2> output;
+    for(unsigned shape=0;shape<3;++shape) {
+        const unsigned w=shape==0?32:shape==1?8:24,h=shape==0?8:shape==1?32:24;
+        mask.fill(0);for(unsigned y=0;y<h;++y)for(unsigned x=0;x<w;++x){const auto i=y*32+x;mask[i/8]|=1u<<(i%8);}
+        art.model.artwork.sprite={};auto& sprite=art.model.artwork.sprite;sprite.formId=art.state.wildFormId;
+        sprite.pixels=pixels.data();sprite.pixelCount=pixels.size();sprite.mask=mask.data();sprite.maskBytes=mask.size();
+        sprite.width=sprite.height=32;sprite.contentWidth=w;sprite.contentHeight=h;
+        output.fill(0xbeef);CHECK(art.ui.render(art.state,art.model,output.data()+1,kPixels,90000));
+        CHECK(output.front()==0xbeef&&output.back()==0xbeef);unsigned visible=0;
+        for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x){const auto p=output[1+y*kSize+x];
+            if(p==0xf81f){++visible;CHECK(x>=118&&x<294&&y>=88&&y<264);}
+            if(!Controller::inside(x,y))CHECK(p==0);
+        }
+        CHECK(visible>1000);
+    }
+}
+
+void fullRosterCaptureControls() {
+    auto fill=[](Harness& h) {
+        // A full set of distinct owned IDs, including duplicate species. This
+        // test-only fixture changes capacity while an input may be held.
+        h.state.sequence+=kCollectionCapacity;
+        h.state.foregroundSequence=h.state.sequence;
+        h.state.collectionCount=kCollectionCapacity;
+        h.state.nextMemberId=kCollectionCapacity+1;
+        h.state.captures=kCollectionCapacity-1;
+        h.state.encounters+=kCollectionCapacity-1;
+        h.state.steps+=100*(kCollectionCapacity-1);
+        for(unsigned i=1;i<kCollectionCapacity;++i) {
+            h.state.collection[i]=h.state.collection[0];
+            h.state.collection[i].id=i+1;
+            h.state.collection[i].capturedAtSequence=i;
+        }
+        CHECK(isValid(h.state));
+    };
+    // Full before entry, full while CATCH is held, and a capture screen made
+    // stale by a restored/synced save all reject without proposing a write.
+    for(unsigned context=0;context<3;++context) {
+        Harness h;h.choose();h.encounter();
+        h.state.wildHp=h.state.wildMaxHp/2;h.sync();
+        if(context==1) CHECK(!h.event(TouchKind::Down,280,306));
+        if(context==2) {h.dispatch(h.tap(280,306));CHECK(h.ui.screen()==Screen::Capture);}
+        fill(h);const auto saved=h.state;const auto writes=h.gameWrites;
+        if(context==1) CHECK(!h.event(TouchKind::Up,280,306));
+        else if(context==2) CHECK(!h.event(TouchKind::Down,206,176));
+        else h.sync();
+        CHECK(h.ui.screen()==Screen::Battle && !h.ui.pending());
+        CHECK(!h.event(TouchKind::Up,206,176));
+        CHECK(!h.tap(280,306) && !h.ui.captureAnimating(h.state,h.model));
+        CHECK(h.gameWrites==writes && trade::sameState(saved,h.state));
+        CHECK(!h.state.captureAttempts && !captureChance(h.state));
+        std::array<std::uint16_t,kPixels+2> first,later;first.fill(0xbeef);later.fill(0xbeef);
+        CHECK(h.ui.render(h.state,h.model,first.data()+1,kPixels,h.now));
+        CHECK(h.ui.render(h.state,h.model,later.data()+1,kPixels,h.now+10000));
+        CHECK(first.front()==0xbeef && first.back()==0xbeef && later.front()==0xbeef && later.back()==0xbeef);
+        // Capacity guidance stays visible after the usual gesture hint fades.
+        CHECK(std::equal(first.begin()+1+61*kSize,first.begin()+1+76*kSize,later.begin()+1+61*kSize));
+        CHECK(std::equal(first.begin()+1+333*kSize,first.begin()+1+348*kSize,later.begin()+1+333*kSize));
+        CHECK(h.gameWrites==writes && trade::sameState(saved,h.state));
+    }
+    // Starting Auto with a full roster finishes its fight without pausing for
+    // an unavailable capture, replacing anyone, or consuming a capture roll.
+    Harness automatic;automatic.choose();fill(automatic);
+    CHECK(apply(automatic.state,Action::Mode,1)==Error::None);automatic.sync();automatic.encounter();
+    const auto saved=automatic.state;
+    const auto run=automatic.tap(206,275);
+    CHECK(run.kind==IntentKind::GameAction && run.action==Action::AutoFight);automatic.dispatch(run);
+    CHECK(automatic.ui.screen()==Screen::Result && automatic.state.phase==Phase::Home);
+    CHECK(automatic.state.autoCapture==AutoCapture::None && automatic.state.collectionCount==kCollectionCapacity);
+    CHECK(automatic.state.captures==saved.captures && automatic.state.nextMemberId==saved.nextMemberId);
+    CHECK(automatic.state.rngState==saved.rngState && automatic.state.lastCapture.result==CaptureResult::None);
+    for(unsigned i=0;i<kCollectionCapacity;++i) CHECK(automatic.state.collection[i].id==saved.collection[i].id);
+}
+
+void fullRosterNavigation() {
+    Harness h;h.choose();
+    // Released history makes owned IDs differ from their slot indices. Each
+    // visible member has its own form to detect stale artwork requests.
+    constexpr unsigned released=100;
+    h.state.sequence=h.state.foregroundSequence=kCollectionCapacity+released+20;
+    h.state.collectionCount=kCollectionCapacity;
+    h.state.captures=h.state.encounters=kCollectionCapacity-1+released;
+    h.state.steps=h.state.encounters*100;
+    h.state.nextMemberId=kCollectionCapacity+released+1;
+    for(unsigned i=1;i<kCollectionCapacity;++i) {
+        const auto formId=forms::kFirstProductionFormId+(i-1)%forms::kProductionFormCount;
+        h.state.collection[i]=stableMemberFixture(formId).collection[1];
+        h.state.collection[i].id=h.state.collection[i].capturedAtSequence=i+released+1;
+        h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);
+    }
+    CHECK(isValid(h.state));h.sync();h.openHome(HomePanel::Partners);
+    const auto saved=h.state;const auto writes=h.gameWrites;
+    for(unsigned i=0;i<kCollectionCapacity;++i) {
+        CHECK(h.ui.screen()==Screen::Collection && !h.ui.pending());
+        const auto* expected=collectionMemberAtDisplayIndex(h.state,i);CHECK(expected);
+        CHECK(h.ui.selectedMemberId()==expected->id && h.ui.artRequest(h.state,h.model,h.now).formId==expected->formId);
+        if(i+1<kCollectionCapacity) h.dispatch(h.tap(355,180));
+    }
+    CHECK(trade::sameState(saved,h.state) && h.gameWrites==writes);
+    const auto& last=*collectionMemberAtDisplayIndex(h.state,kCollectionCapacity-1);
+    const auto lastId=last.id,lastForm=last.formId;
+    CHECK(lastId>kCollectionCapacity);
+    h.dispatch(h.tap(355,180));
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==h.state.collection[0].formId);
+    h.dispatch(h.tap(55,180));
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==lastForm);
+    auto select=h.tap(280,312);CHECK(select.action==Action::Select && select.value==lastId);
+    h.dispatch(select,false);CHECK(trade::sameState(saved,h.state));
+    select=h.tap(280,312);CHECK(select.action==Action::Select && select.value==lastId);h.dispatch(select);
+    CHECK(h.state.activeCreatureId==lastId && h.state.collectionCount==kCollectionCapacity);
+    CHECK(h.gameWrites==writes+1 && h.ui.artRequest(h.state,h.model,h.now).formId==lastForm);
+}
+
+void xpCompanionControls() {
+    Harness h;h.choose();
+    h.state.sequence=h.state.foregroundSequence=100;
+    h.state.collectionCount=6;h.state.captures=h.state.encounters=5;h.state.steps=500;h.state.nextMemberId=7;
+    for(unsigned i=1;i<6;++i){
+        const auto formId=forms::kFirstProductionFormId+i;
+        h.state.collection[i]=stableMemberFixture(formId).collection[1];
+        h.state.collection[i].id=i+1;h.state.collection[i].capturedAtSequence=i;
+        h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);
+    }
+    CHECK(isValid(h.state));h.sync();h.openHome(HomePanel::Partners);
+    CHECK(h.ui.selectedMemberId()==1 && !h.tap(206,266)); // Active cannot be an extra companion.
+    const auto original=h.state;
+    h.browseMember(3);auto add=h.tap(206,266);
+    CHECK(add.kind==IntentKind::GameAction && add.action==Action::PartyAdd && add.value==3);
+    CHECK(!h.tap(206,266));h.dispatch(add,false);
+    CHECK(trade::sameState(h.state,original) && h.ui.selectedMemberId()==3);
+    add=h.tap(206,266);h.dispatch(add);
+    CHECK(isPartyMember(h.state,3) && partyCount(h.state)==1 && h.ui.selectedMemberId()==3);
+    CHECK(collectionMemberAtDisplayIndex(h.state,1)->id==3);
+    for(auto id:{5u,2u}){h.browseMember(id);add=h.tap(206,266);CHECK(add.action==Action::PartyAdd && add.value==id);h.dispatch(add);CHECK(h.ui.selectedMemberId()==id);}
+    CHECK(partyCount(h.state)==3 && h.state.partyMemberIds[0]==3 && h.state.partyMemberIds[1]==5 && h.state.partyMemberIds[2]==2);
+    const unsigned order[]{1,3,5,2,6,4};
+    for(unsigned i=0;i<6;++i){
+        CHECK(collectionMemberAtDisplayIndex(h.state,i)->id==order[i]);h.browseMember(order[i]);
+        CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==findMember(h.state,order[i])->formId);
+    }
+    h.browseMember(6);const auto full=h.state;const auto writes=h.gameWrites;
+    CHECK(!h.tap(206,266) && !h.ui.pending() && trade::sameState(full,h.state) && h.gameWrites==writes);
+    h.browseMember(5);auto remove=h.tap(206,266);CHECK(remove.action==Action::PartyRemove && remove.value==5);
+    h.dispatch(remove,false);CHECK(trade::sameState(full,h.state) && h.ui.selectedMemberId()==5);
+    h.dispatch(h.tap(206,266));CHECK(!isPartyMember(h.state,5) && partyCount(h.state)==2 && h.ui.selectedMemberId()==5);
+    CHECK(h.state.partyMemberIds[0]==3 && h.state.partyMemberIds[1]==2 && !h.state.partyMemberIds[2]);
+    for(unsigned i=0;i<6;++i)CHECK(h.state.collection[i].id==original.collection[i].id);
+    // A model lock, read-only state, live Nearby, or concurrent save revokes a
+    // held assignment. None can leak an accepted party command to persistence.
+    for(unsigned gate=0;gate<4;++gate){
+        CHECK(!h.event(TouchKind::Down,206,266));
+        nearby::View wire;
+        if(gate==0)h.model.partyEditable=false;
+        if(gate==1)h.model.writable=false;
+        if(gate==2){wire.stage=nearby::Stage::Playing;h.model.nearby=&wire;}
+        if(gate==3)CHECK(apply(h.state,Action::Feed)==Error::None);
+        const auto saved=h.state;h.sync();CHECK(!h.event(TouchKind::Up,206,266) && !h.ui.pending());
+        CHECK(trade::sameState(saved,h.state));
+        h.model.partyEditable=h.model.writable=true;h.model.nearby=nullptr;h.sync();
+    }
+    // Becoming active removes that member from the extras while the UI keeps
+    // showing the same owned ID at its new first position.
+    h.browseMember(3);auto select=h.tap(280,312);CHECK(select.action==Action::Select && select.value==3);h.dispatch(select);
+    CHECK(h.ui.selectedMemberId()==3 && h.state.activeCreatureId==3 && !isPartyMember(h.state,3));
+    CHECK(collectionMemberAtDisplayIndex(h.state,0)->id==3 && !h.tap(206,266));
+    // The added controls leave a full opaque sprite clear of the count, name,
+    // identity and buttons, even at the maximum gyro tilt in either direction.
+    h.ui.notice(nullptr);h.model.gyroEnabled=true;
+    std::array<std::uint16_t,1024> pixels;pixels.fill(0xf81f);
+    std::array<std::uint8_t,128> mask;mask.fill(0xff);
+    auto& art=h.model.artwork.sprite;art.formId=h.ui.artRequest(h.state,h.model,h.now).formId;
+    art.pixels=pixels.data();art.pixelCount=pixels.size();art.mask=mask.data();art.maskBytes=mask.size();art.width=art.height=32;
+    std::array<std::uint16_t,kPixels> frame;
+    for(int tilt:{-8,8}){
+        h.model.tiltX=h.model.tiltY=tilt;CHECK(h.ui.render(h.state,h.model,frame.data(),frame.size(),h.now+10000));
+        unsigned count=0;
+        for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x)if(frame[y*kSize+x]==0xf81f){++count;CHECK(y>=106&&y<218&&x>=142&&x<270);}
+        CHECK(count>5000);
+    }
+}
+
+void homeStepVisibility() {
+    Harness h;h.choose();h.model.lifetimeSteps=123456789;h.model.stepsAvailable=true;h.sync();
+    std::array<std::uint16_t,kPixels> baseline,other;
+    CHECK(h.ui.render(h.state,h.model,baseline.data(),kPixels,90000));
+    for(unsigned status=0;status<3;++status) {
+        h.model.stepsAvailable=status==2;h.model.stepsRecovering=status==1;
+        h.state.encounterRate=status==2 ? EncounterRate::Off : EncounterRate::Normal;h.sync();
+        CHECK(h.ui.render(h.state,h.model,other.data(),kPixels,90000));
+        CHECK(std::equal(baseline.begin()+366*kSize,baseline.begin()+380*kSize,other.begin()+366*kSize));
+        for(int y=380;y<kSize;++y)for(int x=0;x<kSize;++x)if(!Controller::inside(x,y))CHECK(other[y*kSize+x]==0);
+    }
+}
+
+void soundSettings() {
+    Harness h;h.choose();h.openHome(HomePanel::Settings);h.dispatch(h.tap(120,252));
+    CHECK(h.ui.screen()==Screen::Sound && h.model.volumePercent==15 && !h.model.musicEnabled && !h.model.muted);
+    const auto saved=h.state;const auto writes=h.gameWrites;
+    const unsigned louder[]{30,50,75,100};
+    for(auto level:louder) {
+        // Independent native CCW90 point for the right edge.
+        const auto point=display::panelToLogical(display::Orientation::Ccw90,{180,56});
+        auto volume=h.tap(point.x,point.y);CHECK(volume.kind==IntentKind::Volume && volume.value==level && h.ui.pending());
+        CHECK(!h.event(TouchKind::Up,355,180) && !h.tap(355,180));h.dispatch(volume);CHECK(h.model.volumePercent==level);
+    }
+    CHECK(!h.tap(355,180) && !h.swipe(250,180,160,180));
+    const unsigned quieter[]{75,50,30,15,5,0};
+    for(auto level:quieter) {
+        // Independent native CCW90 point for the left edge.
+        const auto point=display::panelToLogical(display::Orientation::Ccw90,{180,356});
+        auto volume=h.tap(point.x,point.y);CHECK(volume.kind==IntentKind::Volume && volume.value==level);
+        h.dispatch(volume);CHECK(h.model.volumePercent==level);
+    }
+    CHECK(!h.tap(55,180) && !h.swipe(160,180,250,180));
+    auto volume=h.swipe(250,180,160,180);CHECK(volume.kind==IntentKind::Volume && volume.value==5);h.dispatch(volume);
+    h.model.volumePercent=10;h.sync();volume=h.tap(355,180);CHECK(volume.value==15);h.dispatch(volume);
+    h.model.volumePercent=10;h.sync();volume=h.tap(55,180);CHECK(volume.value==5);h.dispatch(volume);
+    const auto mutePoint=display::panelToLogical(display::Orientation::Ccw90,{252,291});
+    const auto musicPoint=display::panelToLogical(display::Orientation::Ccw90,{252,131});
+    auto mute=h.tap(mutePoint.x,mutePoint.y);CHECK(mute.kind==IntentKind::ToggleMute && h.ui.pending());CHECK(!h.tap(280,252));h.dispatch(mute);CHECK(h.model.muted);
+    auto music=h.tap(musicPoint.x,musicPoint.y);CHECK(music.kind==IntentKind::ToggleMusic && h.ui.pending());CHECK(!h.event(TouchKind::Up,280,252));h.dispatch(music);CHECK(h.model.musicEnabled && h.model.muted);
+    h.dispatch(h.tap(120,252));CHECK(!h.model.muted && h.model.musicEnabled);
+    // Sound preferences have their own save boundary; RAM controls stay usable
+    // while a persistent warning reports a settings write failure.
+    h.model.audioPreferencesWritable=false;h.model.writable=false;h.sync();
+    volume=h.tap(355,180);CHECK(volume.kind==IntentKind::Volume);h.dispatch(volume);
+    h.dispatch(h.tap(280,252));CHECK(!h.model.musicEnabled);
+    std::array<std::uint16_t,kPixels+2> pixels;pixels.fill(0xbeef);
+    CHECK(h.ui.render(h.state,h.model,pixels.data()+1,kPixels,90000));CHECK(pixels.front()==0xbeef && pixels.back()==0xbeef);
+    CHECK(h.gameWrites==writes && std::memcmp(&saved,&h.state,sizeof(State))==0);
+    h.dispatch(h.tap(206,365));CHECK(h.ui.screen()==Screen::Settings);
+}
+
+// Synthetic two-production-partner history; stable local IDs never equal slots.
+State tradeUiState() {
+    auto state=stableMemberFixture(18);auto& first=state.collection[0];
+    first.formId=11;first.species=Species::Impmon;first.hp=forms::stats(11,first.level).maxHp;
+    state.starterId=1;state.journal[0]|=1u<<10;CHECK(isValid(state));
+    CHECK(trade::canOffer(state,1) && trade::canOffer(state,19));return state;
+}
+void tradingScreens() {
+    Harness h;h.choose();h.state=tradeUiState();h.sync();const auto saved=h.state;const auto writes=h.gameWrites;
+    nearby::View net;net.stage=nearby::Stage::Discovering;net.peerCount=2;
+    for(unsigned i=0;i<2;++i){net.peers[i].mac.bytes[0]=2;net.peers[i].mac.bytes[5]=i+2;net.peers[i].fighter={19,18,1};net.peers[i].available=true;}
+    tradewire::View wire;wire.stage=tradewire::Stage::Discovering;wire.peerCount=2;
+    // Radio protocol arrays intentionally differ in order: join by exact MAC.
+    for(unsigned i=0;i<2;++i){std::memcpy(wire.peers[1-i].identity.bytes,net.peers[i].mac.bytes,6);wire.peers[1-i].compatible=true;wire.peers[1-i].advertisement.available=true;wire.peers[1-i].advertisement.nonce=101+i;}
+    h.model.nearby=&net;h.model.trade=&wire;h.model.tradeWritable=true;h.sync();h.openHome(HomePanel::Nearby);
+    h.dispatch(h.tap(280,310));CHECK(h.ui.screen()==Screen::TradeChoose);
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==11);
+    h.dispatch(h.tap(355,180));CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==18);
+    CHECK(!h.event(TouchKind::Up,355,180));h.dispatch(h.swipe(160,180,250,180));CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==11);
+    const auto ccw=display::panelToLogical(display::Orientation::Ccw90,{180,56});h.dispatch(h.tap(ccw.x,ccw.y));
+    auto invite=h.tap(206,312);CHECK(invite.kind==IntentKind::TradeInvite && invite.value==19 && trade::sameIdentity(invite.peer,wire.peers[1].identity));
+    CHECK(h.ui.pending() && !h.tap(206,312));h.dispatch(invite);
+    CHECK(!h.event(TouchKind::Down,206,312));++wire.peers[1].advertisement.nonce;h.sync();CHECK(h.ui.screen()==Screen::Nearby && !h.event(TouchKind::Up,206,312));
+    h.dispatch(h.tap(280,310));wire.peerCount=0;h.sync();CHECK(h.ui.screen()==Screen::Nearby);
+    wire.peerCount=2;h.sync();h.dispatch(h.tap(280,310));h.dispatch(h.tap(206,365));
+    // Both immutable offers are visible, with the local/remote side independent
+    // of the coordinator's lexicographic identity order.
+    auto& t=wire.transcript;t.peers[0].bytes[0]=2;t.peers[0].bytes[5]=1;t.peers[1]=wire.peers[1].identity;
+    t.session=42;t.revision=1;t.nonces[0]=91;t.nonces[1]=101;t.sourceSequences[0]=h.state.sequence;t.sourceSequences[1]=h.state.sequence;
+    t.offers[0]=h.state.collection[0];t.offers[1]=h.state.collection[1];CHECK(trade::valid(t));
+    wire.stage=tradewire::Stage::Reviewing;wire.localSide=0;wire.connected=true;wire.peerReviewed=true;h.sync();CHECK(h.ui.screen()==Screen::TradeReview);
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==18 && h.ui.partnerArtRequest(h.state,h.model,h.now).formId==11);
+    std::array<std::uint16_t,kPixels+2> pixels;pixels.fill(0xbeef);
+    std::array<std::uint16_t,kPixels> overview;
+    CHECK(h.ui.render(h.state,h.model,pixels.data()+1,kPixels,90000));std::copy_n(pixels.data()+1,kPixels,overview.data());
+    for(unsigned i=0;i<5;++i){h.dispatch(h.tap(355,180));CHECK(h.ui.render(h.state,h.model,pixels.data()+1,kPixels,90000));CHECK(pixels.front()==0xbeef&&pixels.back()==0xbeef);}
+    CHECK(std::memcmp(overview.data(),pixels.data()+1,sizeof(overview))==0);
+    h.dispatch(h.swipe(250,180,160,180));h.dispatch(h.tap(55,180));CHECK(h.ui.render(h.state,h.model,pixels.data()+1,kPixels,90000));CHECK(std::memcmp(overview.data(),pixels.data()+1,sizeof(overview))==0);
+    CHECK(!h.swipe(206,300,206,180)); // No battle/capture action on trade review.
+    auto confirm=h.tap(260,310);CHECK(confirm.kind==IntentKind::TradeConfirm && confirm.tradeSession==42 && confirm.tradeRevision==1 && confirm.tradeFingerprint==trade::fingerprint(t));
+    CHECK(!h.event(TouchKind::Up,260,310));h.dispatch(confirm);
+    CHECK(!h.event(TouchKind::Down,260,310));++t.revision;h.sync();CHECK(!h.event(TouchKind::Up,260,310));
+    CHECK(!h.event(TouchKind::Down,260,310));--t.offers[1].mood;h.sync();CHECK(!h.event(TouchKind::Up,260,310)); // Same revision, different offer.
+    for(unsigned reason=0;reason<6;++reason){
+        wire.localConfirmed=reason==0;wire.offerPending=reason==1;wire.peerReviewed=reason!=2;wire.connected=reason!=3;h.model.writable=reason!=4;wire.recoveryOffer=reason==5;h.sync();CHECK(!h.tap(260,310));
+    }
+    wire.localConfirmed=false;wire.offerPending=false;wire.peerReviewed=true;wire.connected=true;wire.recoveryOffer=false;h.model.writable=true;h.sync();
+    wire.peerConfirmed=true;h.sync();CHECK(!h.tap(110,310));confirm=h.tap(260,310);CHECK(confirm.kind==IntentKind::TradeConfirm);h.dispatch(confirm);
+    wire.peerConfirmed=false;h.sync();h.dispatch(h.tap(110,310));CHECK(h.ui.screen()==Screen::TradeChoose);h.dispatch(h.tap(355,180));auto offer=h.tap(206,312);CHECK(offer.kind==IntentKind::TradeOffer&&offer.value==19&&offer.tradeFingerprint==trade::fingerprint(t));h.dispatch(offer);
+    h.dispatch(h.tap(206,365));wire.localSide=1;h.sync();CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==11&&h.ui.partnerArtRequest(h.state,h.model,h.now).formId==18);
+    wire.stage=tradewire::Stage::Prepared;wire.durable=tradewire::Durable::Prepared;wire.connected=false;h.model.writable=false;h.sync();
+    CHECK(!h.tap(260,310)&&!h.tap(110,310));auto cancel=h.tap(206,365);CHECK(cancel.kind==IntentKind::TradeCancel&&cancel.tradeFingerprint==trade::fingerprint(t));h.dispatch(cancel);
+    for(auto stage:{tradewire::Stage::Committing,tradewire::Stage::Applying}){wire.stage=stage;wire.durable=tradewire::Durable::Committed;h.sync();CHECK(!h.tap(206,365)&&!h.tap(260,310));}
+    for(auto stage:{tradewire::Stage::Applied,tradewire::Stage::Aborted,tradewire::Stage::Cancelled}){wire.stage=stage;wire.durable=stage==tradewire::Stage::Applied?tradewire::Durable::Applied:tradewire::Durable::Aborted;h.sync();auto done=h.tap(206,365);CHECK(done.kind==IntentKind::TradeClose);h.dispatch(done);}
+    CHECK(h.gameWrites==writes && std::memcmp(&saved,&h.state,sizeof(State))==0);
+    // A prepared boot can open Nearby even while foreground game writes lock.
+    Harness locked;locked.choose();locked.model.writable=false;locked.sync();locked.selectHome(HomePanel::Nearby);auto reconnect=locked.tap(206,323);CHECK(reconnect.kind==IntentKind::OpenNearby);
+    // A lone playable partner (even with an old test fixture) cannot be offered.
+    for(bool legacy:{false,true}){Harness one;one.choose();if(legacy)one.state=stableMemberFixture(18);one.sync();wire={};wire.stage=tradewire::Stage::Discovering;wire.peerCount=1;std::memcpy(wire.peers[0].identity.bytes,net.peers[0].mac.bytes,6);wire.peers[0].advertisement.available=true;wire.peers[0].advertisement.nonce=1;wire.peers[0].compatible=true;one.model.trade=&wire;one.model.tradeWritable=true;one.model.nearby=&net;one.sync();one.openHome(HomePanel::Nearby);one.dispatch(one.tap(280,310));CHECK(one.ui.screen()==Screen::TradeChoose&&!one.tap(206,312));CHECK(one.ui.render(one.state,one.model,pixels.data()+1,kPixels,one.now));one.dispatch(one.tap(206,365));CHECK(one.ui.screen()==Screen::Nearby);}
+}
+
+void autoCaptureChoice() {
+    State before{},paused{};autobattle::Trace trace;bool found=false;
+    for(unsigned seed=1;seed<200 && !found;++seed){
+        auto candidate=newDevice(seed);CHECK(apply(candidate,Action::Hatch,1)==Error::None);CHECK(apply(candidate,Action::Mode,1)==Error::None);CHECK(apply(candidate,Action::Walk,100)==Error::None);
+        candidate.wildFormId=18;candidate.wildSpecies=Species::Agumon;candidate.wildLevel=1;candidate.wildMaxHp=candidate.wildHp=forms::stats(18,1).maxHp;CHECK(isValid(candidate));
+        auto result=candidate;autobattle::Trace chunk;CHECK(applyAutoFight(result,&chunk)==Error::None);
+        if(result.autoCapture==AutoCapture::Awaiting){before=candidate;paused=result;trace=chunk;found=true;}
+    }
+    CHECK(found && trace.outcome==autobattle::Outcome::None && paused.captures==before.captures && !paused.captureAttempts);
+    Harness h;h.state=before;h.sync();CHECK(h.ui.screen()==Screen::Encounter);h.dispatch(h.tap(206,274));
+    auto run=h.tap(206,275);CHECK(run.kind==IntentKind::GameAction && run.action==Action::AutoFight);h.dispatch(run);CHECK(trade::sameState(h.state,paused));
+    battlepresentation::Sequencer movie;CHECK(movie.startAuto(trace,h.now));h.model.battle=&movie.view();h.sync();CHECK(h.ui.screen()==Screen::Battle);
+    const auto saved=h.state;const auto writes=h.gameWrites;unsigned frames=0;
+    while(movie.locked() && frames++<500){h.now+=100;movie.poll(h.now);h.sync();if(movie.locked()){CHECK(h.ui.screen()==Screen::Battle);CHECK(!h.tap(206,365)&&!h.swipe(206,300,206,200));}}
+    CHECK(!movie.locked() && h.ui.screen()==Screen::Capture && h.gameWrites==writes && trade::sameState(h.state,saved));
+    for(unsigned i=0;i<10;++i){h.now+=500;h.sync();CHECK(h.ui.screen()==Screen::Capture&&!h.event(TouchKind::Up,206,300)&&!h.tap(206,60));}
+    CHECK(h.state.captureAttempts==0&&h.gameWrites==writes); // Rendering/polling/unmatched releases never throw.
+    // Declining is an explicit saved attack-only remainder; it never reprompts.
+    auto resume=h.tap(206,365);CHECK(resume.kind==IntentKind::GameAction&&resume.action==Action::AutoResume);CHECK(!h.event(TouchKind::Up,206,365));h.dispatch(resume);
+    CHECK(h.state.autoCapture==AutoCapture::None&&h.state.phase==Phase::Home&&h.state.captures==before.captures&&h.ui.screen()==Screen::Result);
+    for(unsigned i=0;i<5;++i){h.sync();CHECK(h.ui.screen()==Screen::Result);}
+    // Restarting at the durable pause requires a fresh press/release. A timing
+    // red timing consumes exactly one throw and makes its reduced nonzero roll.
+    Harness restored;restored.state=paused;restored.sync();CHECK(restored.ui.screen()==Screen::Capture);
+    CHECK(!restored.event(TouchKind::Up,206,200)&&!restored.event(TouchKind::Up,206,300));
+    for(unsigned attempt=1;attempt<=3;++attempt){
+        auto miss=timedThrow(restored,false);CHECK(miss.kind==IntentKind::GameAction&&miss.action==Action::RingCapture);restored.dispatch(miss);
+        CHECK(restored.state.lastCapture.result==CaptureResult::Escaped&&restored.state.lastCapture.attempt==attempt&&restored.state.captures==paused.captures);
+        CHECK(!restored.event(TouchKind::Up,310,270));restored.now+=1000;restored.sync();
+        CHECK(restored.ui.screen()==(attempt<3?Screen::Capture:Screen::Result));
+    }
+    // A trade or Nearby flow can never expose wild capture controls.
+    Harness isolated;isolated.state=paused;tradewire::View wire;wire.stage=tradewire::Stage::Reviewing;isolated.model.trade=&wire;isolated.sync();CHECK(isolated.ui.screen()==Screen::TradeReview&&!isolated.swipe(206,300,206,200));
 }
 
 // Replay committed turns and inspect asymmetric source pixels across all
@@ -545,11 +1113,21 @@ void battleArtworkSequence() {
 int main(int argc,char** argv) {
     orientationGestures();
     horizontalTaps();
+    nearbyModeConsent();
+    homeStepVisibility();
+    captureTimingControls();
+    fullRosterCaptureControls();
+    fullRosterNavigation();
+    xpCompanionControls();
+    soundSettings();
+    tradingScreens();
+    autoCaptureChoice();
     battleArtworkSequence();
     homeCarousel();
     walkingCheckpoints();
     Harness h; const auto egg=h.state;
-    CHECK(h.ui.screen()==Screen::Egg && sizeof(Controller)<512);
+    // Exact cached Nearby consent fields add 56 host bytes to the prior512 B controller.
+    CHECK(h.ui.screen()==Screen::Egg && sizeof(Controller)<=576);
     CHECK(!h.event(TouchKind::Up,206,285)); // Opening with a held finger cannot hatch.
     CHECK(!h.event(TouchKind::Down,0,0)); CHECK(!h.event(TouchKind::Up,206,285));
     CHECK(!h.event(TouchKind::Down,206,285)); CHECK(!h.event(TouchKind::Move,250,240));
@@ -589,24 +1167,14 @@ int main(int argc,char** argv) {
     }
     h.dispatch(h.tap(280,306)); CHECK(h.ui.screen()==Screen::Capture);
     const auto beforeFlick=h.state;
-    CHECK(!h.tap(206,300)); // A tap on the orb never spends an attempt.
-    CHECK(!h.event(TouchKind::Down,206,250)); CHECK(!h.event(TouchKind::Up,206,180,60));
-    CHECK(!h.event(TouchKind::Down,206,300)); CHECK(!h.event(TouchKind::Move,206,310));
-    CHECK(!h.event(TouchKind::Up,206,330,60)); // Downward motion never throws.
-    CHECK(!h.event(TouchKind::Down,206,300)); CHECK(!h.event(TouchKind::Move,411,411));
-    CHECK(!h.event(TouchKind::Up,206,200,60)); // Out-of-circle path stays cancelled.
-    CHECK(!h.event(TouchKind::Down,206,300));
-    CHECK(!h.event(TouchKind::Cancel,206,300)); CHECK(!h.event(TouchKind::Up,206,200,60));
-    CHECK(!h.event(TouchKind::Down,206,300)); CHECK(!h.event(TouchKind::Down,207,300));
-    CHECK(!h.event(TouchKind::Up,206,200,60)); // Second contact cancels.
+    CHECK(!h.event(TouchKind::Up,206,300)); // No throw without a fresh press.
+    CHECK(!h.event(TouchKind::Down,206,60));CHECK(!h.event(TouchKind::Up,206,180,60));
     CHECK(std::memcmp(&beforeFlick,&h.state,sizeof(State))==0);
 
-    // Exact reference fling: 100 px /100 ms ->reach180, center impact.
-    CHECK(!h.event(TouchKind::Down,206,300));
-    CHECK(!h.event(TouchKind::Move,206,250,50));
-    const auto flick=h.event(TouchKind::Up,206,200,50);
-    CHECK(flick.kind==IntentKind::GameAction && flick.action==Action::Flick && flick.value==160*256+180);
-    FlickTrajectory trajectory; CHECK(decodeFlick(flick.value,trajectory) && trajectory.hit);
+    // On-target timing submits only the sampled cycle phase; core owns the odds.
+    const auto flick=timedThrow(h,true);
+    CHECK(flick.kind==IntentKind::GameAction && flick.action==Action::RingCapture && capturering::sample(flick.value,h.state.wildFormId).grade==capturering::Grade::Green);
+    CHECK(ringCaptureChance(h.state,flick.value)==captureChance(h.state));
     CHECK(!h.event(TouchKind::Up,206,200,50));
     CHECK(std::memcmp(&beforeFlick,&h.state,sizeof(State))==0);
     h.dispatch(flick); CHECK(h.state.sequence==beforeFlick.sequence+1);
@@ -664,19 +1232,17 @@ int main(int argc,char** argv) {
     CHECK(confirmMode.kind==IntentKind::GameAction && confirmMode.action==Action::Mode && confirmMode.value==0);
     mode.dispatch(confirmMode); CHECK(mode.state.battleMode==BattleMode::Tactical);
 
-    // Retain a legal encounter to test stale gesture cancellation separately.
-    Harness stale; stale.choose(); stale.encounter();
-    while(stale.state.wildHp>stale.state.wildMaxHp/2) stale.strike();
-    stale.dispatch(stale.tap(280,306));
-    CHECK(!stale.event(TouchKind::Down,206,300));
-    CHECK(apply(stale.state,Action::Walk,1)==Error::None); stale.sync();
-    CHECK(!stale.event(TouchKind::Up,206,200,100)); CHECK(stale.ui.screen()==Screen::Battle);
-    stale.dispatch(stale.tap(280,306));
-    CHECK(!stale.event(TouchKind::Down,206,300)); stale.model.inputEnabled=false; stale.sync();
-    CHECK(!stale.event(TouchKind::Up,206,200,100)); stale.model.inputEnabled=true; stale.sync();
+    // A submitted Down cannot be replayed by a held contact after context change.
+    Harness stale;stale.choose();stale.encounter();
+    while(stale.state.wildHp>stale.state.wildMaxHp/2)stale.strike();
+    stale.dispatch(stale.tap(280,306));const auto accepted=stale.event(TouchKind::Down,206,300);
+    CHECK(accepted.action==Action::RingCapture);stale.dispatch(accepted,false);
+    CHECK(apply(stale.state,Action::Walk,1)==Error::None);stale.sync();
+    stale.now+=600;CHECK(!stale.event(TouchKind::Down,206,300));
+    stale.model.inputEnabled=false;stale.sync();CHECK(!stale.event(TouchKind::Up,206,200));
+    stale.model.inputEnabled=true;stale.sync();stale.dispatch(stale.tap(280,306));
+    CHECK(!stale.ui.touch(stale.state,stale.model,{TouchKind::Down,206,200,stale.now-1}));
     CHECK(!stale.event(TouchKind::Up,206,200));
-    CHECK(!stale.event(TouchKind::Down,206,300));
-    CHECK(!stale.ui.touch(stale.state,stale.model,{TouchKind::Up,206,200,stale.now-1}));
 
     // Setup is a navigation request even before hatch and never proposes a save.
     Harness setup;
@@ -865,7 +1431,7 @@ int main(int argc,char** argv) {
     const auto target=route->to;
     auto openEvolution=[&]() {
         evolution.openHome(HomePanel::Partners); CHECK(evolution.ui.screen()==Screen::Collection);
-        evolution.dispatch(evolution.swipe(250,180,160,180)); // Active member19, not collection slot0.
+        evolution.browseMember(19); // Active member is first; its stable ID is not its slot index.
         evolution.dispatch(evolution.tap(120,312)); CHECK(evolution.ui.screen()==Screen::Stats);
         CHECK(evolution.ui.artRequest(evolution.state,evolution.model,0).formId==18);
         CHECK(!evolution.ui.walkingEligible());
@@ -929,9 +1495,9 @@ int main(int argc,char** argv) {
     // Full collection and duplicate species keep instance identity distinct.
     // Release is offered only for an inactive instance and needs its own review.
     Harness roster; roster.choose(); roster.state.sequence=100;
-    roster.state.captures=roster.state.encounters=7; roster.state.steps=700;
-    roster.state.collectionCount=8; roster.state.nextMemberId=9;
-    for (unsigned i=1;i<8;++i) {
+    roster.state.captures=roster.state.encounters=kCollectionCapacity-1; roster.state.steps=100*(kCollectionCapacity-1);
+    roster.state.collectionCount=kCollectionCapacity; roster.state.nextMemberId=kCollectionCapacity+1;
+    for (unsigned i=1;i<kCollectionCapacity;++i) {
         roster.state.collection[i]=roster.state.collection[0];
         roster.state.collection[i].id=i+1; roster.state.collection[i].capturedAtSequence=i;
     }
@@ -941,7 +1507,7 @@ int main(int argc,char** argv) {
     roster.dispatch(roster.tap(120,312)); roster.dispatch(roster.tap(206,312));
     CHECK(roster.ui.screen()==Screen::Evolution); // Active partner never shows Release.
     roster.dispatch(roster.tap(206,365)); roster.dispatch(roster.tap(206,365));
-    roster.dispatch(roster.swipe(250,180,160,180)); roster.dispatch(roster.tap(120,312));
+    roster.browseMember(2); roster.dispatch(roster.tap(120,312));
     CHECK(roster.ui.screen()==Screen::Stats);
     CHECK(roster.ui.artRequest(roster.state,roster.model,0).formId==roster.state.collection[1].formId);
     const auto beforeRelease=roster.state;
@@ -955,12 +1521,12 @@ int main(int argc,char** argv) {
     CHECK(roster.ui.screen()==Screen::Stats && !roster.event(TouchKind::Up,206,302));
     roster.dispatch(roster.tap(206,312));
     auto release=roster.tap(206,302); CHECK(release.action==Action::Release && release.value==2);
-    roster.dispatch(release,false); CHECK(roster.ui.screen()==Screen::Stats && roster.state.collectionCount==8);
+    roster.dispatch(release,false); CHECK(roster.ui.screen()==Screen::Stats && roster.state.collectionCount==kCollectionCapacity);
     roster.dispatch(roster.tap(206,312)); roster.dispatch(roster.tap(206,302));
-    CHECK(roster.ui.screen()==Screen::Collection && roster.state.collectionCount==7);
-    CHECK(!findMember(roster.state,2) && roster.state.activeCreatureId==1 && roster.state.nextMemberId==9);
+    CHECK(roster.ui.screen()==Screen::Collection && roster.state.collectionCount==kCollectionCapacity-1);
+    CHECK(!findMember(roster.state,2) && roster.state.activeCreatureId==1 && roster.state.nextMemberId==kCollectionCapacity+1);
     CHECK(roster.state.collection[1].id==3); // Slot moved; stable ID did not.
-    auto equip=roster.tap(280,312); CHECK(equip.action==Action::Select && equip.value==3);
+    roster.browseMember(3); auto equip=roster.tap(280,312); CHECK(equip.action==Action::Select && equip.value==3);
     roster.dispatch(equip,false); CHECK(roster.state.activeCreatureId==1);
     roster.dispatch(roster.tap(280,312)); CHECK(roster.state.activeCreatureId==3);
     CHECK(!roster.tap(280,312));
@@ -975,7 +1541,7 @@ int main(int argc,char** argv) {
     Harness baby; baby.state=stableMemberFixture(67); baby.sync();
     const auto* babyRoute=forms::outgoing(67,0); CHECK(babyRoute && !forms::find(67)->children[0]);
     baby.state.bond=baby.state.collection[1].bond=babyRoute->minBond; baby.sync();
-    baby.openHome(HomePanel::Partners); baby.dispatch(baby.swipe(250,180,160,180)); baby.dispatch(baby.tap(120,312));
+    baby.openHome(HomePanel::Partners); baby.browseMember(19); baby.dispatch(baby.tap(120,312));
     baby.dispatch(baby.tap(206,312)); CHECK(baby.ui.artRequest(baby.state,baby.model,0).formId==babyRoute->to);
     baby.dispatch(baby.tap(280,312)); baby.dispatch(baby.tap(206,302));
     CHECK(activeMember(baby.state)->id==19 && activeMember(baby.state)->formId==babyRoute->to);
