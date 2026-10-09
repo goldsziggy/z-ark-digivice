@@ -2,6 +2,8 @@
 
 **[Explore the live showcase](https://goldsziggy.github.io/z-ark-digivice/)** — real-device screen close-ups, labeled native simulator samples and an exploded view of the current C14-P19 enclosure. The samples document firmware baseline `f74ee4c`; later firmware changes are outside this showcase.
 
+**[Buy me a coffee](https://buymeacoffee.com/goldsziggy)**
+
 An offline virtual-pet game, local development service and ESP32-S3 firmware, with C14-P19 enclosure CAD. This is a source export of the working prototype. It contains original artwork only as explicit legacy test fixtures; original personal import packs, device saves, credentials and historical device evidence are excluded. The playable showcase includes a bounded set of optimized in-game art; see its scoped [artwork notices](docs/play/ART_SOURCES.md).
 
 The shared deterministic C++ core handles care, walking encounters, Tactical/Auto battles, capture, collection and explicit evolution. A Node/TypeScript service supplies bounded asset catalogs, browser pairing and replay-validated save revisions. The round browser simulator uses the same core. Immediate handheld play works without a phone or network; native service pairing/outbox/save synchronization is still future work. Local Nearby uses ESP-NOW independently of cloud pairing.
@@ -45,6 +47,19 @@ That command builds only. The current [171cda7 firmware build images and manifes
 [Current C14-P19 CAD and print parts](hardware/README.md) preserve both touch-only and two-button fronts. C14-P19 enlarges only the main white front's receiving pilots to 1.9 mm; common black/red parts and small white RF windows remain unchanged. [Six downloadable plate/G-code ZIPs](hardware/c14-p19/downloads/README.md) include both repair-front and full-white options for Kobra S1 / PLA / 0.4 mm. The [assembly and screw guide](hardware/c14-p19/docs/z-ark_Digivice_C14_P19_Assembly_and_Screws.pdf) covers the 17-screw first build and optional 20-screw NFC-tray assembly.
 
 Required vendor reference meshes are external acquisition prerequisites for rebuilding the CAD; they are not bundled. Physical fit, screw grip, battery compatibility and RF behavior still require hardware validation. C13 white fronts and white plates are superseded.
+
+## Build buylist
+
+Parts for one **C14-P19 touch-first build**, using the same items and links as the [showcase parts list](https://goldsziggy.github.io/z-ark-digivice/#parts). The board listing is verified; supplies use labeled searches. No affiliate links or price/stock guarantees.
+
+1. **Touchscreen board, 1:** [Waveshare ESP32-S3-Touch-LCD-1.46 on Amazon](https://www.amazon.com/dp/B0DRJBVQ3X), standard protective-cover **SKU 29565**, 412 × 412. Confirm the selected option; 1.46B and 1.46C are different variants.
+2. **Battery candidate, 1:** [Amazon search for protected 1S 3.7 V LiPo packs](https://www.amazon.com/s?k=103665+3.7V+protected+lipo+MX1.25). The CAD assumes a **36 × 67 × 10 mm** cell envelope. No exact pack is qualified: verify the complete pack, leads, charger compatibility, MX1.25 two-pin connector and polarity before ordering.
+3. **M2 screws, 17 total:** **3 × M2×4, 10 × M2×8 and 4 × M2×16 mm**. [Amazon search for a screw kit](https://www.amazon.com/s?k=M2+button+head+screw+kit+4mm+8mm+16mm). Modeled head limits are Ø4 × 2 mm; actual heads and retention need checking against the [assembly schedule](hardware/c14-p19/ASSEMBLY.md#screws-and-remaining-checks).
+4. **Printed enclosure:** **1.75 mm PLA in black, white and red**. [Amazon search for filament](https://www.amazon.com/s?k=PLA+1.75mm+black+white+red) · [C14-P19 print files](hardware/c14-p19/downloads). Use the touch-only front and matching common parts. Published toolpaths are for the Kobra S1 with a 0.4 mm nozzle; use the STLs for other printers.
+5. **microSD card, 1 for the SD asset pack:** [Amazon search](https://www.amazon.com/s?k=microSD+card). Showcased firmware supports FAT32/exFAT on MBR or unpartitioned cards, not GPT. No brand or capacity is qualified; resident fallback content remains available without a card.
+6. **USB-C data cable, 1:** [Amazon search](https://www.amazon.com/s?k=usb+c+data+cable). Choose the host end for your computer and check that the plug housing clears the enclosure. No specific cable is fit-qualified.
+
+Physical enclosure fit, battery compatibility and screw grip remain unverified. Follow the [full parts sources and compatibility notes](docs/PARTS.md), including optional NFC and alternate-front buttons. MagSafe is outside the current C14-P19 build.
 
 ## Current readiness
 
