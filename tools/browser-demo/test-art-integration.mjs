@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { createDeviceView } from '../../docs/play/device-view.js';
+import { buildBattleFrames, createBattlePlayback } from '../../docs/play/battle-playback.js';
 import createDemoCore from '../../docs/play/runtime/demo-core.js';
 import * as party from '../../docs/play/shared/party.js';
 import * as starter from '../../docs/play/shared/starter-onboarding.js';
@@ -81,7 +82,7 @@ const sandbox = {
   navigator: { locks: { async request(_name, _options, callback) { return callback(); } } },
   localStorage: { getItem() { return raw; }, setItem(_key, value) { raw = value; } },
   ...party, ...starter, ...ring, loadGameArt,
-  createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
+  buildBattleFrames, createBattlePlayback, createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
     createCaptureRingInput: () => ({ refresh() {}, cancel() {} }),
   runtimeFactory: createDemoCore,
 };
@@ -91,7 +92,7 @@ assert.equal((source.match(/const \{default:createDemoCore\}=await import\('\.\/
 const controller = source.replace(/^import .+;\n/gm, '')
   .replace("const {default:createDemoCore}=await import('./runtime/demo-core.js');", 'const createDemoCore=globalThis.runtimeFactory;')
   .replace(/\ninit\(\);\s*$/, `
-    globalThis.ui = {init, command, setTab, paint, actor, openCapture,
+    globalThis.ui = {init, command, setTab, paint, actor, openCapture, finishBattlePlayback,
       state: () => state, thumbs: () => memberThumbs, gameArt: () => gameArt,
       snapshot: () => core.ccall('demo_snapshot', 'string', [], [])};
   `);
@@ -127,6 +128,7 @@ assert(elements.get('screen').texts.includes('EXACT ART UNAVAILABLE'));
 
 await ui.command('auto-fight');
 assert.equal(ui.state().autoCapture, 1, 'Auto pauses for manual capture even when art fails');
+ui.finishBattlePlayback();
 const beforeCapture = ui.snapshot();
 ui.openCapture();
 assert.equal(ui.snapshot(), beforeCapture, 'Rendering the capture ring cannot spend capture RNG');

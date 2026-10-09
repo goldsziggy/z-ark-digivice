@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { createDeviceView } from '../../docs/play/device-view.js';
+import { buildBattleFrames, createBattlePlayback } from '../../docs/play/battle-playback.js';
 import createDemoCore from '../../docs/play/runtime/demo-core.js';
 import { validParty } from '../../docs/play/shared/party.js';
 import { validateStarterCatalog } from '../../docs/play/shared/starter-onboarding.js';
@@ -17,7 +18,7 @@ const controller = source.replace(/^import .+;\n/gm, '')
   .replace("const {default:createDemoCore}=await import('./runtime/demo-core.js');", 'const createDemoCore=globalThis.runtimeFactory;')
   .replace(/\ninit\(\);\s*$/, `
     render = () => {};
-    globalThis.ui = { init, command, openCapture, syncSaved, captureOpen: () => captureMode,
+    globalThis.ui = { init, command, openCapture, syncSaved, finishBattlePlayback, captureOpen: () => captureMode,
       state: () => state, needsReset: () => needsReset,
       setReleaseIntent: id => { releaseId=id; releaseIntendedState=state; },
       snapshot: () => core.ccall('demo_snapshot', 'string', [], []) };
@@ -45,7 +46,7 @@ async function fixture(initialRaw) {
     localStorage:{getItem(key){assert.equal(key,SAVE_KEY);return stored;},setItem(key,value){assert.equal(key,SAVE_KEY);stored=value;writes++;}},
     validParty,validateStarterCatalog,
     loadGameArt:async()=>({prepare:async()=>{},drawForm:()=>false,drawBackground:()=>false,formStatus:()=>'missing'}),
-    createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
+    buildBattleFrames, createBattlePlayback, createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
     createCaptureRingInput:()=>({refresh(){},cancel(){}}),
     runtimeFactory:async()=>{
       const module=await createDemoCore();
@@ -164,6 +165,7 @@ assert.equal(manualRestored.ui.state().battleMode,'auto','Reset adventures defau
 await autoRestored.ui.command('demo-encounter');
 await autoRestored.ui.command('auto-fight');
 assert.equal(autoRestored.ui.state().autoCapture,1,'Default Auto stops for manual timing capture');
+autoRestored.ui.finishBattlePlayback();
 const pendingCapture=autoRestored.ui.snapshot();
 autoRestored.ui.openCapture();
 assert.equal(autoRestored.ui.snapshot(),pendingCapture,'Opening the ring cannot consume capture RNG');

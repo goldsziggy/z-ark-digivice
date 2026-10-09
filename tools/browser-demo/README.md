@@ -97,3 +97,11 @@ Fresh/reset browser adventures apply native Auto mode immediately after hatch, b
 `docs/play/device-touch-input.js` adapts Pointer Events to the installed `firmware/runtime/device_ui.cpp` gesture contract. Register it before the unchanged shared capture helper so a screen contact has one owner. The shared helper remains responsible for the optional HTML capture button and keyboard D; its `canArm` callback excludes active screen contacts. `device-view.js` maps a bounded set of native-layout screens to ordinary WASM commands, retaining review intent and selected member identity. It is browser presentation, not a second implementation of game rules.
 
 Run `node tools/browser-demo/test-device-touch-input.mjs` and `node tools/browser-demo/test-device-view.mjs`, plus the existing controller/save/static checks. The native input baseline is 171cda7; coordinate forthcoming larger Back targets and gameplay changes with the firmware owner before changing that baseline.
+
+## Battle presentation
+
+`docs/play/battle-playback.js` expands a successful native Auto trace into player/opponent actions, or derives a Manual exchange from its before/after native states. It owns no game rules or random draws. The controller saves the native outcome immediately, then renders a disposable 1.1-second-per-actor queue before its normal device view. Slow frames preserve each action and impact instead of jumping to the final snapshot. The browser animates the shipped idle sprites with transforms; no attack sheet or fallback form is invented.
+
+Completion, skip, navigation, visibility/page exit, reset and cross-tab invalidation settle once without native calls. A pending screen contact is canceled before gameplay returns. A hidden page never opens capture. Terminal combat HP comes from the trace, keeping later XP growth/recovery separate; Manual retreat's unavailable wild HP is explicitly unknown.
+
+Run `node --test tools/browser-demo/test-battle-playback.mjs tools/browser-demo/test-battle-controller.mjs` for real-WASM sequence, reflection, capture boundary, final reward, slow-frame, reduced-motion and save-lifecycle coverage. Existing controller/save/art/touch/static checks remain required. The C++ source, WASM, rules version and save schema are unchanged by this presentation update.

@@ -5,6 +5,7 @@ import { validateStarterCatalog, paintStarterEgg } from './shared/starter-onboar
 import { loadGameArt } from './game-art.js';
 import { createDeviceTouchInput } from './device-touch-input.js';
 import { createDeviceView } from './device-view.js';
+import { buildBattleFrames, createBattlePlayback } from './battle-playback.js';
 
 // Presentation only. All game decisions, random draws and saved state belong to
 // the unchanged native C++ core. No service API, account or device is involved.
@@ -24,13 +25,17 @@ const eggCanvases = new Map();
 let gameArt = null, memberThumbs = [];
 let deviceView, touchInput;
 let lastCaptureInputAt = -Infinity;
+const playback = createBattlePlayback();
+let playbackIndex = -1, playbackScene = null, playbackForms=[];
+const playbackBack = [{id:'battle-skip',label:'SKIP ANIMATION',x:126,y:348,w:160,h:38,enabled:true}];
 const gameScenes = ['meadow','forest','beach','ruins','cavern','snow','volcanic','digital'];
-const sceneId = () => isEncounter() ? gameScenes[Math.max(0,(state.encounters || 1)-1)%gameScenes.length] : 'meadow';
+const sceneId = () => playbackScene || (isEncounter() ? gameScenes[Math.max(0,(state.encounters || 1)-1)%gameScenes.length] : 'meadow');
 function prepareArt() {
   if (!gameArt || !state) return;
   const ids = state.phase === 'egg' ? [] : [state.formId, ...(isEncounter() ? [state.wildFormId] : [])];
   if (currentTab === 'box') ids.push(...state.collection.map(member => member.formId));
   ids.push(...(deviceView?.artIds() || []));
+  ids.push(...playbackForms);
   void gameArt.prepare([...new Set(ids)],sceneId());
 }
 function artChanged() {
@@ -41,7 +46,7 @@ function artChanged() {
 const color = { grove:'#91c896', tide:'#75cbd5', ember:'#efa878', neutral:'#bca0e1' };
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = value => Number(value || 0).toLocaleString();
-const canPlay = () => !!state && !busy && !needsReset;
+const canPlay = () => !!state && !busy && !needsReset && !playback.active();
 const isHome = () => state?.phase === 'home';
 const isEncounter = () => state?.phase === 'encounter';
 const canCapture = () => canPlay() && isEncounter() && state.wildCaptureChance > 0
@@ -117,6 +122,7 @@ async function locked(task) {
 function syncSaved() {
   const raw = readRaw();
   if (persistent && raw !== lastSavedRaw) {
+    finishBattlePlayback({reveal:false});
     closeCapture();
     if (raw === null) accept(native('demo_reset', ['number'], [DEFAULT_SEED]));
     else restore(raw);
@@ -127,6 +133,7 @@ function syncSaved() {
   return false;
 }
 function damagedSave(error) {
+  finishBattlePlayback({reveal:false});
   needsReset = true;
   closeCapture();
   storageWarning(`${error.message} Your existing save has been left untouched. Use Reset demo to start a fresh adventure.`);
@@ -164,25 +171,29 @@ async function command(name, value = 0) {
         message = `${resultName} ${state.lastCapture.chance}% chance · attempt ${state.lastCapture.attempt} of 3. ${state.message}`;
       }
       if (result.trace?.steps?.length) {
-        for (const step of result.trace.steps) log(`Turn ${step.turn}: ${step.action}; partner HP ${step.playerHpAfter}, wild HP ${step.enemyHpAfter}.`);
         if (state.autoCapture === 1) message = `Auto paused after ${result.trace.steps.length} exchanges. Your turn to aim a capture.`;
       }
-      status(message);
-      log(message);
+      const frames = buildBattleFrames(intendedState,result,name);
+      if (frames.length && !document.hidden && currentTab === 'play') {
+        playbackScene = gameScenes[Math.max(0,(intendedState.encounters||1)-1)%gameScenes.length]; playbackIndex = -1;
+        playbackForms=[intendedState.formId,intendedState.wildFormId];
+        playback.start(frames,{state,message,openCapture:state.phase==='encounter'&&state.autoCapture===1},performance.now());
+      } else { status(message); log(message); }
     });
   } catch (error) { status(error.message || 'The action could not be completed.', true); }
   finally {
     busy = false;
-    deviceView?.sync();
+    if (!playback.active()) deviceView?.sync();
     // Like the installed touch UI, Auto opens its manual timing screen as soon
     // as the shared core pauses at the capture opportunity.
-    if (state?.phase === 'encounter' && state.autoCapture === 1 && ['auto-fight','ring-capture'].includes(name)) openCapture(false);
+    if (!playback.active() && !document.hidden && currentTab==='play' && state?.phase === 'encounter' && state.autoCapture === 1 && ['auto-fight','ring-capture'].includes(name)) openCapture(false);
     render();
   }
 }
 
 function setTab(tab, focus = false) {
   if (!['play','box','evolve'].includes(tab)) return;
+  finishBattlePlayback({reveal:false});
   currentTab = tab;
   deviceView?.selectTab(tab);
   if (tab !== 'play') closeCapture();
@@ -301,17 +312,17 @@ function renderEvolution() {
 }
 function render() {
   if (!state) return;
-  deviceView?.sync();
+  if (!playback.active()) deviceView?.sync();
   show('loading',false);
-  show('egg-controls',state.phase === 'egg'); show('home-controls',isHome()); show('battle-controls',isEncounter());
-  $('phase-label').textContent = captureMode ? 'CAPTURE TIMING' : state.phase === 'egg' ? 'CHOOSE YOUR EGG' : isHome() ? 'PARTNER / HOME' : 'WILD / BATTLE';
+  show('egg-controls',state.phase === 'egg'); show('home-controls',isHome()&&!playback.active()); show('battle-controls',isEncounter()&&!playback.active());
+  $('phase-label').textContent = playback.active() ? 'BATTLE IN MOTION' : captureMode ? 'CAPTURE TIMING' : state.phase === 'egg' ? 'CHOOSE YOUR EGG' : isHome() ? 'PARTNER / HOME' : 'WILD / BATTLE';
   if (state.phase === 'egg') renderStarters();
   if (isHome()) renderHome();
   if (isEncounter()) renderBattle();
   prepareArt();
   renderBox(); renderEvolution();
   $('reset-open').disabled = !core || busy;
-  $('touch-encounter').hidden = !isHome();
+  $('touch-encounter').hidden = !isHome() || playback.active();
   $('touch-encounter').disabled = !canPlay();
   if (deviceView) {
     $('touch-state').textContent = deviceView.description();
@@ -338,6 +349,79 @@ function submitCapture(sample, time = performance.now()) {
   return command('ring-capture',sample.phaseMs);
 }
 
+// Native commands and persistence finish once, before playback. This queue is
+// disposable presentation: finishing, skipping, hiding or reloading never calls
+// the core, spends RNG or awards XP a second time.
+function finishBattlePlayback({reveal=true}={}) {
+  const completed = playback.finish();
+  if (!completed) return false;
+  playbackScene=null; playbackIndex=-1; playbackForms=[];
+  touchInput?.cancel('battle-finished');
+  $('screen').dataset.battleActor=''; $('screen').dataset.battlePhase='';
+  if (completed.state !== state) return false;
+  status(completed.message); log(completed.message);
+  deviceView?.sync();
+  if (reveal && !document.hidden && currentTab==='play' && !busy && !needsReset
+      && !$('reset-dialog').open && !$('release-dialog').open && completed.openCapture) openCapture(false);
+  return true;
+}
+function battlePlaybackSample(time) {
+  const sample=playback.sample(time);
+  if (!sample) return null;
+  if (sample.complete) {finishBattlePlayback(); render(); return null;}
+  if (sample.index !== playbackIndex) {
+    playbackIndex=sample.index;
+    const who=sample.actor==='player'?sample.scene.creature:sample.scene.wildName;
+    const target=sample.target==='player'?sample.scene.creature:sample.scene.wildName;
+    const feedback=sample.damage===null?'Hit!':sample.damage===0?(sample.reflected?'Reflected!':'Guarded!'):`${sample.damage} damage`;
+    const message=`Turn ${sample.turn} · ${who} → ${target}: ${sample.skill}. ${feedback}`;
+    status(message); log(message);
+    $('touch-state').textContent=`${message} Watch the exchange, or skip its animation.`;
+    $('screen').setAttribute('aria-label',message);
+  }
+  $('screen').dataset.battleActor=sample.actor;
+  $('screen').dataset.battlePhase=sample.phase;
+  $('screen').dataset.battleTurn=String(sample.turn);
+  $('screen').dataset.battleHp=`${sample.playerHp ?? '?'}/${sample.enemyHp ?? '?'}`;
+  return sample;
+}
+function paintBattlePlayback(sample,time) {
+  const s=sample.scene,p=sample.progress;
+  const moving=!reducedMotion.matches;
+  const lunge=moving?(p<.18?-6*Math.sin(p/.18*Math.PI):p<.38?42*Math.sin((p-.18)/.20*Math.PI/2):p<.72?42*(1-(p-.38)/.34):0):0;
+  const hit=sample.impacted, recoil=moving&&sample.damage!==0&&p>=.38&&p<.74?Math.sin((p-.38)/.36*Math.PI)*12:0;
+  const attackerX=sample.actor==='player'?118+lunge:294-lunge;
+  const playerX=sample.actor==='player'?attackerX:118-recoil;
+  const enemyX=sample.actor==='enemy'?attackerX:294+recoil;
+  badge(`TURN ${sample.turn} · ${s.battleMode==='auto'?'AUTO':'MANUAL'} BATTLE`,206,63,10,'#a4ddbc',252);
+  badge(s.creature,118,95,12,'#a4ddbc',155);badge(s.wildName,294,95,12,'#ffd387',155);
+  badge(`HP ${sample.playerHp ?? '?'}/${s.combat.maxHp}`,118,114,9,'#d8e6d7',116);
+  badge(`HP ${sample.enemyHp ?? '?'}/${s.wildMaxHp}`,294,114,9,'#d8e6d7',116);
+  healthBar(64,123,108,sample.playerHp??0,s.combat.maxHp);
+  if(sample.enemyHp!==null)healthBar(240,123,108,sample.enemyHp,s.wildMaxHp,'#ffd387');
+  const draw=(id,x,facing,isTarget)=>{
+    ctx.save();
+    if(moving&&sample.damage!==0&&hit&&p<.64&&isTarget)ctx.globalAlpha=.45+.55*Math.abs(Math.cos(p*44));
+    actor(id,x,193,112,time,facing);ctx.restore();
+  };
+  draw(s.formId,playerX,'right',sample.target==='player');
+  draw(s.wildFormId,enemyX,'left',sample.target==='enemy');
+  const targetX=sample.target==='player'?playerX:enemyX;
+  if(hit&&p<.8) {
+    if(moving&&sample.damage!==0) {
+      ctx.save();ctx.strokeStyle=sample.move==='magic'?'#adf7f5':'#fff1b5';ctx.lineWidth=3;
+      for(let i=0;i<8;i++){const angle=i*Math.PI/4,r=17+(p-.38)*42;ctx.beginPath();ctx.moveTo(targetX+Math.cos(angle)*r,187+Math.sin(angle)*r);ctx.lineTo(targetX+Math.cos(angle)*(r+10),187+Math.sin(angle)*(r+10));ctx.stroke();}
+      ctx.restore();
+    }
+    badge(sample.damage===null?'HIT!':sample.damage===0?(sample.reflected?'REFLECTED':'GUARDED'):`−${sample.damage}`,targetX,153-(moving?(p-.38)*18:0),15,'#fff1b5',sample.damage===0?100:64);
+  }
+  const who=sample.actor==='player'?s.creature:s.wildName;
+  badge(`${who} ${sample.actor==='player'?'→':'←'}`,206,270,13,sample.actor==='player'?'#a4ddbc':'#ffd387',276);
+  badge(sample.skill,206,299,15,'#f5f3df',284);
+  text(`${sample.index+1} / ${sample.total} ACTIONS`,206,326,9,'#c6d7c3');
+  deviceView?.paintTargets(ctx,playbackBack);
+}
+
 // Sprite pixels, scene images, facing and framing come from the installed game.
 // This browser HUD and its controls are presentation; the C++ core owns all rules.
 function rounded(x,y,w,h,r,fill) { ctx.fillStyle=fill; ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); }
@@ -350,6 +434,7 @@ function actor(formId,x,y,maxSide,time,facing) {
   badge(status==='missing'?'EXACT ART UNAVAILABLE':status==='error'?'ART COULD NOT LOAD':'LOADING ART…',x,y,8,'#eadcb4',maxSide+22);
 }
 function paint(time) {
+  const battleSample=playback.active()?battlePlaybackSample(time):null;
   ctx.setTransform(2,0,0,2,0,0);ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,412,412);
   ctx.fillStyle='#183331';ctx.fillRect(0,0,412,412);
   const scene=state?sceneId():'meadow';
@@ -358,6 +443,7 @@ function paint(time) {
     ctx.fillStyle='#0006';ctx.fillRect(0,0,412,412);
   }
   if(!state){text('z-ark',206,188,38,'#e2ecdb',700);text('A LITTLE WORLD IS WAKING UP',206,222,10,'#c6d7c3');return;}
+  if(battleSample){paintBattlePlayback(battleSample,time);return;}
   if (deviceView && !captureMode) {
     deviceView.paint(ctx,{art:gameArt,eggs:eggCanvases,time,reducedMotion:reducedMotion.matches});
     return;
@@ -425,7 +511,7 @@ $('auto-fight').addEventListener('click',()=>command('auto-fight'));
 $('auto-resume').addEventListener('click',()=>command('auto-resume'));
 $('capture-open').addEventListener('click',openCapture);
 $('capture-cancel').addEventListener('click',()=>{closeCapture();render();$('capture-open').focus({preventScroll:true});});
-$('reset-open').addEventListener('click',()=>{closeCapture();render();resetIntent={state,raw:readRaw()};$('reset-dialog').showModal();$('reset-cancel').focus();});
+$('reset-open').addEventListener('click',()=>{finishBattlePlayback({reveal:false});closeCapture();render();resetIntent={state,raw:readRaw()};$('reset-dialog').showModal();$('reset-cancel').focus();});
 $('reset-cancel').addEventListener('click',()=>$('reset-dialog').close());
 $('reset-confirm').addEventListener('click',async()=>{
   if(!core||busy)return;
@@ -451,9 +537,10 @@ window.addEventListener('storage',event=>{
   if(event.key!==SAVE_KEY||!core||!persistent)return;
   locked(()=>{try{if(syncSaved()){status('Demo progress updated from another tab.');render();}}catch(error){damagedSave(error);render();}}).catch(error=>status(error.message,true));
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&captureMode){closeCapture();render();}});
-window.addEventListener('pagehide',()=>ringInput?.cancel('pagehide'));
+document.addEventListener('visibilitychange',()=>{if(document.hidden){const playing=finishBattlePlayback({reveal:false});if(captureMode||playing){closeCapture();render();}}});
+window.addEventListener('pagehide',()=>{finishBattlePlayback({reveal:false});closeCapture();ringInput?.cancel('pagehide');});
 $('screen').addEventListener('keydown',event=>{
+  if(playback.active()&&event.key==='Escape'){event.preventDefault();finishBattlePlayback();render();return;}
   if(!deviceView||!canPlay()||captureMode||event.repeat||event.altKey||event.ctrlKey||event.metaKey
     ||$('reset-dialog').open||$('release-dialog').open)return;
   if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();deviceView.horizontal(event.key==='ArrowRight');}
@@ -491,10 +578,10 @@ async function init() {
     // Registered first: round-screen pointers use native device geometry.
     // The unchanged shared helper below still owns D and accessible capture.
     touchInput=createDeviceTouchInput($('screen'),{
-      canInteract:()=>canPlay()&&!$('reset-dialog').open&&!$('release-dialog').open,
-      getContext:()=>`${state?.sequence}/${deviceView.context()}/${captureRevision}/${busy}/${needsReset}`,
-      getMode:()=>deviceView.mode(),getTargets:()=>deviceView.targets(),getBrowseBand:()=>deviceView.browseBand(),
-      onTarget:id=>deviceView.activate(id),onHorizontal:delta=>deviceView.horizontal(delta>0),
+      canInteract:()=>!!state&&!busy&&!needsReset&&!$('reset-dialog').open&&!$('release-dialog').open,
+      getContext:()=>`${state?.sequence}/${deviceView.context()}/${captureRevision}/${busy}/${needsReset}/${playback.active()}`,
+      getMode:()=>playback.active()?'buttons':deviceView.mode(),getTargets:()=>playback.active()?playbackBack:deviceView.targets(),getBrowseBand:()=>deviceView.browseBand(),
+      onTarget:id=>{if(id==='battle-skip'){finishBattlePlayback();render();}else deviceView.activate(id);},onHorizontal:delta=>deviceView.horizontal(delta>0),
       onBattleCommit:()=>deviceView.battleCommit(),onCapture:({time})=>submitCapture(ringSample(time),time),
     });
     ringInput=createCaptureRingInput($('screen'),{

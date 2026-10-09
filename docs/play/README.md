@@ -10,6 +10,7 @@ Open `index.html` through the GitHub Pages site or a local HTTP server. The brow
 - Feed, play, and rest using ordinary native care actions.
 - Use **Find a demo encounter** to supply a bounded set of synthetic steps through native `Explore` events. The UI reports the actual simulated step count. This does not read a pedometer or change native encounter randomness.
 - New and reset adventures default to **Auto** on hatch. Auto runs native battle logic and pauses for eligible manual timing capture. Existing saved mode choices are preserved. Switch to Manual before an encounter to use physical, heavy, or magic attacks.
+- Battles show each attack and reply in order, with the acting companion, skill, impact, damage and HP changes. **Skip animation** or Escape reveals the committed outcome immediately.
 - Aim a graded capture ring. Green uses the eligible native capture odds, orange half, and red one tenth (with the native positive minimum). Every attempt and random result is decided by the core; a green attempt can fail.
 - Manage the 60-member collection, choose an active partner, and select up to three XP companions. Useful care builds bond; battle rewards supply XP. Evolve only when the native conditions are met.
 
@@ -21,6 +22,8 @@ Sprite atlases are lossless RGBA conversions of the current installed game’s i
 
 Only the clips needed here are included, loaded for visible forms; original source sheets and import packs are not offered as asset downloads. Missing exact forms are explicitly labeled unavailable. [Source credits and rights notices](ART_SOURCES.md) accompany the [per-asset hash manifest](art/manifest.json).
 
+Battle movement uses lunge, recoil and impact effects around these exact idle sprites. It does not claim additional native attack clips. Auto exchanges use the native trace; Manual exchanges use the before/after command state. This rules version has no combat miss or critical-hit mechanic. On a Manual retreat, the native response clears the surviving foe's HP; the display shows `?` for that unavailable value instead of guessing. Reward growth and retreat recovery appear only after combat ends.
+
 `shared/capture-ring.js`, `shared/capture-ring-input.js`, `shared/party.js`, and `shared/starter-onboarding.js` are copied from the installed source. The capture timing sampler and input guards are the existing browser implementations. All other JavaScript is presentation, input, or local persistence; it does not recreate game rules.
 
 ## Save and reset
@@ -30,6 +33,8 @@ The native egg state requires its original mode invariant. The browser applies A
 Canonical native snapshots are stored under the isolated key `zark.browser-demo.v1.rules15`, in an envelope identifying rules 15 and schema 22. Native decoding checks integrity and state validity. **Reset demo** replaces only this key after confirmation. It does not clear other site storage or access hardware saves.
 
 Where browser Web Locks and local storage are available, read/update/save operations are serialized across tabs. Other tabs load changes from the shared demo key. Without Web Locks, or if storage is unavailable, the game uses an explicitly labeled session-only save. An invalid existing save is preserved until the user chooses Reset demo.
+
+The command outcome is saved once before its visual playback. Input waits while turns play, and Auto capture opens after the last response. Changing views, resetting, hiding the tab or leaving the page ends playback without rerunning combat or rewards. Reload continues the committed save and restores a pending capture opportunity; it does not replay attacks. Reduced motion keeps the readable turn sequence and HP feedback while removing lunges and flashes.
 
 ## Controls and accessibility
 
