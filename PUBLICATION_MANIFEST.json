@@ -25,7 +25,7 @@
     {
       "path": "PUBLICATION_VALIDATION.json",
       "bytes": 5414,
-      "sha256": "4c614de49ca97a673a034351ab320824574bcab924450541415225c1d68f0111",
+      "sha256": "f0e0194817972a3a14f07d0e373ac0b7861847bbb1d741ee056c296ed5108b6f",
       "unchangedFromGameSource": false
     },
     {
@@ -3431,6 +3431,36 @@
       "unchangedFromGameSource": true
     },
     {
+      "path": "scripts/build-assets.py",
+      "bytes": 14276,
+      "sha256": "a0d669d787370ebd3dfc422b1afd096a0e2904dea8aa125d98c296bcb54e4bd9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/build-background-assets.py",
+      "bytes": 12122,
+      "sha256": "72343572448f3943fa99f30c03c449debf6d3160248e54bda61a3e66b6712297",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/build-device-assets.py",
+      "bytes": 17954,
+      "sha256": "7adf173dafbec7c4349f44690f96e65aeceafa8ca9da636f9ae6c3c195cfdbd3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/build-esp.sh",
+      "bytes": 4076,
+      "sha256": "282768e4a32b82af2435031b2c0a3a95ebec6557be5567bac63e4eec1d450340",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/build-host-direct.sh",
+      "bytes": 4730,
+      "sha256": "689ba309555b49b175b5759bd9a63419c69f6513d315f20fcf06b3ccc533ec71",
+      "unchangedFromGameSource": true
+    },
+    {
       "path": "scripts/check-publication.sh",
       "bytes": 1144,
       "sha256": "72f3b66963ef979c5502b70fe817addacda90b18ef937d696c4f22673cc2dd88",
@@ -4715,8 +4745,8 @@
       "unchangedFromGameSource": true
     }
   ],
-  "fileCountExcludingThisManifest": 785,
-  "bytesExcludingThisManifest": 80735147,
+  "fileCountExcludingThisManifest": 790,
+  "bytesExcludingThisManifest": 80788305,
   "publicationAdaptedSourcePaths": [
     ".gitignore",
     "README.md",

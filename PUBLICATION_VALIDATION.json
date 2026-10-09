@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-09T12:50:48.077971+00:00",
+  "recordedAt": "2026-10-09T12:59:39.958396+00:00",
   "scope": "Local frozen-source publication validation; no remote or device actions",
   "sourceCommit": "f74ee4c132b4b9bc6407d99bbc20b13af9dfd962",
   "coreAndFirmwareFilesCompared": 373,
@@ -52,7 +52,7 @@
     "fullPrivateAssetSuites": "Not run; required private scenery is not distributed."
   },
   "privacyScan": {
-    "filesChecked": 785,
+    "filesChecked": 790,
     "findings": [],
     "scope": "Raw payload scan for workstation paths, private Library IDs, common production-key markers and known project device identities; prior approved nested archive/privacy and visual guide audits retained."
   },
