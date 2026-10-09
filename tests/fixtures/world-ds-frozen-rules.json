@@ -1,0 +1,758 @@
+{
+  "formatVersion": 1,
+  "provenance": "Frozen schema7/rules4 care and schema3/rules3 practice output captured from pre-catalog strict binaries on 2026-10-06. No production credentials.",
+  "careAutoEvents": [
+    {
+      "type": "hatch",
+      "value": 1
+    },
+    {
+      "type": "mode",
+      "value": 1
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    }
+  ],
+  "careAutoState": {
+    "schemaVersion": 7,
+    "rulesVersion": 4,
+    "sequence": 4,
+    "seed": 12345,
+    "rngState": 3336926330,
+    "steps": 100,
+    "stepCredit": 0,
+    "hp": 52,
+    "energy": 74,
+    "fullness": 70,
+    "mood": 80,
+    "bond": 12,
+    "level": 1,
+    "maxLevel": 20,
+    "captures": 1,
+    "encounters": 1,
+    "phase": "home",
+    "wildHp": 0,
+    "wildMaxHp": 0,
+    "wildLevel": 0,
+    "wildTurn": 0,
+    "captureAttempts": 0,
+    "cardUsed": false,
+    "attackBoost": 0,
+    "shield": 0,
+    "creature": "Impmon",
+    "species": "impmon",
+    "formId": 11,
+    "xp": 26,
+    "xpToNext": 14,
+    "stage": "Rookie",
+    "artId": null,
+    "combat": {
+      "maxHp": 92,
+      "attack": 16,
+      "defense": 12,
+      "magic": 24,
+      "resistance": 14,
+      "type": "ember",
+      "skills": {
+        "physical": "Prank Jab",
+        "heavy": "Imp Rush",
+        "magic": "Night of Fire"
+      }
+    },
+    "message": "Flicker joined your collection!",
+    "activeCreatureId": 1,
+    "collectionCapacity": 8,
+    "legacyCaptures": 0,
+    "onboarding": {
+      "completed": true,
+      "starterId": 1
+    },
+    "battleMode": "auto",
+    "lastAutoBattle": {
+      "sequence": 4,
+      "turns": 4,
+      "outcome": "captured"
+    },
+    "wildSpecies": null,
+    "wildName": null,
+    "wildCombat": null,
+    "collection": [
+      {
+        "id": 1,
+        "species": "impmon",
+        "name": "Impmon",
+        "hp": 52,
+        "energy": 74,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 12,
+        "level": 1,
+        "capturedAtSequence": 0,
+        "formId": 11,
+        "xp": 26,
+        "xpToNext": 14,
+        "stage": "Rookie",
+        "artId": null,
+        "combat": {
+          "maxHp": 92,
+          "attack": 16,
+          "defense": 12,
+          "magic": 24,
+          "resistance": 14,
+          "type": "ember",
+          "skills": {
+            "physical": "Prank Jab",
+            "heavy": "Imp Rush",
+            "magic": "Night of Fire"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "species": "flicker",
+        "name": "Flicker",
+        "hp": 88,
+        "energy": 80,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 0,
+        "level": 1,
+        "capturedAtSequence": 4,
+        "formId": 4,
+        "xp": 0,
+        "xpToNext": 40,
+        "stage": null,
+        "artId": "flicker",
+        "combat": {
+          "maxHp": 88,
+          "attack": 20,
+          "defense": 12,
+          "magic": 14,
+          "resistance": 12,
+          "type": "neutral",
+          "skills": {
+            "physical": "Quick Peck",
+            "heavy": "Comet Dive",
+            "magic": "Glimmer Pulse"
+          }
+        }
+      }
+    ],
+    "evolution": {
+      "options": [
+        {
+          "formId": 12,
+          "name": "Wizardmon",
+          "stage": "Champion",
+          "artId": null,
+          "requiredLevel": 5,
+          "requiredBond": 20,
+          "previewLevel": 5,
+          "eligible": false,
+          "combat": {
+            "maxHp": 120,
+            "attack": 26,
+            "defense": 21,
+            "magic": 37,
+            "resistance": 26,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Hex Spark"
+            }
+          }
+        },
+        {
+          "formId": 15,
+          "name": "Devimon",
+          "stage": "Champion",
+          "artId": null,
+          "requiredLevel": 5,
+          "requiredBond": 20,
+          "previewLevel": 5,
+          "eligible": false,
+          "combat": {
+            "maxHp": 120,
+            "attack": 27,
+            "defense": 21,
+            "magic": 36,
+            "resistance": 24,
+            "type": "ember",
+            "skills": {
+              "physical": "Wing Rake",
+              "heavy": "Shadow Lunge",
+              "magic": "Void Claw"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "legacyV3Baseline": {
+    "state": {
+      "schemaVersion": 7,
+      "rulesVersion": 4,
+      "sequence": 61,
+      "seed": 12345,
+      "rngState": 12345,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 128,
+      "energy": 100,
+      "fullness": 100,
+      "mood": 100,
+      "bond": 160,
+      "level": 10,
+      "maxLevel": 20,
+      "captures": 0,
+      "encounters": 0,
+      "phase": "home",
+      "wildHp": 0,
+      "wildMaxHp": 0,
+      "wildLevel": 0,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Impmon",
+      "species": "impmon",
+      "formId": 11,
+      "xp": 1800,
+      "xpToNext": 400,
+      "stage": "Rookie",
+      "artId": null,
+      "combat": {
+        "maxHp": 128,
+        "attack": 30,
+        "defense": 24,
+        "magic": 40,
+        "resistance": 28,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "message": "Rested and ready.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 8,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1
+      },
+      "battleMode": "tactical",
+      "lastAutoBattle": null,
+      "wildSpecies": null,
+      "wildName": null,
+      "wildCombat": null,
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Impmon",
+          "hp": 128,
+          "energy": 100,
+          "fullness": 100,
+          "mood": 100,
+          "bond": 160,
+          "level": 10,
+          "capturedAtSequence": 0,
+          "formId": 11,
+          "xp": 1800,
+          "xpToNext": 400,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 128,
+            "attack": 30,
+            "defense": 24,
+            "magic": 40,
+            "resistance": 28,
+            "type": "ember",
+            "skills": {
+              "physical": "Prank Jab",
+              "heavy": "Imp Rush",
+              "magic": "Night of Fire"
+            }
+          }
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 12,
+            "name": "Wizardmon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 5,
+            "requiredBond": 20,
+            "previewLevel": 10,
+            "eligible": true,
+            "combat": {
+              "maxHp": 135,
+              "attack": 31,
+              "defense": 26,
+              "magic": 47,
+              "resistance": 36,
+              "type": "ember",
+              "skills": {
+                "physical": "Staff Tap",
+                "heavy": "Rune Crash",
+                "magic": "Hex Spark"
+              }
+            }
+          },
+          {
+            "formId": 15,
+            "name": "Devimon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 5,
+            "requiredBond": 20,
+            "previewLevel": 10,
+            "eligible": true,
+            "combat": {
+              "maxHp": 140,
+              "attack": 37,
+              "defense": 26,
+              "magic": 46,
+              "resistance": 29,
+              "type": "ember",
+              "skills": {
+                "physical": "Wing Rake",
+                "heavy": "Shadow Lunge",
+                "magic": "Void Claw"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "snapshotBase64": "REdWUwcA6AEEAAAAPQAAADkwAAA5MAAAAAAAAAAAAACAAAAAZAAAAGQAAABkAAAAoAAAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAEAAAABAAAAAAAAAAEAAAAFAAAAgAAAAGQAAABkAAAAZAAAAKAAAAAKAAAAAAAAAAgHAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACyamg8="
+  },
+  "careAfterEvolve": {
+    "schemaVersion": 7,
+    "rulesVersion": 4,
+    "sequence": 62,
+    "seed": 12345,
+    "rngState": 12345,
+    "steps": 0,
+    "stepCredit": 0,
+    "hp": 135,
+    "energy": 100,
+    "fullness": 100,
+    "mood": 100,
+    "bond": 160,
+    "level": 10,
+    "maxLevel": 20,
+    "captures": 0,
+    "encounters": 0,
+    "phase": "home",
+    "wildHp": 0,
+    "wildMaxHp": 0,
+    "wildLevel": 0,
+    "wildTurn": 0,
+    "captureAttempts": 0,
+    "cardUsed": false,
+    "attackBoost": 0,
+    "shield": 0,
+    "creature": "Wizardmon",
+    "species": "impmon",
+    "formId": 12,
+    "xp": 1800,
+    "xpToNext": 400,
+    "stage": "Champion",
+    "artId": null,
+    "combat": {
+      "maxHp": 135,
+      "attack": 31,
+      "defense": 26,
+      "magic": 47,
+      "resistance": 36,
+      "type": "ember",
+      "skills": {
+        "physical": "Staff Tap",
+        "heavy": "Rune Crash",
+        "magic": "Hex Spark"
+      }
+    },
+    "message": "Your bond helped your creature evolve!",
+    "activeCreatureId": 1,
+    "collectionCapacity": 8,
+    "legacyCaptures": 0,
+    "onboarding": {
+      "completed": true,
+      "starterId": 1
+    },
+    "battleMode": "tactical",
+    "lastAutoBattle": null,
+    "wildSpecies": null,
+    "wildName": null,
+    "wildCombat": null,
+    "collection": [
+      {
+        "id": 1,
+        "species": "impmon",
+        "name": "Wizardmon",
+        "hp": 135,
+        "energy": 100,
+        "fullness": 100,
+        "mood": 100,
+        "bond": 160,
+        "level": 10,
+        "capturedAtSequence": 0,
+        "formId": 12,
+        "xp": 1800,
+        "xpToNext": 400,
+        "stage": "Champion",
+        "artId": null,
+        "combat": {
+          "maxHp": 135,
+          "attack": 31,
+          "defense": 26,
+          "magic": 47,
+          "resistance": 36,
+          "type": "ember",
+          "skills": {
+            "physical": "Staff Tap",
+            "heavy": "Rune Crash",
+            "magic": "Hex Spark"
+          }
+        }
+      }
+    ],
+    "evolution": {
+      "options": [
+        {
+          "formId": 13,
+          "name": "Baalmon",
+          "stage": "Ultimate",
+          "artId": null,
+          "requiredLevel": 10,
+          "requiredBond": 50,
+          "previewLevel": 10,
+          "eligible": true,
+          "combat": {
+            "maxHp": 156,
+            "attack": 40,
+            "defense": 34,
+            "magic": 54,
+            "resistance": 42,
+            "type": "ember",
+            "skills": {
+              "physical": "Charm Slash",
+              "heavy": "Script Break",
+              "magic": "Dusk Seal"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "practiceAuto": {
+    "state": {
+      "schemaVersion": 3,
+      "rulesVersion": 3,
+      "sequence": 10,
+      "phase": "finished",
+      "status": "lost",
+      "playerHp": 0,
+      "enemyHp": 10,
+      "playerLevel": 1,
+      "enemyLevel": 1,
+      "exchanges": 10,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "playerSpecies": "impmon",
+      "enemySpecies": "flicker",
+      "playerFormId": 11,
+      "enemyFormId": 4,
+      "playerFormName": "Impmon",
+      "enemyFormName": "Flicker",
+      "playerCombat": {
+        "maxHp": 92,
+        "attack": 16,
+        "defense": 12,
+        "magic": 24,
+        "resistance": 14,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "enemyCombat": {
+        "maxHp": 88,
+        "attack": 20,
+        "defense": 12,
+        "magic": 14,
+        "resistance": 12,
+        "type": "neutral",
+        "skills": {
+          "physical": "Quick Peck",
+          "heavy": "Comet Dive",
+          "magic": "Glimmer Pulse"
+        }
+      },
+      "enemyHint": [],
+      "lastEnemyMoves": [
+        "brace",
+        "heavy"
+      ],
+      "lastTurn": {
+        "phase": "defend",
+        "playerChoice": "ward",
+        "enemyChoice": "heavy",
+        "playerDamage": 20,
+        "enemyDamage": 0,
+        "reflected": false
+      }
+    },
+    "snapshotBase64": "REdCUAMAbAADAAAACgAAAILAC80BAAAAAAAAAAoAAAAKAAAAAgAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAACAAAABgAAAAIAAAAUAAAAAAAAAAAAAAABAAAABQAAAAIAAAABAAAACwAAAAQAAACrHhMw",
+    "mode": "auto",
+    "initialSnapshotBase64": "REdCUAMAbAADAAAAAAAAAK8JKmUBAAAAXAAAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAIAAAABAAAACwAAAAQAAABsD6g9",
+    "trace": {
+      "formatVersion": 1,
+      "mode": "auto",
+      "kind": "practice",
+      "startSequence": 0,
+      "endSequence": 10,
+      "outcome": "lost",
+      "player": {
+        "species": "impmon",
+        "name": "Impmon",
+        "level": 1,
+        "combat": {
+          "maxHp": 92,
+          "attack": 16,
+          "defense": 12,
+          "magic": 24,
+          "resistance": 14,
+          "type": "ember",
+          "skills": {
+            "physical": "Prank Jab",
+            "heavy": "Imp Rush",
+            "magic": "Night of Fire"
+          }
+        }
+      },
+      "enemy": {
+        "species": "flicker",
+        "name": "Flicker",
+        "level": 1,
+        "combat": {
+          "maxHp": 88,
+          "attack": 20,
+          "defense": 12,
+          "magic": 14,
+          "resistance": 12,
+          "type": "neutral",
+          "skills": {
+            "physical": "Quick Peck",
+            "heavy": "Comet Dive",
+            "magic": "Glimmer Pulse"
+          }
+        }
+      },
+      "steps": [
+        {
+          "turn": 1,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "ward",
+          "playerHpBefore": 92,
+          "playerHpAfter": 92,
+          "enemyHpBefore": 88,
+          "enemyHpAfter": 68,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 2,
+          "phase": "defend",
+          "action": "brace",
+          "opponentAction": "heavy",
+          "playerHpBefore": 92,
+          "playerHpAfter": 68,
+          "enemyHpBefore": 68,
+          "enemyHpAfter": 68,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 3,
+          "phase": "attack",
+          "action": "physical",
+          "opponentAction": "ward",
+          "playerHpBefore": 68,
+          "playerHpAfter": 68,
+          "enemyHpBefore": 68,
+          "enemyHpAfter": 56,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 4,
+          "phase": "defend",
+          "action": "ward",
+          "opponentAction": "physical",
+          "playerHpBefore": 68,
+          "playerHpAfter": 52,
+          "enemyHpBefore": 56,
+          "enemyHpAfter": 56,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 5,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "counter",
+          "playerHpBefore": 52,
+          "playerHpAfter": 52,
+          "enemyHpBefore": 56,
+          "enemyHpAfter": 36,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 6,
+          "phase": "defend",
+          "action": "brace",
+          "opponentAction": "physical",
+          "playerHpBefore": 52,
+          "playerHpAfter": 44,
+          "enemyHpBefore": 36,
+          "enemyHpAfter": 36,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 7,
+          "phase": "attack",
+          "action": "physical",
+          "opponentAction": "brace",
+          "playerHpBefore": 44,
+          "playerHpAfter": 44,
+          "enemyHpBefore": 36,
+          "enemyHpAfter": 30,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 8,
+          "phase": "defend",
+          "action": "brace",
+          "opponentAction": "heavy",
+          "playerHpBefore": 44,
+          "playerHpAfter": 20,
+          "enemyHpBefore": 30,
+          "enemyHpAfter": 30,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 9,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "brace",
+          "playerHpBefore": 20,
+          "playerHpAfter": 20,
+          "enemyHpBefore": 30,
+          "enemyHpAfter": 10,
+          "reflected": false,
+          "captured": false
+        },
+        {
+          "turn": 10,
+          "phase": "defend",
+          "action": "ward",
+          "opponentAction": "heavy",
+          "playerHpBefore": 20,
+          "playerHpAfter": 0,
+          "enemyHpBefore": 10,
+          "enemyHpAfter": 10,
+          "reflected": false,
+          "captured": false
+        }
+      ]
+    }
+  },
+  "practicePhysical": {
+    "state": {
+      "schemaVersion": 3,
+      "rulesVersion": 3,
+      "sequence": 1,
+      "phase": "defend",
+      "status": "active",
+      "playerHp": 92,
+      "enemyHp": 76,
+      "playerLevel": 1,
+      "enemyLevel": 1,
+      "exchanges": 1,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "playerSpecies": "impmon",
+      "enemySpecies": "flicker",
+      "playerFormId": 11,
+      "enemyFormId": 4,
+      "playerFormName": "Impmon",
+      "enemyFormName": "Flicker",
+      "playerCombat": {
+        "maxHp": 92,
+        "attack": 16,
+        "defense": 12,
+        "magic": 24,
+        "resistance": 14,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "enemyCombat": {
+        "maxHp": 88,
+        "attack": 20,
+        "defense": 12,
+        "magic": 14,
+        "resistance": 12,
+        "type": "neutral",
+        "skills": {
+          "physical": "Quick Peck",
+          "heavy": "Comet Dive",
+          "magic": "Glimmer Pulse"
+        }
+      },
+      "enemyHint": [
+        "physical",
+        "heavy"
+      ],
+      "lastEnemyMoves": [
+        "ward"
+      ],
+      "lastTurn": {
+        "phase": "attack",
+        "playerChoice": "physical",
+        "enemyChoice": "ward",
+        "playerDamage": 0,
+        "enemyDamage": 12,
+        "reflected": false
+      }
+    },
+    "snapshotBase64": "REdCUAMAbAADAAAAAQAAAOpBjnQBAAAAXAAAAEwAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAwAAAAAAAAAGAAAAAQAAAAYAAAAAAAAADAAAAAAAAAAAAAAABQAAAAIAAAABAAAACwAAAAQAAABy0lMB"
+  }
+}

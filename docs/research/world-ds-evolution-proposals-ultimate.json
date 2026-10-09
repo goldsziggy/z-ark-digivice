@@ -1,0 +1,1655 @@
+{
+  "formatVersion": 1,
+  "status": "proposal-only-not-applied",
+  "reviewedDate": "2026-10-06",
+  "sourceRange": {
+    "firstIndex": 120,
+    "lastIndex": 177,
+    "count": 58
+  },
+  "baselineRulesVersion": 5,
+  "plannedRulesVersion": 6,
+  "policy": {
+    "preserveExisting66StatsAndEdges": true,
+    "preserveAllExistingGraphEdges": true,
+    "maximumOutgoing": 2,
+    "multipleIncoming": "Root approved; record old parent and add secondary binding without deleting it.",
+    "acyclic": true,
+    "noNewForms": true,
+    "sourceOrExistingRuntimeFormsOnly": true,
+    "missingArtNotIntegrated": true,
+    "canonicalClaims": "direct-canon means an official source explicitly permits or states the relationship in its own profile/card context. It never means exclusive canon or exact World DS rules.",
+    "prototypeGates": "All level/bond requirements here are authored; official card costs are not translated into game stats.",
+    "fusionAndVariants": "Existing fusion shortcuts are flagged; new special conversions require explicit approval rather than inventing missing mechanics."
+  },
+  "summary": {
+    "assignedRows": 58,
+    "proposedEdges": 13,
+    "ordinaryOrSecondaryParentRecommendations": 12,
+    "conditionalVariantConversions": 1,
+    "validatedMaximumOutgoing": 2
+  },
+  "proposedEdges": [
+    {
+      "fromFormId": 137,
+      "toFormId": 205,
+      "fromName": "GeoGreymon",
+      "toName": "RizeGreymon",
+      "fromEntryKey": "geogreymon",
+      "toEntryKey": "rizegreymon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "direct-canon",
+      "reason": "Continue the GeoGreymon family into the listed RizeGreymon. The official card game explicitly names GeoGreymon as a digivolution source; prototype XP/bond gates remain our own.",
+      "primarySupport": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?card_no=BT21-044&search=true",
+          "supports": "Official RizeGreymon card explicitly permits digivolution from GeoGreymon."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=rizegreymon",
+          "supports": "Confirms Ultimate Cyborg identity."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "evidence-is-official-card-game-not-world-ds"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 136,
+      "toFormId": 206,
+      "fromName": "Gekomon",
+      "toName": "ShogunGekomon",
+      "fromEntryKey": "gekomon",
+      "toEntryKey": "shogungekomon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "inferred-family",
+      "reason": "Continue the musical amphibian family. The ShogunGekomon profile directly compares its voice and social bearing with Gekomon; it does not specify a game evolution requirement.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=tonosamagekomon",
+          "supports": "Names Gekomon while describing the more powerful musical Ultimate."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 160,
+      "toFormId": 209,
+      "fromName": "Starmon",
+      "toName": "SuperStarmon",
+      "fromEntryKey": "starmon",
+      "toEntryKey": "superstarmon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "direct-canon",
+      "reason": "The official profile expressly calls SuperStarmon the Ultimate form of Starmon.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=superstarmon",
+          "supports": "Explicit Starmon-to-Ultimate relationship."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 148,
+      "toFormId": 199,
+      "fromName": "Numemon",
+      "toName": "Monzaemon",
+      "fromEntryKey": "numemon",
+      "toEntryKey": "monzaemon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "direct-canon",
+      "reason": "Use the established Numemon-to-Monzaemon transformation as a positive, elective progression. Do not add care-punishment or costume inventory conditions.",
+      "primarySupport": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?card_no=BT22-038&search=true",
+          "supports": "Official Monzaemon card explicitly names Numemon as its digivolution source."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=monzaemon",
+          "supports": "Confirms the mysterious Puppet identity, but does not identify the occupant."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "evidence-is-official-card-game-not-world-ds",
+        "no-care-punishment"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 144,
+      "toFormId": 175,
+      "fromName": "Kiwimon",
+      "toName": "Deramon",
+      "fromEntryKey": "kiwimon",
+      "toEntryKey": "deramon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "inferred-family",
+      "reason": "Join the two flightless plant-bird forms. Deramon's official profile explicitly compares its plant qualities and inability to fly with Kiwimon; the precise parent assignment is inferred.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=delumon",
+          "supports": "Explicit comparison to Kiwimon and Ultimate evolution, without an exclusive parent claim."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 164,
+      "toFormId": 173,
+      "fromName": "Vegiemon",
+      "toName": "Blossomon",
+      "fromEntryKey": "vegiemon",
+      "toEntryKey": "blossomon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "authored-game-choice",
+      "reason": "An authored vegetation route from the tendril-bearing plant Champion to the flower-and-tentacle Ultimate. Official profiles establish the shared plant theme, not a direct evolution edge.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=vegimon",
+          "supports": "Champion Vegetation identity and vine-based body."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blossomon",
+          "supports": "Ultimate Vegetation identity, flowers and tentacles."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "theme-support-only"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 19,
+      "toFormId": 208,
+      "fromName": "Greymon",
+      "toName": "SkullGreymon",
+      "fromEntryKey": "greymon",
+      "toEntryKey": "skullgreymon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "direct-canon",
+      "reason": "Add the familiar SkullGreymon branch while preserving Greymon-to-MetalGreymon. The player chooses it normally; the prototype must not require neglect, death, or a care mistake.",
+      "primarySupport": [
+        {
+          "url": "https://en.digimoncard.com/products/pack/ver14/special/",
+          "supports": "Official deck instructions explicitly progress Greymon into SkullGreymon."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=skullgreymon",
+          "supports": "Describes the Undead Ultimate; no prototype punishment mechanic is inferred."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "adds-second-child-to-preserved-form",
+        "evidence-is-official-card-game-not-world-ds",
+        "no-care-punishment"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 40,
+      "toFormId": 195,
+      "fromName": "Kabuterimon",
+      "toName": "MegaKabuterimon Blue",
+      "fromEntryKey": "kabuterimon",
+      "toEntryKey": "megakabuterimon-blue",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "direct-canon",
+      "reason": "Add the blue MegaKabuterimon branch while keeping the existing red branch. The blue profile explicitly states that it digivolved from Kabuterimon.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue",
+          "supports": "Explicit Kabuterimon predecessor for the Blue variant."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "adds-second-child-to-preserved-form",
+        "distinct-color-form-kept"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 129,
+      "toFormId": 187,
+      "fromName": "Dinohyumon",
+      "toName": "Kyukimon",
+      "fromEntryKey": "dinohyumon",
+      "toEntryKey": "kyukimon",
+      "proposalStatus": "recommended",
+      "evidenceClassification": "authored-game-choice",
+      "reason": "Carry the sword-focused Kotemon/Dinohyumon branch into a blade-bodied Ultimate. This is a curated combat-theme continuation, not a claim that the encyclopedia or World DS lists this exact gate.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dinohumon",
+          "supports": "Dinohyumon is a sword- and arm-blade-equipped warrior."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kyukimon",
+          "supports": "Kyukimon is a fast, blade-covered beast with cutting attacks."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "theme-support-only",
+        "outgoing-continuation-owned-by-late-review"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 204,
+      "toFormId": 170,
+      "fromName": "Rapidmon",
+      "toName": "BlackRapidmon",
+      "fromEntryKey": "rapidmon",
+      "toEntryKey": "blackrapidmon",
+      "proposalStatus": "conditional-authored-shortcut",
+      "evidenceClassification": "direct-canon",
+      "reason": "BlackRapidmon's profile states that it is Rapidmon altered by ingesting Black Digitron. Offer this only as an explicitly authored one-way variant conversion; ordinary level/bond alone does not reproduce that lore condition.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackrapidmon",
+          "supports": "Explicit Rapidmon-to-BlackRapidmon change via Black Digitron."
+        }
+      ],
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "same-stage-variant-conversion",
+        "requires-root-gate-decision",
+        "item-condition-not-implemented"
+      ],
+      "unimplementedConditions": [
+        "Black Digitron ingestion is not implemented; if merged, label the level/bond conversion as a prototype shortcut."
+      ],
+      "existingTargetParents": []
+    },
+    {
+      "fromFormId": 195,
+      "toFormId": 42,
+      "fromName": "MegaKabuterimon Blue",
+      "toName": "HerculesKabuterimon",
+      "fromEntryKey": "megakabuterimon-blue",
+      "toEntryKey": "herculeskabuterimon",
+      "proposalStatus": "recommended-with-secondary-parent",
+      "evidenceClassification": "inferred-family",
+      "reason": "Allow the blue MegaKabuterimon branch to reach the existing HerculesKabuterimon without removing the red branch. The official profile describes combined Kabuterimon/Kuwagamon data and a previous MegaKabuterimon state; it does not identify an exclusive color predecessor.",
+      "primarySupport": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=heraklekabuterimon",
+          "supports": "Combined Kabuterimon/Kuwagamon data and prior MegaKabuterimon flight ability."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue",
+          "supports": "Blue is itself a Kabuterimon digivolution."
+        }
+      ],
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "preserve-existing-parent-41",
+        "multiple-incoming-required",
+        "data-combination-shortcut"
+      ],
+      "unimplementedConditions": [
+        "No second companion, fusion consumption, or data-combination mechanic is implemented."
+      ],
+      "existingTargetParents": [
+        41
+      ]
+    },
+    {
+      "fromFormId": 177,
+      "toFormId": 45,
+      "fromName": "Dinobeemon",
+      "toName": "GranKuwagamon",
+      "fromEntryKey": "dinobeemon",
+      "toEntryKey": "grankuwagamon",
+      "proposalStatus": "recommended-with-secondary-parent",
+      "evidenceClassification": "direct-canon",
+      "reason": "Continue Dinobeemon into GranKuwagamon while preserving Okuwamon's existing route. The official card explicitly names Dinobeemon; this does not assert World DS's original requirements.",
+      "primarySupport": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?category=508204&search=true",
+          "supports": "BT16-046 GranKuwagamon ACE explicitly names Dinobeemon as a digivolution source."
+        }
+      ],
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "preserve-existing-parent-44",
+        "multiple-incoming-required",
+        "evidence-is-official-card-game-not-world-ds",
+        "upstream-fusion-shortcut-already-authored"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": [
+        44
+      ]
+    },
+    {
+      "fromFormId": 189,
+      "toFormId": 49,
+      "fromName": "Lilamon",
+      "toName": "Rosemon",
+      "fromEntryKey": "lilamon",
+      "toEntryKey": "rosemon",
+      "proposalStatus": "recommended-with-secondary-parent",
+      "evidenceClassification": "direct-canon",
+      "reason": "Continue the Lalamon/Sunflowmon/Lilamon family into the existing Rosemon while preserving Lillymon's existing route. Official ST24-11 explicitly names Lilamon.",
+      "primarySupport": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?category=508124&search=true",
+          "supports": "Official Rosemon ST24-11 explicitly names Lilamon as a digivolution source."
+        }
+      ],
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "gateOrigin": "authored-prototype-level-and-bond",
+      "canonicalExclusivePathClaim": false,
+      "worldDsExactRequirementClaim": false,
+      "flags": [
+        "preserve-existing-parent-48",
+        "multiple-incoming-required",
+        "evidence-is-official-card-game-not-world-ds"
+      ],
+      "unimplementedConditions": [],
+      "existingTargetParents": [
+        48
+      ]
+    }
+  ],
+  "coordinatedElsewhere": {
+    "earlyProposal": "docs/research/world-ds-evolution-proposals-early.json",
+    "earlyIncoming": [
+      [
+        143,
+        198
+      ]
+    ],
+    "lateProposal": "docs/research/world-ds-evolution-proposals-late.json",
+    "lateOutgoing": [
+      [
+        181,
+        256
+      ],
+      [
+        192,
+        263
+      ],
+      [
+        170,
+        221
+      ],
+      [
+        171,
+        224
+      ],
+      [
+        187,
+        242
+      ],
+      [
+        16,
+        253
+      ]
+    ],
+    "lateConditionalReviews": [
+      [
+        174,
+        248
+      ],
+      [
+        188,
+        251
+      ],
+      [
+        213,
+        266
+      ]
+    ]
+  },
+  "entries": [
+    {
+      "sourceIndex": 120,
+      "entryKey": "andromon",
+      "formId": 166,
+      "name": "Andromon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 140,
+      "existingChildIds": [
+        243
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=andromon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 121,
+      "entryKey": "angewomon",
+      "formId": 167,
+      "name": "Angewomon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected-leaf",
+      "note": "Keep Gatomon-to-Angewomon. Both usual named angel-dragon endpoints under discussion, Ophanimon and Magnadramon, are absent from all276 runtime forms; do not create phantom target IDs.",
+      "flags": [
+        "missing-target"
+      ],
+      "existingParentId": 135,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=angewomon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 122,
+      "entryKey": "antylamon",
+      "formId": 168,
+      "name": "Antylamon",
+      "sourceStage": "Ultimate",
+      "disposition": "identity-review",
+      "note": "Antylamon source identity remains unresolved between the unqualified Virus form and the Deva Data form. Keep encounters; do not choose a Cherubimon branch before that review.",
+      "flags": [
+        "source-variant-unresolved"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=andiramon_2",
+        "https://digimon.net/reference_en/detail.php?directory_name=andiramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 123,
+      "entryKey": "arukenimon",
+      "formId": 169,
+      "name": "Arukenimon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "No particular available Champion predecessor or Mega continuation was established in this primary-source review. Do not connect it to Roachmon or Parasimon merely because all are arthropods.",
+      "flags": [
+        "no-reviewed-parent"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=archnemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 124,
+      "entryKey": "blackrapidmon",
+      "formId": 170,
+      "name": "BlackRapidmon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          204,
+          170
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=blackrapidmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 125,
+      "entryKey": "blackwargrowlmon",
+      "formId": 171,
+      "name": "BlackWarGrowlmon",
+      "sourceStage": "Ultimate",
+      "disposition": "partial-family",
+      "note": "BlackGrowlmon is the explicitly named official predecessor but is absent from the current runtime inventory. Keep BlackWarGrowlmon directly encounterable; the late reviewer proposes ChaosGallantmon as an explicitly authored variant continuation.",
+      "flags": [
+        "missing-predecessor",
+        "late-proposal-171-224"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=blackmegalogrowmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 126,
+      "entryKey": "blackweregarurumon",
+      "formId": 172,
+      "name": "BlackWereGarurumon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "The official profile specifies a Virus Garurumon predecessor. The retained Garurumon form is not that separately identified variant; a direct normal-Garurumon bridge would be an authored shortcut and is not recommended here.",
+      "flags": [
+        "missing-predecessor-variant"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=weregarurumon_black"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 127,
+      "entryKey": "blossomon",
+      "formId": 173,
+      "name": "Blossomon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          164,
+          173
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=blossomon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 128,
+      "entryKey": "cyberdramon",
+      "formId": 174,
+      "name": "Cyberdramon",
+      "sourceStage": "Ultimate",
+      "disposition": "partial-family",
+      "note": "Strikedramon is absent. Reptiledramon is not substituted merely to fill the gap. Cyberdramon-to-Justimon remains a late-review evidence hold; the form stays encounterable.",
+      "flags": [
+        "missing-predecessor",
+        "no-fabricated-substitute"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=cyberdramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 129,
+      "entryKey": "deramon",
+      "formId": 175,
+      "name": "Deramon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          144,
+          175
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=delumon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 130,
+      "entryKey": "digitamamon",
+      "formId": 176,
+      "name": "Digitamamon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "No reviewed available predecessor or follow-up established here; the natural named DevilTamamon endpoint is absent. Keep the egg-shaped Ultimate encounterable, not a false ordinary egg-onboarding option.",
+      "flags": [
+        "missing-target",
+        "not-onboarding-egg"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=digitamamon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 131,
+      "entryKey": "dinobeemon",
+      "formId": 177,
+      "name": "Dinobeemon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats. Existing single-parent prototype access is already a curated shortcut; it does not implement or claim the original fusion requirements.",
+      "flags": [
+        "existing-upstream-fusion-shortcut"
+      ],
+      "existingParentId": 161,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          177,
+          45
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=dinobeemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 132,
+      "entryKey": "divermon",
+      "formId": 178,
+      "name": "Divermon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "A marine-humanoid appearance is insufficient to assert Gwappamon or Hookmon as parent. Defer an edge until reviewed game evidence or a clearly chosen authored route exists.",
+      "flags": [
+        "no-reviewed-parent"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=hangyomon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 133,
+      "entryKey": "dorugreymon",
+      "formId": 179,
+      "name": "DoruGreymon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 130,
+      "existingChildIds": [
+        234
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=doruguremon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 134,
+      "entryKey": "dragomon",
+      "formId": 180,
+      "name": "Dragomon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "Keep Dragomon encounterable. No supported available predecessor or Mega route was established; being aquatic is insufficient to connect it to Neptunemon or Leviamon.",
+      "flags": [
+        "no-reviewed-route"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=dagomon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 135,
+      "entryKey": "etemon",
+      "formId": 181,
+      "name": "Etemon",
+      "sourceStage": "Ultimate",
+      "disposition": "partial-family",
+      "note": "Late proposal181→256 provides the Etemon-to-MetalEtemon continuation. Apemon is not assigned as parent solely because both look primate-like.",
+      "flags": [
+        "late-proposal-181-256",
+        "incoming-unreviewed"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=etemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 136,
+      "entryKey": "garbagemon",
+      "formId": 182,
+      "name": "Garbagemon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "Raremon-to-Garbagemon is only a waste-themed possibility, not established by the inspected profiles; defer rather than invent a route for coverage.",
+      "flags": [
+        "no-reviewed-parent"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=gerbemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 137,
+      "entryKey": "garudamon",
+      "formId": 183,
+      "name": "Garudamon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 125,
+      "existingChildIds": [
+        261
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=garudamon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 138,
+      "entryKey": "gigadramon",
+      "formId": 184,
+      "name": "Gigadramon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "Official Gigadramon text describes a black combat dragon developed alongside Megadramon, not a DarkTyrannomon evolution. A same-theme predecessor is not asserted.",
+      "flags": [
+        "no-reviewed-parent"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=gigadramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 139,
+      "entryKey": "infermon",
+      "formId": 185,
+      "name": "Infermon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 146,
+      "existingChildIds": [
+        233
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=infermon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 140,
+      "entryKey": "kimeramon",
+      "formId": 186,
+      "name": "Kimeramon",
+      "sourceStage": "Ultimate",
+      "disposition": "fusion-exception",
+      "note": "Kimeramon is a composite/special-creation identity. The current one-companion evolution action does not model its constituent data; keep it encounterable instead of silently inventing a fusion recipe.",
+      "flags": [
+        "fusion-not-implemented"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=chimairamon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 141,
+      "entryKey": "kyukimon",
+      "formId": 187,
+      "name": "Kyukimon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          129,
+          187
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=kyukimon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 142,
+      "entryKey": "ladydevimon",
+      "formId": 188,
+      "name": "LadyDevimon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "A LadyDevimon-to-Lilithmon route is an optional authored late proposal, not a verified direct path: Lilithmon's official origin instead names Ophanimon, which is absent.",
+      "flags": [
+        "optional-late-proposal-188-251",
+        "no-direct-canon-claim"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=ladydevimon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 143,
+      "entryKey": "lilamon",
+      "formId": 189,
+      "name": "Lilamon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 163,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          189,
+          49
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=lilamon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 144,
+      "entryKey": "lillymon",
+      "formId": 48,
+      "name": "Lillymon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 47,
+      "existingChildIds": [
+        49
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=lilimon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 145,
+      "entryKey": "lucemon-chaos-mode",
+      "formId": 190,
+      "name": "Lucemon Chaos Mode",
+      "sourceStage": "Ultimate",
+      "disposition": "special-form-exception",
+      "note": "Lucemon base and Satan Mode are absent. Do not link Chaos Mode to unrelated Demon Lords or treat the mode as an ordinary generic angel promotion.",
+      "flags": [
+        "missing-predecessor",
+        "missing-target",
+        "mode-exception"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=rucemonfalldownmode"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 146,
+      "entryKey": "machgaogamon",
+      "formId": 191,
+      "name": "MachGaogamon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected-leaf",
+      "note": "Keep Gaogamon-to-MachGaogamon. MirageGaogamon is absent from this inventory, so no replacement Mega is conjured.",
+      "flags": [
+        "missing-target"
+      ],
+      "existingParentId": 133,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=machgaogamon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 147,
+      "entryKey": "magnaangemon",
+      "formId": 34,
+      "name": "MagnaAngemon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 33,
+      "existingChildIds": [
+        35
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=holyangemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 148,
+      "entryKey": "mamemon",
+      "formId": 192,
+      "name": "Mamemon",
+      "sourceStage": "Ultimate",
+      "disposition": "partial-family",
+      "note": "The late reviewer proposes Mamemon-to-PrinceMamemon using the verified Mamemon-family identity. No arbitrary Champion is selected just to give the family a root.",
+      "flags": [
+        "late-proposal-192-263",
+        "incoming-unreviewed"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=mamemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 149,
+      "entryKey": "matadormon",
+      "formId": 193,
+      "name": "Matadormon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected-leaf",
+      "note": "Keep Sangloupmon-to-Matadormon. GrandDracmon is absent; no substitute Demon Lord route is added.",
+      "flags": [
+        "missing-target"
+      ],
+      "existingParentId": 156,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=matadrmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 150,
+      "entryKey": "megadramon",
+      "formId": 194,
+      "name": "Megadramon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "Megadramon is an artificially modified cyborg dragon. Airdramon is a plausible authored mechanization theme but not an explicit relationship in the inspected profile, so it remains a review candidate instead of a recommended edge.",
+      "flags": [
+        "no-reviewed-parent"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=megadramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 151,
+      "entryKey": "megakabuterimon-blue",
+      "formId": 195,
+      "name": "MegaKabuterimon Blue",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          40,
+          195
+        ],
+        [
+          195,
+          42
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 152,
+      "entryKey": "megakabuterimon-red",
+      "formId": 41,
+      "name": "MegaKabuterimon Red",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 40,
+      "existingChildIds": [
+        42
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 153,
+      "entryKey": "megaseadramon",
+      "formId": 196,
+      "name": "MegaSeadramon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 157,
+      "existingChildIds": [
+        257,
+        240
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=megaseadramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 154,
+      "entryKey": "metalgreymon",
+      "formId": 20,
+      "name": "MetalGreymon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 19,
+      "existingChildIds": [
+        21
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-v",
+        "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-web"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 155,
+      "entryKey": "metalmamemon",
+      "formId": 197,
+      "name": "MetalMamemon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "MetalMamemon is a named mechanized family member, but no exact ordinary predecessor was established here. Same-stage Mamemon conversion and composite-machine continuations require an explicit design choice.",
+      "flags": [
+        "same-stage-conversion-review"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=metalmamemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 156,
+      "entryKey": "meteormon",
+      "formId": 198,
+      "name": "Meteormon",
+      "sourceStage": "Ultimate",
+      "disposition": "external-incoming-proposal",
+      "note": "Early proposal143→198 links Icemon and Meteormon as an authored Gotsumon-family bridge. Official Meteormon text names Gotsumon ore data; Icemon's origin is expressly uncertain, so the bridge is not direct-canon.",
+      "flags": [
+        "owned-by-early-proposal",
+        "origin-uncertain"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=insekimon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 157,
+      "entryKey": "monzaemon",
+      "formId": 199,
+      "name": "Monzaemon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          148,
+          199
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=monzaemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 158,
+      "entryKey": "mummymon",
+      "formId": 200,
+      "name": "Mummymon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "No inspected primary source establishes an available ordinary predecessor or Mega follow-up for Mummymon. Undead appearance alone does not justify a Bakemon or Myotismon bridge.",
+      "flags": [
+        "no-reviewed-route"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=mummymon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 159,
+      "entryKey": "myotismon",
+      "formId": 16,
+      "name": "Myotismon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 15,
+      "existingChildIds": [
+        17
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=vamdemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 160,
+      "entryKey": "okuwamon",
+      "formId": 44,
+      "name": "Okuwamon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 43,
+      "existingChildIds": [
+        45
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=okuwamon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 161,
+      "entryKey": "paildramon",
+      "formId": 201,
+      "name": "Paildramon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity. Existing single-parent prototype access is already a curated shortcut; it does not implement or claim the original fusion requirements.",
+      "flags": [
+        "existing-upstream-fusion-shortcut"
+      ],
+      "existingParentId": 131,
+      "existingChildIds": [
+        244
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=paildramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 162,
+      "entryKey": "parrotmon",
+      "formId": 202,
+      "name": "Parrotmon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "Parrotmon-to-Crossmon is a possible bird-family route under late review; no stronger incoming route was established here. Do not silently replace existing Garudamon/Phoenixmon links.",
+      "flags": [
+        "late-route-review"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=parrotmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 163,
+      "entryKey": "piximon",
+      "formId": 203,
+      "name": "Piximon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "Piximon stays encounterable. A small fairy appearance does not justify assigning it to an unrelated angel or flower family without a reviewed route.",
+      "flags": [
+        "no-reviewed-route"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=picklemon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 164,
+      "entryKey": "rapidmon",
+      "formId": 204,
+      "name": "Rapidmon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-family-route",
+      "note": "Use the explicitly qualified proposals referenced below; preserve all existing edges and stats.",
+      "flags": [],
+      "existingParentId": 134,
+      "existingChildIds": [
+        255
+      ],
+      "proposedEdges": [
+        [
+          204,
+          170
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=rapidmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 165,
+      "entryKey": "rizegreymon",
+      "formId": 205,
+      "name": "RizeGreymon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-connected-leaf",
+      "note": "GeoGreymon-to-RizeGreymon is proposed with direct official-card support. ShineGreymon is absent; retain a truthful leaf rather than route to an unrelated Mega.",
+      "flags": [
+        "missing-target"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          137,
+          205
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=rizegreymon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 166,
+      "entryKey": "shogungekomon",
+      "formId": 206,
+      "name": "ShogunGekomon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-connected-leaf",
+      "note": "Gekomon-to-ShogunGekomon is proposed. No supported available Mega continuation was established.",
+      "flags": [
+        "no-reviewed-target"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          136,
+          206
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=tonosamagekomon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 167,
+      "entryKey": "silphymon",
+      "formId": 207,
+      "name": "Silphymon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity. Existing single-parent prototype access is already a curated shortcut; it does not implement or claim the original fusion requirements.",
+      "flags": [
+        "existing-upstream-fusion-shortcut"
+      ],
+      "existingParentId": 123,
+      "existingChildIds": [
+        265
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=silphymon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 168,
+      "entryKey": "skullgreymon",
+      "formId": 208,
+      "name": "SkullGreymon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-connected-leaf",
+      "note": "Add the elective Greymon dark branch. No neglect/death condition and no arbitrary Mega successor are introduced.",
+      "flags": [
+        "no-care-punishment"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          19,
+          208
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=skullgreymon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 169,
+      "entryKey": "superstarmon",
+      "formId": 209,
+      "name": "SuperStarmon",
+      "sourceStage": "Ultimate",
+      "disposition": "proposed-connected-leaf",
+      "note": "Directly supported Starmon promotion. No available natural higher named star form was established in this inventory.",
+      "flags": [
+        "no-reviewed-target"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [
+        [
+          160,
+          209
+        ]
+      ],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=superstarmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 170,
+      "entryKey": "taomon",
+      "formId": 62,
+      "name": "Taomon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 61,
+      "existingChildIds": [
+        63
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=taomon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 171,
+      "entryKey": "triceramon",
+      "formId": 210,
+      "name": "Triceramon",
+      "sourceStage": "Ultimate",
+      "disposition": "encounter-only-review",
+      "note": "Triceramon remains encounterable. Cannondramon is a plausible armored-dinosaur continuation but requires a separately reviewed authored choice; no incoming dinosaur is assigned merely by resemblance.",
+      "flags": [
+        "no-reviewed-parent",
+        "late-route-review"
+      ],
+      "existingParentId": 0,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=triceramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 172,
+      "entryKey": "tyilinmon",
+      "formId": 211,
+      "name": "Tyilinmon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 153,
+      "existingChildIds": [
+        249
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=tyilinmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 173,
+      "entryKey": "wargrowlmon",
+      "formId": 212,
+      "name": "WarGrowlmon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 139,
+      "existingChildIds": [
+        236
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=megalogrowmon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 174,
+      "entryKey": "weregarurumon",
+      "formId": 27,
+      "name": "WereGarurumon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 26,
+      "existingChildIds": [
+        28
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=weregarrumon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 175,
+      "entryKey": "whamon",
+      "formId": 58,
+      "name": "Whamon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 57,
+      "existingChildIds": [
+        59
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=whamon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 176,
+      "entryKey": "yatagaramon",
+      "formId": 213,
+      "name": "Yatagaramon",
+      "sourceStage": "Ultimate",
+      "disposition": "identity-review",
+      "note": "Keep the existing Peckmon route unchanged. The Yatagaramon source sheet remains unresolved between two Crowmon versions; defer new Varodurumon/Ravemon claims until identity review, and Ravemon is absent anyway.",
+      "flags": [
+        "source-variant-unresolved",
+        "missing-target"
+      ],
+      "existingParentId": 150,
+      "existingChildIds": [],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=yatagaramon_axcel",
+        "https://digimon.net/reference_en/detail.php?directory_name=yatagaramon"
+      ],
+      "identityReferencesProveEvolution": false
+    },
+    {
+      "sourceIndex": 177,
+      "entryKey": "zudomon",
+      "formId": 55,
+      "name": "Zudomon",
+      "sourceStage": "Ultimate",
+      "disposition": "preserve-connected",
+      "note": "Existing reviewed route remains unchanged; this slice does not replace its parents, children, stats or identity.",
+      "flags": [],
+      "existingParentId": 54,
+      "existingChildIds": [
+        56
+      ],
+      "proposedEdges": [],
+      "officialIdentityReferences": [
+        "https://digimon.net/reference_en/detail.php?directory_name=zudomon"
+      ],
+      "identityReferencesProveEvolution": false
+    }
+  ]
+}

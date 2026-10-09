@@ -1,0 +1,45 @@
+{
+  "upstreamRepository": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46",
+  "upstreamCommit": "fda89ff2ff32eb1bce561901225c6a36fa684237",
+  "license": "Apache-2.0 (SPDX in each copied source file)",
+  "copiedFiles": [
+    {
+      "file": "esp_lcd_spd2010.c",
+      "source": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46/blob/fda89ff2ff32eb1bce561901225c6a36fa684237/example/ESP-IDF-5.3.2/ESP32-S3-Touch-LCD-1.46-Test/main/LCD_Driver/esp_lcd_spd2010/esp_lcd_spd2010.c",
+      "upstreamSha256": "50a37cb6ccdb6d29dec51459b92c0b55f7c4581351e7b567c7d22d77cfe8d721",
+      "localSha256": "72d60272c66b67d172a088c51dc164d1bec5ed0c37c9ec6e12cf44c8b7cd348d"
+    },
+    {
+      "file": "esp_lcd_spd2010.h",
+      "source": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46/blob/fda89ff2ff32eb1bce561901225c6a36fa684237/example/ESP-IDF-5.3.2/ESP32-S3-Touch-LCD-1.46-Test/main/LCD_Driver/esp_lcd_spd2010/esp_lcd_spd2010.h",
+      "upstreamSha256": "7d1b304f4a06a9add4293c97eb8c6cc4e12a599699df4fc744c783566213097c",
+      "localSha256": "7d1b304f4a06a9add4293c97eb8c6cc4e12a599699df4fc744c783566213097c"
+    }
+  ],
+  "protocolReferenceFiles": [
+    {
+      "source": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46/blob/fda89ff2ff32eb1bce561901225c6a36fa684237/example/ESP-IDF-5.3.2/ESP32-S3-Touch-LCD-1.46-Test/main/LCD_Driver/Display_SPD2010.c",
+      "sha256": "422c80e2e95d71d75bf0c6788dcd88e20c392a6c52086b55b198d72b02ea1248"
+    },
+    {
+      "source": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46/blob/fda89ff2ff32eb1bce561901225c6a36fa684237/example/ESP-IDF-5.3.2/ESP32-S3-Touch-LCD-1.46-Test/main/LCD_Driver/Display_SPD2010.h",
+      "sha256": "49524921b37de4342b3d1d0f2a94b7cfdf51f099564f7cf5004eddee03a5f14b"
+    },
+    {
+      "source": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46/blob/fda89ff2ff32eb1bce561901225c6a36fa684237/example/ESP-IDF-5.3.2/ESP32-S3-Touch-LCD-1.46-Test/main/Touch_Driver/Touch_SPD2010.c",
+      "sha256": "a42e51b7f6e11c3d3e16cc5bf35ffa094eede7a00db3a0c77b629c4713cca2ad"
+    },
+    {
+      "source": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46/blob/fda89ff2ff32eb1bce561901225c6a36fa684237/example/ESP-IDF-5.3.2/ESP32-S3-Touch-LCD-1.46-Test/main/Touch_Driver/Touch_SPD2010.h",
+      "sha256": "f0bf08272e7078d107e17acbf2c497d63dd0c988a07df122135f18c48bd7f1cd"
+    },
+    {
+      "source": "https://github.com/waveshareteam/ESP32-S3-Touch-LCD-1.46/blob/fda89ff2ff32eb1bce561901225c6a36fa684237/example/ESP-IDF-5.3.2/ESP32-S3-Touch-LCD-1.46-Test/main/EXIO/TCA9554PWR.c",
+      "sha256": "c3cd5c82f69da3021ff91c36e41a6d13abae24d006e6f6b989799070803ce19e"
+    }
+  ],
+  "changes": [
+    "esp_lcd_spd2010.c: explicit unused-parameter casts in unsupported swap_xy function; initialization table and panel behavior unchanged."
+  ],
+  "adapter": "../../display_touch.cpp uses an independent bounded modern-I2C implementation of the vendor touch wire protocol; vendor legacy-I2C touch/application code is not copied."
+}

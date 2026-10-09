@@ -1,0 +1,48 @@
+{
+  "formatVersion": 1,
+  "developmentFirmware": true,
+  "board": "waveshare-esp32-s3-touch-lcd-1.46-standard-glass-sku29565",
+  "profile": "waveshare",
+  "chip": "esp32s3",
+  "sdk": {
+    "version": "5.3.6",
+    "commit": "79e3454c68248bd7d881721c9b2e94561378a8ce"
+  },
+  "esptoolVersion": "4.12.0",
+  "firmwareSource": "f74ee4c132b4b9bc6407d99bbc20b13af9dfd962",
+  "reviewSource": "f74ee4c132b4b9bc6407d99bbc20b13af9dfd962",
+  "embeddedProjectVersion": "f74ee4c",
+  "sdkconfigSha256": "6a6b94a479d196a2312c3deb20012e13f868025dc4a72a48b757e424bef34233",
+  "flashSettings": {
+    "flash_mode": "dio",
+    "flash_size": "16MB",
+    "flash_freq": "80m"
+  },
+  "partitionTableOffset": 32768,
+  "images": {
+    "bootloader": {
+      "file": "bootloader/bootloader.bin",
+      "offset": 0,
+      "bytes": 21392,
+      "sha256": "3e2d70618d82d036333b9db42a6299d95bfc820f5c72adcc9aab1dd29e3474e9"
+    },
+    "partition-table": {
+      "file": "partition_table/partition-table.bin",
+      "offset": 32768,
+      "bytes": 3072,
+      "sha256": "703550d3bc9af51a7cf8c96f486ba5acb13f81d2301035b3eae0da4f793d33f1"
+    },
+    "otadata": {
+      "file": "ota_data_initial.bin",
+      "offset": 102400,
+      "bytes": 8192,
+      "sha256": "7d2c7ac4888bfd75cd5f56e8d61f69595121183afc81556c876732fd3782c62f"
+    },
+    "app": {
+      "file": "digivice.bin",
+      "offset": 131072,
+      "bytes": 1550512,
+      "sha256": "9e728539f57bd82f3d53e4cc749c8475e52e68b124d8901d1d9324cf692ae324"
+    }
+  }
+}

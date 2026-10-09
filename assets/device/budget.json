@@ -1,0 +1,560 @@
+{
+  "assumed": {
+    "decoderScratchBytes": "unmeasured; JPEG decoder and BSP dependent",
+    "lowMemory": {
+      "backgroundDecode": false,
+      "encodedCacheReservation": "must be reduced by runtime profile; do not reserve normal five-slot maximum",
+      "psramBytes": 2097152,
+      "spriteMode": "resident16px fallback or selected32px sprite only",
+      "spriteOneFrameEachRGB565Bytes": 1024
+    },
+    "networkTLSAndSystemHeapBytes": "unmeasured; excluded",
+    "normal": {
+      "displayStripBytes": 79104,
+      "downloadChunkBytes": 4096,
+      "encodedCacheAtomicSpareSlots": 1,
+      "encodedCacheMaxBytes": 655360,
+      "encodedCacheRetainedSlots": 4,
+      "optionalFullDisplayRGB565Bytes": 339488,
+      "optionalFullSceneRGB565Bytes": 339488,
+      "psramBytes": 8388608,
+      "spriteFourFrameClipsEachRGB565Bytes": 16384,
+      "spriteOneFrameEachRGB565Bytes": 4096
+    },
+    "notes": [
+      "Encoded content is flash/download storage, not simultaneous decoded RAM.",
+      "Normal strip budget is provisional until QSPI DMA and RGB565 byte order are bench verified.",
+      "Optional full scene and full display buffers are separate alternatives; do not silently allocate both.",
+      "No microSD is needed for current asset bytes alone; firmware, OTA slots and partitions still require a flash plan.",
+      "No RAM, FPS or power measurement was made on physical hardware."
+    ]
+  },
+  "formatVersion": 1,
+  "measured": {
+    "backgroundBytes": 0,
+    "encodedAssetBytes": 88160,
+    "fallback": {
+      "flicker": {
+        "bytes": 1264,
+        "frames": 9,
+        "height": 16,
+        "sha256": "12c1f88ef6bcbba4d9eb891dfe14194af227e7522314d0a1e13a91bd5bd62342",
+        "width": 16
+      },
+      "mote": {
+        "bytes": 1264,
+        "frames": 9,
+        "height": 16,
+        "sha256": "cb31ddfa54ba17cda3cc5c0052d274f9b352b8b62e8a31183ccbb434fd270521",
+        "width": 16
+      }
+    },
+    "indexBytes": 2012,
+    "largestBlobBytes": 8816,
+    "residentFallbackBytes": 2528,
+    "spriteBytes": 88160,
+    "sprites": {
+      "brine": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "cinder": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "flicker": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "glint": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "lumen": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "mote": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "pelagia": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "pyrel": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "rill": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      },
+      "scoria": {
+        "animations": [
+          {
+            "firstFrame": 0,
+            "frameMs": 180,
+            "frames": 4,
+            "id": 0,
+            "name": "idle"
+          },
+          {
+            "firstFrame": 4,
+            "frameMs": 100,
+            "frames": 3,
+            "id": 1,
+            "name": "attack"
+          },
+          {
+            "firstFrame": 7,
+            "frameMs": 130,
+            "frames": 2,
+            "id": 2,
+            "name": "hurt"
+          },
+          {
+            "firstFrame": 9,
+            "frameMs": 650,
+            "frames": 2,
+            "id": 3,
+            "name": "sleep"
+          },
+          {
+            "firstFrame": 11,
+            "frameMs": 260,
+            "frames": 2,
+            "id": 4,
+            "name": "care"
+          },
+          {
+            "firstFrame": 13,
+            "frameMs": 150,
+            "frames": 4,
+            "id": 5,
+            "name": "celebrate"
+          }
+        ],
+        "encodedBytes": 8816,
+        "frameBytes": 512,
+        "frames": 17,
+        "pixels": 17408
+      }
+    }
+  },
+  "scope": "Source export: ten original CC0 sprite blobs; no background payloads."
+}

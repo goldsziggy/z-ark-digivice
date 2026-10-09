@@ -1,0 +1,6 @@
+fd72d249489681c97264a75f1737c97539f3a1156612f16bced5ee0c884dcd15  common-black-two-devices.zip
+8f067094f61efe33e5e1c1f6b6cebabdd7efbd5f45b15851107e6814a0377435  common-red-two-devices.zip
+52ee0c56895f02dfd3a729e76875aebd3fe8d9dd1c61d5cf0ed666d020c87768  C14-P19-buttons-front-pair.zip
+4aa472fa0f72cdd7c31ef2dfe22b566d2c4e0b06a59ca283af9a9e156e63f627  C14-P19-buttons-full-white.zip
+2d88cf44b2ce38a9f900850ddae2c0015d953018aada4b86fe51a41d1af7419f  C14-P19-touch-front-pair.zip
+20b334bb5b1c7cd083a1afa39b91401785ec7f7fe7d138ba78a643f3ece794e4  C14-P19-touch-full-white.zip

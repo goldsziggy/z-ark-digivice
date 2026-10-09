@@ -1,0 +1,3598 @@
+{
+  "formatVersion": 1,
+  "status": "proposal-only-parent-review-required",
+  "baselineCommit": "324b774",
+  "scope": {
+    "sourceStartInclusive": 0,
+    "sourceEndInclusive": 119,
+    "entries": 120,
+    "stages": [
+      "Fresh",
+      "In-Training",
+      "Rookie",
+      "Champion"
+    ]
+  },
+  "architecture": {
+    "latestParentDecision": "Separate evolution edges; multiple incoming edges allowed; maximum two outgoing curated choices; legacy edges/stats preserved.",
+    "noCanonicalExclusivity": true,
+    "noArtworkClaims": true,
+    "noRuntimeEdits": true,
+    "sameStageAnchorPolicy": "Early requirements are edge gates, never changes to stat-anchor levels. Existing direct-to-Rookie hatch remains unaffected."
+  },
+  "unlockDefaults": {
+    "toInTraining": {
+      "level": 1,
+      "bond": 10
+    },
+    "toRookie": {
+      "level": 1,
+      "bond": 20
+    },
+    "toChampion": {
+      "level": 5,
+      "bond": 20
+    },
+    "toUltimate": {
+      "level": 10,
+      "bond": 50
+    },
+    "toMega": {
+      "level": 15,
+      "bond": 80
+    }
+  },
+  "relationshipEvidenceSemantics": {
+    "explicit": "The stated narrow relationship fact is explicit in an official profile; the proposed game edge is still a design choice.",
+    "inferred": "The official profile supplies family or qualified-origin evidence; it does not prescribe this edge.",
+    "authored": "Endpoint identities/stages are sourced; the selected playable route is authored and not claimed to be established by those pages."
+  },
+  "summary": {
+    "recommendedNewEdges": 30,
+    "conditionalEdges": 1,
+    "assignedRowsReviewed": 120,
+    "babyFormsWithProposedRoute": 11,
+    "perRowExceptions": 34,
+    "maxOutgoingAfterOwnAndCoordinatedProposals": 2,
+    "dagValidated": true
+  },
+  "proposals": [
+    {
+      "proposalId": "early-67-117",
+      "fromFormId": 67,
+      "toFormId": 117,
+      "fromEntryKey": "chibomon",
+      "toEntryKey": "veemon",
+      "fromName": "Chibomon",
+      "toName": "Veemon",
+      "fromSourceDisplayName": "Chibomon",
+      "toSourceDisplayName": "Veemon",
+      "disposition": "recommended-authored-route",
+      "reason": "Choose the available blue-dragon Rookie; DemiVeemon is absent, so this is an explicit stage shortcut.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=chicomon",
+        "claim": "The official Chibomon profile permits broad Dragon evolution. It does not specify this direct game edge.",
+        "status": "inferred",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=chicomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=v-mon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [
+        "DemiVeemon"
+      ],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-68-99",
+      "fromFormId": 68,
+      "toFormId": 99,
+      "fromEntryKey": "kuramon",
+      "toEntryKey": "keramon",
+      "fromName": "Kuramon",
+      "toName": "Keramon",
+      "fromSourceDisplayName": "Kuramon",
+      "toSourceDisplayName": "Keramon",
+      "disposition": "recommended-authored-route",
+      "reason": "Continue the existing network-creature line through Keramon; missing Tsumemon is not replaced with an unrelated baby.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=kuramon",
+        "claim": "Official endpoint identities and their Unidentified network-creature classification support the theme, not a direct canonical edge.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=kuramon",
+          "https://digimon.net/reference_en/detail.php?directory_name=keramon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [
+        "Tsumemon"
+      ],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-69-76",
+      "fromFormId": 69,
+      "toFormId": 76,
+      "fromEntryKey": "poyomon",
+      "toEntryKey": "tokomon",
+      "fromName": "Poyomon",
+      "toName": "Tokomon",
+      "fromSourceDisplayName": "Poyomon",
+      "toSourceDisplayName": "Tokomon",
+      "disposition": "recommended-authored-route",
+      "reason": "Use the recognizable small-spirit baby progression before the Patamon branch.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=poyomon",
+        "claim": "Official references establish the two training stages; this selected game route is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=poyomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=tokomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 10,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-70-110",
+      "fromFormId": 70,
+      "toFormId": 110,
+      "fromEntryKey": "puttimon",
+      "toEntryKey": "salamon",
+      "fromName": "Puttimon",
+      "toName": "Salamon",
+      "fromSourceDisplayName": "Puttimon",
+      "toSourceDisplayName": "Salamon",
+      "disposition": "recommended-authored-route",
+      "reason": "Join the established Salamon/Gatomon route; Cupimon is absent, and no unavailable form is invented.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=puttimon",
+        "claim": "Official endpoint identities support an authored holy-companion route; no direct canonical shortcut is asserted.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=puttimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=plotmon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [
+        "Cupimon"
+      ],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-71-85",
+      "fromFormId": 71,
+      "toFormId": 85,
+      "fromEntryKey": "dorimon",
+      "toEntryKey": "dorumon",
+      "fromName": "Dorimon",
+      "toName": "Dorumon",
+      "fromSourceDisplayName": "Dorimon",
+      "toSourceDisplayName": "Dorumon",
+      "disposition": "recommended-authored-route",
+      "reason": "Continue the recognizable Doru family into its existing dragon line.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=dorimon",
+        "claim": "Official pages establish Dorimon and Dorumon identities; the route is a curated prototype choice.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=dorimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=dorumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-72-96",
+      "fromFormId": 72,
+      "toFormId": 96,
+      "fromEntryKey": "kapurimon",
+      "toEntryKey": "hagurumon",
+      "fromName": "Kapurimon",
+      "toName": "Hagurumon",
+      "fromSourceDisplayName": "Kapurimon",
+      "toSourceDisplayName": "Hagurumon",
+      "disposition": "recommended-authored-route",
+      "reason": "Offer the machine Rookie route already continued through Guardromon.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+        "claim": "Official identities and metal-machine themes support this game choice; no exclusive canonical parent is asserted.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=hagurumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-72-100",
+      "fromFormId": 72,
+      "toFormId": 100,
+      "fromEntryKey": "kapurimon",
+      "toEntryKey": "kotemon",
+      "fromName": "Kapurimon",
+      "toName": "Kotemon",
+      "fromSourceDisplayName": "Kapurimon",
+      "toSourceDisplayName": "Kotemon",
+      "disposition": "recommended-authored-route",
+      "reason": "Offer a second armored martial route to the sword-training Rookie.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+        "claim": "Official identities establish the endpoints; this two-choice game branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=kotemon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-73-18",
+      "fromFormId": 73,
+      "toFormId": 18,
+      "fromEntryKey": "koromon",
+      "toEntryKey": "agumon",
+      "fromName": "Koromon",
+      "toName": "Agumon",
+      "fromSourceDisplayName": "Koromon",
+      "toSourceDisplayName": "Agumon",
+      "disposition": "recommended-authored-route",
+      "reason": "Append an incoming early-stage route to preserved Agumon; retain both existing Champion choices.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+        "claim": "Official Koromon and Agumon pages verify identities/stages; this selected game edge is not claimed as an exclusive canonical route.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=agumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-73-82",
+      "fromFormId": 73,
+      "toFormId": 82,
+      "fromEntryKey": "koromon",
+      "toEntryKey": "blackagumon",
+      "fromName": "Koromon",
+      "toName": "BlackAgumon",
+      "fromSourceDisplayName": "Koromon",
+      "toSourceDisplayName": "BlackAgumon",
+      "disposition": "recommended-authored-route",
+      "reason": "Offer the separately represented black Rookie as a curated alternate, preserving its own source identity.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+        "claim": "Official Agumon (Black) is a separate reference. Its selection as a Koromon branch is authored, not a sprite alias merge.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=agumon-black"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": [
+        "romanization-or-localization-name-review"
+      ]
+    },
+    {
+      "proposalId": "early-74-84",
+      "fromFormId": 74,
+      "toFormId": 84,
+      "fromEntryKey": "pagumon",
+      "toEntryKey": "demidevimon",
+      "fromName": "Pagumon",
+      "toName": "DemiDevimon",
+      "fromSourceDisplayName": "Pagumon",
+      "toSourceDisplayName": "DemiDevimon",
+      "disposition": "recommended-authored-route",
+      "reason": "Choose a dark small-creature route leading to the preserved Devimon branch.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=pagumon",
+        "claim": "Endpoint reference identities are verified; the game branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=pagumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=picodevimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-75-46",
+      "fromFormId": 75,
+      "toFormId": 46,
+      "fromEntryKey": "tanemon",
+      "toEntryKey": "palmon",
+      "fromName": "Tanemon",
+      "toName": "Palmon",
+      "fromSourceDisplayName": "Tanemon",
+      "toSourceDisplayName": "Palmon",
+      "disposition": "recommended-authored-route",
+      "reason": "Append the familiar plant Rookie route without replacing Palmon outgoing branches.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+        "claim": "Official Tanemon is a Bulb and Palmon a Vegetation Rookie; exact route selection remains authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=palmon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-75-90",
+      "fromFormId": 75,
+      "toFormId": 90,
+      "fromEntryKey": "tanemon",
+      "toEntryKey": "floramon",
+      "fromName": "Tanemon",
+      "toName": "Floramon",
+      "fromSourceDisplayName": "Tanemon",
+      "toSourceDisplayName": "Floramon",
+      "disposition": "recommended-authored-route",
+      "reason": "Offer a second plant Rookie that can continue into Kiwimon.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+        "claim": "The endpoint plant classifications support the motif, not a canonical exclusivity claim.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=floramon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-76-32",
+      "fromFormId": 76,
+      "toFormId": 32,
+      "fromEntryKey": "tokomon",
+      "toEntryKey": "patamon",
+      "fromName": "Tokomon",
+      "toName": "Patamon",
+      "fromSourceDisplayName": "Tokomon",
+      "toSourceDisplayName": "Patamon",
+      "disposition": "recommended-authored-route",
+      "reason": "Append the recognizable Patamon route while keeping the existing two Champion choices.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+        "claim": "Official training/Rookie identities are verified; this prototype selects the route.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=patamon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-76-116",
+      "fromFormId": 76,
+      "toFormId": 116,
+      "fromEntryKey": "tokomon",
+      "toEntryKey": "tsukaimon",
+      "fromName": "Tokomon",
+      "toName": "Tsukaimon",
+      "fromSourceDisplayName": "Tokomon",
+      "toSourceDisplayName": "Tsukaimon",
+      "disposition": "recommended-authored-route",
+      "reason": "Offer the source-listed dark counterpart as an authored branch, distinct from Patamon.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+        "claim": "Separate official endpoint identities; the light/dark branching choice is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=tukaimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-77-25",
+      "fromFormId": 77,
+      "toFormId": 25,
+      "fromEntryKey": "tsunomon",
+      "toEntryKey": "gabumon",
+      "fromName": "Tsunomon",
+      "toName": "Gabumon",
+      "fromSourceDisplayName": "Tsunomon",
+      "toSourceDisplayName": "Gabumon",
+      "disposition": "recommended-authored-route",
+      "reason": "Append the recognizable Gabumon family route while preserving its two Champion choices.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tunomon",
+        "claim": "The references identify Tsunomon and Gabumon; this selected graph edge remains an authored game choice.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tunomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=gabumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-79-164",
+      "fromFormId": 79,
+      "toFormId": 164,
+      "fromEntryKey": "aruraumon",
+      "toEntryKey": "vegiemon",
+      "fromName": "Aruraumon",
+      "toName": "Vegiemon",
+      "fromSourceDisplayName": "Aruraumon",
+      "toSourceDisplayName": "Vegiemon",
+      "disposition": "recommended-authored-route",
+      "reason": "Give the separate plant Rookie a vegetation growth route; do not merge it with Palmon.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=alraumon",
+        "claim": "Official endpoint classifications establish plant identities; the specific growth edge is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=alraumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=vegimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-82-127",
+      "fromFormId": 82,
+      "toFormId": 127,
+      "fromEntryKey": "blackagumon",
+      "toEntryKey": "darktyrannomon",
+      "fromName": "BlackAgumon",
+      "toName": "DarkTyrannomon",
+      "fromSourceDisplayName": "BlackAgumon",
+      "toSourceDisplayName": "DarkTyrannomon",
+      "disposition": "recommended-authored-route",
+      "reason": "Continue the separate black dinosaur Rookie into DarkTyrannomon.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+        "claim": "Official pages identify the dark dinosaur endpoints; exact graph placement is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+          "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": [
+        "romanization-or-localization-name-review"
+      ]
+    },
+    {
+      "proposalId": "early-84-15",
+      "fromFormId": 84,
+      "toFormId": 15,
+      "fromEntryKey": "demidevimon",
+      "toEntryKey": "devimon",
+      "fromName": "DemiDevimon",
+      "toName": "Devimon",
+      "fromSourceDisplayName": "DemiDevimon",
+      "toSourceDisplayName": "Devimon",
+      "disposition": "recommended-authored-route",
+      "reason": "Join the existing Devimon line as an additional incoming route; Impmon route remains unchanged.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=picodevimon",
+        "claim": "Official identities support the devil-family connection; this is not a claim of an exclusive canonical parent.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=picodevimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=devimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-85-154",
+      "fromFormId": 85,
+      "toFormId": 154,
+      "fromEntryKey": "dorumon",
+      "toEntryKey": "reptiledramon",
+      "fromName": "Dorumon",
+      "toName": "Reptiledramon",
+      "fromSourceDisplayName": "Dorumon",
+      "toSourceDisplayName": "Reptiledramon",
+      "disposition": "recommended-authored-route",
+      "reason": "Offer the recognizable alternate prototype-dragon branch; leave its missing Grademon continuation explicit.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=dorumon",
+        "claim": "The verified Raptordramon reference corresponds to the source Reptiledramon candidate; this graph branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=dorumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=raptordramon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": [
+        "romanization-or-localization-name-review"
+      ]
+    },
+    {
+      "proposalId": "early-90-144",
+      "fromFormId": 90,
+      "toFormId": 144,
+      "fromEntryKey": "floramon",
+      "toEntryKey": "kiwimon",
+      "fromName": "Floramon",
+      "toName": "Kiwimon",
+      "fromSourceDisplayName": "Floramon",
+      "toSourceDisplayName": "Kiwimon",
+      "disposition": "recommended-authored-route",
+      "reason": "Continue the plant Rookie into the plant-associated bird route proposed toward Deramon.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=floramon",
+        "claim": "Official reference identities supply the endpoints; the particular Rookie-to-Champion route is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=floramon",
+          "https://digimon.net/reference_en/detail.php?directory_name=kiwimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-93-149",
+      "fromFormId": 93,
+      "toFormId": 149,
+      "fromEntryKey": "goburimon",
+      "toEntryKey": "ogremon",
+      "fromName": "Goburimon",
+      "toName": "Ogremon",
+      "fromSourceDisplayName": "Goburimon",
+      "toSourceDisplayName": "Ogremon",
+      "disposition": "recommended-authored-route",
+      "reason": "Use the recognizable goblin/ogre family instead of a generic dark-route substitution.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=goburimon",
+        "claim": "Goblimon/GOBURIMON and Ogremon identities are verified; this game progression is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=goburimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=orgemon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-94-143",
+      "fromFormId": 94,
+      "toFormId": 143,
+      "fromEntryKey": "gotsumon",
+      "toEntryKey": "icemon",
+      "fromName": "Gotsumon",
+      "toName": "Icemon",
+      "fromSourceDisplayName": "Gotsumon",
+      "toSourceDisplayName": "Icemon",
+      "disposition": "recommended-authored-route",
+      "reason": "Choose the officially suggested but uncertain Gotsumon/Icemon relationship as a playable branch.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=icemon",
+        "claim": "Icemon official profile explicitly leaves its origin uncertain between Gotsumon evolution and mutation; the game chooses an evolution edge.",
+        "status": "inferred",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=gottsumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=icemon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-94-198",
+      "fromFormId": 94,
+      "toFormId": 198,
+      "fromEntryKey": "gotsumon",
+      "toEntryKey": "meteormon",
+      "fromName": "Gotsumon",
+      "toName": "Meteormon",
+      "fromSourceDisplayName": "Gotsumon",
+      "toSourceDisplayName": "Meteormon",
+      "disposition": "recommended-authored-route",
+      "reason": "Offer an optional delayed direct family route, unlocking at Ultimate requirements rather than as a free jump.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=insekimon",
+        "claim": "Meteormon official profile explicitly says its meteorite material manifests from Gotsumon ore data; this is family evidence, not a mandatory game evolution procedure.",
+        "status": "explicit",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=gottsumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=insekimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [
+        "Champion stage"
+      ],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-100-129",
+      "fromFormId": 100,
+      "toFormId": 129,
+      "fromEntryKey": "kotemon",
+      "toEntryKey": "dinohyumon",
+      "fromName": "Kotemon",
+      "toName": "Dinohyumon",
+      "fromSourceDisplayName": "Kotemon",
+      "toSourceDisplayName": "Dinohyumon",
+      "disposition": "recommended-authored-route",
+      "reason": "Start the sword-family route coordinated with Dinohyumon→Kyukimon.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=kotemon",
+        "claim": "Official references establish the sword-bearing endpoints; the playable branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=kotemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=dinohumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-106-136",
+      "fromFormId": 106,
+      "toFormId": 136,
+      "fromEntryKey": "otamamon",
+      "toEntryKey": "gekomon",
+      "fromName": "Otamamon",
+      "toName": "Gekomon",
+      "fromSourceDisplayName": "Otamamon",
+      "toSourceDisplayName": "Gekomon",
+      "disposition": "recommended-authored-route",
+      "reason": "Use the recognizable amphibian family and the coordinated ShogunGekomon continuation.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=otamamon",
+        "claim": "Official endpoint identities establish tadpole/amphibian forms; the route is a curated game choice.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=otamamon",
+          "https://digimon.net/reference_en/detail.php?directory_name=gekomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-113-36",
+      "fromFormId": 113,
+      "toFormId": 36,
+      "fromEntryKey": "tapirmon",
+      "toEntryKey": "unimon",
+      "fromName": "Tapirmon",
+      "toName": "Unimon",
+      "fromSourceDisplayName": "Tapirmon",
+      "toSourceDisplayName": "Unimon",
+      "disposition": "recommended-authored-route",
+      "reason": "Append an available holy-beast route to preserved Unimon; Patamon incoming route remains unchanged.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=bakumon",
+        "claim": "Official identity references support this chosen holy-beast alternative; exact evolution is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=bakumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=yunimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-116-15",
+      "fromFormId": 116,
+      "toFormId": 15,
+      "fromEntryKey": "tsukaimon",
+      "toEntryKey": "devimon",
+      "fromName": "Tsukaimon",
+      "toName": "Devimon",
+      "fromSourceDisplayName": "Tsukaimon",
+      "toSourceDisplayName": "Devimon",
+      "disposition": "recommended-authored-route",
+      "reason": "Join the existing dark Champion branch without removing any prior incoming edge.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tukaimon",
+        "claim": "The game chooses a dark-winged branch between separately verified identities.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tukaimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=devimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-127-23",
+      "fromFormId": 127,
+      "toFormId": 23,
+      "fromEntryKey": "darktyrannomon",
+      "toEntryKey": null,
+      "fromName": "DarkTyrannomon",
+      "toName": "MetalTyrannomon",
+      "fromSourceDisplayName": "DarkTyrannomon",
+      "toSourceDisplayName": null,
+      "disposition": "recommended-authored-route",
+      "reason": "Join existing MetalTyrannomon/RustTyrannomon rather than inventing an unavailable new endpoint.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon",
+        "claim": "Previously verified MetalTyrannomon name/stage and DarkTyrannomon identity support an authored family route.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=metaltyranomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": true,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": []
+    },
+    {
+      "proposalId": "early-138-30",
+      "fromFormId": 138,
+      "toFormId": 30,
+      "fromEntryKey": "grizzmon",
+      "toEntryKey": null,
+      "fromName": "Grizzmon",
+      "toName": "GrapLeomon",
+      "fromSourceDisplayName": "Grizzmon",
+      "toSourceDisplayName": null,
+      "disposition": "recommended-authored-route",
+      "reason": "Join existing GrapLeomon/BanchoLeomon as a curated brawler continuation.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+        "claim": "Official Grizzlymon and GrapLeomon identity/stage facts are verified; this game route does not claim canonical exclusivity.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+          "https://digimon.net/reference_en/detail.php?directory_name=grappuleomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": true,
+      "appendsToPreservedForm": true,
+      "identityReviewNotes": [
+        "romanization-or-localization-name-review"
+      ]
+    },
+    {
+      "proposalId": "early-143-198",
+      "fromFormId": 143,
+      "toFormId": 198,
+      "fromEntryKey": "icemon",
+      "toEntryKey": "meteormon",
+      "fromName": "Icemon",
+      "toName": "Meteormon",
+      "fromSourceDisplayName": "Icemon",
+      "toSourceDisplayName": "Meteormon",
+      "disposition": "recommended-authored-route",
+      "reason": "Provide a sequential Champion-to-Ultimate ore-family continuation.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=insekimon",
+        "claim": "Meteormon explicitly references Gotsumon ore data; Icemon has an uncertain Gotsumon origin. Icemon→Meteormon itself is an authored bridge, not an explicit official edge.",
+        "status": "inferred",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=icemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=insekimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "gateOrigin": "authored-game-design",
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "skippedStagesOrForms": [],
+      "targetIsExistingRuntimeOnly": false,
+      "appendsToPreservedForm": false,
+      "identityReviewNotes": []
+    }
+  ],
+  "conditionalProposals": [
+    {
+      "proposalId": "early-102-138",
+      "fromFormId": 102,
+      "toFormId": 138,
+      "fromEntryKey": "kumamon",
+      "toEntryKey": "grizzmon",
+      "fromName": "Kumamon",
+      "toName": "Grizzmon",
+      "disposition": "conditional-identity-review",
+      "reason": "A Bearmon/Grizzlymon game route is coherent, but the source Kumamon→Bearmon alias is still a recorded candidate.",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=bearmon",
+        "claim": "This verifies Bearmon, not the historical World DS Kumamon alias or this evolution edge.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=bearmon",
+          "https://digimon.net/reference_en/detail.php?directory_name=gryzmon"
+        ],
+        "canonicalEdgeAsserted": false
+      },
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "fusionRequired": false,
+      "modeAlternative": false,
+      "activationRequires": "Recorded confirmation that this source Kumamon is the Bearmon candidate, not the distinct official Hybrid Kumamon."
+    }
+  ],
+  "entryReview": [
+    {
+      "sourceIndex": 0,
+      "entryKey": "chibomon",
+      "listedName": "Chibomon",
+      "formId": 67,
+      "sourceStage": "Fresh",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chicomon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-67-117",
+          "formId": 117,
+          "name": "Veemon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 1,
+      "entryKey": "kuramon",
+      "listedName": "Kuramon",
+      "formId": 68,
+      "sourceStage": "Fresh",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kuramon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-68-99",
+          "formId": 99,
+          "name": "Keramon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 2,
+      "entryKey": "poyomon",
+      "listedName": "Poyomon",
+      "formId": 69,
+      "sourceStage": "Fresh",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=poyomon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-69-76",
+          "formId": 76,
+          "name": "Tokomon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 3,
+      "entryKey": "puttimon",
+      "listedName": "Puttimon",
+      "formId": 70,
+      "sourceStage": "Fresh",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=puttimon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-70-110",
+          "formId": 110,
+          "name": "Salamon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 4,
+      "entryKey": "dorimon",
+      "listedName": "Dorimon",
+      "formId": 71,
+      "sourceStage": "In-Training",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dorimon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-71-85",
+          "formId": 85,
+          "name": "Dorumon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 5,
+      "entryKey": "kapurimon",
+      "listedName": "Kapurimon",
+      "formId": 72,
+      "sourceStage": "In-Training",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-72-96",
+          "formId": 96,
+          "name": "Hagurumon"
+        },
+        {
+          "proposalId": "early-72-100",
+          "formId": 100,
+          "name": "Kotemon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 6,
+      "entryKey": "koromon",
+      "listedName": "Koromon",
+      "formId": 73,
+      "sourceStage": "In-Training",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-73-18",
+          "formId": 18,
+          "name": "Agumon"
+        },
+        {
+          "proposalId": "early-73-82",
+          "formId": 82,
+          "name": "BlackAgumon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 7,
+      "entryKey": "pagumon",
+      "listedName": "Pagumon",
+      "formId": 74,
+      "sourceStage": "In-Training",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=pagumon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-74-84",
+          "formId": 84,
+          "name": "DemiDevimon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 8,
+      "entryKey": "tanemon",
+      "listedName": "Tanemon",
+      "formId": 75,
+      "sourceStage": "In-Training",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-75-46",
+          "formId": 46,
+          "name": "Palmon"
+        },
+        {
+          "proposalId": "early-75-90",
+          "formId": 90,
+          "name": "Floramon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 9,
+      "entryKey": "tokomon",
+      "listedName": "Tokomon",
+      "formId": 76,
+      "sourceStage": "In-Training",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-76-32",
+          "formId": 32,
+          "name": "Patamon"
+        },
+        {
+          "proposalId": "early-76-116",
+          "formId": 116,
+          "name": "Tsukaimon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-69-76"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 10,
+      "entryKey": "tsunomon",
+      "listedName": "Tsunomon",
+      "formId": 77,
+      "sourceStage": "In-Training",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tunomon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-77-25",
+          "formId": 25,
+          "name": "Gabumon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 11,
+      "entryKey": "agumon",
+      "listedName": "Agumon",
+      "formId": 18,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+      "retainedChildren": [
+        {
+          "formId": 19,
+          "name": "Greymon"
+        },
+        {
+          "formId": 22,
+          "name": "Tyrannomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-73-18"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 12,
+      "entryKey": "armadillomon",
+      "listedName": "Armadillomon",
+      "formId": 78,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=armadimon",
+      "retainedChildren": [
+        {
+          "formId": 121,
+          "name": "Ankylomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "late",
+        "candidateChildren": [],
+        "note": "Second slot available for explicit Armor-policy review (Seahomon); missing Shakkoumon fusion is separate."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 13,
+      "entryKey": "aruraumon",
+      "listedName": "Aruraumon",
+      "formId": 79,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=alraumon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-79-164",
+          "formId": 164,
+          "name": "Vegiemon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 14,
+      "entryKey": "betamon",
+      "listedName": "Betamon",
+      "formId": 80,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=betamon",
+      "retainedChildren": [
+        {
+          "formId": 157,
+          "name": "Seadramon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 15,
+      "entryKey": "biyomon",
+      "listedName": "Biyomon",
+      "formId": 81,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=piyomon",
+      "retainedChildren": [
+        {
+          "formId": 125,
+          "name": "Birdramon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 16,
+      "entryKey": "blackagumon",
+      "listedName": "BlackAgumon",
+      "formId": 82,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-82-127",
+          "formId": 127,
+          "name": "DarkTyrannomon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-73-82"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 17,
+      "entryKey": "crabmon",
+      "listedName": "Crabmon",
+      "formId": 83,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ganimon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-preferred-target",
+        "reason": "Coelamon is absent from all276 runtime forms; no unrelated aquatic substitute is assigned merely to provide a child.",
+        "absentRuntimeNames": [
+          "Coelamon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 18,
+      "entryKey": "demidevimon",
+      "listedName": "DemiDevimon",
+      "formId": 84,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=picodevimon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-84-15",
+          "formId": 15,
+          "name": "Devimon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-74-84"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 19,
+      "entryKey": "dorumon",
+      "listedName": "Dorumon",
+      "formId": 85,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dorumon",
+      "retainedChildren": [
+        {
+          "formId": 130,
+          "name": "Dorugamon"
+        }
+      ],
+      "proposedChildren": [
+        {
+          "proposalId": "early-85-154",
+          "formId": 154,
+          "name": "Reptiledramon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-71-85"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 20,
+      "entryKey": "dotagumon",
+      "listedName": "DotAgumon",
+      "formId": 86,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "visual-variant-review",
+        "reason": "Dot appearance has only a base-species reference. Removing Dot pixels is not automatically an evolution mechanic.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 21,
+      "entryKey": "dotfalcomon",
+      "listedName": "DotFalcomon",
+      "formId": 87,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "visual-variant-review",
+        "reason": "Dot and era identities need review; no automatic de-Dot or 2006 substitution is proposed.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 22,
+      "entryKey": "dracmon",
+      "listedName": "Dracmon",
+      "formId": 88,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dracumon",
+      "retainedChildren": [
+        {
+          "formId": 156,
+          "name": "Sangloupmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 23,
+      "entryKey": "falcomon",
+      "listedName": "Falcomon",
+      "formId": 89,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+      "retainedChildren": [
+        {
+          "formId": 150,
+          "name": "Peckmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family",
+      "identityCaution": "Existing authored route remains; it does not resolve the source era/name ambiguity or authorize a replacement sprite."
+    },
+    {
+      "sourceIndex": 24,
+      "entryKey": "floramon",
+      "listedName": "Floramon",
+      "formId": 90,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=floramon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-90-144",
+          "formId": 144,
+          "name": "Kiwimon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-75-90"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 25,
+      "entryKey": "gabumon",
+      "listedName": "Gabumon",
+      "formId": 25,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gabumon",
+      "retainedChildren": [
+        {
+          "formId": 26,
+          "name": "Garurumon"
+        },
+        {
+          "formId": 29,
+          "name": "Leomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-77-25"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 26,
+      "entryKey": "gaomon",
+      "listedName": "Gaomon",
+      "formId": 91,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gaomon",
+      "retainedChildren": [
+        {
+          "formId": 133,
+          "name": "Gaogamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 27,
+      "entryKey": "gizamon",
+      "listedName": "Gizamon",
+      "formId": 92,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gizamon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-preferred-target",
+        "reason": "Deltamon is absent; available dark dinosaurs are not substituted just for coverage.",
+        "absentRuntimeNames": [
+          "Deltamon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 28,
+      "entryKey": "goburimon",
+      "listedName": "Goburimon",
+      "formId": 93,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=goburimon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-93-149",
+          "formId": 149,
+          "name": "Ogremon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 29,
+      "entryKey": "gomamon",
+      "listedName": "Gomamon",
+      "formId": 53,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gomamon",
+      "retainedChildren": [
+        {
+          "formId": 54,
+          "name": "Ikkakumon"
+        },
+        {
+          "formId": 57,
+          "name": "Shellmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 30,
+      "entryKey": "gotsumon",
+      "listedName": "Gotsumon",
+      "formId": 94,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gottsumon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-94-143",
+          "formId": 143,
+          "name": "Icemon"
+        },
+        {
+          "proposalId": "early-94-198",
+          "formId": 198,
+          "name": "Meteormon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 31,
+      "entryKey": "guilmon",
+      "listedName": "Guilmon",
+      "formId": 95,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=guilmon",
+      "retainedChildren": [
+        {
+          "formId": 139,
+          "name": "Growlmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 32,
+      "entryKey": "hagurumon",
+      "listedName": "Hagurumon",
+      "formId": 96,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hagurumon",
+      "retainedChildren": [
+        {
+          "formId": 140,
+          "name": "Guardromon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-72-96"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 33,
+      "entryKey": "hawkmon",
+      "listedName": "Hawkmon",
+      "formId": 97,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hawkmon",
+      "retainedChildren": [
+        {
+          "formId": 123,
+          "name": "Aquilamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "late",
+        "candidateChildren": [],
+        "note": "Second slot available for explicit Armor-policy review (Shurimon); no implicit Digimental implementation."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 34,
+      "entryKey": "impmon",
+      "listedName": "Impmon",
+      "formId": 11,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=impmon",
+      "retainedChildren": [
+        {
+          "formId": 12,
+          "name": "Wizardmon"
+        },
+        {
+          "formId": 15,
+          "name": "Devimon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 35,
+      "entryKey": "kamemon",
+      "listedName": "Kamemon",
+      "formId": 98,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kamemon",
+      "retainedChildren": [
+        {
+          "formId": 141,
+          "name": "Gwappamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 36,
+      "entryKey": "keramon",
+      "listedName": "Keramon",
+      "formId": 99,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=keramon",
+      "retainedChildren": [
+        {
+          "formId": 146,
+          "name": "Kurisarimon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-68-99"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 37,
+      "entryKey": "kotemon",
+      "listedName": "Kotemon",
+      "formId": 100,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kotemon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-100-129",
+          "formId": 129,
+          "name": "Dinohyumon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-72-100"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 38,
+      "entryKey": "kudamon",
+      "listedName": "Kudamon",
+      "formId": 101,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kudamon",
+      "retainedChildren": [
+        {
+          "formId": 153,
+          "name": "Reppamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family",
+      "identityCaution": "Existing authored route remains; it does not resolve the source era/name ambiguity or authorize a replacement sprite."
+    },
+    {
+      "sourceIndex": 39,
+      "entryKey": "kumamon",
+      "listedName": "Kumamon",
+      "formId": 102,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bearmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "identity-review",
+        "reason": "Conditional Bearmon→Grizzmon proposal held until the source-name mapping is confirmed.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 40,
+      "entryKey": "lalamon",
+      "listedName": "Lalamon",
+      "formId": 103,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=lalamon",
+      "retainedChildren": [
+        {
+          "formId": 163,
+          "name": "Sunflowmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 41,
+      "entryKey": "lopmon",
+      "listedName": "Lopmon",
+      "formId": 104,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=lopmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-intermediate-and-variant-review",
+        "reason": "Turuiemon and Wendigomon are absent. A direct jump to Antylamon would also require its Virus/Deva identity review; no hidden stage skip is activated.",
+        "absentRuntimeNames": [
+          "Turuiemon",
+          "Wendigomon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 42,
+      "entryKey": "muchomon",
+      "listedName": "Muchomon",
+      "formId": 105,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=muchomon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "Akatorimon is available, but a generic flightless-bird resemblance is insufficient for this conservative proposal.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 43,
+      "entryKey": "otamamon",
+      "listedName": "Otamamon",
+      "formId": 106,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=otamamon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-106-136",
+          "formId": 136,
+          "name": "Gekomon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 44,
+      "entryKey": "palmon",
+      "listedName": "Palmon",
+      "formId": 46,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=palmon",
+      "retainedChildren": [
+        {
+          "formId": 47,
+          "name": "Togemon"
+        },
+        {
+          "formId": 50,
+          "name": "Woodmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-75-46"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 45,
+      "entryKey": "patamon",
+      "listedName": "Patamon",
+      "formId": 32,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=patamon",
+      "retainedChildren": [
+        {
+          "formId": 33,
+          "name": "Angemon"
+        },
+        {
+          "formId": 36,
+          "name": "Unimon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-76-32"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 46,
+      "entryKey": "pawnchessmon-black",
+      "listedName": "PawnChessmon Black",
+      "formId": 107,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "KnightChessmon (Black) is absent; preserve the black chess identity rather than substitute a generic machine.",
+        "absentRuntimeNames": [
+          "KnightChessmon (Black)"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 47,
+      "entryKey": "pawnchessmon-white",
+      "listedName": "PawnChessmon White",
+      "formId": 108,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon-white",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "KnightChessmon (White) is absent; preserve the white chess identity rather than substitute a generic machine.",
+        "absentRuntimeNames": [
+          "KnightChessmon (White)"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 48,
+      "entryKey": "penguinmon",
+      "listedName": "Penguinmon",
+      "formId": 109,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=penmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "Dolphmon and Frigimon are absent; Kokatorimon is not assigned solely because both are birds.",
+        "absentRuntimeNames": [
+          "Dolphmon",
+          "Frigimon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 49,
+      "entryKey": "renamon",
+      "listedName": "Renamon",
+      "formId": 60,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=renamon",
+      "retainedChildren": [
+        {
+          "formId": 61,
+          "name": "Kyubimon"
+        },
+        {
+          "formId": 64,
+          "name": "Youkomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 50,
+      "entryKey": "salamon",
+      "listedName": "Salamon",
+      "formId": 110,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=plotmon",
+      "retainedChildren": [
+        {
+          "formId": 135,
+          "name": "Gatomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-70-110"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 51,
+      "entryKey": "shadowtoyagumon",
+      "listedName": "ShadowToyAgumon",
+      "formId": 111,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon_black",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "variant-and-route-review",
+        "reason": "The ToyAgumon (Black) mapping remains qualified. A black-to-normal transition is not assumed to be growth.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 52,
+      "entryKey": "snowagumon",
+      "listedName": "SnowAgumon",
+      "formId": 112,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=yukiagumon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "Frigimon is absent; do not silently substitute Gotsumon-family Icemon.",
+        "absentRuntimeNames": [
+          "Frigimon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 53,
+      "entryKey": "tapirmon",
+      "listedName": "Tapirmon",
+      "formId": 113,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bakumon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-113-36",
+          "formId": 36,
+          "name": "Unimon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 54,
+      "entryKey": "tentomon",
+      "listedName": "Tentomon",
+      "formId": 39,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tentomon",
+      "retainedChildren": [
+        {
+          "formId": 40,
+          "name": "Kabuterimon"
+        },
+        {
+          "formId": 43,
+          "name": "Kuwagamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 55,
+      "entryKey": "terriermon",
+      "listedName": "Terriermon",
+      "formId": 114,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=terriermon",
+      "retainedChildren": [
+        {
+          "formId": 134,
+          "name": "Gargomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 56,
+      "entryKey": "toyagumon",
+      "listedName": "ToyAgumon",
+      "formId": 115,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-preferred-target",
+        "reason": "Tankmon is absent; Guardromon is available but no toy-to-machine route is selected only to fill coverage.",
+        "absentRuntimeNames": [
+          "Tankmon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 57,
+      "entryKey": "tsukaimon",
+      "listedName": "Tsukaimon",
+      "formId": 116,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tukaimon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-116-15",
+          "formId": 15,
+          "name": "Devimon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-76-116"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 58,
+      "entryKey": "veemon",
+      "listedName": "Veemon",
+      "formId": 117,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=v-mon",
+      "retainedChildren": [
+        {
+          "formId": 131,
+          "name": "ExVeemon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-67-117"
+      ],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "late",
+        "candidateChildren": [],
+        "note": "Second outgoing slot reserved for review of Flamedramon/Magnamon Armor alternatives; do not add both beyond max2."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 59,
+      "entryKey": "wormmon",
+      "listedName": "Wormmon",
+      "formId": 118,
+      "sourceStage": "Rookie",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=wormmon",
+      "retainedChildren": [
+        {
+          "formId": 161,
+          "name": "Stingmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 60,
+      "entryKey": "airdramon",
+      "listedName": "Airdramon",
+      "formId": 119,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=airdramon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "deferred-thematic-link",
+        "reason": "Megadramon is available, but mid-slice review deferred this generic dragon/cyborg link without stronger route evidence.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 61,
+      "entryKey": "akatorimon",
+      "listedName": "Akatorimon",
+      "formId": 120,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=akatorimon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "No reviewed named continuation is selected from the available bird Ultimates; encounter acquisition remains sufficient.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 62,
+      "entryKey": "angemon",
+      "listedName": "Angemon",
+      "formId": 33,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=angemon",
+      "retainedChildren": [
+        {
+          "formId": 34,
+          "name": "MagnaAngemon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 63,
+      "entryKey": "ankylomon",
+      "listedName": "Ankylomon",
+      "formId": 121,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ankylomon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-fusion-target",
+        "reason": "Shakkoumon is absent. Do not present an Angemon combination as an implemented solo evolution or invent that form.",
+        "absentRuntimeNames": [
+          "Shakkoumon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 64,
+      "entryKey": "apemon",
+      "listedName": "Apemon",
+      "formId": 122,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hanumon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "deferred-thematic-link",
+        "reason": "Etemon is available, but mid-slice review deferred a primate-only resemblance route.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 65,
+      "entryKey": "aquilamon",
+      "listedName": "Aquilamon",
+      "formId": 123,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=aquilamon",
+      "retainedChildren": [
+        {
+          "formId": 207,
+          "name": "Silphymon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family",
+      "fusionCaution": "Existing solo authored route is retained; no DNA partner consumption, fusion implementation, or exclusive canonical requirement is asserted."
+    },
+    {
+      "sourceIndex": 66,
+      "entryKey": "bakemon",
+      "listedName": "Bakemon",
+      "formId": 124,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bakemon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-preferred-target",
+        "reason": "Phantomon is absent; no vampire substitution is assigned merely to give a child.",
+        "absentRuntimeNames": [
+          "Phantomon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 67,
+      "entryKey": "birdramon",
+      "listedName": "Birdramon",
+      "formId": 125,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=birdramon",
+      "retainedChildren": [
+        {
+          "formId": 183,
+          "name": "Garudamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 68,
+      "entryKey": "darklizardmon",
+      "listedName": "DarkLizardmon",
+      "formId": 126,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=darklizamon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "No supported onward family route is selected; dark/fire typing alone is not enough for a cyborg-Dragon substitution.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 69,
+      "entryKey": "darktyrannomon",
+      "listedName": "DarkTyrannomon",
+      "formId": 127,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-127-23",
+          "formId": 23,
+          "name": "MetalTyrannomon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-82-127"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 70,
+      "entryKey": "devimon",
+      "listedName": "Devimon",
+      "formId": 15,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=devimon",
+      "retainedChildren": [
+        {
+          "formId": 16,
+          "name": "Myotismon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-84-15",
+        "early-116-15"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 71,
+      "entryKey": "diatrymon",
+      "listedName": "Diatrymon",
+      "formId": 128,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=diatrymon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "variant-review",
+        "reason": "A Crowmon/Yatagaramon continuation depends on the unresolved original-versus-2006 identity. Keep this candidate deferred.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 72,
+      "entryKey": "dinohyumon",
+      "listedName": "Dinohyumon",
+      "formId": 129,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dinohumon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-100-129"
+      ],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 187,
+            "name": "Kyukimon"
+          }
+        ],
+        "note": "Dinohyumon→Kyukimon as an authored blade-family continuation."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 73,
+      "entryKey": "dorugamon",
+      "listedName": "Dorugamon",
+      "formId": 130,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dorugamon",
+      "retainedChildren": [
+        {
+          "formId": 179,
+          "name": "DoruGreymon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 74,
+      "entryKey": "exveemon",
+      "listedName": "ExVeemon",
+      "formId": 131,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=xv-mon",
+      "retainedChildren": [
+        {
+          "formId": 201,
+          "name": "Paildramon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family",
+      "fusionCaution": "Existing solo authored route is retained; no DNA partner consumption, fusion implementation, or exclusive canonical requirement is asserted."
+    },
+    {
+      "sourceIndex": 75,
+      "entryKey": "flarerizamon",
+      "listedName": "Flarerizamon",
+      "formId": 132,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=flarelizamon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "A fire-dragon theme alone does not identify one of the available Ultimates as the intended continuation.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 76,
+      "entryKey": "gaogamon",
+      "listedName": "Gaogamon",
+      "formId": 133,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gaogamon",
+      "retainedChildren": [
+        {
+          "formId": 191,
+          "name": "MachGaogamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 77,
+      "entryKey": "gargomon",
+      "listedName": "Gargomon",
+      "formId": 134,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=galgomon",
+      "retainedChildren": [
+        {
+          "formId": 204,
+          "name": "Rapidmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 78,
+      "entryKey": "garurumon",
+      "listedName": "Garurumon",
+      "formId": 26,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=garurumon",
+      "retainedChildren": [
+        {
+          "formId": 27,
+          "name": "WereGarurumon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 79,
+      "entryKey": "gatomon",
+      "listedName": "Gatomon",
+      "formId": 135,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tailmon",
+      "retainedChildren": [
+        {
+          "formId": 167,
+          "name": "Angewomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 80,
+      "entryKey": "gekomon",
+      "listedName": "Gekomon",
+      "formId": 136,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gekomon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-106-136"
+      ],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 206,
+            "name": "ShogunGekomon"
+          }
+        ],
+        "note": "Gekomon→ShogunGekomon."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 81,
+      "entryKey": "geogreymon",
+      "listedName": "GeoGreymon",
+      "formId": 137,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=geogreymon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 205,
+            "name": "RizeGreymon"
+          }
+        ],
+        "note": "GeoGreymon→RizeGreymon, reviewed themed continuation."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 82,
+      "entryKey": "greymon",
+      "listedName": "Greymon",
+      "formId": 19,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=greymon-first",
+      "retainedChildren": [
+        {
+          "formId": 20,
+          "name": "MetalGreymon (Vaccine)"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 208,
+            "name": "SkullGreymon"
+          }
+        ],
+        "note": "Additional Greymon→SkullGreymon branch; existing MetalGreymon preserved."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 83,
+      "entryKey": "grizzmon",
+      "listedName": "Grizzmon",
+      "formId": 138,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-138-30",
+          "formId": 30,
+          "name": "GrapLeomon"
+        }
+      ],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 84,
+      "entryKey": "growlmon",
+      "listedName": "Growlmon",
+      "formId": 139,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=growmon",
+      "retainedChildren": [
+        {
+          "formId": 212,
+          "name": "WarGrowlmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 85,
+      "entryKey": "guardromon",
+      "listedName": "Guardromon",
+      "formId": 140,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=guardromon",
+      "retainedChildren": [
+        {
+          "formId": 166,
+          "name": "Andromon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 86,
+      "entryKey": "gwappamon",
+      "listedName": "Gwappamon",
+      "formId": 141,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gawappamon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "Shawujinmon is absent; the aquatic route stops here rather than fabricate it.",
+        "absentRuntimeNames": [
+          "Shawujinmon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 87,
+      "entryKey": "hookmon",
+      "listedName": "Hookmon",
+      "formId": 142,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hookmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "Assaultmon is absent; unrelated gun-bearing forms are not substituted merely for coverage.",
+        "absentRuntimeNames": [
+          "Assaultmon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 88,
+      "entryKey": "icemon",
+      "listedName": "Icemon",
+      "formId": 143,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=icemon",
+      "retainedChildren": [],
+      "proposedChildren": [
+        {
+          "proposalId": "early-143-198",
+          "formId": 198,
+          "name": "Meteormon"
+        }
+      ],
+      "incomingEarlyProposals": [
+        "early-94-143"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 89,
+      "entryKey": "ikkakumon",
+      "listedName": "Ikkakumon",
+      "formId": 54,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ikkakumon",
+      "retainedChildren": [
+        {
+          "formId": 55,
+          "name": "Zudomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 90,
+      "entryKey": "kabuterimon",
+      "listedName": "Kabuterimon",
+      "formId": 40,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kabuterimon",
+      "retainedChildren": [
+        {
+          "formId": 41,
+          "name": "MegaKabuterimon (Red)"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 195,
+            "name": "MegaKabuterimon Blue"
+          }
+        ],
+        "note": "Additional Kabuterimon→MegaKabuterimon Blue; existing Red preserved."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 91,
+      "entryKey": "kiwimon",
+      "listedName": "Kiwimon",
+      "formId": 144,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kiwimon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-90-144"
+      ],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 175,
+            "name": "Deramon"
+          }
+        ],
+        "note": "Kiwimon→Deramon; official family comparison supports inference."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 92,
+      "entryKey": "kokatorimon",
+      "listedName": "Kokatorimon",
+      "formId": 145,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cockatrimon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "No reviewed onward bird path is assigned in this proposal.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 93,
+      "entryKey": "kurisarimon",
+      "listedName": "Kurisarimon",
+      "formId": 146,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chrysalimon",
+      "retainedChildren": [
+        {
+          "formId": 185,
+          "name": "Infermon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 94,
+      "entryKey": "kuwagamon",
+      "listedName": "Kuwagamon",
+      "formId": 43,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kuwagamon",
+      "retainedChildren": [
+        {
+          "formId": 44,
+          "name": "Okuwamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 95,
+      "entryKey": "kyubimon",
+      "listedName": "Kyubimon",
+      "formId": 61,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kyubimon",
+      "retainedChildren": [
+        {
+          "formId": 62,
+          "name": "Taomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 96,
+      "entryKey": "leomon",
+      "listedName": "Leomon",
+      "formId": 29,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=leomon",
+      "retainedChildren": [
+        {
+          "formId": 30,
+          "name": "GrapLeomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 97,
+      "entryKey": "minotarumon",
+      "listedName": "Minotarumon",
+      "formId": 147,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=minotaurmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "Asuramon is absent; do not jump to an unrelated Mega.",
+        "absentRuntimeNames": [
+          "Asuramon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 98,
+      "entryKey": "numemon",
+      "listedName": "Numemon",
+      "formId": 148,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=numemon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 199,
+            "name": "Monzaemon"
+          }
+        ],
+        "note": "Numemon→Monzaemon; authored prototype route."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 99,
+      "entryKey": "ogremon",
+      "listedName": "Ogremon",
+      "formId": 149,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=orgemon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-93-149"
+      ],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "Digitamamon is available as a potential authored route, but no sufficiently reviewed relationship is selected here.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 100,
+      "entryKey": "peckmon",
+      "listedName": "Peckmon",
+      "formId": 150,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=peckmon",
+      "retainedChildren": [
+        {
+          "formId": 213,
+          "name": "Yatagaramon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family",
+      "identityCaution": "Existing authored route remains; it does not resolve the source era/name ambiguity or authorize a replacement sprite."
+    },
+    {
+      "sourceIndex": 101,
+      "entryKey": "platinumsukamon",
+      "listedName": "PlatinumSukamon",
+      "formId": 151,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=platinasukamon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "Metallic appearance alone does not justify a machine-family evolution or an automatic color conversion.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 102,
+      "entryKey": "raremon",
+      "listedName": "Raremon",
+      "formId": 152,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=raremon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "deferred-thematic-link",
+        "reason": "Garbagemon is available, but a waste theme alone was not accepted as sufficient route evidence.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 103,
+      "entryKey": "reppamon",
+      "listedName": "Reppamon",
+      "formId": 153,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=reppamon",
+      "retainedChildren": [
+        {
+          "formId": 211,
+          "name": "Tyilinmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family",
+      "identityCaution": "Existing authored route remains; it does not resolve the source era/name ambiguity or authorize a replacement sprite."
+    },
+    {
+      "sourceIndex": 104,
+      "entryKey": "reptiledramon",
+      "listedName": "Reptiledramon",
+      "formId": 154,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=raptordramon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-85-154"
+      ],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-family-target",
+        "reason": "Grademon is absent. Cyberdramon was explicitly deferred instead of acting as an undocumented replacement.",
+        "absentRuntimeNames": [
+          "Grademon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 105,
+      "entryKey": "roachmon",
+      "listedName": "Roachmon",
+      "formId": 155,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gokimon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "No additional insect Ultimate is selected only to remove a leaf; existing routes remain available through encounters.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 106,
+      "entryKey": "sangloupmon",
+      "listedName": "Sangloupmon",
+      "formId": 156,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sangloupmon",
+      "retainedChildren": [
+        {
+          "formId": 193,
+          "name": "Matadormon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 107,
+      "entryKey": "seadramon",
+      "listedName": "Seadramon",
+      "formId": 157,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=seadramon",
+      "retainedChildren": [
+        {
+          "formId": 196,
+          "name": "MegaSeadramon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 108,
+      "entryKey": "seasarmon",
+      "listedName": "Seasarmon",
+      "formId": 158,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=siesamon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "No reviewed holy-beast continuation is selected from this runtime roster.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 109,
+      "entryKey": "sorcerymon",
+      "listedName": "Sorcerymon",
+      "formId": 159,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sorcerimon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "missing-preferred-target",
+        "reason": "Wisemon is absent; another magician with a different identity is not substituted merely for coverage.",
+        "absentRuntimeNames": [
+          "Wisemon"
+        ],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 110,
+      "entryKey": "starmon",
+      "listedName": "Starmon",
+      "formId": 160,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=starmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 209,
+            "name": "SuperStarmon"
+          }
+        ],
+        "note": "Starmon→SuperStarmon; primary profile relation verified by mid owner."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 111,
+      "entryKey": "stingmon",
+      "listedName": "Stingmon",
+      "formId": 161,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=stingmon",
+      "retainedChildren": [
+        {
+          "formId": 177,
+          "name": "Dinobeemon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family",
+      "fusionCaution": "Existing solo authored route is retained; no DNA partner consumption, fusion implementation, or exclusive canonical requirement is asserted."
+    },
+    {
+      "sourceIndex": 112,
+      "entryKey": "sukamon",
+      "listedName": "Sukamon",
+      "formId": 162,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=scumon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "No waste/monkey-themed onward link is selected without additional review. This is not a care-failure transformation.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 113,
+      "entryKey": "sunflowmon",
+      "listedName": "Sunflowmon",
+      "formId": 163,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sunflowmon",
+      "retainedChildren": [
+        {
+          "formId": 189,
+          "name": "Lilamon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 114,
+      "entryKey": "togemon",
+      "listedName": "Togemon",
+      "formId": 47,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=togemon",
+      "retainedChildren": [
+        {
+          "formId": 48,
+          "name": "Lillymon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 115,
+      "entryKey": "tyrannomon",
+      "listedName": "Tyrannomon",
+      "formId": 22,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tyranomon",
+      "retainedChildren": [
+        {
+          "formId": 23,
+          "name": "MetalTyrannomon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 116,
+      "entryKey": "unimon",
+      "listedName": "Unimon",
+      "formId": 36,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=yunimon",
+      "retainedChildren": [
+        {
+          "formId": 37,
+          "name": "HippoGryphonmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-113-36"
+      ],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 117,
+      "entryKey": "vegiemon",
+      "listedName": "Vegiemon",
+      "formId": 164,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=vegimon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [
+        "early-79-164"
+      ],
+      "encounterObtainable": true,
+      "crossSliceCoordination": {
+        "owner": "mid",
+        "candidateChildren": [
+          {
+            "formId": 173,
+            "name": "Blossomon"
+          }
+        ],
+        "note": "Vegiemon→Blossomon; authored plant route."
+      },
+      "decision": "retain-and-or-extend-reviewed-family"
+    },
+    {
+      "sourceIndex": 118,
+      "entryKey": "vilemon",
+      "listedName": "Vilemon",
+      "formId": 165,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=evilmon",
+      "retainedChildren": [],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "explicit-exception",
+      "exception": {
+        "code": "no-reviewed-onward-route",
+        "reason": "No direct Champion-to-Mega shortcut or generic demon replacement is selected.",
+        "absentRuntimeNames": [],
+        "notACanonicalImpossibilityClaim": true
+      }
+    },
+    {
+      "sourceIndex": 119,
+      "entryKey": "wizardmon",
+      "listedName": "Wizardmon",
+      "formId": 12,
+      "sourceStage": "Champion",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=wizarmon",
+      "retainedChildren": [
+        {
+          "formId": 13,
+          "name": "Baalmon"
+        }
+      ],
+      "proposedChildren": [],
+      "incomingEarlyProposals": [],
+      "encounterObtainable": true,
+      "decision": "retain-and-or-extend-reviewed-family"
+    }
+  ],
+  "deferredAlternatives": [
+    {
+      "fromFormId": 104,
+      "toFormId": 168,
+      "fromName": "Lopmon",
+      "toName": "Antylamon",
+      "reason": "Would skip absent Turuiemon/Wendigomon and still requires source Virus/Deva review; no activation proposed.",
+      "fusionRequired": false,
+      "skippedStages": [
+        "Champion"
+      ],
+      "requiresIdentityReview": true
+    },
+    {
+      "fromFormId": 128,
+      "toFormId": 213,
+      "fromName": "Diatrymon",
+      "toName": "Yatagaramon",
+      "reason": "Era identity not resolved; do not assume the same source appearance as the current Peckmon route.",
+      "requiresIdentityReview": true
+    },
+    {
+      "fromFormId": 119,
+      "toFormId": 194,
+      "fromName": "Airdramon",
+      "toName": "Megadramon",
+      "reason": "Mid reviewer deferred a generic dragon/cyborg link without stronger relationship evidence."
+    },
+    {
+      "fromFormId": 122,
+      "toFormId": 180,
+      "fromName": "Apemon",
+      "toName": "Etemon",
+      "reason": "Mid reviewer deferred a primate-only thematic link."
+    },
+    {
+      "fromFormId": 152,
+      "toFormId": 182,
+      "fromName": "Raremon",
+      "toName": "Garbagemon",
+      "reason": "Mid reviewer deferred a waste-theme-only link."
+    }
+  ],
+  "importantQualifications": [
+    "Every missing target named in exceptions was checked against all276 runtime forms, including the preserved forms absent from the255-sheet page.",
+    "An exception means this prototype has no reviewed continuation, not that canon forbids any evolution.",
+    "The optional Gotsumon→Meteormon route uses full Ultimate gates. It is not an immediate level1 power jump.",
+    "Conditional Kumamon route must not reinterpret the source as the unrelated official Hybrid Kumamon.",
+    "All11 early-stage sources have a proposed care-only escape from their stage; captured low stages need not grind weak battles to reach Rookie.",
+    "Cross-slice candidates are identified separately and not duplicated as owned proposals. Armor/item/mode policies remain with the late owner.",
+    "Adding incoming edges to preserved forms does not replace earlier routes or alter existing stats. Runtime family/legacy-save conversion is outside this proposal.",
+    "No proposed edge is justified solely by a requirement to eliminate every leaf; source-unavailable or ambiguous paths remain explicit."
+  ],
+  "sourceHashes": {
+    "data/world-ds-catalog.json": "3cfe2493dd76bd4a1768c93f4cd5279522d49e60836335d1baa879c9e85e7b14",
+    "data/world-ds-evolutions.json": "32fcc22d57bd0b4827d2893dbd452f3f3f10ff696a4d2e342306520f70a646b8",
+    "data/world-ds-runtime.json": "d05fccf6d4943037a5d66695b18bca1fda03608b2c65d83d1e66ff44f2aa7b1e",
+    "docs/research/world-ds-identity-audit.json": "ee76821d75b394a697ac97c3f4e67bb6206c39d0c3a751b4c316df567245457f",
+    "docs/evidence/digivolution-roster-research.json": "74bac01b337a2f7bf08c637fe6240e5099dc806447ce0f8c17033d73de319432"
+  }
+}

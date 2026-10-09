@@ -1,0 +1,1859 @@
+{
+  "formatVersion": 1,
+  "kind": "frozen-practice5-service-history",
+  "sourceCommit": "c830072e5244462c0021678b02ff96a1c644e75f",
+  "sourceBinarySha256": "e9e3dd3eb99d345b1f641160e55476aa64dc6b909bd47cfdc975abaa1abaf4a1",
+  "sourceServiceSha256": "1a0fe40e6b91506b86c3d4a1f9deea2f3d85eb0fe6dc0d397fdc2c075501b889",
+  "sourceTraceParserSha256": "17643b996f8450ae68c4510d13ab23daa76d0de31c0bb83690a851c4cc1c6951",
+  "practiceRulesVersion": 5,
+  "practiceSchemaVersion": 5,
+  "storeFormatVersion": 6,
+  "captureMethod": "Actual c830072 service start/act/get using the immutable native binary in isolated temporary stores. The native stage selector picks Cannondramon15 mirror at seed222; no forged snapshots, injected rival or user credentials.",
+  "cases": [
+    {
+      "mode": "auto",
+      "seed": 222,
+      "deviceId": "dv_555555555555555555555555",
+      "companion": {
+        "id": 1,
+        "species": "cannondramon",
+        "name": "Cannondramon",
+        "level": 15,
+        "formId": 223
+      },
+      "store": {
+        "formatVersion": 6,
+        "practiceSchemaVersion": 5,
+        "practiceRulesVersion": 5,
+        "generation": 1,
+        "devices": [
+          {
+            "mode": "auto",
+            "initialSnapshotBase64": "REdCUAUAbAAFAAAAAAAAAIlThX4PAAAA+AAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxwQAAMcEAAAPAAAA3wAAAN8AAABaVGhM",
+            "deviceId": "dv_555555555555555555555555",
+            "revision": 1,
+            "snapshotBase64": "REdCUAUAbAAFAAAAKAAAAD3q7JIPAAAAjQAAAIkAAAAoAAAAAgAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAADAAAABgAAAAMAAAAFAAAAAAAAAAAAAAABAAAAxwQAAMcEAAAPAAAA3wAAAN8AAACe5vbg",
+            "companion": {
+              "id": 1,
+              "species": "cannondramon",
+              "name": "Cannondramon",
+              "level": 15,
+              "formId": 223
+            },
+            "receipts": [
+              {
+                "mode": "auto",
+                "initialSnapshotBase64": "REdCUAUAbAAFAAAAAAAAAIlThX4PAAAA+AAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxwQAAMcEAAAPAAAA3wAAAN8AAABaVGhM",
+                "requestId": "genuine-five-auto-start",
+                "bodyHash": "0692cde855cb2489f6c41887e352a06acca31f8cc2a20c84083157ac5f198a93",
+                "revision": 1,
+                "snapshotBase64": "REdCUAUAbAAFAAAAKAAAAD3q7JIPAAAAjQAAAIkAAAAoAAAAAgAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAADAAAABgAAAAMAAAAFAAAAAAAAAAAAAAABAAAAxwQAAMcEAAAPAAAA3wAAAN8AAACe5vbg",
+                "companion": {
+                  "id": 1,
+                  "species": "cannondramon",
+                  "name": "Cannondramon",
+                  "level": 15,
+                  "formId": 223
+                }
+              }
+            ],
+            "legacyRequestIds": []
+          }
+        ]
+      },
+      "commands": [
+        {
+          "operation": "start",
+          "body": {
+            "rulesVersion": 5,
+            "expectedRevision": 0,
+            "requestId": "genuine-five-auto-start",
+            "mode": "auto"
+          },
+          "response": {
+            "revision": 1,
+            "mode": "auto",
+            "autoTrace": {
+              "formatVersion": 1,
+              "mode": "auto",
+              "kind": "practice",
+              "player": {
+                "formId": 223,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "combat": {
+                  "maxHp": 248,
+                  "attack": 52,
+                  "defense": 66,
+                  "magic": 54,
+                  "resistance": 52,
+                  "type": "ember",
+                  "skills": {
+                    "physical": "Gunmetal Tail",
+                    "heavy": "Artillery Bodyslam",
+                    "magic": "Twin Siege Salvo"
+                  }
+                }
+              },
+              "enemy": {
+                "formId": 223,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "combat": {
+                  "maxHp": 248,
+                  "attack": 52,
+                  "defense": 66,
+                  "magic": 54,
+                  "resistance": 52,
+                  "type": "ember",
+                  "skills": {
+                    "physical": "Gunmetal Tail",
+                    "heavy": "Artillery Bodyslam",
+                    "magic": "Twin Siege Salvo"
+                  }
+                }
+              },
+              "startSequence": 0,
+              "endSequence": 40,
+              "outcome": "draw",
+              "steps": [
+                {
+                  "turn": 1,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "counter",
+                  "playerHpBefore": 248,
+                  "playerHpAfter": 246,
+                  "enemyHpBefore": 248,
+                  "enemyHpAfter": 248,
+                  "reflected": true,
+                  "captured": false
+                },
+                {
+                  "turn": 2,
+                  "phase": "defend",
+                  "action": "ward",
+                  "opponentAction": "heavy",
+                  "playerHpBefore": 246,
+                  "playerHpAfter": 242,
+                  "enemyHpBefore": 248,
+                  "enemyHpAfter": 248,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 3,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 242,
+                  "playerHpAfter": 242,
+                  "enemyHpBefore": 248,
+                  "enemyHpAfter": 243,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 4,
+                  "phase": "defend",
+                  "action": "brace",
+                  "opponentAction": "magic",
+                  "playerHpBefore": 242,
+                  "playerHpAfter": 232,
+                  "enemyHpBefore": 243,
+                  "enemyHpAfter": 243,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 5,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "brace",
+                  "playerHpBefore": 232,
+                  "playerHpAfter": 232,
+                  "enemyHpBefore": 243,
+                  "enemyHpAfter": 239,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 6,
+                  "phase": "defend",
+                  "action": "ward",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 232,
+                  "playerHpAfter": 228,
+                  "enemyHpBefore": 239,
+                  "enemyHpAfter": 239,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 7,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "brace",
+                  "playerHpBefore": 228,
+                  "playerHpAfter": 228,
+                  "enemyHpBefore": 239,
+                  "enemyHpAfter": 229,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 8,
+                  "phase": "defend",
+                  "action": "counter",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 228,
+                  "playerHpAfter": 224,
+                  "enemyHpBefore": 229,
+                  "enemyHpAfter": 229,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 9,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 224,
+                  "playerHpAfter": 224,
+                  "enemyHpBefore": 229,
+                  "enemyHpAfter": 225,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 10,
+                  "phase": "defend",
+                  "action": "brace",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 224,
+                  "playerHpAfter": 222,
+                  "enemyHpBefore": 225,
+                  "enemyHpAfter": 225,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 11,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 222,
+                  "playerHpAfter": 222,
+                  "enemyHpBefore": 225,
+                  "enemyHpAfter": 220,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 12,
+                  "phase": "defend",
+                  "action": "ward",
+                  "opponentAction": "heavy",
+                  "playerHpBefore": 222,
+                  "playerHpAfter": 218,
+                  "enemyHpBefore": 220,
+                  "enemyHpAfter": 220,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 13,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "counter",
+                  "playerHpBefore": 218,
+                  "playerHpAfter": 216,
+                  "enemyHpBefore": 220,
+                  "enemyHpAfter": 220,
+                  "reflected": true,
+                  "captured": false
+                },
+                {
+                  "turn": 14,
+                  "phase": "defend",
+                  "action": "ward",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 216,
+                  "playerHpAfter": 212,
+                  "enemyHpBefore": 220,
+                  "enemyHpAfter": 220,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 15,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "brace",
+                  "playerHpBefore": 212,
+                  "playerHpAfter": 212,
+                  "enemyHpBefore": 220,
+                  "enemyHpAfter": 216,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 16,
+                  "phase": "defend",
+                  "action": "brace",
+                  "opponentAction": "heavy",
+                  "playerHpBefore": 212,
+                  "playerHpAfter": 208,
+                  "enemyHpBefore": 216,
+                  "enemyHpAfter": 216,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 17,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "brace",
+                  "playerHpBefore": 208,
+                  "playerHpAfter": 208,
+                  "enemyHpBefore": 216,
+                  "enemyHpAfter": 206,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 18,
+                  "phase": "defend",
+                  "action": "brace",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 208,
+                  "playerHpAfter": 206,
+                  "enemyHpBefore": 206,
+                  "enemyHpAfter": 206,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 19,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 206,
+                  "playerHpAfter": 206,
+                  "enemyHpBefore": 206,
+                  "enemyHpAfter": 201,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 20,
+                  "phase": "defend",
+                  "action": "counter",
+                  "opponentAction": "magic",
+                  "playerHpBefore": 206,
+                  "playerHpAfter": 196,
+                  "enemyHpBefore": 201,
+                  "enemyHpAfter": 201,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 21,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "counter",
+                  "playerHpBefore": 196,
+                  "playerHpAfter": 196,
+                  "enemyHpBefore": 201,
+                  "enemyHpAfter": 191,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 22,
+                  "phase": "defend",
+                  "action": "counter",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 196,
+                  "playerHpAfter": 192,
+                  "enemyHpBefore": 191,
+                  "enemyHpAfter": 191,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 23,
+                  "phase": "attack",
+                  "action": "physical",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 192,
+                  "playerHpAfter": 192,
+                  "enemyHpBefore": 191,
+                  "enemyHpAfter": 187,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 24,
+                  "phase": "defend",
+                  "action": "brace",
+                  "opponentAction": "magic",
+                  "playerHpBefore": 192,
+                  "playerHpAfter": 182,
+                  "enemyHpBefore": 187,
+                  "enemyHpAfter": 187,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 25,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "brace",
+                  "playerHpBefore": 182,
+                  "playerHpAfter": 182,
+                  "enemyHpBefore": 187,
+                  "enemyHpAfter": 177,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 26,
+                  "phase": "defend",
+                  "action": "brace",
+                  "opponentAction": "heavy",
+                  "playerHpBefore": 182,
+                  "playerHpAfter": 178,
+                  "enemyHpBefore": 177,
+                  "enemyHpAfter": 177,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 27,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 178,
+                  "playerHpAfter": 178,
+                  "enemyHpBefore": 177,
+                  "enemyHpAfter": 173,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 28,
+                  "phase": "defend",
+                  "action": "counter",
+                  "opponentAction": "magic",
+                  "playerHpBefore": 178,
+                  "playerHpAfter": 168,
+                  "enemyHpBefore": 173,
+                  "enemyHpAfter": 173,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 29,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "brace",
+                  "playerHpBefore": 168,
+                  "playerHpAfter": 168,
+                  "enemyHpBefore": 173,
+                  "enemyHpAfter": 169,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 30,
+                  "phase": "defend",
+                  "action": "counter",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 168,
+                  "playerHpAfter": 164,
+                  "enemyHpBefore": 169,
+                  "enemyHpAfter": 169,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 31,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "counter",
+                  "playerHpBefore": 164,
+                  "playerHpAfter": 164,
+                  "enemyHpBefore": 169,
+                  "enemyHpAfter": 159,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 32,
+                  "phase": "defend",
+                  "action": "counter",
+                  "opponentAction": "heavy",
+                  "playerHpBefore": 164,
+                  "playerHpAfter": 164,
+                  "enemyHpBefore": 159,
+                  "enemyHpAfter": 157,
+                  "reflected": true,
+                  "captured": false
+                },
+                {
+                  "turn": 33,
+                  "phase": "attack",
+                  "action": "physical",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 164,
+                  "playerHpAfter": 164,
+                  "enemyHpBefore": 157,
+                  "enemyHpAfter": 153,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 34,
+                  "phase": "defend",
+                  "action": "counter",
+                  "opponentAction": "physical",
+                  "playerHpBefore": 164,
+                  "playerHpAfter": 160,
+                  "enemyHpBefore": 153,
+                  "enemyHpAfter": 153,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 35,
+                  "phase": "attack",
+                  "action": "magic",
+                  "opponentAction": "counter",
+                  "playerHpBefore": 160,
+                  "playerHpAfter": 160,
+                  "enemyHpBefore": 153,
+                  "enemyHpAfter": 143,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 36,
+                  "phase": "defend",
+                  "action": "brace",
+                  "opponentAction": "magic",
+                  "playerHpBefore": 160,
+                  "playerHpAfter": 150,
+                  "enemyHpBefore": 143,
+                  "enemyHpAfter": 143,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 37,
+                  "phase": "attack",
+                  "action": "physical",
+                  "opponentAction": "brace",
+                  "playerHpBefore": 150,
+                  "playerHpAfter": 150,
+                  "enemyHpBefore": 143,
+                  "enemyHpAfter": 141,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 38,
+                  "phase": "defend",
+                  "action": "ward",
+                  "opponentAction": "heavy",
+                  "playerHpBefore": 150,
+                  "playerHpAfter": 146,
+                  "enemyHpBefore": 141,
+                  "enemyHpAfter": 141,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 39,
+                  "phase": "attack",
+                  "action": "heavy",
+                  "opponentAction": "ward",
+                  "playerHpBefore": 146,
+                  "playerHpAfter": 146,
+                  "enemyHpBefore": 141,
+                  "enemyHpAfter": 137,
+                  "reflected": false,
+                  "captured": false
+                },
+                {
+                  "turn": 40,
+                  "phase": "defend",
+                  "action": "ward",
+                  "opponentAction": "magic",
+                  "playerHpBefore": 146,
+                  "playerHpAfter": 141,
+                  "enemyHpBefore": 137,
+                  "enemyHpAfter": 137,
+                  "reflected": false,
+                  "captured": false
+                }
+              ]
+            },
+            "battle": {
+              "schemaVersion": 5,
+              "rulesVersion": 5,
+              "sequence": 40,
+              "phase": "finished",
+              "status": "draw",
+              "playerHp": 141,
+              "enemyHp": 137,
+              "playerLevel": 15,
+              "enemyLevel": 15,
+              "exchanges": 40,
+              "maxExchanges": 40,
+              "playerSpecies": "cannondramon",
+              "enemySpecies": "cannondramon",
+              "playerCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "enemyCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "playerFormId": 223,
+              "enemyFormId": 223,
+              "playerFormName": "Cannondramon",
+              "enemyFormName": "Cannondramon",
+              "cardUsed": false,
+              "attackBoost": 0,
+              "shield": 0,
+              "enemyHint": [],
+              "lastEnemyMoves": [
+                "ward",
+                "magic"
+              ],
+              "lastTurn": {
+                "phase": "defend",
+                "playerChoice": "ward",
+                "enemyChoice": "magic",
+                "playerDamage": 5,
+                "enemyDamage": 0,
+                "reflected": false
+              },
+              "companion": {
+                "id": 1,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "formId": 223
+              },
+              "enemy": {
+                "species": "cannondramon",
+                "name": "Cannondramon"
+              }
+            }
+          }
+        }
+      ],
+      "expectedCurrent": {
+        "revision": 1,
+        "mode": "auto",
+        "autoTrace": {
+          "formatVersion": 1,
+          "mode": "auto",
+          "kind": "practice",
+          "player": {
+            "formId": 223,
+            "species": "cannondramon",
+            "name": "Cannondramon",
+            "level": 15,
+            "combat": {
+              "maxHp": 248,
+              "attack": 52,
+              "defense": 66,
+              "magic": 54,
+              "resistance": 52,
+              "type": "ember",
+              "skills": {
+                "physical": "Gunmetal Tail",
+                "heavy": "Artillery Bodyslam",
+                "magic": "Twin Siege Salvo"
+              }
+            }
+          },
+          "enemy": {
+            "formId": 223,
+            "species": "cannondramon",
+            "name": "Cannondramon",
+            "level": 15,
+            "combat": {
+              "maxHp": 248,
+              "attack": 52,
+              "defense": 66,
+              "magic": 54,
+              "resistance": 52,
+              "type": "ember",
+              "skills": {
+                "physical": "Gunmetal Tail",
+                "heavy": "Artillery Bodyslam",
+                "magic": "Twin Siege Salvo"
+              }
+            }
+          },
+          "startSequence": 0,
+          "endSequence": 40,
+          "outcome": "draw",
+          "steps": [
+            {
+              "turn": 1,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "counter",
+              "playerHpBefore": 248,
+              "playerHpAfter": 246,
+              "enemyHpBefore": 248,
+              "enemyHpAfter": 248,
+              "reflected": true,
+              "captured": false
+            },
+            {
+              "turn": 2,
+              "phase": "defend",
+              "action": "ward",
+              "opponentAction": "heavy",
+              "playerHpBefore": 246,
+              "playerHpAfter": 242,
+              "enemyHpBefore": 248,
+              "enemyHpAfter": 248,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 3,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "ward",
+              "playerHpBefore": 242,
+              "playerHpAfter": 242,
+              "enemyHpBefore": 248,
+              "enemyHpAfter": 243,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 4,
+              "phase": "defend",
+              "action": "brace",
+              "opponentAction": "magic",
+              "playerHpBefore": 242,
+              "playerHpAfter": 232,
+              "enemyHpBefore": 243,
+              "enemyHpAfter": 243,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 5,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "brace",
+              "playerHpBefore": 232,
+              "playerHpAfter": 232,
+              "enemyHpBefore": 243,
+              "enemyHpAfter": 239,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 6,
+              "phase": "defend",
+              "action": "ward",
+              "opponentAction": "physical",
+              "playerHpBefore": 232,
+              "playerHpAfter": 228,
+              "enemyHpBefore": 239,
+              "enemyHpAfter": 239,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 7,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "brace",
+              "playerHpBefore": 228,
+              "playerHpAfter": 228,
+              "enemyHpBefore": 239,
+              "enemyHpAfter": 229,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 8,
+              "phase": "defend",
+              "action": "counter",
+              "opponentAction": "physical",
+              "playerHpBefore": 228,
+              "playerHpAfter": 224,
+              "enemyHpBefore": 229,
+              "enemyHpAfter": 229,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 9,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "ward",
+              "playerHpBefore": 224,
+              "playerHpAfter": 224,
+              "enemyHpBefore": 229,
+              "enemyHpAfter": 225,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 10,
+              "phase": "defend",
+              "action": "brace",
+              "opponentAction": "physical",
+              "playerHpBefore": 224,
+              "playerHpAfter": 222,
+              "enemyHpBefore": 225,
+              "enemyHpAfter": 225,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 11,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "ward",
+              "playerHpBefore": 222,
+              "playerHpAfter": 222,
+              "enemyHpBefore": 225,
+              "enemyHpAfter": 220,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 12,
+              "phase": "defend",
+              "action": "ward",
+              "opponentAction": "heavy",
+              "playerHpBefore": 222,
+              "playerHpAfter": 218,
+              "enemyHpBefore": 220,
+              "enemyHpAfter": 220,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 13,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "counter",
+              "playerHpBefore": 218,
+              "playerHpAfter": 216,
+              "enemyHpBefore": 220,
+              "enemyHpAfter": 220,
+              "reflected": true,
+              "captured": false
+            },
+            {
+              "turn": 14,
+              "phase": "defend",
+              "action": "ward",
+              "opponentAction": "physical",
+              "playerHpBefore": 216,
+              "playerHpAfter": 212,
+              "enemyHpBefore": 220,
+              "enemyHpAfter": 220,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 15,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "brace",
+              "playerHpBefore": 212,
+              "playerHpAfter": 212,
+              "enemyHpBefore": 220,
+              "enemyHpAfter": 216,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 16,
+              "phase": "defend",
+              "action": "brace",
+              "opponentAction": "heavy",
+              "playerHpBefore": 212,
+              "playerHpAfter": 208,
+              "enemyHpBefore": 216,
+              "enemyHpAfter": 216,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 17,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "brace",
+              "playerHpBefore": 208,
+              "playerHpAfter": 208,
+              "enemyHpBefore": 216,
+              "enemyHpAfter": 206,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 18,
+              "phase": "defend",
+              "action": "brace",
+              "opponentAction": "physical",
+              "playerHpBefore": 208,
+              "playerHpAfter": 206,
+              "enemyHpBefore": 206,
+              "enemyHpAfter": 206,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 19,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "ward",
+              "playerHpBefore": 206,
+              "playerHpAfter": 206,
+              "enemyHpBefore": 206,
+              "enemyHpAfter": 201,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 20,
+              "phase": "defend",
+              "action": "counter",
+              "opponentAction": "magic",
+              "playerHpBefore": 206,
+              "playerHpAfter": 196,
+              "enemyHpBefore": 201,
+              "enemyHpAfter": 201,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 21,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "counter",
+              "playerHpBefore": 196,
+              "playerHpAfter": 196,
+              "enemyHpBefore": 201,
+              "enemyHpAfter": 191,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 22,
+              "phase": "defend",
+              "action": "counter",
+              "opponentAction": "physical",
+              "playerHpBefore": 196,
+              "playerHpAfter": 192,
+              "enemyHpBefore": 191,
+              "enemyHpAfter": 191,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 23,
+              "phase": "attack",
+              "action": "physical",
+              "opponentAction": "ward",
+              "playerHpBefore": 192,
+              "playerHpAfter": 192,
+              "enemyHpBefore": 191,
+              "enemyHpAfter": 187,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 24,
+              "phase": "defend",
+              "action": "brace",
+              "opponentAction": "magic",
+              "playerHpBefore": 192,
+              "playerHpAfter": 182,
+              "enemyHpBefore": 187,
+              "enemyHpAfter": 187,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 25,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "brace",
+              "playerHpBefore": 182,
+              "playerHpAfter": 182,
+              "enemyHpBefore": 187,
+              "enemyHpAfter": 177,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 26,
+              "phase": "defend",
+              "action": "brace",
+              "opponentAction": "heavy",
+              "playerHpBefore": 182,
+              "playerHpAfter": 178,
+              "enemyHpBefore": 177,
+              "enemyHpAfter": 177,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 27,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "ward",
+              "playerHpBefore": 178,
+              "playerHpAfter": 178,
+              "enemyHpBefore": 177,
+              "enemyHpAfter": 173,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 28,
+              "phase": "defend",
+              "action": "counter",
+              "opponentAction": "magic",
+              "playerHpBefore": 178,
+              "playerHpAfter": 168,
+              "enemyHpBefore": 173,
+              "enemyHpAfter": 173,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 29,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "brace",
+              "playerHpBefore": 168,
+              "playerHpAfter": 168,
+              "enemyHpBefore": 173,
+              "enemyHpAfter": 169,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 30,
+              "phase": "defend",
+              "action": "counter",
+              "opponentAction": "physical",
+              "playerHpBefore": 168,
+              "playerHpAfter": 164,
+              "enemyHpBefore": 169,
+              "enemyHpAfter": 169,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 31,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "counter",
+              "playerHpBefore": 164,
+              "playerHpAfter": 164,
+              "enemyHpBefore": 169,
+              "enemyHpAfter": 159,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 32,
+              "phase": "defend",
+              "action": "counter",
+              "opponentAction": "heavy",
+              "playerHpBefore": 164,
+              "playerHpAfter": 164,
+              "enemyHpBefore": 159,
+              "enemyHpAfter": 157,
+              "reflected": true,
+              "captured": false
+            },
+            {
+              "turn": 33,
+              "phase": "attack",
+              "action": "physical",
+              "opponentAction": "ward",
+              "playerHpBefore": 164,
+              "playerHpAfter": 164,
+              "enemyHpBefore": 157,
+              "enemyHpAfter": 153,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 34,
+              "phase": "defend",
+              "action": "counter",
+              "opponentAction": "physical",
+              "playerHpBefore": 164,
+              "playerHpAfter": 160,
+              "enemyHpBefore": 153,
+              "enemyHpAfter": 153,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 35,
+              "phase": "attack",
+              "action": "magic",
+              "opponentAction": "counter",
+              "playerHpBefore": 160,
+              "playerHpAfter": 160,
+              "enemyHpBefore": 153,
+              "enemyHpAfter": 143,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 36,
+              "phase": "defend",
+              "action": "brace",
+              "opponentAction": "magic",
+              "playerHpBefore": 160,
+              "playerHpAfter": 150,
+              "enemyHpBefore": 143,
+              "enemyHpAfter": 143,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 37,
+              "phase": "attack",
+              "action": "physical",
+              "opponentAction": "brace",
+              "playerHpBefore": 150,
+              "playerHpAfter": 150,
+              "enemyHpBefore": 143,
+              "enemyHpAfter": 141,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 38,
+              "phase": "defend",
+              "action": "ward",
+              "opponentAction": "heavy",
+              "playerHpBefore": 150,
+              "playerHpAfter": 146,
+              "enemyHpBefore": 141,
+              "enemyHpAfter": 141,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 39,
+              "phase": "attack",
+              "action": "heavy",
+              "opponentAction": "ward",
+              "playerHpBefore": 146,
+              "playerHpAfter": 146,
+              "enemyHpBefore": 141,
+              "enemyHpAfter": 137,
+              "reflected": false,
+              "captured": false
+            },
+            {
+              "turn": 40,
+              "phase": "defend",
+              "action": "ward",
+              "opponentAction": "magic",
+              "playerHpBefore": 146,
+              "playerHpAfter": 141,
+              "enemyHpBefore": 137,
+              "enemyHpAfter": 137,
+              "reflected": false,
+              "captured": false
+            }
+          ]
+        },
+        "battle": {
+          "schemaVersion": 5,
+          "rulesVersion": 5,
+          "sequence": 40,
+          "phase": "finished",
+          "status": "draw",
+          "playerHp": 141,
+          "enemyHp": 137,
+          "playerLevel": 15,
+          "enemyLevel": 15,
+          "exchanges": 40,
+          "maxExchanges": 40,
+          "playerSpecies": "cannondramon",
+          "enemySpecies": "cannondramon",
+          "playerCombat": {
+            "maxHp": 248,
+            "attack": 52,
+            "defense": 66,
+            "magic": 54,
+            "resistance": 52,
+            "type": "ember",
+            "skills": {
+              "physical": "Gunmetal Tail",
+              "heavy": "Artillery Bodyslam",
+              "magic": "Twin Siege Salvo"
+            }
+          },
+          "enemyCombat": {
+            "maxHp": 248,
+            "attack": 52,
+            "defense": 66,
+            "magic": 54,
+            "resistance": 52,
+            "type": "ember",
+            "skills": {
+              "physical": "Gunmetal Tail",
+              "heavy": "Artillery Bodyslam",
+              "magic": "Twin Siege Salvo"
+            }
+          },
+          "playerFormId": 223,
+          "enemyFormId": 223,
+          "playerFormName": "Cannondramon",
+          "enemyFormName": "Cannondramon",
+          "cardUsed": false,
+          "attackBoost": 0,
+          "shield": 0,
+          "enemyHint": [],
+          "lastEnemyMoves": [
+            "ward",
+            "magic"
+          ],
+          "lastTurn": {
+            "phase": "defend",
+            "playerChoice": "ward",
+            "enemyChoice": "magic",
+            "playerDamage": 5,
+            "enemyDamage": 0,
+            "reflected": false
+          },
+          "companion": {
+            "id": 1,
+            "species": "cannondramon",
+            "name": "Cannondramon",
+            "level": 15,
+            "formId": 223
+          },
+          "enemy": {
+            "species": "cannondramon",
+            "name": "Cannondramon"
+          }
+        }
+      },
+      "continuation": []
+    },
+    {
+      "mode": "tactical",
+      "seed": 222,
+      "deviceId": "dv_555555555555555555555555",
+      "companion": {
+        "id": 1,
+        "species": "cannondramon",
+        "name": "Cannondramon",
+        "level": 15,
+        "formId": 223
+      },
+      "store": {
+        "formatVersion": 6,
+        "practiceSchemaVersion": 5,
+        "practiceRulesVersion": 5,
+        "generation": 2,
+        "devices": [
+          {
+            "mode": "tactical",
+            "initialSnapshotBase64": null,
+            "deviceId": "dv_555555555555555555555555",
+            "revision": 2,
+            "snapshotBase64": "REdCUAUAbAAFAAAAAQAAAIlThX4PAAAA+AAAAPgAAAAAAAAAAAAAAAAAAAABAAAABQAAAAAAAAAFAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxwQAAMcEAAAPAAAA3wAAAN8AAADIOWfE",
+            "companion": {
+              "id": 1,
+              "species": "cannondramon",
+              "name": "Cannondramon",
+              "level": 15,
+              "formId": 223
+            },
+            "receipts": [
+              {
+                "mode": "tactical",
+                "initialSnapshotBase64": null,
+                "requestId": "genuine-five-tactical-start",
+                "bodyHash": "e00af70e92da24a64023f532f4e21a33126fc62829940fae3958488ca221b6b4",
+                "revision": 1,
+                "snapshotBase64": "REdCUAUAbAAFAAAAAAAAAIlThX4PAAAA+AAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxwQAAMcEAAAPAAAA3wAAAN8AAABaVGhM",
+                "companion": {
+                  "id": 1,
+                  "species": "cannondramon",
+                  "name": "Cannondramon",
+                  "level": 15,
+                  "formId": 223
+                }
+              },
+              {
+                "mode": "tactical",
+                "initialSnapshotBase64": null,
+                "requestId": "genuine-five-tactical-card",
+                "bodyHash": "5be27b2d764efb10e05fa570cf382ff3dcf06da9545b5d09c6348149b0f99867",
+                "revision": 2,
+                "snapshotBase64": "REdCUAUAbAAFAAAAAQAAAIlThX4PAAAA+AAAAPgAAAAAAAAAAAAAAAAAAAABAAAABQAAAAAAAAAFAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxwQAAMcEAAAPAAAA3wAAAN8AAADIOWfE",
+                "companion": {
+                  "id": 1,
+                  "species": "cannondramon",
+                  "name": "Cannondramon",
+                  "level": 15,
+                  "formId": 223
+                }
+              }
+            ],
+            "legacyRequestIds": []
+          }
+        ]
+      },
+      "commands": [
+        {
+          "operation": "start",
+          "body": {
+            "rulesVersion": 5,
+            "expectedRevision": 0,
+            "requestId": "genuine-five-tactical-start"
+          },
+          "response": {
+            "revision": 1,
+            "mode": "tactical",
+            "autoTrace": null,
+            "battle": {
+              "schemaVersion": 5,
+              "rulesVersion": 5,
+              "sequence": 0,
+              "phase": "attack",
+              "status": "active",
+              "playerHp": 248,
+              "enemyHp": 248,
+              "playerLevel": 15,
+              "enemyLevel": 15,
+              "exchanges": 0,
+              "maxExchanges": 40,
+              "playerSpecies": "cannondramon",
+              "enemySpecies": "cannondramon",
+              "playerCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "enemyCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "playerFormId": 223,
+              "enemyFormId": 223,
+              "playerFormName": "Cannondramon",
+              "enemyFormName": "Cannondramon",
+              "cardUsed": false,
+              "attackBoost": 0,
+              "shield": 0,
+              "enemyHint": [
+                "counter",
+                "ward"
+              ],
+              "lastEnemyMoves": [],
+              "lastTurn": null,
+              "companion": {
+                "id": 1,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "formId": 223
+              },
+              "enemy": {
+                "species": "cannondramon",
+                "name": "Cannondramon"
+              }
+            }
+          }
+        },
+        {
+          "operation": "act",
+          "body": {
+            "rulesVersion": 5,
+            "expectedRevision": 1,
+            "requestId": "genuine-five-tactical-card",
+            "action": {
+              "type": "card",
+              "value": 1
+            }
+          },
+          "response": {
+            "revision": 2,
+            "mode": "tactical",
+            "autoTrace": null,
+            "battle": {
+              "schemaVersion": 5,
+              "rulesVersion": 5,
+              "sequence": 1,
+              "phase": "attack",
+              "status": "active",
+              "playerHp": 248,
+              "enemyHp": 248,
+              "playerLevel": 15,
+              "enemyLevel": 15,
+              "exchanges": 0,
+              "maxExchanges": 40,
+              "playerSpecies": "cannondramon",
+              "enemySpecies": "cannondramon",
+              "playerCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "enemyCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "playerFormId": 223,
+              "enemyFormId": 223,
+              "playerFormName": "Cannondramon",
+              "enemyFormName": "Cannondramon",
+              "cardUsed": true,
+              "attackBoost": 5,
+              "shield": 0,
+              "enemyHint": [
+                "counter",
+                "ward"
+              ],
+              "lastEnemyMoves": [],
+              "lastTurn": null,
+              "companion": {
+                "id": 1,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "formId": 223
+              },
+              "enemy": {
+                "species": "cannondramon",
+                "name": "Cannondramon"
+              }
+            }
+          }
+        }
+      ],
+      "expectedCurrent": {
+        "revision": 2,
+        "mode": "tactical",
+        "autoTrace": null,
+        "battle": {
+          "schemaVersion": 5,
+          "rulesVersion": 5,
+          "sequence": 1,
+          "phase": "attack",
+          "status": "active",
+          "playerHp": 248,
+          "enemyHp": 248,
+          "playerLevel": 15,
+          "enemyLevel": 15,
+          "exchanges": 0,
+          "maxExchanges": 40,
+          "playerSpecies": "cannondramon",
+          "enemySpecies": "cannondramon",
+          "playerCombat": {
+            "maxHp": 248,
+            "attack": 52,
+            "defense": 66,
+            "magic": 54,
+            "resistance": 52,
+            "type": "ember",
+            "skills": {
+              "physical": "Gunmetal Tail",
+              "heavy": "Artillery Bodyslam",
+              "magic": "Twin Siege Salvo"
+            }
+          },
+          "enemyCombat": {
+            "maxHp": 248,
+            "attack": 52,
+            "defense": 66,
+            "magic": 54,
+            "resistance": 52,
+            "type": "ember",
+            "skills": {
+              "physical": "Gunmetal Tail",
+              "heavy": "Artillery Bodyslam",
+              "magic": "Twin Siege Salvo"
+            }
+          },
+          "playerFormId": 223,
+          "enemyFormId": 223,
+          "playerFormName": "Cannondramon",
+          "enemyFormName": "Cannondramon",
+          "cardUsed": true,
+          "attackBoost": 5,
+          "shield": 0,
+          "enemyHint": [
+            "counter",
+            "ward"
+          ],
+          "lastEnemyMoves": [],
+          "lastTurn": null,
+          "companion": {
+            "id": 1,
+            "species": "cannondramon",
+            "name": "Cannondramon",
+            "level": 15,
+            "formId": 223
+          },
+          "enemy": {
+            "species": "cannondramon",
+            "name": "Cannondramon"
+          }
+        }
+      },
+      "continuation": [
+        {
+          "operation": "act",
+          "body": {
+            "rulesVersion": 5,
+            "expectedRevision": 2,
+            "requestId": "genuine-five-continue-heavy",
+            "action": {
+              "type": "heavy",
+              "value": 0
+            }
+          },
+          "response": {
+            "revision": 3,
+            "mode": "tactical",
+            "autoTrace": null,
+            "battle": {
+              "schemaVersion": 5,
+              "rulesVersion": 5,
+              "sequence": 2,
+              "phase": "defend",
+              "status": "active",
+              "playerHp": 246,
+              "enemyHp": 248,
+              "playerLevel": 15,
+              "enemyLevel": 15,
+              "exchanges": 1,
+              "maxExchanges": 40,
+              "playerSpecies": "cannondramon",
+              "enemySpecies": "cannondramon",
+              "playerCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "enemyCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "playerFormId": 223,
+              "enemyFormId": 223,
+              "playerFormName": "Cannondramon",
+              "enemyFormName": "Cannondramon",
+              "cardUsed": true,
+              "attackBoost": 5,
+              "shield": 0,
+              "enemyHint": [
+                "heavy",
+                "magic"
+              ],
+              "lastEnemyMoves": [
+                "counter"
+              ],
+              "lastTurn": {
+                "phase": "attack",
+                "playerChoice": "heavy",
+                "enemyChoice": "counter",
+                "playerDamage": 2,
+                "enemyDamage": 0,
+                "reflected": true
+              },
+              "companion": {
+                "id": 1,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "formId": 223
+              },
+              "enemy": {
+                "species": "cannondramon",
+                "name": "Cannondramon"
+              }
+            }
+          }
+        },
+        {
+          "operation": "act",
+          "body": {
+            "rulesVersion": 5,
+            "expectedRevision": 3,
+            "requestId": "genuine-five-continue-ward",
+            "action": {
+              "type": "ward",
+              "value": 0
+            }
+          },
+          "response": {
+            "revision": 4,
+            "mode": "tactical",
+            "autoTrace": null,
+            "battle": {
+              "schemaVersion": 5,
+              "rulesVersion": 5,
+              "sequence": 3,
+              "phase": "attack",
+              "status": "active",
+              "playerHp": 242,
+              "enemyHp": 248,
+              "playerLevel": 15,
+              "enemyLevel": 15,
+              "exchanges": 2,
+              "maxExchanges": 40,
+              "playerSpecies": "cannondramon",
+              "enemySpecies": "cannondramon",
+              "playerCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "enemyCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "playerFormId": 223,
+              "enemyFormId": 223,
+              "playerFormName": "Cannondramon",
+              "enemyFormName": "Cannondramon",
+              "cardUsed": true,
+              "attackBoost": 5,
+              "shield": 0,
+              "enemyHint": [
+                "brace",
+                "ward"
+              ],
+              "lastEnemyMoves": [
+                "counter",
+                "heavy"
+              ],
+              "lastTurn": {
+                "phase": "defend",
+                "playerChoice": "ward",
+                "enemyChoice": "heavy",
+                "playerDamage": 4,
+                "enemyDamage": 0,
+                "reflected": false
+              },
+              "companion": {
+                "id": 1,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "formId": 223
+              },
+              "enemy": {
+                "species": "cannondramon",
+                "name": "Cannondramon"
+              }
+            }
+          }
+        },
+        {
+          "operation": "act",
+          "body": {
+            "rulesVersion": 5,
+            "expectedRevision": 4,
+            "requestId": "genuine-five-continue-retreat",
+            "action": {
+              "type": "retreat",
+              "value": 0
+            }
+          },
+          "response": {
+            "revision": 5,
+            "mode": "tactical",
+            "autoTrace": null,
+            "battle": {
+              "schemaVersion": 5,
+              "rulesVersion": 5,
+              "sequence": 4,
+              "phase": "finished",
+              "status": "retreated",
+              "playerHp": 242,
+              "enemyHp": 248,
+              "playerLevel": 15,
+              "enemyLevel": 15,
+              "exchanges": 2,
+              "maxExchanges": 40,
+              "playerSpecies": "cannondramon",
+              "enemySpecies": "cannondramon",
+              "playerCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "enemyCombat": {
+                "maxHp": 248,
+                "attack": 52,
+                "defense": 66,
+                "magic": 54,
+                "resistance": 52,
+                "type": "ember",
+                "skills": {
+                  "physical": "Gunmetal Tail",
+                  "heavy": "Artillery Bodyslam",
+                  "magic": "Twin Siege Salvo"
+                }
+              },
+              "playerFormId": 223,
+              "enemyFormId": 223,
+              "playerFormName": "Cannondramon",
+              "enemyFormName": "Cannondramon",
+              "cardUsed": true,
+              "attackBoost": 5,
+              "shield": 0,
+              "enemyHint": [],
+              "lastEnemyMoves": [
+                "counter",
+                "heavy"
+              ],
+              "lastTurn": {
+                "phase": "defend",
+                "playerChoice": "ward",
+                "enemyChoice": "heavy",
+                "playerDamage": 4,
+                "enemyDamage": 0,
+                "reflected": false
+              },
+              "companion": {
+                "id": 1,
+                "species": "cannondramon",
+                "name": "Cannondramon",
+                "level": 15,
+                "formId": 223
+              },
+              "enemy": {
+                "species": "cannondramon",
+                "name": "Cannondramon"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

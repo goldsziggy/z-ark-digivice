@@ -1,0 +1,11 @@
+{
+  "revision": "C14-P19",
+  "variant": "touch_only",
+  "baseline": "digivice-c13-touch-only",
+  "approval": "Sentinel_0a44a0815c848191a6f7d9410ef226f3; 2026-10-09 09:32 UTC",
+  "baseline_build_sha256": "da7c7e6515e678fd4c5f990ecb69fdb17873632fc59b79ec4d7587bc429c6748",
+  "baseline_parameters_sha256": "9cb694b9012976db520583d82f6daa411d4a545ea71990dfa1cac197ebd1decc",
+  "baseline_manifest_sha256": "b2baa9892bb720672d6007bd4b93e621e1792de6e22bbbbad8132d231d8e1e81",
+  "change": "Only the white shell A/C/D/E/F pilot diameter; 1.6 -> 1.9 mm. Original operation order preserved.",
+  "physical_fit": "NOT VERIFIED"
+}

@@ -1,0 +1,1882 @@
+{
+  "formatVersion": 1,
+  "authoredDate": "2026-10-06",
+  "scope": "120 early source-sheet entries; proposed game metadata only.",
+  "sourceInventory": "docs/research/world-ds-inventory.json",
+  "officialReferenceMetadata": "docs/research/world-ds-official-early.json",
+  "semantics": [
+    "All role, four-element type and physical/heavy/magic labels in this file are authored prototype design, not official reference facts or an official moveset.",
+    "Existing forms 1–66 retain their committed profiles, names, skills and edges when merged. Proposed metadata here does not overwrite those bindings.",
+    "Source-game stage selects the authored combat tier; this is separate from official-reference stage and numeric training level.",
+    "Distinct source visual variants keep their own entry keys. Alias/variant correspondence cautions in the official metadata remain unresolved where marked."
+  ],
+  "entries": [
+    {
+      "entryKey": "chibomon",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Chibo Nudge",
+        "heavy": "Chibo Tumble",
+        "magic": "Dew Wink"
+      },
+      "roleRationale": "Authored Balanced treatment of the bouncy dew motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Fresh",
+      "displayName": "Chibomon",
+      "sourceStage": "Fresh"
+    },
+    {
+      "entryKey": "kuramon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kura Blink Jab",
+        "heavy": "Kura Eyeball Roll",
+        "magic": "Kura Static Veil"
+      },
+      "roleRationale": "Authored Mystic treatment of the watchful data eye motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Fresh",
+      "displayName": "Kuramon",
+      "sourceStage": "Fresh"
+    },
+    {
+      "entryKey": "poyomon",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Poyo Bob",
+        "heavy": "Poyo Foam Press",
+        "magic": "Poyo Tide Halo"
+      },
+      "roleRationale": "Authored Warden treatment of the floating foam motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Fresh",
+      "displayName": "Poyomon",
+      "sourceStage": "Fresh"
+    },
+    {
+      "entryKey": "puttimon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Putti Wing Tap",
+        "heavy": "Putti Cloud Drop",
+        "magic": "Putti Lantern Gleam"
+      },
+      "roleRationale": "Authored Warden treatment of the soft wing glow motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Fresh",
+      "displayName": "Puttimon",
+      "sourceStage": "Fresh"
+    },
+    {
+      "entryKey": "dorimon",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dori Horn Jab",
+        "heavy": "Dori Spring Ram",
+        "magic": "Dori Silver Flicker"
+      },
+      "roleRationale": "Authored Striker treatment of the small horn rush motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "In-Training",
+      "displayName": "Dorimon",
+      "sourceStage": "In-Training"
+    },
+    {
+      "entryKey": "kapurimon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kapu Shell Tap",
+        "heavy": "Kapu Helmet Roll",
+        "magic": "Kapu Copper Glow"
+      },
+      "roleRationale": "Authored Bulwark treatment of the helmet shell motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "In-Training",
+      "displayName": "Kapurimon",
+      "sourceStage": "In-Training"
+    },
+    {
+      "entryKey": "koromon",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Koro Hop",
+        "heavy": "Koro Bounce Press",
+        "magic": "Koro Amber Bubble"
+      },
+      "roleRationale": "Authored Balanced treatment of the springing round body motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "In-Training",
+      "displayName": "Koromon",
+      "sourceStage": "In-Training"
+    },
+    {
+      "entryKey": "pagumon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Pagu Ear Flick",
+        "heavy": "Pagu Somersault",
+        "magic": "Pagu Dusk Mist"
+      },
+      "roleRationale": "Authored Mystic treatment of the mischievous ears motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "In-Training",
+      "displayName": "Pagumon",
+      "sourceStage": "In-Training"
+    },
+    {
+      "entryKey": "tanemon",
+      "role": "Warden",
+      "type": "grove",
+      "skills": {
+        "physical": "Tane Root Tap",
+        "heavy": "Tane Sprout Roll",
+        "magic": "Tane Dew Garland"
+      },
+      "roleRationale": "Authored Warden treatment of the seedling roots motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "In-Training",
+      "displayName": "Tanemon",
+      "sourceStage": "In-Training"
+    },
+    {
+      "entryKey": "tokomon",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Toko Nip",
+        "heavy": "Toko Leap Chomp",
+        "magic": "Toko Pearl Flash"
+      },
+      "roleRationale": "Authored Striker treatment of the tiny teeth motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "In-Training",
+      "displayName": "Tokomon",
+      "sourceStage": "In-Training"
+    },
+    {
+      "entryKey": "tsunomon",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Tsuno Horn Nudge",
+        "heavy": "Tsuno Bramble Roll",
+        "magic": "Tsuno Moss Glimmer"
+      },
+      "roleRationale": "Authored Bulwark treatment of the little horn motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "In-Training",
+      "displayName": "Tsunomon",
+      "sourceStage": "In-Training"
+    },
+    {
+      "entryKey": "agumon",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Agu Claw Sweep",
+        "heavy": "Agu Tail Boulder",
+        "magic": "Agu Cinder Flurry"
+      },
+      "roleRationale": "Authored Balanced treatment of the young reptile heat motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Agumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "armadillomon",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Armadillo Paw",
+        "heavy": "Armadillo Drum Roll",
+        "magic": "Armadillo Dust Halo"
+      },
+      "roleRationale": "Authored Bulwark treatment of the armored curl motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Armadillomon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "aruraumon",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Arura Stem Slap",
+        "heavy": "Arura Thorn Wheel",
+        "magic": "Arura Violet Haze"
+      },
+      "roleRationale": "Authored Mystic treatment of the dusky flower motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Aruraumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "betamon",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Beta Fin Flick",
+        "heavy": "Beta Wave Lunge",
+        "magic": "Beta Ripple Arc"
+      },
+      "roleRationale": "Authored Balanced treatment of the aquatic fin motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Betamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "biyomon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Biyo Feather Jab",
+        "heavy": "Biyo Wing Rush",
+        "magic": "Biyo Petal Draft"
+      },
+      "roleRationale": "Authored Striker treatment of the pink feather gust motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Biyomon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "blackagumon",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Black Agu Rake",
+        "heavy": "Black Agu Coal Ram",
+        "magic": "Black Agu Ash Swirl"
+      },
+      "roleRationale": "Authored Striker treatment of the sooty claws motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "BlackAgumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "crabmon",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Crab Pincer Clip",
+        "heavy": "Crab Shell Hammer",
+        "magic": "Crab Brine Spiral"
+      },
+      "roleRationale": "Authored Bulwark treatment of the tidal pincers motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Crabmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "demidevimon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Demi Wing Nick",
+        "heavy": "Demi Midnight Dive",
+        "magic": "Demi Violet Echo"
+      },
+      "roleRationale": "Authored Mystic treatment of the small bat shadow motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "DemiDevimon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "dorumon",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Doru Paw Swipe",
+        "heavy": "Doru Crest Rush",
+        "magic": "Doru Quartz Pulse"
+      },
+      "roleRationale": "Authored Balanced treatment of the furred dragon charge motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Dorumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "dotagumon",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Dot Agu Bit Claw",
+        "heavy": "Dot Agu Block Drop",
+        "magic": "Dot Agu Ember Pixel"
+      },
+      "roleRationale": "Authored Balanced treatment of the pixel dinosaur motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "DotAgumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "dotfalcomon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Dot Falco Bit Peck",
+        "heavy": "Dot Falco Tile Dive",
+        "magic": "Dot Falco Wind Pixel"
+      },
+      "roleRationale": "Authored Striker treatment of the pixel bird motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "DotFalcomon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "dracmon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Drac Talon Flick",
+        "heavy": "Drac Mask Pounce",
+        "magic": "Drac Indigo Wink"
+      },
+      "roleRationale": "Authored Mystic treatment of the trickster eye motifs motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Dracmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "falcomon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Falco Hook Peck",
+        "heavy": "Falco Crest Dive",
+        "magic": "Falco Wind Stitch"
+      },
+      "roleRationale": "Authored Striker treatment of the feathered scout motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Falcomon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "floramon",
+      "role": "Warden",
+      "type": "grove",
+      "skills": {
+        "physical": "Flora Stem Flick",
+        "heavy": "Flora Root Twist",
+        "magic": "Flora Pollen Lantern"
+      },
+      "roleRationale": "Authored Warden treatment of the garden flower motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Floramon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "gabumon",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Gabu Horn Sweep",
+        "heavy": "Gabu Pelt Rush",
+        "magic": "Gabu Azure Wisp"
+      },
+      "roleRationale": "Authored Balanced treatment of the pelt and horn motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Gabumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "gaomon",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Gao Palm Snap",
+        "heavy": "Gao Shoulder Rush",
+        "magic": "Gao Ring Spark"
+      },
+      "roleRationale": "Authored Striker treatment of the boxing paws motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Gaomon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "gizamon",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Giza Fin Hook",
+        "heavy": "Giza Torrent Slam",
+        "magic": "Giza Brine Flash"
+      },
+      "roleRationale": "Authored Striker treatment of the rough aquatic fins motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Gizamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "goburimon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Gobu Knuckle Tap",
+        "heavy": "Gobu Stump Hammer",
+        "magic": "Gobu Leaf Rattle"
+      },
+      "roleRationale": "Authored Striker treatment of the wooden club motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Goburimon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "gomamon",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Goma Paw Splash",
+        "heavy": "Goma Breaker Roll",
+        "magic": "Goma Foam Stars"
+      },
+      "roleRationale": "Authored Balanced treatment of the playful sea paws motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Gomamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "gotsumon",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Gotsu Stone Jab",
+        "heavy": "Gotsu Quarry Roll",
+        "magic": "Gotsu Flint Glint"
+      },
+      "roleRationale": "Authored Bulwark treatment of the living pebbles motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Gotsumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "guilmon",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Guil Talon Cut",
+        "heavy": "Guil Tail Crush",
+        "magic": "Guil Furnace Wink"
+      },
+      "roleRationale": "Authored Striker treatment of the red dragon claws motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Guilmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "hagurumon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Haguru Cog Tap",
+        "heavy": "Haguru Gear Press",
+        "magic": "Haguru Copper Arc"
+      },
+      "roleRationale": "Authored Bulwark treatment of the turning gears motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Hagurumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "hawkmon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Hawk Feather Cut",
+        "heavy": "Hawk Wing Pummel",
+        "magic": "Hawk Horizon Gust"
+      },
+      "roleRationale": "Authored Striker treatment of the precise feather flight motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Hawkmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "impmon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Imp Scarf Snap",
+        "heavy": "Imp Heel Vault",
+        "magic": "Imp Lantern Hex"
+      },
+      "roleRationale": "Authored Mystic treatment of the impish scarf tricks motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Impmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "kamemon",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Kame Shell Jab",
+        "heavy": "Kame Basin Roll",
+        "magic": "Kame Ripple Beacon"
+      },
+      "roleRationale": "Authored Bulwark treatment of the turtle casing motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Kamemon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "keramon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kera Palm Stretch",
+        "heavy": "Kera Coil Pounce",
+        "magic": "Kera Bit Lantern"
+      },
+      "roleRationale": "Authored Mystic treatment of the elastic data form motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Keramon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "kotemon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kote Reed Cut",
+        "heavy": "Kote Oak Cleave",
+        "magic": "Kote Spirit Ribbon"
+      },
+      "roleRationale": "Authored Warden treatment of the wooden sword stance motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Kotemon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "kudamon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kuda Tail Flick",
+        "heavy": "Kuda Ribbon Crush",
+        "magic": "Kuda Dawn Chime"
+      },
+      "roleRationale": "Authored Warden treatment of the sacred serpent ribbon motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Kudamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "kumamon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Kuma Paw Hook",
+        "heavy": "Kuma Cap Rush",
+        "magic": "Kuma Honey Spark"
+      },
+      "roleRationale": "Authored Striker treatment of the small bear gloves motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Kumamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "lalamon",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Lala Leaf Tap",
+        "heavy": "Lala Seed Press",
+        "magic": "Lala Orchard Chord"
+      },
+      "roleRationale": "Authored Mystic treatment of the seed song motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Lalamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "lopmon",
+      "role": "Warden",
+      "type": "grove",
+      "skills": {
+        "physical": "Lop Ear Sweep",
+        "heavy": "Lop Clover Roll",
+        "magic": "Lop Meadow Chime"
+      },
+      "roleRationale": "Authored Warden treatment of the soft long ears motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Lopmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "muchomon",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Mucho Beak Snap",
+        "heavy": "Mucho Sunset Dive",
+        "magic": "Mucho Coral Flare"
+      },
+      "roleRationale": "Authored Balanced treatment of the warm tropical feathers motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Muchomon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "otamamon",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Otama Tail Tap",
+        "heavy": "Otama Lily Lunge",
+        "magic": "Otama Ripple Chord"
+      },
+      "roleRationale": "Authored Mystic treatment of the pond song motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Otamamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "palmon",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Pal Frond Swipe",
+        "heavy": "Pal Briar Knot",
+        "magic": "Pal Fern Lantern"
+      },
+      "roleRationale": "Authored Balanced treatment of the leafy vines motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Palmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "patamon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Pata Wing Bop",
+        "heavy": "Pata Cloud Barrel",
+        "magic": "Pata Dawn Whistle"
+      },
+      "roleRationale": "Authored Warden treatment of the gentle wing breeze motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Patamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "pawnchessmon-black",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Black Pawn Spear",
+        "heavy": "Black Pawn File Rush",
+        "magic": "Black Pawn Rune Grid"
+      },
+      "roleRationale": "Authored Bulwark treatment of the dark chess square motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "PawnChessmon Black",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "pawnchessmon-white",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "White Pawn Point",
+        "heavy": "White Pawn Rank Ram",
+        "magic": "White Pawn Pearl Grid"
+      },
+      "roleRationale": "Authored Warden treatment of the bright chess square motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "PawnChessmon White",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "penguinmon",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Penguin Flipper Tap",
+        "heavy": "Penguin Ice Slide",
+        "magic": "Penguin Frost Beads"
+      },
+      "roleRationale": "Authored Balanced treatment of the sliding sea bird motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Penguinmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "renamon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Rena Palm Sweep",
+        "heavy": "Rena Moon Pounce",
+        "magic": "Rena Silver Petals"
+      },
+      "roleRationale": "Authored Mystic treatment of the fox-like precision motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Renamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "salamon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Sala Paw Bop",
+        "heavy": "Sala Bell Tackle",
+        "magic": "Sala Dawn Thread"
+      },
+      "roleRationale": "Authored Warden treatment of the gentle holy paws motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Salamon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "shadowtoyagumon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Shadow Toy Peg Jab",
+        "heavy": "Shadow Toy Block Ram",
+        "magic": "Shadow Toy Prism Hex"
+      },
+      "roleRationale": "Authored Mystic treatment of the dark toy bricks motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "ShadowToyAgumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "snowagumon",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Snow Agu Claw",
+        "heavy": "Snow Agu Drift Ram",
+        "magic": "Snow Agu Rime Stars"
+      },
+      "roleRationale": "Authored Bulwark treatment of the snowy reptile motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "SnowAgumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "tapirmon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tapir Trunk Nudge",
+        "heavy": "Tapir Pillow Roll",
+        "magic": "Tapir Slumber Spark"
+      },
+      "roleRationale": "Authored Warden treatment of the dream clouds motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Tapirmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "tentomon",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Tento Leg Hook",
+        "heavy": "Tento Shell Driver",
+        "magic": "Tento Copper Pollen"
+      },
+      "roleRationale": "Authored Bulwark treatment of the beetle shell motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Tentomon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "terriermon",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Terrier Ear Snap",
+        "heavy": "Terrier Clover Dive",
+        "magic": "Terrier Breeze Beads"
+      },
+      "roleRationale": "Authored Balanced treatment of the long-eared bounce motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Terriermon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "toyagumon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Toy Agu Peg Tap",
+        "heavy": "Toy Agu Brick Press",
+        "magic": "Toy Agu Prism Spray"
+      },
+      "roleRationale": "Authored Bulwark treatment of the bright toy bricks motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "ToyAgumon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "tsukaimon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tsukai Wing Nick",
+        "heavy": "Tsukai Night Barrel",
+        "magic": "Tsukai Plum Haze"
+      },
+      "roleRationale": "Authored Mystic treatment of the violet wing shadow motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Tsukaimon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "veemon",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Vee Claw Dash",
+        "heavy": "Vee Crest Smash",
+        "magic": "Vee Sapphire Arc"
+      },
+      "roleRationale": "Authored Striker treatment of the blue dragon momentum motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Veemon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "wormmon",
+      "role": "Warden",
+      "type": "grove",
+      "skills": {
+        "physical": "Worm Antenna Tap",
+        "heavy": "Worm Cocoon Roll",
+        "magic": "Worm Silk Lantern"
+      },
+      "roleRationale": "Authored Warden treatment of the silky caterpillar motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Rookie",
+      "displayName": "Wormmon",
+      "sourceStage": "Rookie"
+    },
+    {
+      "entryKey": "airdramon",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Air Dra Tail Lash",
+        "heavy": "Air Dra Cyclone Ram",
+        "magic": "Air Dra Cloud Spiral"
+      },
+      "roleRationale": "Authored Mystic treatment of the sky serpent coils motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Airdramon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "akatorimon",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Akatori Beak Jab",
+        "heavy": "Akatori Crest Slam",
+        "magic": "Akatori Sunrise Flare"
+      },
+      "roleRationale": "Authored Balanced treatment of the bright rooster crest motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Akatorimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "angemon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Ange Wing Strike",
+        "heavy": "Ange Halo Charge",
+        "magic": "Ange Dawn Ribbon"
+      },
+      "roleRationale": "Authored Warden treatment of the guardian wings motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Angemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "ankylomon",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Ankylo Horn Cut",
+        "heavy": "Ankylo Tail Anvil",
+        "magic": "Ankylo Quarry Gleam"
+      },
+      "roleRationale": "Authored Bulwark treatment of the spined armor motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Ankylomon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "apemon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Ape Staff Sweep",
+        "heavy": "Ape Bamboo Hammer",
+        "magic": "Ape Jade Shimmer"
+      },
+      "roleRationale": "Authored Striker treatment of the staff-wielding ape motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Apemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "aquilamon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Aquila Talon Cross",
+        "heavy": "Aquila Gale Dive",
+        "magic": "Aquila Horizon Ring"
+      },
+      "roleRationale": "Authored Striker treatment of the great raptor flight motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Aquilamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "bakemon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Bake Cloth Flick",
+        "heavy": "Bake Phantom Drop",
+        "magic": "Bake Lantern Shroud"
+      },
+      "roleRationale": "Authored Mystic treatment of the drifting ghost cloth motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Bakemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "birdramon",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Birdra Talon Rake",
+        "heavy": "Birdra Furnace Dive",
+        "magic": "Birdra Ember Garland"
+      },
+      "roleRationale": "Authored Striker treatment of the blazing wings motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Birdramon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "darklizardmon",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Dark Lizard Rake",
+        "heavy": "Dark Lizard Coal Ram",
+        "magic": "Dark Lizard Ash Halo"
+      },
+      "roleRationale": "Authored Mystic treatment of the smoky reptile motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "DarkLizardmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "darktyrannomon",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Dark Tyranno Bite",
+        "heavy": "Dark Tyranno Heel",
+        "magic": "Dark Tyranno Cinder"
+      },
+      "roleRationale": "Authored Striker treatment of the dark saurian charge motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "DarkTyrannomon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "devimon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Devi Shadow Rake",
+        "heavy": "Devi Night Pounce",
+        "magic": "Devi Violet Seal"
+      },
+      "roleRationale": "Authored Mystic treatment of the shadowy long arms motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Devimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "diatrymon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Diatry Beak Cut",
+        "heavy": "Diatry Boulder Dash",
+        "magic": "Diatry Dust Vortex"
+      },
+      "roleRationale": "Authored Striker treatment of the heavy prehistoric bird motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Diatrymon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "dinohyumon",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dino Blade Cross",
+        "heavy": "Dino Cleaver Rush",
+        "magic": "Dino Steel Gleam"
+      },
+      "roleRationale": "Authored Striker treatment of the reptile blades motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Dinohyumon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "dorugamon",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Doruga Talon Sweep",
+        "heavy": "Doruga Crest Break",
+        "magic": "Doruga Quartz Gale"
+      },
+      "roleRationale": "Authored Balanced treatment of the furred dragon wings motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Dorugamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "exveemon",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "ExVee Elbow Rush",
+        "heavy": "ExVee Wing Driver",
+        "magic": "ExVee Azure Cross"
+      },
+      "roleRationale": "Authored Striker treatment of the winged blue dragon motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "ExVeemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "flarerizamon",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Flare Lizard Claw",
+        "heavy": "Flare Lizard Ram",
+        "magic": "Flare Lizard Torch"
+      },
+      "roleRationale": "Authored Mystic treatment of the flaming reptile motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Flarerizamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "gaogamon",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Gaoga Paw Cross",
+        "heavy": "Gaoga Shoulder Gale",
+        "magic": "Gaoga Ring Flurry"
+      },
+      "roleRationale": "Authored Striker treatment of the swift boxing hound motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Gaogamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "gargomon",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Gargo Knuckle Tap",
+        "heavy": "Gargo Barrel Ram",
+        "magic": "Gargo Copper Spray"
+      },
+      "roleRationale": "Authored Striker treatment of the mechanical rabbit arms motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Gargomon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "garurumon",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Garuru Fang Sweep",
+        "heavy": "Garuru Pelt Driver",
+        "magic": "Garuru Rime Vortex"
+      },
+      "roleRationale": "Authored Balanced treatment of the swift wolf pelt motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Garurumon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "gatomon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Gato Paw Cross",
+        "heavy": "Gato Tail Vault",
+        "magic": "Gato Golden Thread"
+      },
+      "roleRationale": "Authored Warden treatment of the ringed feline tail motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Gatomon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "gekomon",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Geko Palm Slap",
+        "heavy": "Geko Bass Tackle",
+        "magic": "Geko Reed Crescendo"
+      },
+      "roleRationale": "Authored Mystic treatment of the pond musician motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Gekomon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "geogreymon",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Geo Grey Horn Cut",
+        "heavy": "Geo Grey Crest Rush",
+        "magic": "Geo Grey Furnace Arc"
+      },
+      "roleRationale": "Authored Striker treatment of the broad horn crest motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "GeoGreymon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "greymon",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Grey Horn Sweep",
+        "heavy": "Grey Tail Boulder",
+        "magic": "Grey Ember Crown"
+      },
+      "roleRationale": "Authored Balanced treatment of the armored dinosaur crest motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Greymon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "grizzmon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Grizz Paw Hook",
+        "heavy": "Grizz Timber Press",
+        "magic": "Grizz Amber Roar"
+      },
+      "roleRationale": "Authored Striker treatment of the large bear grapples motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Grizzmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "growlmon",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Growl Talon Cut",
+        "heavy": "Growl Blade Driver",
+        "magic": "Growl Cinder Pulse"
+      },
+      "roleRationale": "Authored Striker treatment of the red dragon blades motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Growlmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "guardromon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Guardro Rivet Jab",
+        "heavy": "Guardro Foundry Ram",
+        "magic": "Guardro Beacon Arc"
+      },
+      "roleRationale": "Authored Bulwark treatment of the metal guardian shell motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Guardromon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "gwappamon",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Gwappa Paddle Tap",
+        "heavy": "Gwappa Drum Roll",
+        "magic": "Gwappa Lagoon Chord"
+      },
+      "roleRationale": "Authored Mystic treatment of the rhythmic water sprite motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Gwappamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "hookmon",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Hook Deck Cut",
+        "heavy": "Hook Anchor Drop",
+        "magic": "Hook Brine Lantern"
+      },
+      "roleRationale": "Authored Striker treatment of the nautical hook motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Hookmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "icemon",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Ice Shard Jab",
+        "heavy": "Ice Glacier Roll",
+        "magic": "Ice Polar Glimmer"
+      },
+      "roleRationale": "Authored Bulwark treatment of the living ice blocks motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Icemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "ikkakumon",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Ikka Horn Sweep",
+        "heavy": "Ikka Breaker Press",
+        "magic": "Ikka Tidal Halo"
+      },
+      "roleRationale": "Authored Bulwark treatment of the furry sea horn motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Ikkakumon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "kabuterimon",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Kabuteri Claw Hook",
+        "heavy": "Kabuteri Crest Ram",
+        "magic": "Kabuteri Spark Canopy"
+      },
+      "roleRationale": "Authored Bulwark treatment of the armored beetle flight motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Kabuterimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "kiwimon",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Kiwi Beak Tap",
+        "heavy": "Kiwi Root Dash",
+        "magic": "Kiwi Orchard Puff"
+      },
+      "roleRationale": "Authored Balanced treatment of the small running bird motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Kiwimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "kokatorimon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Kokatori Beak Hook",
+        "heavy": "Kokatori Crest Press",
+        "magic": "Kokatori Jade Wink"
+      },
+      "roleRationale": "Authored Striker treatment of the stern rooster gaze motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Kokatorimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "kurisarimon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kurisari Tendril",
+        "heavy": "Kurisari Shell Press",
+        "magic": "Kurisari Bit Shroud"
+      },
+      "roleRationale": "Authored Bulwark treatment of the hanging data chrysalis motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Kurisarimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "kuwagamon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Kuwaga Pincer Cut",
+        "heavy": "Kuwaga Branch Break",
+        "magic": "Kuwaga Emerald Arc"
+      },
+      "roleRationale": "Authored Striker treatment of the stag beetle pincers motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Kuwagamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "kyubimon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kyubi Tail Sweep",
+        "heavy": "Kyubi Moon Vault",
+        "magic": "Kyubi Silver Wreath"
+      },
+      "roleRationale": "Authored Mystic treatment of the many fox tails motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Kyubimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "leomon",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Leo Mane Cut",
+        "heavy": "Leo Oak Splitter",
+        "magic": "Leo Amber Banner"
+      },
+      "roleRationale": "Authored Balanced treatment of the lion swordsman motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Leomon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "minotarumon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Minotaur Horn Jab",
+        "heavy": "Minotaur Stone Crush",
+        "magic": "Minotaur Dust Halo"
+      },
+      "roleRationale": "Authored Striker treatment of the bull-like strength motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Minotarumon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "numemon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Nume Slime Slap",
+        "heavy": "Nume Muck Barrel",
+        "magic": "Nume Bog Bubbles"
+      },
+      "roleRationale": "Authored Bulwark treatment of the sliding slime motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Numemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "ogremon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Ogre Club Sweep",
+        "heavy": "Ogre Boulder Split",
+        "magic": "Ogre Moss Rumble"
+      },
+      "roleRationale": "Authored Striker treatment of the heavy bone club motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Ogremon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "peckmon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Peck Heel Snap",
+        "heavy": "Peck Crest Driver",
+        "magic": "Peck Wind Ribbons"
+      },
+      "roleRationale": "Authored Striker treatment of the running bird strikes motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Peckmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "platinumsukamon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Platina Slime Tap",
+        "heavy": "Platina Ingots Roll",
+        "magic": "Platina Mirror Haze"
+      },
+      "roleRationale": "Authored Bulwark treatment of the gleaming metal blob motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "PlatinumSukamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "raremon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Rare Ooze Swipe",
+        "heavy": "Rare Muck Avalanche",
+        "magic": "Rare Violet Vapour"
+      },
+      "roleRationale": "Authored Bulwark treatment of the unstable sludge motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Raremon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "reppamon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Reppa Tail Cross",
+        "heavy": "Reppa Branch Rush",
+        "magic": "Reppa Gale Lattice"
+      },
+      "roleRationale": "Authored Striker treatment of the sharp tail and wind motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Reppamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "reptiledramon",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Reptile Talon Cut",
+        "heavy": "Reptile Alloy Ram",
+        "magic": "Reptile Chrome Arc"
+      },
+      "roleRationale": "Authored Striker treatment of the metal raptor claws motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Reptiledramon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "roachmon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Roach Leg Hook",
+        "heavy": "Roach Shell Driver",
+        "magic": "Roach Copper Dust"
+      },
+      "roleRationale": "Authored Striker treatment of the insect skitter motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Roachmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "sangloupmon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Sangloup Fang Cut",
+        "heavy": "Sangloup Night Rush",
+        "magic": "Sangloup Crimson Haze"
+      },
+      "roleRationale": "Authored Mystic treatment of the shadow wolf motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Sangloupmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "seadramon",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Sea Dra Tail Sweep",
+        "heavy": "Sea Dra Reef Crush",
+        "magic": "Sea Dra Lagoon Coil"
+      },
+      "roleRationale": "Authored Balanced treatment of the long sea serpent motif, emphasizing even physical and special coverage.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Seadramon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "seasarmon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Seasar Paw Cross",
+        "heavy": "Seasar Bell Rush",
+        "magic": "Seasar Golden Mist"
+      },
+      "roleRationale": "Authored Warden treatment of the guardian lion-dog motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Seasarmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "sorcerymon",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Sorcery Staff Tap",
+        "heavy": "Sorcery Frost Hammer",
+        "magic": "Sorcery Rime Runes"
+      },
+      "roleRationale": "Authored Mystic treatment of the icy wizard cloak motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Sorcerymon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "starmon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Star Point Jab",
+        "heavy": "Star Meteor Press",
+        "magic": "Star Orbit Garland"
+      },
+      "roleRationale": "Authored Warden treatment of the bright star armor motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Starmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "stingmon",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Sting Wrist Cut",
+        "heavy": "Sting Thorn Driver",
+        "magic": "Sting Emerald Trail"
+      },
+      "roleRationale": "Authored Striker treatment of the sleek insect arms motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Stingmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "sukamon",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Suka Slime Jab",
+        "heavy": "Suka Muck Boulder",
+        "magic": "Suka Amber Haze"
+      },
+      "roleRationale": "Authored Bulwark treatment of the golden sludge motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Sukamon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "sunflowmon",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Sunflow Stem Swipe",
+        "heavy": "Sunflow Root Wheel",
+        "magic": "Sunflow Pollen Corona"
+      },
+      "roleRationale": "Authored Mystic treatment of the large solar flower motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Sunflowmon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "togemon",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Toge Glove Cross",
+        "heavy": "Toge Cactus Driver",
+        "magic": "Toge Briar Halo"
+      },
+      "roleRationale": "Authored Bulwark treatment of the boxing cactus motif, emphasizing physical endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Togemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "tyrannomon",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Tyranno Fang Sweep",
+        "heavy": "Tyranno Heel Crush",
+        "magic": "Tyranno Ember Breath"
+      },
+      "roleRationale": "Authored Striker treatment of the red saurian charge motif, emphasizing physical pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Tyrannomon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "unimon",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Uni Horn Cut",
+        "heavy": "Uni Cloud Charge",
+        "magic": "Uni Pearl Ribbon"
+      },
+      "roleRationale": "Authored Warden treatment of the winged horn guardian motif, emphasizing special endurance.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Unimon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "vegiemon",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Vegi Tendril Tap",
+        "heavy": "Vegi Root Knot",
+        "magic": "Vegi Orchard Fog"
+      },
+      "roleRationale": "Authored Mystic treatment of the hanging vegetable vines motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Vegiemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "vilemon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Vile Wing Rake",
+        "heavy": "Vile Dusk Pounce",
+        "magic": "Vile Midnight Chime"
+      },
+      "roleRationale": "Authored Mystic treatment of the little nightmare wings motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Vilemon",
+      "sourceStage": "Champion"
+    },
+    {
+      "entryKey": "wizardmon",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Wizard Staff Cut",
+        "heavy": "Wizard Hat Vortex",
+        "magic": "Wizard Prism Runes"
+      },
+      "roleRationale": "Authored Mystic treatment of the wizard hat and staff motif, emphasizing special pressure.",
+      "skillLabelOrigin": "authored",
+      "combatTier": "Champion",
+      "displayName": "Wizardmon",
+      "sourceStage": "Champion"
+    }
+  ],
+  "proposedEdges": [
+    {
+      "fromEntryKey": "chibomon",
+      "toEntryKey": "veemon",
+      "origin": "authored-curated-proposal",
+      "rationale": "Optional curated prototype route between newly introduced catalog forms; not a canonical Digivolution claim.",
+      "status": "review-required",
+      "minimumLevel": 1,
+      "minimumBond": 0
+    },
+    {
+      "fromEntryKey": "kuramon",
+      "toEntryKey": "keramon",
+      "origin": "authored-curated-proposal",
+      "rationale": "Optional curated prototype route between newly introduced catalog forms; not a canonical Digivolution claim.",
+      "status": "review-required",
+      "minimumLevel": 1,
+      "minimumBond": 0
+    },
+    {
+      "fromEntryKey": "keramon",
+      "toEntryKey": "kurisarimon",
+      "origin": "authored-curated-proposal",
+      "rationale": "Optional curated prototype route between newly introduced catalog forms; not a canonical Digivolution claim.",
+      "status": "review-required",
+      "minimumLevel": 5,
+      "minimumBond": 20
+    },
+    {
+      "fromEntryKey": "kapurimon",
+      "toEntryKey": "hagurumon",
+      "origin": "authored-curated-proposal",
+      "rationale": "Optional curated prototype route between newly introduced catalog forms; not a canonical Digivolution claim.",
+      "status": "review-required",
+      "minimumLevel": 1,
+      "minimumBond": 0
+    },
+    {
+      "fromEntryKey": "hagurumon",
+      "toEntryKey": "guardromon",
+      "origin": "authored-curated-proposal",
+      "rationale": "Optional curated prototype route between newly introduced catalog forms; not a canonical Digivolution claim.",
+      "status": "review-required",
+      "minimumLevel": 5,
+      "minimumBond": 20
+    },
+    {
+      "fromEntryKey": "floramon",
+      "toEntryKey": "sunflowmon",
+      "origin": "authored-curated-proposal",
+      "rationale": "Optional curated prototype route between newly introduced catalog forms; not a canonical Digivolution claim.",
+      "status": "review-required",
+      "minimumLevel": 5,
+      "minimumBond": 20
+    },
+    {
+      "fromEntryKey": "kamemon",
+      "toEntryKey": "gwappamon",
+      "origin": "authored-curated-proposal",
+      "rationale": "Optional curated prototype route between newly introduced catalog forms; not a canonical Digivolution claim.",
+      "status": "review-required",
+      "minimumLevel": 5,
+      "minimumBond": 20
+    }
+  ],
+  "status": "authored-proposal",
+  "preservationPolicy": "Merge preserves all existing forms 1–66, including their profiles, skills and edges; these rows only propose data for appended forms."
+}

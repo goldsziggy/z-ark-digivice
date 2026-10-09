@@ -1,0 +1,4121 @@
+{
+  "formatVersion": 1,
+  "status": "integrated-route-data-awaiting-regeneration",
+  "reviewer": "/root/hardware_research",
+  "reviewedDate": "2026-10-07",
+  "scope": "All 50 lower-stage leaves at the 163-edge rules7 baseline were reviewed. Nine ordinary source-backed routes are now integrated into the route data, with 41 leaves still classified. Core and generated/runtime artifacts remain the responsibility of their owners.",
+  "source": {
+    "repository": "https://github.com/EwertonMendes/DigiGame",
+    "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+    "database": {
+      "path": "database/base-digimon-list.json",
+      "sha256": "1d61f6fc03f62213f1078784ba675d6524b64e10ac946edf63bd97b391f3544f",
+      "rows": 409,
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json"
+    },
+    "fusions": {
+      "path": "database/fusions.json",
+      "sha256": "f9a7691cf2c8918a42bc5835ddf5361924dfdb848bbeb601908ac29dc8388d18",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/fusions.json"
+    },
+    "method": "Read-only git object extraction and standard-library JSON/graph analysis; no upstream execution, checkout, asset download, or GUI."
+  },
+  "inputs": {
+    "data/world-ds-catalog.json": "b5e1d185587e8e3fa7e9ee49d2aa18046caeb6c6c645518c6c8221bf15fcc689",
+    "data/world-ds-evolutions.json": "f0b14513f54516e14810049bb751313370facbf956f638595e60dbcd8a97c101",
+    "data/world-ds-runtime.json": "5332f1d02deb0f64b9e0540adf147d00c77ab415b0cf23e15c4999abe65bace0",
+    "docs/research/digigame-identity-candidates.json": "9f38db64a6ae03123d93b67c38d7de5ae760903ac6deea4fd61b13ef65e58652",
+    "docs/research/digigame-import-review.json": "a596e1bccc63e582d603bb9f9c149cd9270cd25aca073703f59b92e968ce1502",
+    "docs/research/digigame-evolution-review.json": "624fef376a68dc9080c3b0696e757d5cb40048ecbbe1591daaf0892a5da6192d",
+    "docs/research/digigame-evolution-conditions-review.json": "e2abd53bd2ff53e31e3c6c60f0a8aa418587f3ff5945bcdd9231ebe72f01b37b"
+  },
+  "semantics": [
+    "All route assertions concern the selected pinned fan-game database, not official franchise canon or exact World DS requirements.",
+    "An empty source forward list is an evidence limit, not proof of biological or canonical terminal status.",
+    "Existing163 routes, stable IDs, profile stats, skills and art remain unchanged by this proposal.",
+    "Ordinary gates use current target profiles: Champion5/20, Ultimate10/50, Mega15/80 (level/bond). Raw upstream levels are recorded but not copied into the level20 prototype.",
+    "No Armor, fusion, same-stage mode conversion, variant collapse, or requirement substitution is proposed."
+  ],
+  "counts": {
+    "reviewedLowerStageLeaves": 50,
+    "recommendedDirectEdges": 9,
+    "newAliasResolvedRoutes": 2,
+    "previouslyDeferredRoutesNowRecommended": 7,
+    "remainingLowerStageLeaves": 41,
+    "optionalAuthoredShortcuts": 3,
+    "classifications": {
+      "deferred-identity-review": 3,
+      "deferred-mode-or-family-policy": 1,
+      "deferred-special-mechanic": 2,
+      "independent-source-leaf-no-forward-evidence": 15,
+      "intentional-distinct-variant-leaf": 2,
+      "missing-intermediate-shortcut-optional": 3,
+      "missing-roster-destination": 15,
+      "missing-route-resolved-by-reviewed-alias": 2,
+      "missing-route-supported-by-pinned-source": 7
+    },
+    "remainingProductDispositions": {
+      "identity-review-required": 3,
+      "intentional-independent-for-now": 15,
+      "intentional-variant-terminal": 2,
+      "unmodeled-fusion-or-missing-target": 2,
+      "unmodeled-intermediate": 3,
+      "unmodeled-mode-or-family-policy": 1,
+      "unsupported-target-in-current-roster": 15
+    }
+  },
+  "proposedEdges": [
+    {
+      "fromFormId": 180,
+      "toFormId": 258,
+      "fromName": "Dragomon",
+      "toName": "Neptunemon",
+      "fromEntryKey": "dragomon",
+      "toEntryKey": "neptunemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "The source explicitly advances Dragomon to Neptunmon. The reviewed Neptunmon/Neptunemon spelling binding removes the former unmatched-target blocker. This is one ordinary Ultimate-to-Mega option, with no skipped form or special mechanic.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/226/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e8f4c6a1-3d2b-4e5f-9a8c-7b6d5e4f3a2c",
+        "sourceName": "Dragomon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 45
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "610af57b-d922-4d43-bb51-9c884875709e",
+        "targetName": "Neptunmon",
+        "targetRank": "Mega"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "targetAliasEvidence": {
+        "path": "docs/research/digigame-import-review.json",
+        "formId": 258,
+        "sourceName": "Neptunmon",
+        "currentName": "Neptunemon",
+        "officialReference": "https://digimon.net/reference_en/detail.php?directory_name=neptunemon",
+        "meaning": "Approved identity binding; the forward UUID link above separately proves the source route."
+      }
+    },
+    {
+      "fromFormId": 202,
+      "toFormId": 230,
+      "fromName": "Parrotmon",
+      "toName": "Crossmon",
+      "fromEntryKey": "parrotmon",
+      "toEntryKey": "crossmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "The source explicitly advances Parrotmon to Eaglemon. The reviewed Eaglemon/Crossmon identity binding removes the former unmatched-target blocker. This is one ordinary Ultimate-to-Mega option, with no skipped form or special mechanic.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/243/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "1ec3c641-3763-4c9e-8834-26f7aaf3fd09",
+        "sourceName": "Parrotmon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "a6d2f9a9-f8e8-4bc4-b137-0db50a8fa500",
+        "targetName": "Eaglemon",
+        "targetRank": "Mega"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "targetAliasEvidence": {
+        "path": "docs/research/digigame-import-review.json",
+        "formId": 230,
+        "sourceName": "Eaglemon",
+        "currentName": "Crossmon",
+        "officialReference": "https://digimon.net/reference_en/detail.php?directory_name=crossmon",
+        "meaning": "Approved identity binding; the forward UUID link above separately proves the source route."
+      }
+    },
+    {
+      "fromFormId": 112,
+      "toFormId": 157,
+      "fromName": "SnowAgumon",
+      "toName": "Seadramon",
+      "fromEntryKey": "snowagumon",
+      "toEntryKey": "seadramon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored cold-reptile-to-aquatic-serpent path. It gives SnowAgumon a Champion continuation without adding absent species or changing its starting identity.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/65/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "02e00ed9-be0c-4e24-9e6a-1bce6407ba67",
+        "sourceName": "SnowAgumon",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "a03b8672-59d7-4f2e-9b5d-b0e2a3e7f9b8",
+        "targetName": "Seadramon",
+        "targetRank": "Champion"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "reviewHistory": "Previously deferred for unconventional family flavor. Reconsidered under the approved policy that an explicit pinned ordinary route with correct identities/stages and no special mechanics is sufficient for an authored prototype choice."
+    },
+    {
+      "fromFormId": 122,
+      "toFormId": 187,
+      "fromName": "Apemon",
+      "toName": "Kyukimon",
+      "fromEntryKey": "apemon",
+      "toEntryKey": "kyukimon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored beast-to-bladed-beast alternative. It gives Apemon an Ultimate choice with an existing downstream Mega route; this is not a claim of exclusive or conventional franchise ancestry.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/92/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "cd52bdf0-80a8-4b19-b738-ed6acf1f0b14",
+        "sourceName": "Apemon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "c67f1a0b-f889-438b-9cc0-885f9f711a26",
+        "targetName": "Kyukimon",
+        "targetRank": "Ultimate"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "reviewHistory": "Previously deferred for unconventional family flavor. Reconsidered under the approved policy that an explicit pinned ordinary route with correct identities/stages and no special mechanics is sufficient for an authored prototype choice."
+    },
+    {
+      "fromFormId": 147,
+      "toFormId": 181,
+      "fromName": "Minotarumon",
+      "toName": "Etemon",
+      "fromEntryKey": "minotarumon",
+      "toEntryKey": "etemon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored brawler-to-theatrical-brawler alternative. The family change is an intentional prototype flavor choice supported by the selected forward table, not a canonical requirement.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/144/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e3f9c4b1-8a2d-4d91-97c1-5378c5f78e0b",
+        "sourceName": "Minotarumon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "8f14e45f-ceea-41d4-9a3d-3e8d2e9f6b2c",
+        "targetName": "Etemon",
+        "targetRank": "Ultimate"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "reviewHistory": "Previously deferred for unconventional family flavor. Reconsidered under the approved policy that an explicit pinned ordinary route with correct identities/stages and no special mechanics is sufficient for an authored prototype choice."
+    },
+    {
+      "fromFormId": 149,
+      "toFormId": 172,
+      "fromName": "Ogremon",
+      "toName": "BlackWereGarurumon",
+      "fromEntryKey": "ogremon",
+      "toEntryKey": "blackweregarurumon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored ferocious-brawler-to-dark-beast continuation. BlackWereGarurumon is the exact identified target; ordinary WereGarurumon is not substituted. The new Ultimate remains independently playable even though its further source destination is absent.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/104/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "87a9e123-4f23-42b3-9d83-3c7e4382c3d5",
+        "sourceName": "Ogremon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "4aa02e4b-b20a-4faf-9269-0ba18a1e7d08",
+        "targetName": "Black Were Garurumon",
+        "targetRank": "Ultimate"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "reviewHistory": "Previously deferred for unconventional family flavor. Reconsidered under the approved policy that an explicit pinned ordinary route with correct identities/stages and no special mechanics is sufficient for an authored prototype choice."
+    },
+    {
+      "fromFormId": 193,
+      "toFormId": 262,
+      "fromName": "Matadormon",
+      "toName": "Piedmon",
+      "fromEntryKey": "matadormon",
+      "toEntryKey": "piedmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored theatrical-dark-fighter-to-clown Mega path. This makes Matadormon progress to an existing final form while preserving its own stats and identity.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/269/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "68de0bbe-a11d-4452-bdb6-f6b4478d06ad",
+        "sourceName": "Matadormon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 43
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "d1c5f6b8-2f3e-4e9b-8c2d-7a9e5f6d3b1a",
+        "targetName": "Piedmon",
+        "targetRank": "Mega"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "reviewHistory": "Previously deferred for unconventional family flavor. Reconsidered under the approved policy that an explicit pinned ordinary route with correct identities/stages and no special mechanics is sufficient for an authored prototype choice."
+    },
+    {
+      "fromFormId": 199,
+      "toFormId": 216,
+      "fromName": "Monzaemon",
+      "toName": "Babamon",
+      "fromEntryKey": "monzaemon",
+      "toEntryKey": "babamon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored puppet-to-elder Mega alternative. This is a deliberate game flavor choice that closes Monzaemon’s leaf without a new species, fusion, or invented source condition.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/217/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "bcdefa01-2345-4678-9abc-def012345678",
+        "sourceName": "Monzaemon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 36
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "2cb8232c-c35f-4a7b-b3a5-fa7ed495e33b",
+        "targetName": "Babamon",
+        "targetRank": "Mega"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "reviewHistory": "Previously deferred for unconventional family flavor. Reconsidered under the approved policy that an explicit pinned ordinary route with correct identities/stages and no special mechanics is sufficient for an authored prototype choice."
+    },
+    {
+      "fromFormId": 203,
+      "toFormId": 247,
+      "fromName": "Piximon",
+      "toName": "Jijimon",
+      "fromEntryKey": "piximon",
+      "toEntryKey": "jijimon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "integrated-reviewed-prototype-route",
+      "routeKind": "ordinary-stage-advance",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored small-mystic-to-elder-mentor Mega path. The route gives Piximon a final-form option without claiming it is an exclusive canonical continuation.",
+      "sourceEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/220/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "2645815a-a9a0-4e53-b0a9-28cbfc7d5e61",
+        "sourceName": "Piximon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ],
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "2d8e7094-e209-49af-ac57-b24ca1a26415",
+        "targetName": "Jijimon",
+        "targetRank": "Mega"
+      },
+      "gatePolicy": "Use the current target profile stage gates within our level20 cap. Do not import the upstream level curve or invent item/fusion conditions.",
+      "flags": [],
+      "unimplementedConditions": [],
+      "reviewHistory": "Previously deferred for unconventional family flavor. Reconsidered under the approved policy that an explicit pinned ordinary route with correct identities/stages and no special mechanics is sufficient for an authored prototype choice."
+    }
+  ],
+  "reviewedAlternatives": [],
+  "authoredShortcutOptions": [
+    {
+      "fromFormId": 115,
+      "toFormId": 197,
+      "fromName": "ToyAgumon",
+      "toName": "MetalMamemon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "status": "optional-authored-shortcut-not-recommended-by-default",
+      "canonicalClaim": false,
+      "routeKind": "collapsed-two-edge-source-chain",
+      "chain": "ToyAgumon → Tankmon → MetalMamemon",
+      "missingIntermediate": {
+        "name": "Tankmon",
+        "rank": "Champion",
+        "seed": "bc8f1703-4769-4c3b-b8a2-e4f1d7ce9a02"
+      },
+      "rationale": "Mechanical/toy continuity is understandable. Collapsing the absent Champion would be an explicit authored Rookie-to-Ultimate shortcut, not the source direct route.",
+      "sourceEvidence": [
+        {
+          "repository": "https://github.com/EwertonMendes/DigiGame",
+          "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+          "path": "database/base-digimon-list.json",
+          "jsonPointer": "/50/digiEvolutionSeedList/0",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+          "sourceSeed": "be1f2a3b-c4d5-4e6f-8a9b-0c1d2e3f4a5b",
+          "sourceName": "ToyAgumon",
+          "sourceRank": "Rookie",
+          "rawSourceRowRequirements": [
+            {
+              "type": "level",
+              "value": 10
+            }
+          ],
+          "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+          "targetSeed": "bc8f1703-4769-4c3b-b8a2-e4f1d7ce9a02",
+          "targetName": "Tankmon",
+          "targetRank": "Champion"
+        },
+        {
+          "repository": "https://github.com/EwertonMendes/DigiGame",
+          "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+          "path": "database/base-digimon-list.json",
+          "jsonPointer": "/183/digiEvolutionSeedList/0",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+          "sourceSeed": "bc8f1703-4769-4c3b-b8a2-e4f1d7ce9a02",
+          "sourceName": "Tankmon",
+          "sourceRank": "Champion",
+          "rawSourceRowRequirements": [
+            {
+              "type": "level",
+              "value": 20
+            }
+          ],
+          "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+          "targetSeed": "f697c01b-7394-41b3-a374-34a6a1ff27f6",
+          "targetName": "MetalMamemon",
+          "targetRank": "Ultimate"
+        }
+      ],
+      "tradeoff": "It avoids adding unsupported roster forms but skips a visible stage and its choice/reward moment. Keep the target-stage gate; do not present this as a direct source-game route.",
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 124,
+      "toFormId": 239,
+      "fromName": "Bakemon",
+      "toName": "Ghoulmon Black",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "optional-authored-shortcut-not-recommended-by-default",
+      "canonicalClaim": false,
+      "routeKind": "collapsed-two-edge-source-chain",
+      "chain": "Bakemon → Phantomon → Ghoulmon (Black)",
+      "missingIntermediate": {
+        "name": "Phantomon",
+        "rank": "Ultimate",
+        "seed": "01cf1fc3-911e-4a79-a14a-c2de553edecb"
+      },
+      "rationale": "Ghost-to-dark-spirit continuity is understandable. The exact Black target is present, but collapsing the absent Ultimate remains an authored stage skip.",
+      "sourceEvidence": [
+        {
+          "repository": "https://github.com/EwertonMendes/DigiGame",
+          "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+          "path": "database/base-digimon-list.json",
+          "jsonPointer": "/111/digiEvolutionSeedList/0",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+          "sourceSeed": "d9a3c6e0-2f5b-4e7a-8c1b-9f0d5a3e7b2c",
+          "sourceName": "Bakemon",
+          "sourceRank": "Champion",
+          "rawSourceRowRequirements": [
+            {
+              "type": "level",
+              "value": 20
+            }
+          ],
+          "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+          "targetSeed": "01cf1fc3-911e-4a79-a14a-c2de553edecb",
+          "targetName": "Phantomon",
+          "targetRank": "Ultimate"
+        },
+        {
+          "repository": "https://github.com/EwertonMendes/DigiGame",
+          "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+          "path": "database/base-digimon-list.json",
+          "jsonPointer": "/282/digiEvolutionSeedList/1",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+          "sourceSeed": "01cf1fc3-911e-4a79-a14a-c2de553edecb",
+          "sourceName": "Phantomon",
+          "sourceRank": "Ultimate",
+          "rawSourceRowRequirements": [
+            {
+              "type": "level",
+              "value": 45
+            }
+          ],
+          "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+          "targetSeed": "8f9dec20-c882-4aba-8689-c408e5422d95",
+          "targetName": "Ghoulmon (Black)",
+          "targetRank": "Mega"
+        }
+      ],
+      "tradeoff": "It avoids adding unsupported roster forms but skips a visible stage and its choice/reward moment. Keep the target-stage gate; do not present this as a direct source-game route.",
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 128,
+      "toFormId": 266,
+      "fromName": "Diatrymon",
+      "toName": "Varodurumon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "optional-authored-shortcut-not-recommended-by-default",
+      "canonicalClaim": false,
+      "routeKind": "collapsed-two-edge-source-chain",
+      "chain": "Diatrymon → Sinduramon → Varodurumon",
+      "missingIntermediate": {
+        "name": "Sinduramon",
+        "rank": "Ultimate",
+        "seed": "3806f254-dcf8-44b7-9384-edddef3c6bba"
+      },
+      "rationale": "Bird continuity is understandable. The exact source chain exists, but removing its absent Ultimate is an authored Champion-to-Mega shortcut.",
+      "sourceEvidence": [
+        {
+          "repository": "https://github.com/EwertonMendes/DigiGame",
+          "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+          "path": "database/base-digimon-list.json",
+          "jsonPointer": "/149/digiEvolutionSeedList/0",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+          "sourceSeed": "12bfe8d3-7c6e-4e0f-9a2b-f1d3c87b20f5",
+          "sourceName": "Diatrymon",
+          "sourceRank": "Champion",
+          "rawSourceRowRequirements": [
+            {
+              "type": "level",
+              "value": 20
+            }
+          ],
+          "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+          "targetSeed": "3806f254-dcf8-44b7-9384-edddef3c6bba",
+          "targetName": "Sinduramon",
+          "targetRank": "Ultimate"
+        },
+        {
+          "repository": "https://github.com/EwertonMendes/DigiGame",
+          "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+          "path": "database/base-digimon-list.json",
+          "jsonPointer": "/249/digiEvolutionSeedList/0",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+          "sourceSeed": "3806f254-dcf8-44b7-9384-edddef3c6bba",
+          "sourceName": "Sinduramon",
+          "sourceRank": "Ultimate",
+          "rawSourceRowRequirements": [
+            {
+              "type": "level",
+              "value": 45
+            }
+          ],
+          "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+          "targetSeed": "d182efd5-f240-4aaf-bb6b-3ef0afa6bc43",
+          "targetName": "Varodurumon",
+          "targetRank": "Mega"
+        }
+      ],
+      "tradeoff": "It avoids adding unsupported roster forms but skips a visible stage and its choice/reward moment. Keep the target-stage gate; do not present this as a direct source-game route.",
+      "unimplementedConditions": []
+    }
+  ],
+  "leafReviews": [
+    {
+      "formId": 83,
+      "name": "Crabmon",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 83,
+        "status": "independent",
+        "reason": "Coelamon is not in this roster, so Crabmon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/68/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "9c7bdff5-ad50-4cc5-ac80-805e59e2da57",
+        "sourceName": "Crabmon",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Ebidramon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/68/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "9c7bdff5-ad50-4cc5-ac80-805e59e2da57",
+            "sourceName": "Crabmon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "91a2e3f7-7f0b-446d-81e2-3d9c7f1a5e40",
+            "targetName": "Ebidramon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 86,
+      "name": "DotAgumon",
+      "stage": "Rookie",
+      "classification": "intentional-distinct-variant-leaf",
+      "productDispositionAfterProposedEdges": "intentional-variant-terminal",
+      "reason": "Keep this Dot form independent. Its candidate references the ordinary base species, so copying base-species evolution edges would collapse a distinct visual identity.",
+      "existingDisposition": {
+        "formId": 86,
+        "status": "independent",
+        "reason": "DotAgumon stays a distinct form. Converting it into ordinary Agumon is not an evolution option."
+      },
+      "sourceRowEvidence": null,
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 87,
+      "name": "DotFalcomon",
+      "stage": "Rookie",
+      "classification": "intentional-distinct-variant-leaf",
+      "productDispositionAfterProposedEdges": "intentional-variant-terminal",
+      "reason": "Keep this Dot form independent. Its candidate references the ordinary base species, so copying base-species evolution edges would collapse a distinct visual identity.",
+      "existingDisposition": {
+        "formId": 87,
+        "status": "independent",
+        "reason": "DotFalcomon stays a distinct form. Converting it into ordinary Falcomon is not an evolution option."
+      },
+      "sourceRowEvidence": null,
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 102,
+      "name": "Kumamon",
+      "stage": "Rookie",
+      "classification": "deferred-identity-review",
+      "productDispositionAfterProposedEdges": "identity-review-required",
+      "reason": "Kumamon/Bearmon remains a qualified target-inventory identity. The matching upstream label alone does not resolve the current sprite/form identity.",
+      "existingDisposition": {
+        "formId": 102,
+        "status": "independent",
+        "reason": "Kumamon has no evolution route in this prototype. It remains available through encounters."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/60/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "56b1d2e3-f4a5-4b6c-8d9e-0f1a2b3c4d5e",
+        "sourceName": "Kumamon",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Grizzmon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [
+            138
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/60/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "56b1d2e3-f4a5-4b6c-8d9e-0f1a2b3c4d5e",
+            "sourceName": "Kumamon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "f3a7b9c0-1d5a-4e6b-8c2d-9f0e3a5d7c6b",
+            "targetName": "Grizzmon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        },
+        {
+          "targetName": "Mojyamon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/60/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "56b1d2e3-f4a5-4b6c-8d9e-0f1a2b3c4d5e",
+            "sourceName": "Kumamon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "c2d84f3e-0b97-402d-9ef1-b38f7051c4ad",
+            "targetName": "Mojyamon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "Mammothmon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": []
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 104,
+      "name": "Lopmon",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 104,
+        "status": "independent",
+        "reason": "Turuiemon and Wendigomon are not in this roster. Lopmon has no direct shortcut to Antylamon."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/55/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "b1905950-9981-4544-a642-69f106e4889d",
+        "sourceName": "Lopmon",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Wendigomon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/55/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "b1905950-9981-4544-a642-69f106e4889d",
+            "sourceName": "Lopmon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "e01c59b2-8f7a-49f2-914d-6ac9d3ef2b84",
+            "targetName": "Wendigomon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "Antylamon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": [
+                168
+              ]
+            }
+          ]
+        },
+        {
+          "targetName": "Centarumon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/55/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "b1905950-9981-4544-a642-69f106e4889d",
+            "sourceName": "Lopmon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "c7e0f2d9-b5a3-4b18-91f2-8d9c0e7a6f13",
+            "targetName": "Centarumon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "BlackRapidmon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": [
+                170
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 107,
+      "name": "PawnChessmon Black",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 107,
+        "status": "independent",
+        "reason": "KnightChessmon Black is not in this roster. The black chess family has no further route here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/75/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "a05f17f2-7f47-44dd-ae69-b46896e08043",
+        "sourceName": "PawnChessmon (Black)",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "KnightChessmon (Black)",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/75/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "a05f17f2-7f47-44dd-ae69-b46896e08043",
+            "sourceName": "PawnChessmon (Black)",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "5a9c1a2a-79b5-4de4-bc0a-d0fcd149e9d6",
+            "targetName": "KnightChessmon (Black)",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "RockChessmon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": []
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 108,
+      "name": "PawnChessmon White",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 108,
+        "status": "independent",
+        "reason": "KnightChessmon White is not in this roster. The white chess family has no further route here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/80/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "8d68e936-fcc3-478b-bcc7-0160ef26c4df",
+        "sourceName": "PawnChessmon (White)",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "KnightChessmon (White)",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/80/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "8d68e936-fcc3-478b-bcc7-0160ef26c4df",
+            "sourceName": "PawnChessmon (White)",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "09f69899-b91d-4ec5-9a4e-74641b692291",
+            "targetName": "KnightChessmon (White)",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "BishopChessmon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": []
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 111,
+      "name": "ShadowToyAgumon",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 111,
+        "status": "independent",
+        "reason": "ShadowToyAgumon stays a distinct form. Changing it into ordinary ToyAgumon is not an evolution option."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/73/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "264ecbe7-d857-48dc-94d5-418f1dd5ac4b",
+        "sourceName": "ToyAgumon (Black)",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Mekanorimon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/73/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "264ecbe7-d857-48dc-94d5-418f1dd5ac4b",
+            "sourceName": "ToyAgumon (Black)",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "f8d2c6e9-4b1a-4e9f-8c7d-3a5e9b2f1d0c",
+            "targetName": "Mekanorimon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "EXTyrannomon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": []
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 112,
+      "name": "SnowAgumon",
+      "stage": "Rookie",
+      "classification": "missing-route-supported-by-pinned-source",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 112,
+        "status": "independent",
+        "reason": "Frigimon is not in this roster, so SnowAgumon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/65/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "02e00ed9-be0c-4e24-9e6a-1bce6407ba67",
+        "sourceName": "SnowAgumon",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Seadramon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [
+            157
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/65/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "02e00ed9-be0c-4e24-9e6a-1bce6407ba67",
+            "sourceName": "SnowAgumon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "a03b8672-59d7-4f2e-9b5d-b0e2a3e7f9b8",
+            "targetName": "Seadramon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 115,
+      "name": "ToyAgumon",
+      "stage": "Rookie",
+      "classification": "missing-intermediate-shortcut-optional",
+      "productDispositionAfterProposedEdges": "unmodeled-intermediate",
+      "reason": "A verified two-link source chain reaches a current form through one absent intermediate. See authoredShortcutOptions; no direct edge is asserted.",
+      "existingDisposition": {
+        "formId": 115,
+        "status": "independent",
+        "reason": "Tankmon is not in this roster, so ToyAgumon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/50/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "be1f2a3b-c4d5-4e6f-8a9b-0c1d2e3f4a5b",
+        "sourceName": "ToyAgumon",
+        "sourceRank": "Rookie",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Tankmon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/50/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "be1f2a3b-c4d5-4e6f-8a9b-0c1d2e3f4a5b",
+            "sourceName": "ToyAgumon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "bc8f1703-4769-4c3b-b8a2-e4f1d7ce9a02",
+            "targetName": "Tankmon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "MetalMamemon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": [
+                197
+              ]
+            }
+          ]
+        },
+        {
+          "targetName": "Deputymon",
+          "targetRank": "Champion",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/50/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "be1f2a3b-c4d5-4e6f-8a9b-0c1d2e3f4a5b",
+            "sourceName": "ToyAgumon",
+            "sourceRank": "Rookie",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 10
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "a5d4e9f7-c830-4f2d-b6a1-1e0f4c3b9d58",
+            "targetName": "Deputymon",
+            "targetRank": "Champion"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "MameTyramon",
+              "rank": "Ultimate",
+              "currentCandidateFormIds": []
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 121,
+      "name": "Ankylomon",
+      "stage": "Champion",
+      "classification": "deferred-special-mechanic",
+      "productDispositionAfterProposedEdges": "unmodeled-fusion-or-missing-target",
+      "reason": "Ankylomon has no ordinary forward route here. Its source Shakkoumon route is a separate two-material fusion with Angemon; the target is also absent.",
+      "existingDisposition": {
+        "formId": 121,
+        "status": "terminal",
+        "reason": "Shakkoumon is not in this roster, and fusion is not an evolution option here. Ankylomon remains playable."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/123/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "d6e3a9c0-2f5b-4e7a-8c1d-9f0a3e5d7b2c",
+        "sourceName": "Ankylomon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [
+        {
+          "recipeId": "shakkoumon",
+          "resultName": "Shakkoumon",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/fusions.json",
+          "jsonPointer": "/3",
+          "materials": [
+            {
+              "name": "Angemon",
+              "minimumLevel": 30,
+              "amount": 1
+            },
+            {
+              "name": "Ankylomon",
+              "minimumLevel": 30,
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 122,
+      "name": "Apemon",
+      "stage": "Champion",
+      "classification": "missing-route-supported-by-pinned-source",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 122,
+        "status": "independent",
+        "reason": "Apemon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/92/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "cd52bdf0-80a8-4b19-b738-ed6acf1f0b14",
+        "sourceName": "Apemon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Kyukimon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [
+            187
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/92/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "cd52bdf0-80a8-4b19-b738-ed6acf1f0b14",
+            "sourceName": "Apemon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "c67f1a0b-f889-438b-9cc0-885f9f711a26",
+            "targetName": "Kyukimon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 124,
+      "name": "Bakemon",
+      "stage": "Champion",
+      "classification": "missing-intermediate-shortcut-optional",
+      "productDispositionAfterProposedEdges": "unmodeled-intermediate",
+      "reason": "A verified two-link source chain reaches a current form through one absent intermediate. See authoredShortcutOptions; no direct edge is asserted.",
+      "existingDisposition": {
+        "formId": 124,
+        "status": "independent",
+        "reason": "Phantomon is not in this roster, so Bakemon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/111/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "d9a3c6e0-2f5b-4e7a-8c1b-9f0d5a3e7b2c",
+        "sourceName": "Bakemon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Phantomon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/111/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "d9a3c6e0-2f5b-4e7a-8c1b-9f0d5a3e7b2c",
+            "sourceName": "Bakemon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "01cf1fc3-911e-4a79-a14a-c2de553edecb",
+            "targetName": "Phantomon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "Apocalymon",
+              "rank": "Mega",
+              "currentCandidateFormIds": []
+            },
+            {
+              "name": "Ghoulmon (Black)",
+              "rank": "Mega",
+              "currentCandidateFormIds": [
+                239
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 126,
+      "name": "DarkLizardmon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 126,
+        "status": "independent",
+        "reason": "DarkLizardmon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/146/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "61b72dc8-3fe7-4ea9-9e4c-ff718ba1477a",
+        "sourceName": "DarkLizardmon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Volcanomon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/146/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "61b72dc8-3fe7-4ea9-9e4c-ff718ba1477a",
+            "sourceName": "DarkLizardmon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "a1b2c3d4-e5f6-4789-9012-34567890abcd",
+            "targetName": "Volcanomon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 128,
+      "name": "Diatrymon",
+      "stage": "Champion",
+      "classification": "missing-intermediate-shortcut-optional",
+      "productDispositionAfterProposedEdges": "unmodeled-intermediate",
+      "reason": "A verified two-link source chain reaches a current form through one absent intermediate. See authoredShortcutOptions; no direct edge is asserted.",
+      "existingDisposition": {
+        "formId": 128,
+        "status": "terminal",
+        "reason": "Diatrymon has no further evolution here. Different Yatagaramon variants are not treated as interchangeable."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/149/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "12bfe8d3-7c6e-4e0f-9a2b-f1d3c87b20f5",
+        "sourceName": "Diatrymon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Sinduramon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/149/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "12bfe8d3-7c6e-4e0f-9a2b-f1d3c87b20f5",
+            "sourceName": "Diatrymon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "3806f254-dcf8-44b7-9384-edddef3c6bba",
+            "targetName": "Sinduramon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "Varodurumon",
+              "rank": "Mega",
+              "currentCandidateFormIds": [
+                266
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 132,
+      "name": "Flarerizamon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 132,
+        "status": "independent",
+        "reason": "Flarerizamon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/147/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "bd2c0a93-4d8f-4f6e-b3a9-761f40ed38b7",
+        "sourceName": "Flarerizamon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 141,
+      "name": "Gwappamon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 141,
+        "status": "terminal",
+        "reason": "Shawujinmon is not in this roster, so Gwappamon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/152/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "c849a173-f2d4-4700-88e3-1bc4a9f7e5d2",
+        "sourceName": "Gawappamon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Shaujinmon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/152/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "c849a173-f2d4-4700-88e3-1bc4a9f7e5d2",
+            "sourceName": "Gawappamon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "965f036a-e7a9-4a59-b192-db5b57636af8",
+            "targetName": "Shaujinmon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "JumboGamemon",
+              "rank": "Mega",
+              "currentCandidateFormIds": []
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 142,
+      "name": "Hookmon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 142,
+        "status": "independent",
+        "reason": "Assaultmon is not in this roster, so Hookmon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/132/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "a5d7b9c0-3f1a-4e6b-8c2d-9f0e3a5d7b6c",
+        "sourceName": "Hookmon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 145,
+      "name": "Kokatorimon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 145,
+        "status": "terminal",
+        "reason": "Kokatorimon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/113/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "b5e9c2f0-3a1d-4e6b-8c7b-9f0d5a3e2d7c",
+        "sourceName": "Kokatorimon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 147,
+      "name": "Minotarumon",
+      "stage": "Champion",
+      "classification": "missing-route-supported-by-pinned-source",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 147,
+        "status": "independent",
+        "reason": "Asuramon is not in this roster, so Minotarumon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/144/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e3f9c4b1-8a2d-4d91-97c1-5378c5f78e0b",
+        "sourceName": "Minotarumon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Etemon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [
+            181
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/144/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "e3f9c4b1-8a2d-4d91-97c1-5378c5f78e0b",
+            "sourceName": "Minotarumon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "8f14e45f-ceea-41d4-9a3d-3e8d2e9f6b2c",
+            "targetName": "Etemon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 149,
+      "name": "Ogremon",
+      "stage": "Champion",
+      "classification": "missing-route-supported-by-pinned-source",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 149,
+        "status": "terminal",
+        "reason": "Ogremon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/104/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "87a9e123-4f23-42b3-9d83-3c7e4382c3d5",
+        "sourceName": "Ogremon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Black Were Garurumon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [
+            172
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/104/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "87a9e123-4f23-42b3-9d83-3c7e4382c3d5",
+            "sourceName": "Ogremon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "4aa02e4b-b20a-4faf-9269-0ba18a1e7d08",
+            "targetName": "Black Were Garurumon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 151,
+      "name": "PlatinumSukamon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 151,
+        "status": "independent",
+        "reason": "PlatinumSukamon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/143/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "5b7a39c4-812d-42c1-8e07-3c9a8e5f6f10",
+        "sourceName": "PlatinumSukamon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 152,
+      "name": "Raremon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 152,
+        "status": "terminal",
+        "reason": "Raremon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/116/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e3a5c9b7-3d1f-4e6a-8c2b-9f0d5a3e7b6c",
+        "sourceName": "Raremon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Datamon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/116/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "e3a5c9b7-3d1f-4e6a-8c2b-9f0d5a3e7b6c",
+            "sourceName": "Raremon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "707cf9e9-48a1-4087-87d9-f3c53447e100",
+            "targetName": "Datamon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "Parasimon",
+              "rank": "Mega",
+              "currentCandidateFormIds": [
+                260
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 154,
+      "name": "Reptiledramon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 154,
+        "status": "terminal",
+        "reason": "Grademon is not in this roster, so Reptiledramon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/135/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "f604d614-12f3-4f68-8582-779e561fcd91",
+        "sourceName": "Reptiledramon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Grademon",
+          "targetRank": "Ultimate",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/135/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "f604d614-12f3-4f68-8582-779e561fcd91",
+            "sourceName": "Reptiledramon",
+            "sourceRank": "Champion",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 20
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "7f6e3b3b-5e12-4e29-9f57-4b9a6c34b1f8",
+            "targetName": "Grademon",
+            "targetRank": "Ultimate"
+          },
+          "nextSourceTargetsIfTargetAbsent": [
+            {
+              "name": "Alphamon",
+              "rank": "Mega",
+              "currentCandidateFormIds": []
+            }
+          ]
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 155,
+      "name": "Roachmon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 155,
+        "status": "independent",
+        "reason": "Roachmon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/130/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "c0f3a7b9-2d5a-4e6b-8c1d-9f0e3a5d7b2c",
+        "sourceName": "Roachmon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 158,
+      "name": "Seasarmon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 158,
+        "status": "independent",
+        "reason": "Seasarmon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/127/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "f0a5d7b9-2c1f-4e6a-8c3d-9f0e3a5d7b2c",
+        "sourceName": "Seasarmon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 159,
+      "name": "Sorcerymon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 159,
+        "status": "independent",
+        "reason": "Wisemon is not in this roster, so Sorcerymon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/140/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "f2d0c814-95f4-4eb2-9491-519b62a3c9de",
+        "sourceName": "Sorcerymon",
+        "sourceRank": "Champion",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 167,
+      "name": "Angewomon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 167,
+        "status": "terminal",
+        "reason": "Ophanimon and Magnadramon are not in this roster, so Angewomon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/204/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "28228629-5abc-4fdb-b94d-360783b2ff2c",
+        "sourceName": "Angewomon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Ophanimon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/204/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "28228629-5abc-4fdb-b94d-360783b2ff2c",
+            "sourceName": "Angewomon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 35
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "3452a6f7-80f7-4c3e-9a78-0ba44f8c56a2",
+            "targetName": "Ophanimon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        },
+        {
+          "targetName": "Holydramon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/204/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "28228629-5abc-4fdb-b94d-360783b2ff2c",
+            "sourceName": "Angewomon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 35
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "198db8dd-fe31-40a7-8d52-b25fc617fd47",
+            "targetName": "Holydramon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 168,
+      "name": "Antylamon",
+      "stage": "Ultimate",
+      "classification": "deferred-identity-review",
+      "productDispositionAfterProposedEdges": "identity-review-required",
+      "reason": "The target source entry still does not distinguish Antylamon Deva/Data from the other Antylamon identity. Reviewed Cherubimon aliases do not resolve the parent.",
+      "existingDisposition": {
+        "formId": 168,
+        "status": "independent",
+        "reason": "Antylamon has no further evolution here. Its Virus and Deva variants are not treated as interchangeable."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/238/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "952a2766-db94-4c37-9c25-efee8bfdc9a3",
+        "sourceName": "Antylamon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Cherubimon (Good)",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            225
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/238/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "952a2766-db94-4c37-9c25-efee8bfdc9a3",
+            "sourceName": "Antylamon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 35
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "a7b9c2d3-4e5f-4a8b-9c1d-2e3f4a5b6c7d",
+            "targetName": "Cherubimon (Good)",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        },
+        {
+          "targetName": "Cherubimon (Evil)",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            226
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/238/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "952a2766-db94-4c37-9c25-efee8bfdc9a3",
+            "sourceName": "Antylamon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 35
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "b8c1d3e4-5f6a-4b9c-8d2e-3f4a5b6c7d8e",
+            "targetName": "Cherubimon (Evil)",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        },
+        {
+          "targetName": "Minervamon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/238/digiEvolutionSeedList/2",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "952a2766-db94-4c37-9c25-efee8bfdc9a3",
+            "sourceName": "Antylamon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 35
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "e3006fe9-b0b7-403c-85f6-109da77d4dd2",
+            "targetName": "Minervamon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 169,
+      "name": "Arukenimon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 169,
+        "status": "independent",
+        "reason": "Arukenimon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/211/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e49a85fa-77ea-4a06-9a65-bd3133e2c1e4",
+        "sourceName": "Arukenimon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 172,
+      "name": "BlackWereGarurumon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 172,
+        "status": "independent",
+        "reason": "BlackWereGarurumon remains a separate form, with no further evolution in this prototype."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/227/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "4aa02e4b-b20a-4faf-9269-0ba18a1e7d08",
+        "sourceName": "Black Were Garurumon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Gulfmon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/227/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "4aa02e4b-b20a-4faf-9269-0ba18a1e7d08",
+            "sourceName": "Black Were Garurumon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 35
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "186679a0-9fd2-4f85-af92-78085cf216bf",
+            "targetName": "Gulfmon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 173,
+      "name": "Blossomon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 173,
+        "status": "terminal",
+        "reason": "Blossomon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/231/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "2b8020e1-2f70-4e7e-92e5-d89d54e131a5",
+        "sourceName": "Blossomon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 176,
+      "name": "Digitamamon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 176,
+        "status": "independent",
+        "reason": "DevilTamamon is not in this roster, so Digitamamon has no further evolution here. This form is not an onboarding egg."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/221/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "d991c296-78da-46e4-82a7-a4ae997f5a98",
+        "sourceName": "Digitamamon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 40
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Lampmon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/221/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "d991c296-78da-46e4-82a7-a4ae997f5a98",
+            "sourceName": "Digitamamon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 40
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "550e8400-e29b-41d4-a716-446655440000",
+            "targetName": "Lampmon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        },
+        {
+          "targetName": "Devitamamon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/221/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "d991c296-78da-46e4-82a7-a4ae997f5a98",
+            "sourceName": "Digitamamon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 40
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "f6a8b1c2-3d4e-4f7a-9b8c-1d2e3f4a5b6c",
+            "targetName": "Devitamamon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 178,
+      "name": "Divermon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 178,
+        "status": "independent",
+        "reason": "Divermon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/252/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "49896ce6-92dd-46ff-af5f-699bc73a9507",
+        "sourceName": "Divermon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 37
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 180,
+      "name": "Dragomon",
+      "stage": "Ultimate",
+      "classification": "missing-route-resolved-by-reviewed-alias",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 180,
+        "status": "independent",
+        "reason": "Dragomon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/226/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e8f4c6a1-3d2b-4e5f-9a8c-7b6d5e4f3a2c",
+        "sourceName": "Dragomon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 45
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Neptunmon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            258
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/226/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "e8f4c6a1-3d2b-4e5f-9a8c-7b6d5e4f3a2c",
+            "sourceName": "Dragomon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 45
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "610af57b-d922-4d43-bb51-9c884875709e",
+            "targetName": "Neptunmon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 182,
+      "name": "Garbagemon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 182,
+        "status": "terminal",
+        "reason": "Garbagemon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/272/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "8f22778f-d315-42f9-8eb9-83c63c8603ba",
+        "sourceName": "Garbagemon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 184,
+      "name": "Gigadramon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 184,
+        "status": "independent",
+        "reason": "Gigadramon has no further evolution here. Combining machine forms is not an implemented evolution option."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/264/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e11a28bb-64a3-49bc-8770-065728c1d8fa",
+        "sourceName": "Gigadramon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 38
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 186,
+      "name": "Kimeramon",
+      "stage": "Ultimate",
+      "classification": "deferred-special-mechanic",
+      "productDispositionAfterProposedEdges": "unmodeled-fusion-or-missing-target",
+      "reason": "The ordinary MoonMillenniummon/ZeedMillenniummon destinations are absent; the separate Millenniummon recipe requires both Kimeramon and Machinedramon. Do not replace that fusion with a bond-only edge.",
+      "existingDisposition": {
+        "formId": 186,
+        "status": "independent",
+        "reason": "Kimeramon remains encounterable. Creating it by combining other Digimon is not an implemented evolution option."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/253/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "8c0f5a17-16a5-409a-bac1-1c63aeaa611a",
+        "sourceName": "Kimeramon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 38
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "MoonMillenniummon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/253/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "8c0f5a17-16a5-409a-bac1-1c63aeaa611a",
+            "sourceName": "Kimeramon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 38
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "cb130bef-eec8-4f09-8b50-f5c66118fe5f",
+            "targetName": "MoonMillenniummon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        },
+        {
+          "targetName": "ZeedMillenniummon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/253/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "8c0f5a17-16a5-409a-bac1-1c63aeaa611a",
+            "sourceName": "Kimeramon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 38
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "37d122c0-59c8-4638-a8f6-75972a7a9cd6",
+            "targetName": "ZeedMillenniummon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [
+        {
+          "recipeId": "millenniummon",
+          "resultName": "Millenniummon",
+          "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/fusions.json",
+          "jsonPointer": "/5",
+          "materials": [
+            {
+              "name": "Kimeramon",
+              "minimumLevel": 50,
+              "amount": 1
+            },
+            {
+              "name": "Machinedramon",
+              "minimumLevel": 50,
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 190,
+      "name": "Lucemon Chaos Mode",
+      "stage": "Ultimate",
+      "classification": "deferred-mode-or-family-policy",
+      "productDispositionAfterProposedEdges": "unmodeled-mode-or-family-policy",
+      "reason": "Lucemon Chaos Mode → Creepymon is a real source link but is a mode/family change. The shared Creepymon/Daemon canonical entity does not authorize substituting their distinct current forms. Do not add a generic mode conversion.",
+      "existingDisposition": {
+        "formId": 190,
+        "status": "independent",
+        "reason": "Lucemon and Lucemon Satan Mode are not in this roster. Chaos Mode has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/273/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "9450b4b1-b3e2-4b66-9055-b2923d2e6236",
+        "sourceName": "Lucemon Chaos Mode",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 36
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Creepymon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            229,
+            231
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/273/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "9450b4b1-b3e2-4b66-9055-b2923d2e6236",
+            "sourceName": "Lucemon Chaos Mode",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 36
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "e6b9d4f2-8c7a-4d3e-9f2b-5c1d8e3a6f9b",
+            "targetName": "Creepymon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 191,
+      "name": "MachGaogamon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 191,
+        "status": "terminal",
+        "reason": "MirageGaogamon is not in this roster, so MachGaogamon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/265/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "43bfe4a9-f09e-4016-b26c-7a0d6948f58d",
+        "sourceName": "MachGaogamon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "MirageGaogamon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/265/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "43bfe4a9-f09e-4016-b26c-7a0d6948f58d",
+            "sourceName": "MachGaogamon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 39
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "f0bc93ba-8d0f-478a-b731-671cefb2b5c9",
+            "targetName": "MirageGaogamon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 193,
+      "name": "Matadormon",
+      "stage": "Ultimate",
+      "classification": "missing-route-supported-by-pinned-source",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 193,
+        "status": "terminal",
+        "reason": "GrandDracmon is not in this roster, so Matadormon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/269/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "68de0bbe-a11d-4452-bdb6-f6b4478d06ad",
+        "sourceName": "Matadormon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 43
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Piedmon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            262
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/269/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "68de0bbe-a11d-4452-bdb6-f6b4478d06ad",
+            "sourceName": "Matadormon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 43
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "d1c5f6b8-2f3e-4e9b-8c2d-7a9e5f6d3b1a",
+            "targetName": "Piedmon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 198,
+      "name": "Meteormon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 198,
+        "status": "terminal",
+        "reason": "Meteormon ends the Gotsumon and Icemon routes in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/263/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "61eb3964-e387-42d0-83aa-2e2b60f38008",
+        "sourceName": "Meteormon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 37
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 199,
+      "name": "Monzaemon",
+      "stage": "Ultimate",
+      "classification": "missing-route-supported-by-pinned-source",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 199,
+        "status": "terminal",
+        "reason": "Monzaemon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/217/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "bcdefa01-2345-4678-9abc-def012345678",
+        "sourceName": "Monzaemon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 36
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Babamon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            216
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/217/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "bcdefa01-2345-4678-9abc-def012345678",
+            "sourceName": "Monzaemon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 36
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "2cb8232c-c35f-4a7b-b3a5-fa7ed495e33b",
+            "targetName": "Babamon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 200,
+      "name": "Mummymon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 200,
+        "status": "independent",
+        "reason": "Mummymon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/240/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "9288669d-6431-4bbf-9ffd-916280cd1c3f",
+        "sourceName": "Mummymon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 36
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Pharaohmon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/240/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "9288669d-6431-4bbf-9ffd-916280cd1c3f",
+            "sourceName": "Mummymon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 36
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "fe69ceaa-854f-450d-b494-386b263b24a5",
+            "targetName": "Pharaohmon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 202,
+      "name": "Parrotmon",
+      "stage": "Ultimate",
+      "classification": "missing-route-resolved-by-reviewed-alias",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 202,
+        "status": "terminal",
+        "reason": "Parrotmon has no further evolution here. A direct Crossmon route is not included."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/243/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "1ec3c641-3763-4c9e-8834-26f7aaf3fd09",
+        "sourceName": "Parrotmon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Eaglemon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            230
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/243/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "1ec3c641-3763-4c9e-8834-26f7aaf3fd09",
+            "sourceName": "Parrotmon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 39
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "a6d2f9a9-f8e8-4bc4-b137-0db50a8fa500",
+            "targetName": "Eaglemon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 203,
+      "name": "Piximon",
+      "stage": "Ultimate",
+      "classification": "missing-route-supported-by-pinned-source",
+      "productDispositionAfterProposedEdges": "route-proposed",
+      "reason": "Recommend the explicit ordinary forward source route listed in proposedEdges, using the current target stage gate and an explicit noncanonical prototype rationale.",
+      "existingDisposition": {
+        "formId": 203,
+        "status": "independent",
+        "reason": "Piximon has no further evolution in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/220/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "2645815a-a9a0-4e53-b0a9-28cbfc7d5e61",
+        "sourceName": "Piximon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Jijimon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [
+            247
+          ],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/220/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "2645815a-a9a0-4e53-b0a9-28cbfc7d5e61",
+            "sourceName": "Piximon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 39
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "2d8e7094-e209-49af-ac57-b24ca1a26415",
+            "targetName": "Jijimon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 205,
+      "name": "RizeGreymon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster",
+      "reason": "The source forward routes lead only to forms absent from this roster; no clear current-roster continuation is proposed.",
+      "existingDisposition": {
+        "formId": 205,
+        "status": "terminal",
+        "reason": "ShineGreymon is not in this roster, so RizeGreymon has no further evolution here."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/205/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "529f424a-7efe-49bd-90dc-58286aaa9fb5",
+        "sourceName": "Rize Greymon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Shine Greymon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/205/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "529f424a-7efe-49bd-90dc-58286aaa9fb5",
+            "sourceName": "Rize Greymon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 35
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "e3f58de4-75f0-4e38-81a0-ad1c32367f97",
+            "targetName": "Shine Greymon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 206,
+      "name": "ShogunGekomon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 206,
+        "status": "terminal",
+        "reason": "ShogunGekomon ends the Gekomon route in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/223/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "b7e2c9d4-1f6a-4d3b-8e5c-9a2f7d6b3c1e",
+        "sourceName": "ShogunGekomon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 42
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 209,
+      "name": "SuperStarmon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now",
+      "reason": "The selected pinned database supplies no forward route for this form. Keep it playable and independently obtainable rather than inventing an evolution for coverage. This is not a claim that the franchise has no later forms.",
+      "existingDisposition": {
+        "formId": 209,
+        "status": "terminal",
+        "reason": "SuperStarmon ends the Starmon route in this prototype. Care, training and battles remain available."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/257/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "4b81a3d1-02d9-433b-8591-eeef611f6a02",
+        "sourceName": "SuperStarmon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 42
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    },
+    {
+      "formId": 213,
+      "name": "Yatagaramon",
+      "stage": "Ultimate",
+      "classification": "deferred-identity-review",
+      "productDispositionAfterProposedEdges": "identity-review-required",
+      "reason": "Original-versus-2006 Yatagaramon remains unresolved, and its source destinations Ravemon/Anubismon are absent from this roster.",
+      "existingDisposition": {
+        "formId": 213,
+        "status": "terminal",
+        "reason": "Yatagaramon has no further evolution here. Its different Crowmon variants are not treated as interchangeable."
+      },
+      "sourceRowEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/201/digiEvolutionSeedList",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "sourceSeed": "e5a57e68-7e23-4314-bd93-ea8c7d5fca85",
+        "sourceName": "Yatagaramon",
+        "sourceRank": "Ultimate",
+        "rawSourceRowRequirements": [
+          {
+            "type": "level",
+            "value": 45
+          }
+        ],
+        "claim": "Observed forward list in the pinned game-authored database."
+      },
+      "routes": [
+        {
+          "targetName": "Ravemon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/201/digiEvolutionSeedList/0",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "e5a57e68-7e23-4314-bd93-ea8c7d5fca85",
+            "sourceName": "Yatagaramon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 45
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "c2b04d58-6c74-49ea-902f-b7fc16a1e342",
+            "targetName": "Ravemon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        },
+        {
+          "targetName": "Anubismon",
+          "targetRank": "Mega",
+          "currentCandidateFormIds": [],
+          "sourceEvidence": {
+            "repository": "https://github.com/EwertonMendes/DigiGame",
+            "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+            "path": "database/base-digimon-list.json",
+            "jsonPointer": "/201/digiEvolutionSeedList/1",
+            "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+            "sourceSeed": "e5a57e68-7e23-4314-bd93-ea8c7d5fca85",
+            "sourceName": "Yatagaramon",
+            "sourceRank": "Ultimate",
+            "rawSourceRowRequirements": [
+              {
+                "type": "level",
+                "value": 45
+              }
+            ],
+            "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+            "targetSeed": "03277ace-25c2-404f-b975-f71ac309c8b0",
+            "targetName": "Anubismon",
+            "targetRank": "Mega"
+          },
+          "nextSourceTargetsIfTargetAbsent": []
+        }
+      ],
+      "sourceFusionRecipes": [],
+      "stillPlayable": true,
+      "automaticSpeciesEvolution": false
+    }
+  ],
+  "remainingLeafSummary": [
+    {
+      "formId": 83,
+      "name": "Crabmon",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 86,
+      "name": "DotAgumon",
+      "stage": "Rookie",
+      "classification": "intentional-distinct-variant-leaf",
+      "productDispositionAfterProposedEdges": "intentional-variant-terminal"
+    },
+    {
+      "formId": 87,
+      "name": "DotFalcomon",
+      "stage": "Rookie",
+      "classification": "intentional-distinct-variant-leaf",
+      "productDispositionAfterProposedEdges": "intentional-variant-terminal"
+    },
+    {
+      "formId": 102,
+      "name": "Kumamon",
+      "stage": "Rookie",
+      "classification": "deferred-identity-review",
+      "productDispositionAfterProposedEdges": "identity-review-required"
+    },
+    {
+      "formId": 104,
+      "name": "Lopmon",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 107,
+      "name": "PawnChessmon Black",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 108,
+      "name": "PawnChessmon White",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 111,
+      "name": "ShadowToyAgumon",
+      "stage": "Rookie",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 115,
+      "name": "ToyAgumon",
+      "stage": "Rookie",
+      "classification": "missing-intermediate-shortcut-optional",
+      "productDispositionAfterProposedEdges": "unmodeled-intermediate"
+    },
+    {
+      "formId": 121,
+      "name": "Ankylomon",
+      "stage": "Champion",
+      "classification": "deferred-special-mechanic",
+      "productDispositionAfterProposedEdges": "unmodeled-fusion-or-missing-target"
+    },
+    {
+      "formId": 124,
+      "name": "Bakemon",
+      "stage": "Champion",
+      "classification": "missing-intermediate-shortcut-optional",
+      "productDispositionAfterProposedEdges": "unmodeled-intermediate"
+    },
+    {
+      "formId": 126,
+      "name": "DarkLizardmon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 128,
+      "name": "Diatrymon",
+      "stage": "Champion",
+      "classification": "missing-intermediate-shortcut-optional",
+      "productDispositionAfterProposedEdges": "unmodeled-intermediate"
+    },
+    {
+      "formId": 132,
+      "name": "Flarerizamon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 141,
+      "name": "Gwappamon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 142,
+      "name": "Hookmon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 145,
+      "name": "Kokatorimon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 151,
+      "name": "PlatinumSukamon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 152,
+      "name": "Raremon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 154,
+      "name": "Reptiledramon",
+      "stage": "Champion",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 155,
+      "name": "Roachmon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 158,
+      "name": "Seasarmon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 159,
+      "name": "Sorcerymon",
+      "stage": "Champion",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 167,
+      "name": "Angewomon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 168,
+      "name": "Antylamon",
+      "stage": "Ultimate",
+      "classification": "deferred-identity-review",
+      "productDispositionAfterProposedEdges": "identity-review-required"
+    },
+    {
+      "formId": 169,
+      "name": "Arukenimon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 172,
+      "name": "BlackWereGarurumon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 173,
+      "name": "Blossomon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 176,
+      "name": "Digitamamon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 178,
+      "name": "Divermon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 182,
+      "name": "Garbagemon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 184,
+      "name": "Gigadramon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 186,
+      "name": "Kimeramon",
+      "stage": "Ultimate",
+      "classification": "deferred-special-mechanic",
+      "productDispositionAfterProposedEdges": "unmodeled-fusion-or-missing-target"
+    },
+    {
+      "formId": 190,
+      "name": "Lucemon Chaos Mode",
+      "stage": "Ultimate",
+      "classification": "deferred-mode-or-family-policy",
+      "productDispositionAfterProposedEdges": "unmodeled-mode-or-family-policy"
+    },
+    {
+      "formId": 191,
+      "name": "MachGaogamon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 198,
+      "name": "Meteormon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 200,
+      "name": "Mummymon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 205,
+      "name": "RizeGreymon",
+      "stage": "Ultimate",
+      "classification": "missing-roster-destination",
+      "productDispositionAfterProposedEdges": "unsupported-target-in-current-roster"
+    },
+    {
+      "formId": 206,
+      "name": "ShogunGekomon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 209,
+      "name": "SuperStarmon",
+      "stage": "Ultimate",
+      "classification": "independent-source-leaf-no-forward-evidence",
+      "productDispositionAfterProposedEdges": "intentional-independent-for-now"
+    },
+    {
+      "formId": 213,
+      "name": "Yatagaramon",
+      "stage": "Ultimate",
+      "classification": "deferred-identity-review",
+      "productDispositionAfterProposedEdges": "identity-review-required"
+    }
+  ],
+  "aliasRecheck": {
+    "previousMissingOrUnapprovedTargetLeaves": 21,
+    "newlyResolvedDirectLeafIds": [
+      180,
+      202
+    ],
+    "parentIdentityStillHeld": [
+      168
+    ],
+    "plesiomon": {
+      "targetFormId": 59,
+      "approvedSourceName": "Preciomon",
+      "sourceIncomingName": "Brachiomon",
+      "incomingSourceIsInCurrentRoster": false,
+      "effect": "The alias is valid but closes none of the50 current lower-stage leaves; its source parent Brachiomon is absent. Preserve the existing authored Whamon58→Plesiomon59 route."
+    }
+  },
+  "verification": {
+    "baseline": {
+      "forms": 276,
+      "edges": 163,
+      "maxOutgoing": 2,
+      "acyclic": true,
+      "baselineEdgesPreserved": true,
+      "remainingLowerStageLeaves": 50,
+      "remainingLowerStageLeafIds": [
+        83,
+        86,
+        87,
+        102,
+        104,
+        107,
+        108,
+        111,
+        112,
+        115,
+        121,
+        122,
+        124,
+        126,
+        128,
+        132,
+        141,
+        142,
+        145,
+        147,
+        149,
+        151,
+        152,
+        154,
+        155,
+        158,
+        159,
+        167,
+        168,
+        169,
+        172,
+        173,
+        176,
+        178,
+        180,
+        182,
+        184,
+        186,
+        190,
+        191,
+        193,
+        198,
+        199,
+        200,
+        202,
+        203,
+        205,
+        206,
+        209,
+        213
+      ]
+    },
+    "recommendedOnly": {
+      "forms": 276,
+      "edges": 172,
+      "maxOutgoing": 2,
+      "acyclic": true,
+      "baselineEdgesPreserved": true,
+      "remainingLowerStageLeaves": 41,
+      "remainingLowerStageLeafIds": [
+        83,
+        86,
+        87,
+        102,
+        104,
+        107,
+        108,
+        111,
+        115,
+        121,
+        124,
+        126,
+        128,
+        132,
+        141,
+        142,
+        145,
+        151,
+        152,
+        154,
+        155,
+        158,
+        159,
+        167,
+        168,
+        169,
+        172,
+        173,
+        176,
+        178,
+        182,
+        184,
+        186,
+        190,
+        191,
+        198,
+        200,
+        205,
+        206,
+        209,
+        213
+      ]
+    },
+    "hypotheticalAlsoWithThreeShortcuts": {
+      "forms": 276,
+      "edges": 175,
+      "maxOutgoing": 2,
+      "acyclic": true,
+      "baselineEdgesPreserved": true,
+      "remainingLowerStageLeaves": 38,
+      "remainingLowerStageLeafIds": [
+        83,
+        86,
+        87,
+        102,
+        104,
+        107,
+        108,
+        111,
+        121,
+        126,
+        132,
+        141,
+        142,
+        145,
+        151,
+        152,
+        154,
+        155,
+        158,
+        159,
+        167,
+        168,
+        169,
+        172,
+        173,
+        176,
+        178,
+        182,
+        184,
+        186,
+        190,
+        191,
+        198,
+        200,
+        205,
+        206,
+        209,
+        213
+      ]
+    },
+    "everyLeafReviewedExactlyOnce": true,
+    "allProposedDirectLinksVerifiedInPinnedForwardUUIDs": true,
+    "noProductionFilesChanged": false
+  },
+  "recommendation": "All nine reviewed routes have been integrated into data/world-ds-evolutions.json. Keep the three authored stage-skipping options deferred; they are not part of the172-edge graph.",
+  "integration": {
+    "status": "route-data-ready-for-owner-regeneration",
+    "routeFile": "data/world-ds-evolutions.json",
+    "routeFileSha256": "8304e14dabb28d8881956bded65c283b1c63b731839b6e3bc91f851104c51f03",
+    "formatVersion": 4,
+    "totalCanonicalEdges": 172,
+    "routeFileAddedEdges": 118,
+    "preservedOriginalEdgesSuppliedByAssembler": 54,
+    "old163CanonicalEdgesAndGatesPreserved": true,
+    "existing109AddedRouteRecordsPreserved": true,
+    "removedOutgoingSourceDispositions": [
+      112,
+      122,
+      147,
+      149,
+      180,
+      193,
+      199,
+      202,
+      203
+    ],
+    "updatedIncomingLeafDispositions": [
+      {
+        "before": {
+          "formId": 172,
+          "status": "independent",
+          "reason": "BlackWereGarurumon remains a separate form, with no further evolution in this prototype."
+        },
+        "after": {
+          "formId": 172,
+          "status": "terminal",
+          "reason": "BlackWereGarurumon ends this prototype route. Its source destination Gulfmon is not in this roster. Care, training and battles remain available."
+        }
+      },
+      {
+        "before": {
+          "formId": 216,
+          "status": "independent",
+          "reason": "Babamon is a final form in this prototype. Care, training and battles remain available."
+        },
+        "after": {
+          "formId": 216,
+          "status": "terminal",
+          "reason": "Babamon ends this prototype route. Care, training and battles remain available."
+        }
+      },
+      {
+        "before": {
+          "formId": 230,
+          "status": "independent",
+          "reason": "Crossmon is a final form in this prototype. Care, training and battles remain available."
+        },
+        "after": {
+          "formId": 230,
+          "status": "terminal",
+          "reason": "Crossmon ends this prototype route. Care, training and battles remain available."
+        }
+      },
+      {
+        "before": {
+          "formId": 247,
+          "status": "independent",
+          "reason": "Jijimon is a final form in this prototype. Care, training and battles remain available."
+        },
+        "after": {
+          "formId": 247,
+          "status": "terminal",
+          "reason": "Jijimon ends this prototype route. Care, training and battles remain available."
+        }
+      },
+      {
+        "before": {
+          "formId": 258,
+          "status": "independent",
+          "reason": "Neptunemon is a final form in this prototype. Care, training and battles remain available."
+        },
+        "after": {
+          "formId": 258,
+          "status": "terminal",
+          "reason": "Neptunemon ends this prototype route. Care, training and battles remain available."
+        }
+      },
+      {
+        "before": {
+          "formId": 262,
+          "status": "independent",
+          "reason": "Piedmon is a final form in this prototype. Care, training and battles remain available."
+        },
+        "after": {
+          "formId": 262,
+          "status": "terminal",
+          "reason": "Piedmon ends this prototype route. Care, training and battles remain available."
+        }
+      }
+    ],
+    "remainingLowerStageLeaves": 41,
+    "acyclic": true,
+    "maximumOutgoing": 2,
+    "baselineFixture": "tests/fixtures/rules7-evolution-baseline.json",
+    "baselineFixtureSha256": "294da1fa5d47ddb10ec3cdbdd3bfe8cd8472298c35329b3d76961339eb811b29",
+    "baselineSourceCommit": "aea1a4188430feba807ad444a4d85ed55e0cd93a",
+    "baseline276ProfileSha256": "0664d18c3256e13bda07828bfef3efc4328510485bdd0c748ac16e75c06d10e7",
+    "profileHashExcludes": [
+      "evolution",
+      "leafReason"
+    ],
+    "coreOrGeneratedRuntimeWritten": false
+  }
+}

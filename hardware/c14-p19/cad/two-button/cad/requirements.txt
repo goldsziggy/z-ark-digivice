@@ -1,0 +1,11 @@
+# Verified base interpreter: CPython 3.11.11 on macOS.
+# Core CAD build and independent geometric checks:
+numpy==2.4.6
+trimesh==5.1.1
+manifold3d==3.5.4
+scipy==1.17.1
+
+# Optional triangle self-intersection validation:
+# pip install pymeshlab==2025.7.post1
+# Optional PDF documentation generation:
+# pip install reportlab==5.0.1

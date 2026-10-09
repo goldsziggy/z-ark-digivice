@@ -1,0 +1,449 @@
+{
+  "formatVersion": 2,
+  "revision": "C14-P19",
+  "status": "local source export; not a physical qualification or CAD rebuild",
+  "license": "No project license has been selected.",
+  "sourceHandoffSha256": "9ec2a48799fce0367a36172e83243ad0f088be0c24bd98b26d7c4f4bc654d296",
+  "sourceInventorySha256": "a3dc84b72b918c2bc7842e0107dbb7ab623a67e4eeeca2a9be36f08ee3b53f7a",
+  "files": [
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/build.py",
+      "source_label": "digivice-c14-pilot19-buttons/cad/build.py",
+      "source_bytes": 29023,
+      "source_sha256": "8b0f7c72c3386225de3154565cb7c55776988019205c372dd613bbba4de8310c",
+      "bytes": 29023,
+      "sha256": "8b0f7c72c3386225de3154565cb7c55776988019205c372dd613bbba4de8310c",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/direct_pwr_access.py",
+      "source_label": "digivice-c14-pilot19-buttons/cad/direct_pwr_access.py",
+      "source_bytes": 1568,
+      "source_sha256": "a355af27c162f061bd3cf72ddb82314c8ed5b1e67f5246d79312825ba7e33232",
+      "bytes": 1568,
+      "sha256": "a355af27c162f061bd3cf72ddb82314c8ed5b1e67f5246d79312825ba7e33232",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/parameters.json",
+      "source_label": "digivice-c14-pilot19-buttons/cad/parameters.json",
+      "source_bytes": 7243,
+      "source_sha256": "4146393d70b9a42824bc5f39699732350647a95c50f23f4f94e9bc046a6dc5b7",
+      "bytes": 7243,
+      "sha256": "4146393d70b9a42824bc5f39699732350647a95c50f23f4f94e9bc046a6dc5b7",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/requirements.txt",
+      "source_label": "digivice-c14-pilot19-buttons/cad/requirements.txt",
+      "source_bytes": 327,
+      "source_sha256": "1984fbc7a1ae3e967df8c4f1d181a6db8835ff73d1c45f1236b834fc40b18f2d",
+      "bytes": 327,
+      "sha256": "1984fbc7a1ae3e967df8c4f1d181a6db8835ff73d1c45f1236b834fc40b18f2d",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/README.txt",
+      "source_label": "digivice-c14-pilot19-buttons/README.txt",
+      "source_bytes": 2077,
+      "source_sha256": "0993b0f7b85cfec066c77e5f2f53d7f21c6ba49a7098329636960a53b05c7db3",
+      "bytes": 2594,
+      "sha256": "bf18a29b008c459be858eff8719453c7ea720f31cd109a466bd3d293f4133a3c",
+      "role": "editable_CAD_input_or_contract",
+      "changes": [
+        "README publication adaptation only: excluded vendor dependencies, relative frozen-STL/assembly locations, current touch-support and physical-fit boundary."
+      ]
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/MECHANICAL_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-buttons/reference/MECHANICAL_CONTRACT.json",
+      "source_bytes": 11020,
+      "source_sha256": "155a75e4e25050c60e9312b6258bf281a2ab14a5eb9622fbc605434425b4d63c",
+      "bytes": 11020,
+      "sha256": "155a75e4e25050c60e9312b6258bf281a2ab14a5eb9622fbc605434425b4d63c",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/C14_P19_SOURCE_PROVENANCE.json",
+      "source_label": "digivice-c14-pilot19-buttons/reference/C14_P19_SOURCE_PROVENANCE.json",
+      "source_bytes": 612,
+      "source_sha256": "16cd4ff1c730e4c8c05fc1d7f509796e9d5ead0b3e95d6cb0b645ea063289876",
+      "bytes": 612,
+      "sha256": "16cd4ff1c730e4c8c05fc1d7f509796e9d5ead0b3e95d6cb0b645ea063289876",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/C14_P19_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-buttons/reference/C14_P19_CONTRACT.json",
+      "source_bytes": 7511,
+      "source_sha256": "04b1cf34e51c1bb41a319fb61b6e26747f5c75e9eb673bc0ef0c0de8f51ca859",
+      "bytes": 7511,
+      "sha256": "04b1cf34e51c1bb41a319fb61b6e26747f5c75e9eb673bc0ef0c0de8f51ca859",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/FASTENER_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-buttons/reference/FASTENER_CONTRACT.json",
+      "source_bytes": 10682,
+      "source_sha256": "2fb7d79a138d4ab7fb77536d711928ec55c41beec867ffb2d2810eee9d8fa339",
+      "bytes": 10682,
+      "sha256": "2fb7d79a138d4ab7fb77536d711928ec55c41beec867ffb2d2810eee9d8fa339",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/RF_ROUTING_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-buttons/reference/RF_ROUTING_CONTRACT.json",
+      "source_bytes": 345,
+      "source_sha256": "574fa02c381d882094b84255a03eec2bb348cf8b0f8c96fa5b128611942ad51b",
+      "bytes": 345,
+      "sha256": "574fa02c381d882094b84255a03eec2bb348cf8b0f8c96fa5b128611942ad51b",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/PART_REPLACEMENT_AND_PRINT_TRANSFORMS.json",
+      "source_label": "digivice-c14-pilot19-buttons/reference/PART_REPLACEMENT_AND_PRINT_TRANSFORMS.json",
+      "source_bytes": 4142,
+      "source_sha256": "41f80d4194d7f731fbd2fbd422edc0f6bf02ee1df1c529758ce6cdae51215a91",
+      "bytes": 4142,
+      "sha256": "41f80d4194d7f731fbd2fbd422edc0f6bf02ee1df1c529758ce6cdae51215a91",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/build.py",
+      "source_label": "digivice-c14-pilot19-touch-only/cad/build.py",
+      "source_bytes": 29900,
+      "source_sha256": "8f3d28fcaf5e13d3936e1c136c383357d1ae27556bca4e1ebfb0d2699d2cebf3",
+      "bytes": 29900,
+      "sha256": "8f3d28fcaf5e13d3936e1c136c383357d1ae27556bca4e1ebfb0d2699d2cebf3",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/direct_pwr_access.py",
+      "source_label": "digivice-c14-pilot19-touch-only/cad/direct_pwr_access.py",
+      "source_bytes": 1568,
+      "source_sha256": "a355af27c162f061bd3cf72ddb82314c8ed5b1e67f5246d79312825ba7e33232",
+      "bytes": 1568,
+      "sha256": "a355af27c162f061bd3cf72ddb82314c8ed5b1e67f5246d79312825ba7e33232",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/parameters.json",
+      "source_label": "digivice-c14-pilot19-touch-only/cad/parameters.json",
+      "source_bytes": 7275,
+      "source_sha256": "2e87d7d16bae00c74b47f931fe8c7dafb1fea510e0094bb5cf0b271ff812ab19",
+      "bytes": 7275,
+      "sha256": "2e87d7d16bae00c74b47f931fe8c7dafb1fea510e0094bb5cf0b271ff812ab19",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/requirements.txt",
+      "source_label": "digivice-c14-pilot19-touch-only/cad/requirements.txt",
+      "source_bytes": 327,
+      "source_sha256": "1984fbc7a1ae3e967df8c4f1d181a6db8835ff73d1c45f1236b834fc40b18f2d",
+      "bytes": 327,
+      "sha256": "1984fbc7a1ae3e967df8c4f1d181a6db8835ff73d1c45f1236b834fc40b18f2d",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/README.txt",
+      "source_label": "digivice-c14-pilot19-touch-only/README.txt",
+      "source_bytes": 2080,
+      "source_sha256": "b75923faa9a922d117e23585d86013a96be0edeafba75d1f4f88ca3c3019d1b7",
+      "bytes": 2597,
+      "sha256": "155457c90309132e2e852538c77cdc9f8ab228ebf569ec1e733e54a014a9603c",
+      "role": "editable_CAD_input_or_contract",
+      "changes": [
+        "README publication adaptation only: excluded vendor dependencies, relative frozen-STL/assembly locations, current touch-support and physical-fit boundary."
+      ]
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/MECHANICAL_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-touch-only/reference/MECHANICAL_CONTRACT.json",
+      "source_bytes": 11020,
+      "source_sha256": "155a75e4e25050c60e9312b6258bf281a2ab14a5eb9622fbc605434425b4d63c",
+      "bytes": 11020,
+      "sha256": "155a75e4e25050c60e9312b6258bf281a2ab14a5eb9622fbc605434425b4d63c",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/C14_P19_SOURCE_PROVENANCE.json",
+      "source_label": "digivice-c14-pilot19-touch-only/reference/C14_P19_SOURCE_PROVENANCE.json",
+      "source_bytes": 617,
+      "source_sha256": "588bd67a9413476e9395ca61057963a2f72e46e78aa68ec0038572becfd09c73",
+      "bytes": 617,
+      "sha256": "588bd67a9413476e9395ca61057963a2f72e46e78aa68ec0038572becfd09c73",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/C14_P19_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-touch-only/reference/C14_P19_CONTRACT.json",
+      "source_bytes": 7504,
+      "source_sha256": "bf89167456d4dd3fe421d57f7428ba900872e948862a1dedb85180aaadbf377b",
+      "bytes": 7504,
+      "sha256": "bf89167456d4dd3fe421d57f7428ba900872e948862a1dedb85180aaadbf377b",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/FASTENER_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-touch-only/reference/FASTENER_CONTRACT.json",
+      "source_bytes": 10626,
+      "source_sha256": "61e040df87d5ab2967f5ee7497668486b0346a2ea618d565879a7fda4d89abf9",
+      "bytes": 10626,
+      "sha256": "61e040df87d5ab2967f5ee7497668486b0346a2ea618d565879a7fda4d89abf9",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/RF_ROUTING_CONTRACT.json",
+      "source_label": "digivice-c14-pilot19-touch-only/reference/RF_ROUTING_CONTRACT.json",
+      "source_bytes": 345,
+      "source_sha256": "574fa02c381d882094b84255a03eec2bb348cf8b0f8c96fa5b128611942ad51b",
+      "bytes": 345,
+      "sha256": "574fa02c381d882094b84255a03eec2bb348cf8b0f8c96fa5b128611942ad51b",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/PART_REPLACEMENT_AND_PRINT_TRANSFORMS.json",
+      "source_label": "digivice-c14-pilot19-touch-only/reference/PART_REPLACEMENT_AND_PRINT_TRANSFORMS.json",
+      "source_bytes": 4130,
+      "source_sha256": "614cc3696c662e528f6d5851670078bef00765cb5a8034f6687f6e509ef16ef2",
+      "bytes": 4130,
+      "sha256": "614cc3696c662e528f6d5851670078bef00765cb5a8034f6687f6e509ef16ef2",
+      "role": "editable_CAD_input_or_contract",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/stl/two-button/front_shell_PANEL_SWITCHES.stl",
+      "source_label": "digivice-c14-pilot19-buttons/stl/panel_switches/front_shell_PANEL_SWITCHES.stl",
+      "source_bytes": 1194284,
+      "source_sha256": "a9639d30bba73181e5bf8a0172239aec4dd3cb4aef35d62ee13323ce3e6aa534",
+      "bytes": 1194284,
+      "sha256": "a9639d30bba73181e5bf8a0172239aec4dd3cb4aef35d62ee13323ce3e6aa534",
+      "role": "C14_P19_variant_front",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "white"
+    },
+    {
+      "path": "hardware/c14-p19/stl/touch-only/front_shell_TOUCH_ONLY.stl",
+      "source_label": "digivice-c14-pilot19-touch-only/stl/touch_only/front_shell_TOUCH_ONLY.stl",
+      "source_bytes": 1167284,
+      "source_sha256": "c5d049092a8be389fb4adcbef8edb546149d0006371c5cea8db62c474372d7c6",
+      "bytes": 1167284,
+      "sha256": "c5d049092a8be389fb4adcbef8edb546149d0006371c5cea8db62c474372d7c6",
+      "role": "C14_P19_variant_front",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "white"
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/back_shell_C10.stl",
+      "source_label": "digivice-c13-stock-rf/stl/common/back_shell_C10.stl",
+      "source_bytes": 709784,
+      "source_sha256": "f58e072c40328cd22b1eb9664ea554ab3da3cb31febfeab899b65ab7cd27ccc7",
+      "bytes": 709784,
+      "sha256": "f58e072c40328cd22b1eb9664ea554ab3da3cb31febfeab899b65ab7cd27ccc7",
+      "role": "installed_common_part",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "black",
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/display_carrier_COMMON.stl",
+      "source_label": "digivice-c13-stock-rf/stl/common/display_carrier_COMMON.stl",
+      "source_bytes": 247384,
+      "source_sha256": "d1af1e83e10984e10189e15e74485a194506d7923868f4e74b26e5ab342f5440",
+      "bytes": 247384,
+      "sha256": "d1af1e83e10984e10189e15e74485a194506d7923868f4e74b26e5ab342f5440",
+      "role": "installed_common_part",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "black",
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/nfc_reader_tray_C13.stl",
+      "source_label": "digivice-c13-stock-rf/stl/common/nfc_reader_tray_C13.stl",
+      "source_bytes": 186484,
+      "source_sha256": "3c370374effe2176b38e0e3436b6870c4f9fc9ece0512be384eceb4416eb46e7",
+      "bytes": 186484,
+      "sha256": "3c370374effe2176b38e0e3436b6870c4f9fc9ece0512be384eceb4416eb46e7",
+      "role": "installed_common_part",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "black",
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/card_antenna_housing_TOP.stl",
+      "source_label": "digivice-c13-stock-rf/stl/common/card_antenna_housing_TOP.stl",
+      "source_bytes": 99484,
+      "source_sha256": "3c37360f02fe38b3a161e77172335d90125c4c02bc42e8fda69cf05b104fdb9c",
+      "bytes": 99484,
+      "sha256": "3c37360f02fe38b3a161e77172335d90125c4c02bc42e8fda69cf05b104fdb9c",
+      "role": "installed_common_part",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "black",
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/card_RF_window_and_gap_TOP.stl",
+      "source_label": "digivice-c13-stock-rf/stl/common/card_RF_window_and_gap_TOP.stl",
+      "source_bytes": 46684,
+      "source_sha256": "412f68f5176e8e33d759bbca9a4d7578f8731b9bf0f08d18d54bda925cca2733",
+      "bytes": 46684,
+      "sha256": "412f68f5176e8e33d759bbca9a4d7578f8731b9bf0f08d18d54bda925cca2733",
+      "role": "installed_common_part",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "white",
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/screen_bezel_COMMON.stl",
+      "source_label": "digivice-c13-stock-rf/stl/common/screen_bezel_COMMON.stl",
+      "source_bytes": 213484,
+      "source_sha256": "616ceed092b1ca8684b1de237bdc6c5c02029b0f9bb87d22a2c344c6ff3d5343",
+      "bytes": 213484,
+      "sha256": "616ceed092b1ca8684b1de237bdc6c5c02029b0f9bb87d22a2c344c6ff3d5343",
+      "role": "installed_common_part",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "red",
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/card_channel_roof_TOP.stl",
+      "source_label": "digivice-c13-stock-rf/stl/common/card_channel_roof_TOP.stl",
+      "source_bytes": 61884,
+      "source_sha256": "ab7b7efe96705ed1e435534e895a1f4c3503102b6a6f9c38389606b6e561ce4c",
+      "bytes": 61884,
+      "sha256": "ab7b7efe96705ed1e435534e895a1f4c3503102b6a6f9c38389606b6e561ce4c",
+      "role": "installed_common_part",
+      "changes": [],
+      "quantity_per_device": 1,
+      "color": "red",
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/optional-fit-gauges/battery_41x71_FIT_FRAME.stl",
+      "source_label": "digivice-c13-stock-rf/stl/fit_first/battery_41x71_FIT_FRAME.stl",
+      "source_bytes": 20884,
+      "source_sha256": "d34c9d234976c0d60a6ea973434211c6e0aabea816c7474ffd44b58644298059",
+      "bytes": 20884,
+      "sha256": "d34c9d234976c0d60a6ea973434211c6e0aabea816c7474ffd44b58644298059",
+      "role": "optional_fit_gauge_not_installed",
+      "changes": [],
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/stl/optional-fit-gauges/screen_fit_ring_46p8.stl",
+      "source_label": "digivice-c13-stock-rf/stl/fit_first/screen_fit_ring_46p8.stl",
+      "source_bytes": 57684,
+      "source_sha256": "7bb8ebe2b0f68d0361c60b558ebbf5989e57126c117ba16decc8daf619986d24",
+      "bytes": 57684,
+      "sha256": "7bb8ebe2b0f68d0361c60b558ebbf5989e57126c117ba16decc8daf619986d24",
+      "role": "optional_fit_gauge_not_installed",
+      "changes": [],
+      "unchanged_from_C13": true
+    },
+    {
+      "path": "hardware/c14-p19/docs/z-ark_Digivice_C14_P19_Assembly_and_Screws.pdf",
+      "source_label": "c14-pilot19-delivery-20261009/guide/z-ark_Digivice_C14_P19_Assembly_and_Screws.pdf",
+      "source_bytes": 2996080,
+      "source_sha256": "84f1927aa76969c15c44ca561f43207f8c11655fa2409154241a30f4516044da",
+      "bytes": 2996080,
+      "sha256": "84f1927aa76969c15c44ca561f43207f8c11655fa2409154241a30f4516044da",
+      "role": "six_page_assembly_and_screw_guide",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_01_Exploded_Core_TOUCH_ONLY.png",
+      "source_label": "c14-pilot19-delivery-20261009/guide/exploded/C14_P19_01_Exploded_Core_TOUCH_ONLY.png",
+      "source_bytes": 595735,
+      "source_sha256": "971161394a52c0fd76a7597a06ab07cb55fb12072dda7bd7e1ba2a9665954bc1",
+      "bytes": 595735,
+      "sha256": "971161394a52c0fd76a7597a06ab07cb55fb12072dda7bd7e1ba2a9665954bc1",
+      "role": "phone_guide_image_reused_C13_geometry_explicitly_labeled",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_02_Top_NFC_and_Front_Variants.png",
+      "source_label": "c14-pilot19-delivery-20261009/guide/exploded/C14_P19_02_Top_NFC_and_Front_Variants.png",
+      "source_bytes": 582131,
+      "source_sha256": "905564697c0a8c055bc0a3f26dcab8bd3e40004ef217bf5ace2c9d2d89a63157",
+      "bytes": 582131,
+      "sha256": "905564697c0a8c055bc0a3f26dcab8bd3e40004ef217bf5ace2c9d2d89a63157",
+      "role": "phone_guide_image_reused_C13_geometry_explicitly_labeled",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Screw_Map_01_Exterior.png",
+      "source_label": "c14-pilot19-delivery-20261009/guide/screw-maps/C14_P19_Screw_Map_01_Exterior.png",
+      "source_bytes": 488597,
+      "source_sha256": "6f5acaeb7df3a4576d7ca27eaea8e9a8b1bbfe7393c6ff9add31f1819b4549a7",
+      "bytes": 488597,
+      "sha256": "6f5acaeb7df3a4576d7ca27eaea8e9a8b1bbfe7393c6ff9add31f1819b4549a7",
+      "role": "phone_guide_image_reused_C13_geometry_explicitly_labeled",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Screw_Map_02_Internal.png",
+      "source_label": "c14-pilot19-delivery-20261009/guide/screw-maps/C14_P19_Screw_Map_02_Internal.png",
+      "source_bytes": 482660,
+      "source_sha256": "527937371412fc207c17f1a50a4caf0c31a542433dd73cfbaf3eca233a5e04d5",
+      "bytes": 482660,
+      "sha256": "527937371412fc207c17f1a50a4caf0c31a542433dd73cfbaf3eca233a5e04d5",
+      "role": "phone_guide_image_reused_C13_geometry_explicitly_labeled",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Connections_Phone.png",
+      "source_label": "c14-pilot19-delivery-20261009/guide/connections/C14_P19_Connections_Phone.png",
+      "source_bytes": 317651,
+      "source_sha256": "5c0a8de7bff7533325e0d3a73a1f03a0021506594d1dab76963a6b6f6a2ac8b1",
+      "bytes": 317651,
+      "sha256": "5c0a8de7bff7533325e0d3a73a1f03a0021506594d1dab76963a6b6f6a2ac8b1",
+      "role": "phone_guide_image_reused_C13_geometry_explicitly_labeled",
+      "changes": []
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Assembly_Order_and_Screw_Schedule.png",
+      "source_label": "c14-pilot19-delivery-20261009/guide/C14_P19_Assembly_Order_and_Screw_Schedule.png",
+      "source_bytes": 548147,
+      "source_sha256": "585dc3c8ec432b4087d9c221beb1b8b8e35ac7e646da2fbbd64874a6b104aa10",
+      "bytes": 548147,
+      "sha256": "585dc3c8ec432b4087d9c221beb1b8b8e35ac7e646da2fbbd64874a6b104aa10",
+      "role": "phone_guide_image_reused_C13_geometry_explicitly_labeled",
+      "changes": []
+    }
+  ],
+  "sourceSanitization": "No absolute provenance or private Library fields found in selected C14 source inputs; no JSON changes required. Only the two copied README.txt files were adapted.",
+  "excluded": [
+    "20 copies of 10 Waveshare-derived reference meshes; redistribution terms unresolved",
+    "Elechouse manual PDF; official URL/hash retained",
+    "Local handoffs, private Library links, delivery ZIPs, environments and earlier designs",
+    "Superseded C13 editable roots/front STLs and old white plates; common parts remain exact C13 identities"
+  ],
+  "separately_owned_release_files": "release-assets.json and downloads/ are managed separately and excluded from this source-copy manifest."
+}

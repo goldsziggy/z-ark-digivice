@@ -1,0 +1,25 @@
+build/
+build-*/
+.data/
+.env
+.env.*
+node_modules/
+firmware/build/
+firmware/managed_components/
+firmware/sdkconfig
+firmware/sdkconfig.old
+.DS_Store
+*.log
+
+# Optional user-imported third-party artwork stays local and out of source bundles.
+.personal-assets/
+
+# Reproducible Python tool caches.
+__pycache__/
+
+# Publication boundaries: local evidence and external CAD reference inputs.
+docs/evidence/
+hardware/**/reference/official_meshes/
+hardware/vendor-inputs/
+*.pem
+*.key

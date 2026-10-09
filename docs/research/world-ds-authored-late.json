@@ -1,0 +1,2378 @@
+{
+  "formatVersion": 1,
+  "authoredDate": "2026-10-06",
+  "sourceInventory": "world-ds-inventory.json",
+  "status": "authored-proposal",
+  "scope": "135 Ultimate/Mega/Armor/No Level inventory entries. Roles, game types and every new move label are authored design choices, not official classifications or canonical move claims. No artwork or native combat changes are included.",
+  "preservationPolicy": "Existing forms1–66, stat curves, skills and evolution edges remain unchanged. Explicit verified existing-form bindings override these candidate skill/role records in full; this file must never rename or rebalance a preserved profile.",
+  "combatTierPolicy": {
+    "Ultimate": "Ultimate",
+    "Mega": "Mega",
+    "Armor": "Champion",
+    "No Level": "Calumon explicitly uses Rookie-tier Warden; source category remains No Level."
+  },
+  "skillsPolicy": "All labels select the existing Physical/Heavy/Magic mechanics. They do not add species-specific effects or independently grant canonical move rights.",
+  "edgePolicy": "Proposed edges are separate, inactive authored routes for parent review. All endpoints are named inventory entries outside the preserved66; aliases and source-game categories do not automatically create a route. Confirm stable identity and explicit unlock rules before activation.",
+  "entries": [
+    {
+      "entryKey": "andromon",
+      "displayName": "Andromon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Servo Knuckle",
+        "heavy": "Piston Bodycheck",
+        "magic": "Circuit Lance"
+      },
+      "roleRationale": "An authored armored cyborg wall trades magic output for physical protection.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "angewomon",
+      "displayName": "Angewomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Feather Palm",
+        "heavy": "Halo Descent",
+        "magic": "Sanctuary Arrow"
+      },
+      "roleRationale": "An authored celestial guardian favors magic resistance over physical armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "antylamon",
+      "displayName": "Antylamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Rabbit Palm",
+        "heavy": "Moonbound Heel",
+        "magic": "Jade Spiral"
+      },
+      "roleRationale": "An authored agile guardian balances palm strikes and spiritual attacks.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "arukenimon",
+      "displayName": "Arukenimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Silken Hook",
+        "heavy": "Webbed Pounce",
+        "magic": "Marionette Mist"
+      },
+      "roleRationale": "An authored web magician favors control-themed magic labels and fragile armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "blackrapidmon",
+      "displayName": "BlackRapidmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Onyx Cuff",
+        "heavy": "Nightguard Ram",
+        "magic": "Obsidian Pulse"
+      },
+      "roleRationale": "The dark variant is authored as a magic-resistant interceptor, distinct from Rapidmon.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "blackwargrowlmon",
+      "displayName": "BlackWarGrowlmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "Sootsteel Claw",
+        "heavy": "Black Reactor Tackle",
+        "magic": "Charred Plasma"
+      },
+      "roleRationale": "The black armored variant emphasizes physical endurance rather than pure offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "blackweregarurumon",
+      "displayName": "BlackWereGarurumon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Midnight Wolf Kick",
+        "heavy": "Shadow Crescent Heel",
+        "magic": "Frostbite Howl"
+      },
+      "roleRationale": "The dark wolf variant is an authored close-range striker with an icy accent.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "blossomon",
+      "displayName": "Blossomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Bramble Rake",
+        "heavy": "Bloom Wheel Crush",
+        "magic": "Pollen Lantern"
+      },
+      "roleRationale": "An authored dense flowering wall favors sturdy physical defenses.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "cyberdramon",
+      "displayName": "Cyberdramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Data Ripper",
+        "heavy": "Cyber Talon Dive",
+        "magic": "Error Surge"
+      },
+      "roleRationale": "An authored cybernetic hunter spends its budget on direct physical pressure.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "deramon",
+      "displayName": "Deramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "grove",
+      "skills": {
+        "physical": "Crested Peck",
+        "heavy": "Garden Wing Press",
+        "magic": "Fernlight Veil"
+      },
+      "roleRationale": "An authored garden-bird sentinel favors resilience against magical attacks.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "digitamamon",
+      "displayName": "Digitamamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Eggshell Bump",
+        "heavy": "Shellbound Slam",
+        "magic": "Dreamshell Spark"
+      },
+      "roleRationale": "An authored protective-shell fighter trades offense for physical endurance.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dinobeemon",
+      "displayName": "Dinobeemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Stinger Claw",
+        "heavy": "Predator Wingrush",
+        "magic": "Venomlight Ray"
+      },
+      "roleRationale": "An authored insect-dragon attacker emphasizes fast, committed physical strikes.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "divermon",
+      "displayName": "Divermon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Harpoon Jab",
+        "heavy": "Deepsea Shoulder",
+        "magic": "Pressure Ring"
+      },
+      "roleRationale": "An authored underwater lancer balances weapon attacks and water magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dorugreymon",
+      "displayName": "DoruGreymon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Iron Fur Rake",
+        "heavy": "Doru Tailbreaker",
+        "magic": "Meteor Code"
+      },
+      "roleRationale": "An authored heavy beast favors forceful claws over magical defense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dragomon",
+      "displayName": "Dragomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Abyss Tendril",
+        "heavy": "Tentacle Undertow",
+        "magic": "Sunken Invocation"
+      },
+      "roleRationale": "An authored deep-sea occultist prioritizes magic over physical armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "etemon",
+      "displayName": "Etemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Stage Elbow",
+        "heavy": "Encore Bodyslam",
+        "magic": "Distortion Chorus"
+      },
+      "roleRationale": "An authored performer mixes close combat with amplified sound magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "garbagemon",
+      "displayName": "Garbagemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Scrap Lid Swipe",
+        "heavy": "Trash Barrel Crush",
+        "magic": "Sludge Comet"
+      },
+      "roleRationale": "An authored scrap-tank role turns refuse-themed armor into physical protection.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "garudamon",
+      "displayName": "Garudamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Eagle Talon",
+        "heavy": "Sunwing Tackle",
+        "magic": "Crimson Updraft"
+      },
+      "roleRationale": "An authored firebird warrior emphasizes talons and diving impact.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "gigadramon",
+      "displayName": "Gigadramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Giga Metal Claw",
+        "heavy": "Armored Skycrash",
+        "magic": "Siege Cluster"
+      },
+      "roleRationale": "An authored aerial weapons platform favors armor over raw magic output.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "infermon",
+      "displayName": "Infermon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Cable Fang",
+        "heavy": "Virus Bodydrill",
+        "magic": "Firewall Rupture"
+      },
+      "roleRationale": "An authored network predator attacks magical resistance with code-themed power.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kimeramon",
+      "displayName": "Kimeramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Chimera Rake",
+        "heavy": "Composite Stampede",
+        "magic": "Hybrid Ruinbeam"
+      },
+      "roleRationale": "An authored composite creature carries balanced physical and magical threats.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kyukimon",
+      "displayName": "Kyukimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Sickle Sweep",
+        "heavy": "Whirlwind Scissor",
+        "magic": "Petal Razor Gale"
+      },
+      "roleRationale": "An authored blade-focused beast favors precise physical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ladydevimon",
+      "displayName": "LadyDevimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dusk Nail",
+        "heavy": "Blackwing Lunge",
+        "magic": "Velvet Nightflame"
+      },
+      "roleRationale": "An authored shadow caster trades physical armor for stronger magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "lilamon",
+      "displayName": "Lilamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Lilac Fan",
+        "heavy": "Petal Pirouette",
+        "magic": "Nectar Starfall"
+      },
+      "roleRationale": "An authored lilac-flower caster has magical offense and lighter physical defenses.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "lillymon",
+      "displayName": "Lillymon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Lily Leafblade",
+        "heavy": "Fairy Bloomcharge",
+        "magic": "Sunlit Flowerburst"
+      },
+      "roleRationale": "An authored flower-fairy profile favors magic; preserved existing binding wins if matched.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "lucemon-chaos-mode",
+      "displayName": "Lucemon Chaos Mode",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Fallen Halo Fist",
+        "heavy": "Judgment Knee",
+        "magic": "Dawnless Mandala"
+      },
+      "roleRationale": "An authored dual-light-and-shadow caster emphasizes powerful magical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "machgaogamon",
+      "displayName": "MachGaogamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Jet Boxer Jab",
+        "heavy": "Turbine Cross",
+        "magic": "Sonic Slipstream"
+      },
+      "roleRationale": "An authored powered boxer converts its budget into physical attack.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "magnaangemon",
+      "displayName": "MagnaAngemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Gatekeeper Edge",
+        "heavy": "Celestial Shieldrush",
+        "magic": "Pearl Gatebeam"
+      },
+      "roleRationale": "An authored celestial sentinel emphasizes magic resistance; existing profile stays unchanged.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mamemon",
+      "displayName": "Mamemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tiny Iron Jab",
+        "heavy": "Orbital Knuckle",
+        "magic": "Pocket Burst"
+      },
+      "roleRationale": "An authored compact brawler retains two viable attack channels.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "matadormon",
+      "displayName": "Matadormon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Crimson Rapier",
+        "heavy": "Cape Vault Thrust",
+        "magic": "Nocturne Petals"
+      },
+      "roleRationale": "An authored theatrical duelist favors physical precision over magical endurance.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "megadramon",
+      "displayName": "Megadramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Missile Claw",
+        "heavy": "Steel Dragon Rush",
+        "magic": "Payload Inferno"
+      },
+      "roleRationale": "An authored assault dragon emphasizes committed physical attacks.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "megakabuterimon-blue",
+      "displayName": "MegaKabuterimon Blue",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Cobalt Horn",
+        "heavy": "Blue Carapace Ram",
+        "magic": "Azure Volt Ring"
+      },
+      "roleRationale": "The blue beetle variant is authored as a magic-resistant guardian.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "megakabuterimon-red",
+      "displayName": "MegaKabuterimon Red",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Ruby Horn",
+        "heavy": "Red Atlas Charge",
+        "magic": "Scarlet Volt Sphere"
+      },
+      "roleRationale": "The red beetle variant favors physical armor; existing bound profile remains authoritative.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "megaseadramon",
+      "displayName": "MegaSeadramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Thunderfin Lash",
+        "heavy": "Stormcoil Crush",
+        "magic": "Ocean Voltage"
+      },
+      "roleRationale": "An authored sea serpent channels electric-water magic through a lighter physical profile.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "metalgreymon",
+      "displayName": "MetalGreymon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Chrome Trident",
+        "heavy": "Dinosaur Siege Rush",
+        "magic": "Giga Reactor Flare"
+      },
+      "roleRationale": "An authored armored dinosaur favors forceful offense; existing form binding is preserved.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "metalmamemon",
+      "displayName": "MetalMamemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Clamp Knuckle",
+        "heavy": "Foundry Punch",
+        "magic": "Micro Cannon Arc"
+      },
+      "roleRationale": "An authored compact machine uses a physical-wall allocation.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "meteormon",
+      "displayName": "Meteormon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Crater Knuckle",
+        "heavy": "Meteor Shoulderfall",
+        "magic": "Stardust Shards"
+      },
+      "roleRationale": "An authored stone-bodied defender emphasizes HP and physical protection.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "monzaemon",
+      "displayName": "Monzaemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Plush Paw",
+        "heavy": "Bearhug Roll",
+        "magic": "Heartlight Beacon"
+      },
+      "roleRationale": "An authored reassuring plush guardian favors resistance rather than aggression.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mummymon",
+      "displayName": "Mummymon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Bandage Hook",
+        "heavy": "Sarcophagus Slam",
+        "magic": "Desert Hexbolt"
+      },
+      "roleRationale": "An authored wrapped guardian emphasizes magical endurance.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "myotismon",
+      "displayName": "Myotismon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Noble Cape Lash",
+        "heavy": "Vampire Wingrush",
+        "magic": "Crimson Masquerade"
+      },
+      "roleRationale": "An authored nocturnal sorcerer favors magic; existing profile takes precedence.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "okuwamon",
+      "displayName": "Okuwamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Abyss Pincer",
+        "heavy": "Black Scissor Drop",
+        "magic": "Hollow Wingwave"
+      },
+      "roleRationale": "An authored predatory beetle specializes in physical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "paildramon",
+      "displayName": "Paildramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dragon Gauntlet",
+        "heavy": "Twinwing Collision",
+        "magic": "Desperado Starburst"
+      },
+      "roleRationale": "An authored dragon-insect hybrid keeps balanced offensive choices.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "parrotmon",
+      "displayName": "Parrotmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Emerald Beak",
+        "heavy": "Jungle Wingbeat",
+        "magic": "Thunder Mimicry"
+      },
+      "roleRationale": "An authored tropical bird channels sound-and-storm magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "piximon",
+      "displayName": "Piximon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Pixie Spear",
+        "heavy": "Fairy Vault",
+        "magic": "Bubble Rune Shower"
+      },
+      "roleRationale": "An authored tiny spellcaster trades armor for magical strength.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "rapidmon",
+      "displayName": "Rapidmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Emerald Cuff",
+        "heavy": "Flashstep Ram",
+        "magic": "Guided Lightshot"
+      },
+      "roleRationale": "The green rapid fighter is authored as balanced, unlike its darker defensive variant.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "rizegreymon",
+      "displayName": "RizeGreymon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Barrel Claw",
+        "heavy": "Revolver Shoulder",
+        "magic": "Rising Plasma"
+      },
+      "roleRationale": "An authored gun-armed dinosaur favors physical aggression.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shogungekomon",
+      "displayName": "ShogunGekomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Toad Fan",
+        "heavy": "Royal Bellypress",
+        "magic": "Resonant Reedcall"
+      },
+      "roleRationale": "An authored amphibian ruler favors endurance against magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "silphymon",
+      "displayName": "Silphymon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Balanced",
+      "type": "grove",
+      "skills": {
+        "physical": "Sky Talon",
+        "heavy": "Aerial Twinstrike",
+        "magic": "Cyclone Sigil"
+      },
+      "roleRationale": "An authored aerial hybrid balances agile contact strikes and wind magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "skullgreymon",
+      "displayName": "SkullGreymon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Bone Ripper",
+        "heavy": "Fossil Stampede",
+        "magic": "Gravefire Rocket"
+      },
+      "roleRationale": "An authored skeletal dinosaur prioritizes dangerous physical pressure.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "superstarmon",
+      "displayName": "SuperStarmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Astral Palm",
+        "heavy": "Goldstar Bodyslam",
+        "magic": "Constellation Shieldray"
+      },
+      "roleRationale": "An authored star guardian emphasizes resistance and sustained presence.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "taomon",
+      "displayName": "Taomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Talisman Fan",
+        "heavy": "Scroll Staffrush",
+        "magic": "Trigram Lantern"
+      },
+      "roleRationale": "An authored ritual caster favors magic; preserved existing profile wins if matched.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "triceramon",
+      "displayName": "Triceramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Triple Horn Jab",
+        "heavy": "Ceratopsian Charge",
+        "magic": "Granite Hornwave"
+      },
+      "roleRationale": "An authored three-horned defender emphasizes physical armor and HP.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "tyilinmon",
+      "displayName": "Tyilinmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Cloudhoof Tap",
+        "heavy": "Auspicious Bound",
+        "magic": "Luminous Qilin Seal"
+      },
+      "roleRationale": "An authored auspicious guardian favors magical resistance.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "wargrowlmon",
+      "displayName": "WarGrowlmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Assault Claw",
+        "heavy": "Reactor Bodyram",
+        "magic": "Crimson Plasma Jet"
+      },
+      "roleRationale": "An authored armored dragon emphasizes offense over defensive specialization.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "weregarurumon",
+      "displayName": "WereGarurumon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Wolf Palmstrike",
+        "heavy": "Lunar Kickrush",
+        "magic": "Blue Fang Aura"
+      },
+      "roleRationale": "An authored martial wolf favors direct strikes; existing profile remains unchanged.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "whamon",
+      "displayName": "Whamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Whale Finpress",
+        "heavy": "Tidal Broadside",
+        "magic": "Deepwater Hymn"
+      },
+      "roleRationale": "An authored giant-sea guardian favors HP and magical resilience.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "yatagaramon",
+      "displayName": "Yatagaramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Raven Claw",
+        "heavy": "Threeclaw Plunge",
+        "magic": "Omen Featherstorm"
+      },
+      "roleRationale": "An authored omen-bird caster favors magic over physical armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "zudomon",
+      "displayName": "Zudomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Hammer Backhand",
+        "heavy": "Walrus Anvilfall",
+        "magic": "Polar Thunderbell"
+      },
+      "roleRationale": "An authored hammer guardian emphasizes physical protection; existing profile is preserved.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "armagemon",
+      "displayName": "Armagemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Fortress Pincer",
+        "heavy": "Armageddon Bodypress",
+        "magic": "Apocalypse Webbeam"
+      },
+      "roleRationale": "An authored massive insectoid fortress emphasizes HP and armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "azulongmon",
+      "displayName": "Azulongmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Azure Whisker Lash",
+        "heavy": "Celestial Dragon Coil",
+        "magic": "Eastern Thunderseal"
+      },
+      "roleRationale": "An authored azure dragon guardian favors magical endurance.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "babamon",
+      "displayName": "Babamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "grove",
+      "skills": {
+        "physical": "Broom Handle Tap",
+        "heavy": "Elder Sweepfall",
+        "magic": "Hearth Blessing"
+      },
+      "roleRationale": "An authored elder guardian emphasizes protection rather than damage output.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "baihumon",
+      "displayName": "Baihumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "White Tiger Rend",
+        "heavy": "Western Fangrush",
+        "magic": "Steel Roar Halo"
+      },
+      "roleRationale": "An authored white-tiger sovereign specializes in physical force.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "bancholeomon",
+      "displayName": "BanchoLeomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Boss Knuckle",
+        "heavy": "Pridebreaker Rush",
+        "magic": "Lionhearted Sunfist"
+      },
+      "roleRationale": "An authored lion brawler emphasizes attack; existing bound profile takes precedence.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "barbamon",
+      "displayName": "Barbamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Gilded Staffhook",
+        "heavy": "Treasure Vault Crash",
+        "magic": "Avarice Emberseal"
+      },
+      "roleRationale": "An authored infernal sorcerer invests in magic at the expense of armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "beelzemon",
+      "displayName": "Beelzemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Outlaw Claw",
+        "heavy": "Biker Heelrush",
+        "magic": "Midnight Crossfire"
+      },
+      "roleRationale": "An authored outlaw fighter emphasizes offense; existing form remains authoritative.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "belphemon",
+      "displayName": "Belphemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Drowsy Claw",
+        "heavy": "Slumbering Colossus",
+        "magic": "Nightmare Resonance"
+      },
+      "roleRationale": "An authored heavy dream-beast favors HP and armor without asserting a source-sheet mode.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "blackimperialdramon",
+      "displayName": "BlackImperialdramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Obsidian Dragon Rake",
+        "heavy": "Black Citadel Charge",
+        "magic": "Eclipse Megaflare"
+      },
+      "roleRationale": "The black imperial variant is authored as a physical fortress rather than a duplicate profile.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "blackmegagargomon",
+      "displayName": "BlackMegaGargomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Nightsteel Gauntlet",
+        "heavy": "Dark Arsenal Stampede",
+        "magic": "Onyx Missile Rain"
+      },
+      "roleRationale": "The dark heavy-machine variant emphasizes physical armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "blackwargreymon",
+      "displayName": "BlackWarGreymon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Obsidian Dramon Claw",
+        "heavy": "Black Tornado Drive",
+        "magic": "Dark Terra Sphere"
+      },
+      "roleRationale": "An authored dark armored dragon favors direct physical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "cannondramon",
+      "displayName": "Cannondramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "Gunmetal Tail",
+        "heavy": "Artillery Bodyslam",
+        "magic": "Twin Siege Salvo"
+      },
+      "roleRationale": "An authored mobile artillery creature uses an armored defensive role.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "chaosgallantmon",
+      "displayName": "ChaosGallantmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Chaos Lancehook",
+        "heavy": "Dark Knight Charge",
+        "magic": "Ruinshield Eclipse"
+      },
+      "roleRationale": "The chaos knight variant is authored with magical emphasis rather than balanced stats.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "cherubimon-vaccine",
+      "displayName": "Cherubimon Vaccine",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Merciful Palm",
+        "heavy": "Sanctuary Bound",
+        "magic": "Golden Choir Halo"
+      },
+      "roleRationale": "The protective cherub variant favors magical endurance.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "cherubimon-virus",
+      "displayName": "Cherubimon Virus",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Malice Talon",
+        "heavy": "Nightmare Vault",
+        "magic": "Black Choir Storm"
+      },
+      "roleRationale": "The darker cherub variant favors magical offense and lighter armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "chronomon-dm",
+      "displayName": "Chronomon DM",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Doomwing Talon",
+        "heavy": "Dark Chrono Dive",
+        "magic": "Eventide Timeflare"
+      },
+      "roleRationale": "The dark chronology variant is authored as a forceful attacker.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "chronomon-holy-mode",
+      "displayName": "Chronomon Holy Mode",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dawnwing Talon",
+        "heavy": "Holy Chrono Descent",
+        "magic": "Timeless Aurora"
+      },
+      "roleRationale": "The holy chronology variant favors magical protection, distinct from DM.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "creepymon",
+      "displayName": "Creepymon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Infernal Nail",
+        "heavy": "Abyssal Wingcrash",
+        "magic": "Creeping Hellstar"
+      },
+      "roleRationale": "This source entry receives an authored infernal-caster role without merging it with Daemon.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "crossmon",
+      "displayName": "Crossmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Crossmetal Talon",
+        "heavy": "Golden Wingbreaker",
+        "magic": "Skyforge Radiance"
+      },
+      "roleRationale": "An authored metallic bird emphasizes diving physical attacks.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "daemon",
+      "displayName": "Daemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "ember",
+      "skills": {
+        "physical": "Cinder Scepter",
+        "heavy": "Demon Mantle Rush",
+        "magic": "Dread Sovereign Sigil"
+      },
+      "roleRationale": "This source entry receives an authored infernal-warder role distinct from Creepymon.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "darkdramon",
+      "displayName": "Darkdramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dark Lance Jab",
+        "heavy": "Dreadnought Thrust",
+        "magic": "Abyss Energy Lance"
+      },
+      "roleRationale": "An authored armored hunter emphasizes physical assault.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "diaboromon",
+      "displayName": "Diaboromon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Network Claw",
+        "heavy": "Cable Webcrush",
+        "magic": "Kernel Collapse"
+      },
+      "roleRationale": "An authored digital predator prioritizes magic-themed network disruption.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dorugoramon",
+      "displayName": "Dorugoramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Primeval Doru Claw",
+        "heavy": "Ironfur Cataclysm",
+        "magic": "Dragon Code Nova"
+      },
+      "roleRationale": "An authored primeval beast-dragon favors overwhelming physical pressure.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ebonwumon",
+      "displayName": "Ebonwumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Ancient Rootpress",
+        "heavy": "Northern Shellquake",
+        "magic": "Evergreen Twinlight"
+      },
+      "roleRationale": "An authored ancient guardian uses HP and armor as its principal strengths.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "gallantmon",
+      "displayName": "Gallantmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Crimson Lance",
+        "heavy": "Royal Shieldcharge",
+        "magic": "Radiant Javelin"
+      },
+      "roleRationale": "An authored knight balances lance attacks and radiant magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "gallantmon-crimson-mode",
+      "displayName": "Gallantmon Crimson Mode",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Crimson Wingblade",
+        "heavy": "Scarlet Knightfall",
+        "magic": "Royal Star Ignition"
+      },
+      "roleRationale": "The crimson mode is authored as a more offensive variant with its own labels.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ghoulmon",
+      "displayName": "Ghoulmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Spectral Grasp",
+        "heavy": "Phantom Wingpress",
+        "magic": "Pale Eye Eclipse"
+      },
+      "roleRationale": "The lighter ghoul entry is authored as an offensive spellcaster.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ghoulmon-black",
+      "displayName": "Ghoulmon Black",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Obsidian Grasp",
+        "heavy": "Black Phantom Descent",
+        "magic": "Umbral Eye Lantern"
+      },
+      "roleRationale": "The black ghoul entry is authored as a magic-resistant counterpart.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "gigaseadramon",
+      "displayName": "GigaSeadramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Battleship Fin",
+        "heavy": "Giga Hullcrash",
+        "magic": "Ocean Missile Array"
+      },
+      "roleRationale": "An authored armored sea platform emphasizes physical protection.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "grankuwagamon",
+      "displayName": "GranKuwagamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Titan Scissor",
+        "heavy": "Dimensional Pincerfall",
+        "magic": "Voidwing Vortex"
+      },
+      "roleRationale": "An authored giant insect favors physical attack; the existing profile remains unchanged.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "granlocomon",
+      "displayName": "Granlocomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "Locomotive Ram",
+        "heavy": "Grand Railbreaker",
+        "magic": "Furnace Railbeam"
+      },
+      "roleRationale": "An authored armored locomotive emphasizes HP and defense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "guardiangemon",
+      "displayName": "GuardiAngemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Guardian Blade",
+        "heavy": "Sanctified Bladefall",
+        "magic": "Silver Gate Radiance"
+      },
+      "roleRationale": "An authored angelic sentinel favors magic resistance.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "herculeskabuterimon",
+      "displayName": "HerculesKabuterimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Hercules Hornpress",
+        "heavy": "Golden Carapace Crash",
+        "magic": "Thunder Crown"
+      },
+      "roleRationale": "An authored beetle guardian favors armor; preserved existing binding takes precedence.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "hiandromon",
+      "displayName": "HiAndromon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Titanium Knuckle",
+        "heavy": "Precision Piston Slam",
+        "magic": "Optimizer Beam"
+      },
+      "roleRationale": "An authored advanced cyborg wall emphasizes physical protection.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "imperialdramon-dragon-mode",
+      "displayName": "Imperialdramon Dragon Mode",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "Imperial Dragon Claw",
+        "heavy": "Dragon Citadel Dive",
+        "magic": "Positron Sunflare"
+      },
+      "roleRationale": "The quadruped dragon mode is authored as an armored heavy presence.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "imperialdramon-fighter-mode",
+      "displayName": "Imperialdramon Fighter Mode",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Imperial Fistblade",
+        "heavy": "Fighter Mode Blitz",
+        "magic": "Positron Starburst"
+      },
+      "roleRationale": "The fighter mode receives a balanced allocation distinct from dragon mode.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "imperialdramon-paladin-mode",
+      "displayName": "Imperialdramon Paladin Mode",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Paladin Swordarc",
+        "heavy": "White Knight Descent",
+        "magic": "Omega Dawnseal"
+      },
+      "roleRationale": "The paladin mode emphasizes magical protection rather than raw attack.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "jijimon",
+      "displayName": "Jijimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Elder Staff Tap",
+        "heavy": "Wisdom Cane Crush",
+        "magic": "Ancient Hearthstar"
+      },
+      "roleRationale": "An authored elder magician favors spell strength over physical armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "justimon",
+      "displayName": "Justimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Justice Knuckle",
+        "heavy": "Heroic Rocketheel",
+        "magic": "Trinity Voltage"
+      },
+      "roleRationale": "An authored mechanical hero emphasizes committed physical attacks.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kentaurosmon",
+      "displayName": "Kentaurosmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Aurora Hoofstrike",
+        "heavy": "Sixleg Shieldrush",
+        "magic": "Northern Light Arrow"
+      },
+      "roleRationale": "An authored armored guardian favors magical resistance and icy imagery.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kuzuhamon",
+      "displayName": "Kuzuhamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Veiled Staffhook",
+        "heavy": "Temple Spiralrush",
+        "magic": "Dusk Ritual Bloom"
+      },
+      "roleRationale": "An authored ritual mage favors magic; existing profile remains authoritative.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "leviamon",
+      "displayName": "Leviamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Abyss Crocodile Bite",
+        "heavy": "Tsunami Jawpress",
+        "magic": "Envious Ocean Roar"
+      },
+      "roleRationale": "An authored colossal aquatic predator emphasizes HP and armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "lilithmon",
+      "displayName": "Lilithmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tempting Nail",
+        "heavy": "Velvet Wingfall",
+        "magic": "Violet Sinmist"
+      },
+      "roleRationale": "An authored shadow sorceress favors magical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "machinedramon",
+      "displayName": "Machinedramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "Foundry Claw",
+        "heavy": "Iron Fortress Trample",
+        "magic": "Infinity Furnace"
+      },
+      "roleRationale": "An authored industrial dragon uses an armored-wall role.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "malomyotismon",
+      "displayName": "MaloMyotismon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Crimson Doomclaw",
+        "heavy": "Nightlord Wingcrush",
+        "magic": "Pandemonium Lantern"
+      },
+      "roleRationale": "An authored monstrous nightlord favors magical pressure.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "marineangemon",
+      "displayName": "MarineAngemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Tiny Ocean Nudge",
+        "heavy": "Bubble Halo Roll",
+        "magic": "Peaceful Tideheart"
+      },
+      "roleRationale": "An authored small sea guardian emphasizes magical resilience rather than aggression.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "megagargomon",
+      "displayName": "MegaGargomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Green Arsenal Fist",
+        "heavy": "Heavy Rabbit Stampede",
+        "magic": "Emerald Rocket Bloom"
+      },
+      "roleRationale": "An authored heavy artillery rabbit favors HP and armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "metaletemon",
+      "displayName": "MetalEtemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Chrome Stage Fist",
+        "heavy": "Platinum Encore Slam",
+        "magic": "Metal Feedback Wave"
+      },
+      "roleRationale": "An authored metallic performer emphasizes physical durability.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "metalgarurumon",
+      "displayName": "MetalGarurumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Cyber Wolf Fang",
+        "heavy": "Glacier Missile Rush",
+        "magic": "Absolute Ice Array"
+      },
+      "roleRationale": "An authored armored wolf favors attack; existing profile is preserved.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "metalseadramon",
+      "displayName": "MetalSeadramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Alloy Serpent Bite",
+        "heavy": "Iron Tidal Coil",
+        "magic": "Deepsea Reactor Ray"
+      },
+      "roleRationale": "An authored metal sea serpent favors physical armor.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "neptunemon",
+      "displayName": "Neptunemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "tide",
+      "skills": {
+        "physical": "Trident Hook",
+        "heavy": "Ocean King Thrust",
+        "magic": "Sovereign Whirlpool"
+      },
+      "roleRationale": "An authored sea ruler balances weapon attacks and water magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "omnimon",
+      "displayName": "Omnimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Twin Knight Slash",
+        "heavy": "United Swordrush",
+        "magic": "Transcendent Cannon"
+      },
+      "roleRationale": "An authored dual-arm knight carries balanced physical and magical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "parasimon",
+      "displayName": "Parasimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Parasite Needle",
+        "heavy": "Tendril Hostcrush",
+        "magic": "Spore Command"
+      },
+      "roleRationale": "An authored parasitic controller emphasizes magical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "phoenixmon",
+      "displayName": "Phoenixmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "ember",
+      "skills": {
+        "physical": "Phoenix Talon",
+        "heavy": "Rebirth Wingpress",
+        "magic": "Sacred Cinder Halo"
+      },
+      "roleRationale": "An authored sacred firebird favors magical resilience.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "piedmon",
+      "displayName": "Piedmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Jester Rapier",
+        "heavy": "Acrobat Bladefall",
+        "magic": "Masquerade Mirage"
+      },
+      "roleRationale": "An authored theatrical trickster favors magical attacks.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "plesiomon",
+      "displayName": "Plesiomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Ancient Finlash",
+        "heavy": "Longneck Undertow",
+        "magic": "Sorrowful Sea Prism"
+      },
+      "roleRationale": "An authored aquatic caster favors magic; existing form remains authoritative.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "princemamemon",
+      "displayName": "PrinceMamemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Royal Little Jab",
+        "heavy": "Crown Knuckle Rush",
+        "magic": "Gilded Bubble Parade"
+      },
+      "roleRationale": "An authored compact royal brawler keeps both offensive channels viable.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "puppetmon",
+      "displayName": "Puppetmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Marionette Mallet",
+        "heavy": "Wooden Stage Collapse",
+        "magic": "Puppet Stringflare"
+      },
+      "roleRationale": "An authored wooden controller uses a durable physical role; existing profile is preserved.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "rosemon",
+      "displayName": "Rosemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Rosevine Whip",
+        "heavy": "Thorn Embrace Rush",
+        "magic": "Royal Blossom Ray"
+      },
+      "roleRationale": "An authored rose caster favors magic; existing profile remains authoritative.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "saberleomon",
+      "displayName": "SaberLeomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Saber Fang Rake",
+        "heavy": "Primeval Lion Pounce",
+        "magic": "Golden Mane Roar"
+      },
+      "roleRationale": "An authored saber-toothed lion invests in physical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "sakuyamon",
+      "displayName": "Sakuyamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Shrine Staffarc",
+        "heavy": "Sacred Fox Descent",
+        "magic": "Fourfold Spirit Bloom"
+      },
+      "roleRationale": "An authored shrine guardian favors magic; existing profile remains unchanged.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "seraphimon",
+      "displayName": "Seraphimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Seraph Guardblade",
+        "heavy": "Heavenly Armor Dive",
+        "magic": "Sevenstar Sanctuary"
+      },
+      "roleRationale": "An authored celestial sentinel favors resistance; existing profile takes precedence.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "valkyrimon",
+      "displayName": "Valkyrimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Valkyrie Swordcut",
+        "heavy": "Battlemaiden Swordfall",
+        "magic": "Runic Winter Arrow"
+      },
+      "roleRationale": "An authored aerial warrior emphasizes weapon strikes with an icy magical accent.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "varodurumon",
+      "displayName": "Varodurumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Radiant Feather Sweep",
+        "heavy": "Sixwing Skypress",
+        "magic": "Purifying Dawnlight"
+      },
+      "roleRationale": "An authored luminous sky guardian favors magical resilience.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "venommyotismon",
+      "displayName": "VenomMyotismon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Venom Titan Rake",
+        "heavy": "Night Giant Stampede",
+        "magic": "Abyssal Hungerbeam"
+      },
+      "roleRationale": "An authored monstrous nightlord favors HP and armor; existing profile is preserved.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "vikemon",
+      "displayName": "Vikemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "tide",
+      "skills": {
+        "physical": "Viking Macehook",
+        "heavy": "Glacial Warhammer",
+        "magic": "Arctic Crownstorm"
+      },
+      "roleRationale": "An authored polar warrior favors armor; existing profile remains authoritative.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "wargreymon",
+      "displayName": "WarGreymon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Brave Dramon Slash",
+        "heavy": "Warrior Tornado Drive",
+        "magic": "Terra Corona"
+      },
+      "roleRationale": "An authored armored dragon favors physical offense; existing profile is unchanged.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "zhuqiaomon",
+      "displayName": "Zhuqiaomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Vermilion Beak",
+        "heavy": "Southern Wingcrash",
+        "magic": "Sovereign Firewheel"
+      },
+      "roleRationale": "An authored vermilion bird sovereign emphasizes fire-themed magic.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "flamedramon",
+      "displayName": "Flamedramon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Fire Gauntlet",
+        "heavy": "Blazing Armor Rush",
+        "magic": "Flame Crest Spiral"
+      },
+      "roleRationale": "An authored armored flame fighter uses the Champion-tier physical role.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kenkimon",
+      "displayName": "Kenkimon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Excavator Hook",
+        "heavy": "Digger Chassis Ram",
+        "magic": "Quarry Dustbeam"
+      },
+      "roleRationale": "An authored construction-machine armor form favors physical protection.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kongoumon",
+      "displayName": "Kongoumon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "grove",
+      "skills": {
+        "physical": "Golden Beetle Palm",
+        "heavy": "Diamond Shellpress",
+        "magic": "Vajra Pollen Spark"
+      },
+      "roleRationale": "An authored armored insect guardian emphasizes HP and defense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "magnamon",
+      "displayName": "Magnamon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Golden Guardfist",
+        "heavy": "Miracle Armor Charge",
+        "magic": "Radiant Crestburst"
+      },
+      "roleRationale": "An authored magic-resistant armor form uses Champion-tier balance, not canonical power ranking.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ponchomon",
+      "displayName": "Ponchomon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Maraca Tap",
+        "heavy": "Poncho Spinpress",
+        "magic": "Cactus Festival Mist"
+      },
+      "roleRationale": "An authored festive cactus caster favors magic at the explicit Champion tier.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "prairiemon",
+      "displayName": "Prairiemon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Prairie Claw",
+        "heavy": "Burrow Shouldercharge",
+        "magic": "Dustgrass Spiral"
+      },
+      "roleRationale": "An authored burrowing armor fighter emphasizes physical offense.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "seahomon",
+      "displayName": "Seahomon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Warden",
+      "type": "tide",
+      "skills": {
+        "physical": "Coral Tailflick",
+        "heavy": "Reefcoil Tackle",
+        "magic": "Seahorse Crestlight"
+      },
+      "roleRationale": "An authored aquatic armor guardian favors magical protection.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shurimon",
+      "displayName": "Shurimon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "grove",
+      "skills": {
+        "physical": "Leaf Shuriken",
+        "heavy": "Pinwheel Heelrush",
+        "magic": "Verdant Ninja Gust"
+      },
+      "roleRationale": "An authored leaf-ninja armor fighter invests in physical attack.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "calumon",
+      "displayName": "Calumon",
+      "sourceStage": "No Level",
+      "combatTier": "Rookie",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Playful Ear Tap",
+        "heavy": "Tumbling Somersault",
+        "magic": "Gentle Crestglow"
+      },
+      "roleRationale": "An authored low-tier companion guardian uses Rookie-tier stats; No Level remains its source category.",
+      "skillLabelOrigin": "authored"
+    }
+  ],
+  "proposedEdges": [
+    {
+      "fromEntryKey": "guilmon",
+      "toEntryKey": "growlmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated red-dragon-to-knight route for this game; no exclusive canonical-path claim."
+    },
+    {
+      "fromEntryKey": "growlmon",
+      "toEntryKey": "wargrowlmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated red-dragon-to-knight route for this game; no exclusive canonical-path claim."
+    },
+    {
+      "fromEntryKey": "wargrowlmon",
+      "toEntryKey": "gallantmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated red-dragon-to-knight route for this game; no exclusive canonical-path claim."
+    },
+    {
+      "fromEntryKey": "dorumon",
+      "toEntryKey": "dorugamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated Doru beast-dragon route, reviewed independently of source sheet order."
+    },
+    {
+      "fromEntryKey": "dorugamon",
+      "toEntryKey": "dorugreymon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated Doru beast-dragon route, reviewed independently of source sheet order."
+    },
+    {
+      "fromEntryKey": "dorugreymon",
+      "toEntryKey": "dorugoramon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated Doru beast-dragon route, reviewed independently of source sheet order."
+    },
+    {
+      "fromEntryKey": "keramon",
+      "toEntryKey": "kurisarimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated network-creature route with progressively stronger authored profiles."
+    },
+    {
+      "fromEntryKey": "kurisarimon",
+      "toEntryKey": "infermon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated network-creature route with progressively stronger authored profiles."
+    },
+    {
+      "fromEntryKey": "infermon",
+      "toEntryKey": "diaboromon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated network-creature route with progressively stronger authored profiles."
+    },
+    {
+      "fromEntryKey": "biyomon",
+      "toEntryKey": "birdramon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated bird-to-firebird route for a readable progression theme."
+    },
+    {
+      "fromEntryKey": "birdramon",
+      "toEntryKey": "garudamon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated bird-to-firebird route for a readable progression theme."
+    },
+    {
+      "fromEntryKey": "garudamon",
+      "toEntryKey": "phoenixmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated bird-to-firebird route for a readable progression theme."
+    },
+    {
+      "fromEntryKey": "hawkmon",
+      "toEntryKey": "aquilamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated aerial-warrior route; this prototype proposal does not require or claim franchise fusion mechanics."
+    },
+    {
+      "fromEntryKey": "aquilamon",
+      "toEntryKey": "silphymon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated aerial-warrior route; this prototype proposal does not require or claim franchise fusion mechanics."
+    },
+    {
+      "fromEntryKey": "silphymon",
+      "toEntryKey": "valkyrimon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated aerial-warrior route; this prototype proposal does not require or claim franchise fusion mechanics."
+    },
+    {
+      "fromEntryKey": "terriermon",
+      "toEntryKey": "gargomon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated small-fighter-to-heavy-arsenal route."
+    },
+    {
+      "fromEntryKey": "gargomon",
+      "toEntryKey": "rapidmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated small-fighter-to-heavy-arsenal route."
+    },
+    {
+      "fromEntryKey": "rapidmon",
+      "toEntryKey": "megagargomon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated small-fighter-to-heavy-arsenal route."
+    },
+    {
+      "fromEntryKey": "kudamon",
+      "toEntryKey": "reppamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated guardian route using the inventory display names; official naming remains separate."
+    },
+    {
+      "fromEntryKey": "reppamon",
+      "toEntryKey": "tyilinmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated guardian route using the inventory display names; official naming remains separate."
+    },
+    {
+      "fromEntryKey": "tyilinmon",
+      "toEntryKey": "kentaurosmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated guardian route using the inventory display names; official naming remains separate."
+    },
+    {
+      "fromEntryKey": "veemon",
+      "toEntryKey": "exveemon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated dragon route; this prototype proposal does not implement canonical fusion requirements."
+    },
+    {
+      "fromEntryKey": "exveemon",
+      "toEntryKey": "paildramon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated dragon route; this prototype proposal does not implement canonical fusion requirements."
+    },
+    {
+      "fromEntryKey": "paildramon",
+      "toEntryKey": "imperialdramon-dragon-mode",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated dragon route; this prototype proposal does not implement canonical fusion requirements."
+    },
+    {
+      "fromEntryKey": "dracmon",
+      "toEntryKey": "sangloupmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated nocturnal duelist route ending at an available listed Ultimate."
+    },
+    {
+      "fromEntryKey": "sangloupmon",
+      "toEntryKey": "matadormon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated nocturnal duelist route ending at an available listed Ultimate."
+    },
+    {
+      "fromEntryKey": "lalamon",
+      "toEntryKey": "sunflowmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated flower route; no new edge overrides the existing Rosemon lineage."
+    },
+    {
+      "fromEntryKey": "sunflowmon",
+      "toEntryKey": "lilamon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated flower route; no new edge overrides the existing Rosemon lineage."
+    },
+    {
+      "fromEntryKey": "gaomon",
+      "toEntryKey": "gaogamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated martial canine route ending at an available listed Ultimate."
+    },
+    {
+      "fromEntryKey": "gaogamon",
+      "toEntryKey": "machgaogamon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated martial canine route ending at an available listed Ultimate."
+    },
+    {
+      "fromEntryKey": "kamemon",
+      "toEntryKey": "gwappamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated aquatic route limited to these two listed new forms."
+    },
+    {
+      "fromEntryKey": "falcomon",
+      "toEntryKey": "peckmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated bird route ending at an available listed Ultimate."
+    },
+    {
+      "fromEntryKey": "peckmon",
+      "toEntryKey": "yatagaramon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated bird route ending at an available listed Ultimate."
+    },
+    {
+      "fromEntryKey": "armadillomon",
+      "toEntryKey": "ankylomon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated armored-creature route limited to these two listed new forms."
+    },
+    {
+      "fromEntryKey": "wormmon",
+      "toEntryKey": "stingmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated insect route; no new edge overrides the existing GranKuwagamon lineage."
+    },
+    {
+      "fromEntryKey": "stingmon",
+      "toEntryKey": "dinobeemon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-proposal",
+      "status": "review-required",
+      "rationale": "Curated insect route; no new edge overrides the existing GranKuwagamon lineage."
+    }
+  ],
+  "validation": {
+    "inventoryCoverage": 135,
+    "skillLabels": 405,
+    "maxSkillLabelUtf8Bytes": 23,
+    "caseFoldedDuplicateSkillLabels": 0,
+    "proposedEdges": 36,
+    "preservedFormEdgeOverrides": 0,
+    "status": "passed-local-authoring-checks; parent integration and balance simulations remain separate"
+  }
+}

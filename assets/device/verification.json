@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "backgroundPayloadsIncluded": 0,
+    "deviceAssetServiceTests": "5 passed, 0 failed",
+    "exactLocalSpriteHashesAndSizes": true,
+    "hardwareTested": false,
+    "indexEntries": 10,
+    "spriteFiles": "all10:32x32,17frames,8816bytes"
+  },
+  "formatVersion": 1,
+  "indexSha256": "fd0de5c85e1ded35e0280f737d9992afb6ecd74c84460c5b710b83fba7966bec",
+  "scope": "Source-export original sprite index and local asset-service validation; no hardware or excluded backgrounds."
+}

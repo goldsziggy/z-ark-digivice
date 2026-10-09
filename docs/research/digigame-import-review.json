@@ -1,0 +1,1315 @@
+{
+  "formatVersion": 1,
+  "status": "alias-source-and-staged-output-review-complete",
+  "reviewer": "/root/hardware_research",
+  "sourceRepository": "https://github.com/EwertonMendes/DigiGame",
+  "sourceCommit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+  "method": "Read-only git blob extraction, SHA-256 verification, local PNG decoding, and direct visual inspection of all twelve aliases and all144 frames on light/gray backgrounds. No upstream code, checkout filters, GUI, downloader, or activation was executed. Official name pages were read through ordinary web access; no official images were downloaded.",
+  "sourceInputs": {
+    "docs/research/digigame-identity-candidates.json": "9f38db64a6ae03123d93b67c38d7de5ae760903ac6deea4fd61b13ef65e58652",
+    "docs/research/digigame-asset-inventory.json": "99d42c9dab2f850ae750d4be8b840653d6e8c5ac1018d4e20763320d3f4f9d10",
+    ".personal-assets/digigame/missing-candidates.json": "5d6684cd53a9dd314834a83369d00650fcc7805dc1c69b3170c08117697df807"
+  },
+  "baseline": {
+    "existingForms": 87,
+    "indexSha256": "0f547a62d33aa613dbccc1842000528bef7fabac64f2dfafa7dbde8777bb62d8",
+    "preserveAllExistingArtAndProvenance": true
+  },
+  "partition": {
+    "namedSourceEntries": 255,
+    "canonicalUniqueSpeciesCountClaimed": false,
+    "preservedExisting": 87,
+    "newIdentityEligible": 154,
+    "exactNameEligibleAwaitingSeparateVisualReview": 142,
+    "aliasIdentityAndSourceVisualApproved": 12,
+    "heldUnresolved": 5,
+    "noUpstreamCandidate": 9,
+    "equation": "87 + 142 + 12 + 5 + 9 = 255",
+    "eligibleFormIds": [
+      12,
+      14,
+      16,
+      17,
+      21,
+      22,
+      27,
+      28,
+      29,
+      31,
+      34,
+      35,
+      36,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      47,
+      48,
+      49,
+      52,
+      54,
+      55,
+      56,
+      58,
+      59,
+      61,
+      62,
+      63,
+      66,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      214,
+      216,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      228,
+      229,
+      230,
+      232,
+      233,
+      234,
+      236,
+      237,
+      238,
+      239,
+      240,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      249,
+      251,
+      252,
+      253,
+      254,
+      255,
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264,
+      265,
+      266,
+      268,
+      269,
+      270,
+      271,
+      272,
+      273,
+      274,
+      275,
+      276
+    ],
+    "preservedFormIds": [
+      11,
+      15,
+      18,
+      19,
+      20,
+      25,
+      26,
+      32,
+      33,
+      39,
+      46,
+      53,
+      60,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140
+    ],
+    "absentFormIds": [
+      215,
+      217,
+      218,
+      219,
+      227,
+      235,
+      241,
+      250,
+      267
+    ]
+  },
+  "entries": [
+    {
+      "formId": 141,
+      "entryKey": "gwappamon",
+      "currentName": "Gwappamon",
+      "upstreamName": "Gawappamon",
+      "assetKey": "gawappamon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=gawappamon",
+        "observedEnglishName": "Gawappamon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/144_Gawappamon.png",
+        "sourceArchiveSha256Claim": "d791b32fd2714a4cf45b9292c719ab6f2bf13789ab51c6c1d549f58881e66f9c",
+        "visualObservations": "Green kappa with disc/headphones, shell, yellow belly and webbed feet.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/gawappamon/field.png",
+        "pngSha256": "5d38676f215f541f4798786dc0422299f4dd8a0d6109096e900d8e00bbc1867e",
+        "fieldPath": "assets/characters/gawappamon/field.json",
+        "fieldSha256": "daf1b5bef87290ec7bbaccbee5627eabf91341c25c213f39f65b81550a4521a0",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/gawappamon/contact.png",
+        "contactSha256": "be0c089e55478f4a0576a9428e98a8c045bbd3519025df4568ae887f9353e0e8",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          32,
+          45
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          16,
+          44
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 16,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "90f216a1b66f8d57c73a505c622851f95d2ccf2f74f6b203038925afe4b7764a"
+    },
+    {
+      "formId": 164,
+      "entryKey": "vegiemon",
+      "currentName": "Vegiemon",
+      "upstreamName": "Veggiemon",
+      "assetKey": "veggiemon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=vegimon",
+        "observedEnglishName": "Vegiemon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/095_Veggiemon.png",
+        "sourceArchiveSha256Claim": "688f946cff978eca861e4627c6d70b192ab9d2a39d31356e746db5c7fe4b71f8",
+        "visualObservations": "Green carnivorous plant with long vines, large mouth and red/blue crown.",
+        "notes": "Upstream spelling adds a g; do not copy upstream Data attribute over the official/current metadata."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/veggiemon/field.png",
+        "pngSha256": "814d0753c8ccf3f58330788cb455b3a8c9d075ccd161220c1cbe75fe8ff12461",
+        "fieldPath": "assets/characters/veggiemon/field.json",
+        "fieldSha256": "3663c2720aa9365b8589923d8f8ef3961d05bc7d5c534e90956ed50f92cc0b10",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/veggiemon/contact.png",
+        "contactSha256": "14e947b076df85b61972a275d6a5e65cdb6058f443ffe8f9df0aacd810bc32fb",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          32,
+          32
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          16,
+          31
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 1,
+        "sourceOpaqueRgbaColors": 14,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "aeae95841fa1c936c5033015c54cc6fcd966dd18032c8344740158dbe2d95149"
+    },
+    {
+      "formId": 214,
+      "entryKey": "armagemon",
+      "currentName": "Armagemon",
+      "upstreamName": "Armageddemon",
+      "assetKey": "armageddemon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=armagemon",
+        "observedEnglishName": "Armageddemon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/332_Armagemon.png",
+        "sourceArchiveSha256Claim": "b334b08a89c2a68668bbd51380c03a3359f986eb272a917bd8fb4db7c7dcbd8d",
+        "visualObservations": "Dark multi-legged armored dragon with purple tail and red eyes.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/armageddemon/field.png",
+        "pngSha256": "05a1076b6fb36b4568807f4f346ebbe575a44b7ed346652943784a3af1e3256e",
+        "fieldPath": "assets/characters/armageddemon/field.json",
+        "fieldSha256": "89dc678d21f9e2c365714f7bf083e3e9fedb5b912b061dee52f5f7072846e04f",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/armageddemon/contact.png",
+        "contactSha256": "44f9ab1802e130af2fa173816a10a289e6f3eb62f061693d97bc499ffd0ba1a0",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          36,
+          49
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          18,
+          48
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 15,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "971aa99b1e830df4083473fc647b8f34c5264e91f8f6c52682d4a369ac05e9e8"
+    },
+    {
+      "formId": 31,
+      "entryKey": "bancholeomon",
+      "currentName": "BanchoLeomon",
+      "upstreamName": "Bantyo Leomon",
+      "assetKey": "bantyoleomon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=bancholeomon",
+        "observedEnglishName": "BanchoLeomon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/349_BantyoLeomon.png",
+        "sourceArchiveSha256Claim": "9cd74c78394f57a87c40653744c0591f48672fa4110c13060bb327086b9721b2",
+        "visualObservations": "Golden lion humanoid with gray mane and long dark coat.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/bantyoleomon/field.png",
+        "pngSha256": "ae600c8f04513d0e22b818dffbb6836b5ac2e16d389e6b904ea6b82995e14ba2",
+        "fieldPath": "assets/characters/bantyoleomon/field.json",
+        "fieldSha256": "a6e3a33d493abba3ce23a467f7f0a46370d81c8b79d88d83f18d559e7dd709c6",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/bantyoleomon/contact.png",
+        "contactSha256": "24236fe99f6512cac8e702675ce7035d3b5a3fc4073d8c74d356596f568297b8",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          35,
+          46
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          17,
+          45
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 16,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "0b1a185887a64c7220ce314a1caa28ac7be219ed9b9b6f8c16919c630748a219"
+    },
+    {
+      "formId": 221,
+      "entryKey": "blackmegagargomon",
+      "currentName": "BlackMegaGargomon",
+      "upstreamName": "Black SaintGargomon",
+      "assetKey": "blacksaintgargomon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=blacksaintgalgomon",
+        "observedEnglishName": "BlackSaintGargomon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/339_BlackSaintGalgomon.png",
+        "sourceArchiveSha256Claim": "bc1952759c50f6c89fe8e7a4bd95207affab9d09f3fd1537bdf003e135f7c647",
+        "visualObservations": "Dark green/gray machine giant with red shoulder weapon faces; distinct black variant.",
+        "notes": "Official English name is BlackSaintGargomon. Official Vaccine attribute conflicts with upstream Virus; this is an art binding only."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/blacksaintgargomon/field.png",
+        "pngSha256": "b5d827ff916ffb369326ba53c215912840ea52ae6cc29456a35a7163e27d1c1b",
+        "fieldPath": "assets/characters/blacksaintgargomon/field.json",
+        "fieldSha256": "77cdef346ba696848f64d3033a25a303141940fe51ed5c538b1b261ad52061dc",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/blacksaintgargomon/contact.png",
+        "contactSha256": "ac1ab0674c67dcb9a573f8970f9205221493b20b830678794ec99472710f21d4",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          36,
+          43
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          18,
+          42
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 15,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "c45aafd97b58a4a663c335a11d8fed3c0ae2ae17f75e274a3762f1c51b8f7b14"
+    },
+    {
+      "formId": 225,
+      "entryKey": "cherubimon-vaccine",
+      "currentName": "Cherubimon Vaccine",
+      "upstreamName": "Cherubimon (Good)",
+      "assetKey": "cherubimongood",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon",
+        "observedEnglishName": "Cherubimon (Good)",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/321_CherubimonVaccine.png",
+        "sourceArchiveSha256Claim": "f1c0e693f602fc679b7b58df295e7b2c3efdcef01d255a9f1102164d9c2d273a",
+        "visualObservations": "Pink long-eared holy beast with pale face and limbs.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/cherubimongood/field.png",
+        "pngSha256": "042b09fa02b01c6cf2348887249ca3e10a5661605c01f1619fd7eca7c039908a",
+        "fieldPath": "assets/characters/cherubimongood/field.json",
+        "fieldSha256": "c771066159a00a4baafb4f75f5bd409b388474cfa562e7aed6b7bfb7cd828ac9",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/cherubimongood/contact.png",
+        "contactSha256": "7edae9c1427b770ce6c745f92760d3908bdce20da26e24931b5e31495e9c3d04",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          36,
+          43
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          18,
+          42
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 14,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "f83021d519a153ba46dd4d8b65a0f18800f219661a76d9a8879121e465ad51ae"
+    },
+    {
+      "formId": 226,
+      "entryKey": "cherubimon-virus",
+      "currentName": "Cherubimon Virus",
+      "upstreamName": "Cherubimon (Evil)",
+      "assetKey": "cherubimonevil",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon-vice",
+        "observedEnglishName": "Cherubimon (Black)",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/322_CherubimonVirus.png",
+        "sourceArchiveSha256Claim": "3aeaeac128980601bf3986bedf3049cbd2c42c11ac243596cddb1e0e04082e47",
+        "visualObservations": "Purple/dark long-eared counterpart; distinct from the pink Good variant.",
+        "notes": "Source Vaccine/Virus labels, upstream Good/Evil and official Good/Black names are retained as qualified aliases. Do not infer official attribute from the source label."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/cherubimonevil/field.png",
+        "pngSha256": "f4d55d97ce39e550bbba782fbe12c82858ff21800d6434339558915fc4a9210c",
+        "fieldPath": "assets/characters/cherubimonevil/field.json",
+        "fieldSha256": "d5575710fc8664286cff39c77666274ebb3d73e69a7a033ebb88c424a9c5f218",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/cherubimonevil/contact.png",
+        "contactSha256": "c8a776eda440fe865ed8c5a7b360df13d7e5cb5552bf60123e18476d54f528dd",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          38,
+          43
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          19,
+          42
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 17,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "fa038a8a6159cfd561b2035123c03d1bf67c88e76c6eb203e0e51b63a88ca32a"
+    },
+    {
+      "formId": 230,
+      "entryKey": "crossmon",
+      "currentName": "Crossmon",
+      "upstreamName": "Eaglemon",
+      "assetKey": "eaglemon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=crossmon",
+        "observedEnglishName": "Eaglemon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/346_Crossmon.png",
+        "sourceArchiveSha256Claim": "ceebe0aa4677f3c7e06b0274a7c59071398a4ac605a5941aa87100976c1e5659",
+        "visualObservations": "Golden armored bird humanoid with large mechanical wings.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/eaglemon/field.png",
+        "pngSha256": "1761742240bac0f69678391c4e95eb73b64616164840b1c876b40744fbb3faac",
+        "fieldPath": "assets/characters/eaglemon/field.json",
+        "fieldSha256": "951802aa2a6f82112081408951a78103026e7c80073b84d8f54b7d48943b9600",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/eaglemon/contact.png",
+        "contactSha256": "641a1088698957c0f2667e3972f49a9ac3c68bfbc1564ef05f18566a28342722",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          36,
+          44
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          18,
+          43
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 13,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "9cb64fb02aa2676b4472ef924be2e975475680de55a52050dede6edb9f4b93bf"
+    },
+    {
+      "formId": 242,
+      "entryKey": "guardiangemon",
+      "currentName": "GuardiAngemon",
+      "upstreamName": "SL Angemon",
+      "assetKey": "slangemon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=slashangemon",
+        "observedEnglishName": "SlashAngemon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/345_SlashAngemon.png",
+        "sourceArchiveSha256Claim": "c2efbf32e9d735cb15e2cec13f2a1f8aedd6b991dc1b15196ef0e7eb06915775",
+        "visualObservations": "Silver bladed-wing armored angel with blue/gold cloth.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/slangemon/field.png",
+        "pngSha256": "7cfd2a9dc97eeb7eaefe6be6ad120cd460b9ed6de1b23ab0444d23b884233699",
+        "fieldPath": "assets/characters/slangemon/field.json",
+        "fieldSha256": "ccf899da2d115e8df95b68802f37a0991bba669f96c8cc66c4c4619e6459f1ca",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/slangemon/contact.png",
+        "contactSha256": "bcd7b247f102ce2d0e31fa01fbf0a51f5e1fed9b8961c76d80597a59b12605a6",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          36,
+          43
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          18,
+          42
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 15,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "f65f0accc3d769a1d8442b5c8f82a1ca0cebf6d1976551b70576d5707b176088"
+    },
+    {
+      "formId": 249,
+      "entryKey": "kentaurosmon",
+      "currentName": "Kentaurosmon",
+      "upstreamName": "Sleipmon",
+      "assetKey": "sleipmon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=sleipmon",
+        "observedEnglishName": "Kentaurosmon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/373_SleipmonLarge.gif",
+        "sourceArchiveSha256Claim": "52b88517cbf438ba7e4c9005d78f8c910d21c8586e88ce9929a432c031690c54",
+        "visualObservations": "Red/orange armored multi-legged centaur knight with blue shield and purple head.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/sleipmon/field.png",
+        "pngSha256": "1ccf47b19f576e59d727cdff90615c72aa40274495ce26a0cb3b9f6622390db3",
+        "fieldPath": "assets/characters/sleipmon/field.json",
+        "fieldSha256": "3b8d7099288d66fe4715401ec7c1606e1e65c8c81ad3913a70da288fe7c69b16",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/sleipmon/contact.png",
+        "contactSha256": "d38874527c754c9ce1f07824c64dfd996f78acb8a2bc548bcef86a22ca3d4abd",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          36,
+          44
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          18,
+          43
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 16,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "47d0cdd180e9a5dfda6bc9cc699d1876cc604fd0403dbeee81887f062e6a197a"
+    },
+    {
+      "formId": 258,
+      "entryKey": "neptunemon",
+      "currentName": "Neptunemon",
+      "upstreamName": "Neptunmon",
+      "assetKey": "neptunmon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=neptunemon",
+        "observedEnglishName": "Neptunemon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/328_Neptunmon.png",
+        "sourceArchiveSha256Claim": "c21458d9b430f4cf4ee75f43d510021694158e52de48f74f841ea434eb2f7f31",
+        "visualObservations": "Blue aquatic armored humanoid with trident, fins and red/orange cape details.",
+        "notes": "Upstream archive filename identifies Neptunmon; source_id is null. Do not synthesize a missing source ID."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/neptunmon/field.png",
+        "pngSha256": "0fee132538c1cad2f199c9fcab7ef7d7844b0dc6656ba40d3240cb6943051b72",
+        "fieldPath": "assets/characters/neptunmon/field.json",
+        "fieldSha256": "f7e9a87dbfc2587b323565f66c6577b9f95574bf9bf54a10fb01c0dd575549a4",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/neptunmon/contact.png",
+        "contactSha256": "ab9daf6b4c366e698d41f3a4fda36ae798ca217cd82354ec2c52097fac4be820",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          35,
+          44
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          17,
+          43
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 15,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "cd9f95c862a895c057ca62a8ab3786a5677389a6c8fd74acb2cdbab087326b9c"
+    },
+    {
+      "formId": 59,
+      "entryKey": "plesiomon",
+      "currentName": "Plesiomon",
+      "upstreamName": "Preciomon",
+      "assetKey": "preciomon",
+      "identityStatus": "approved-alias-binding",
+      "sourceVisualStatus": "approved-whole-cell-movement-strip",
+      "activationStatus": "approved-exact-staged-output",
+      "officialReference": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=plesiomon",
+        "observedEnglishName": "Plesiomon",
+        "scope": "Species name and identity only; the official reference does not license or verify these sprite pixels."
+      },
+      "bindingEvidence": {
+        "sourceArchiveMember": "sprite thread/331_Plesiomon.png",
+        "sourceArchiveSha256Claim": "e77ed390b706bb1f98c1180f12b4d6461f74b05bd57e29b6e71d2a29e945985f",
+        "visualObservations": "Pale long-necked aquatic dragon with orange underside and blue fin tips.",
+        "notes": "Localized spelling/name alias corroborated by the existing official-reference mapping, source member name, and inspected visual identity."
+      },
+      "pinnedSource": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "pngPath": "assets/characters/preciomon/field.png",
+        "pngSha256": "eaa956d1a9441a9a8394252eefb159d5699467566431940382660cb93b209f5c",
+        "fieldPath": "assets/characters/preciomon/field.json",
+        "fieldSha256": "6de52212daa662dc26a87ba4ee733bc4590de5340a5e881e2cfbc5c015cc755c",
+        "sourceKindClaim": "official_ds"
+      },
+      "visualReview": {
+        "reviewer": "/root/hardware_research",
+        "inspectedFrames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "contactPath": ".personal-assets/digigame/identity-review/preciomon/contact.png",
+        "contactSha256": "f1196966148c6a6759426da6a0253ba253bd607a385cc952df31f904907f636d",
+        "backgrounds": [
+          "white",
+          "light-gray"
+        ],
+        "completeWholeCells": true,
+        "nativeCell": [
+          35,
+          44
+        ],
+        "alphaPolicy": "Preserve native alpha, black anatomy and attached shadows; no color key. No credit text visible in these derived strips; retain upstream source provenance, do not invent a ripper attribution.",
+        "declaredDirections": [
+          "down_left",
+          "down_right",
+          "up_left",
+          "up_right"
+        ],
+        "observedDirectionOrderConsistent": true,
+        "anchor": [
+          17,
+          43
+        ],
+        "generatedHorizontalMirrors": [],
+        "clipMeaning": "Three movement phases per direction. No independent attack/hurt/sleep/care/celebrate coverage is demonstrated.",
+        "suggestedSelectedFrameIndices": [
+          0,
+          1,
+          2
+        ],
+        "browser64WholeCellDownsampleFactor": 1,
+        "device32WholeCellDownsampleFactor": 2,
+        "sourceOpaqueRgbaColors": 16,
+        "conversionCaveat": "Device nearest reduction and palette quantization must be recorded and visually reviewed on the actual staged output; no pixel- or color-lossless claim."
+      },
+      "stagedMappingSha256": "c2516132edf2b27c5ebf3b19faadf52a4be7f66d4b2b1164377125699c957b05"
+    }
+  ],
+  "heldEntries": [
+    {
+      "formId": 168,
+      "name": "Antylamon",
+      "status": "hold",
+      "reason": "Existing target sheet variant is unresolved between Deva/Data and unqualified/Virus candidates; one matching base name is insufficient."
+    },
+    {
+      "formId": 213,
+      "name": "Yatagaramon",
+      "status": "hold",
+      "reason": "Existing original-versus-2006 Yatagaramon variant is unresolved."
+    },
+    {
+      "formId": 220,
+      "name": "BlackImperialdramon",
+      "status": "hold",
+      "reason": "Upstream is explicitly Imperialdramon Dragon Mode Black; current target sheet mode is unresolved."
+    },
+    {
+      "formId": 231,
+      "name": "Daemon",
+      "status": "hold",
+      "reason": "Daemon and Creepymon share the same official entity reference, but upstream maps both to the single Creepymon/Demon field blob. The two target source appearances are not proven interchangeable."
+    },
+    {
+      "formId": 248,
+      "name": "Justimon",
+      "status": "hold",
+      "reason": "Current Justimon arm mode is unresolved; unqualified matching names do not resolve it."
+    }
+  ],
+  "scopeLimits": [
+    "The 142 exact-name new strips are NOT visually reviewed by this report.",
+    "Alias source binding and the exact hashed staged cohort are approved. The142 exact-name sources and outputs have separate reviewers and are not approved by this report.",
+    "official_ds is upstream provenance metadata, not a blanket license or proof of a particular DS game release.",
+    "All new strips are personal/private only. No copyright license is granted by source naming, GitHub availability, or this review. See digigame-source-review.json.",
+    "Preserve game IDs, stats, stages, role/type assignments and existing source-qualified variants; no automatic alias collapse.",
+    "No unreviewed portrait/battle images or genuine combat-state clips are approved here."
+  ],
+  "stagedAliasApproval": {
+    "cohort": ".personal-assets/digigame/prepared/aliases-01-3df36ddd4725",
+    "reviewPath": ".personal-assets/digigame/prepared/aliases-01-3df36ddd4725/review.json",
+    "reviewSha256": "293adc933f4c4c106697b944af7512b25951c9a4dab28a6cddc22f9a90a98003",
+    "sourceCommit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+    "planSha256": "3df36ddd4725687f94acc4155d7cfe3ffe536fa5c3e75f9db60a0a1ba617d905",
+    "stagedIndexSha256": "30269f7e793d282947445b49acc8d0ab33c20e34c7e762bc80094c073369de80",
+    "convertedContactSha256": "a881fbdf48edb8979d47f4bc5b3ea9fb93713dd6ba809707eb91803dc2e8c1ce",
+    "conversionMeasurementsSha256": "2a5a7c50eb599f8b7ab6d17c3ea2d1819ee3057f40bf2c2bf5c8981223803123",
+    "mechanicalChecksPath": ".personal-assets/digigame/identity-review/converted-checks.json",
+    "mechanicalChecksSha256": "c981695a340ef2753b940af5b7f5932ac59bd943becf4f970d21ce7b9f1149e3",
+    "formsApproved": 12,
+    "convertedPosesVisuallyInspected": 72,
+    "checks": "Pinned source/mapping/artifact hashes; DVA CRC/header/animation tables; all72 idle alpha masks match transformed source; no opaque clipping after anchor; nearest declared palette colors; all five fallback clips exactly reuse idle. Full contact and three enlarged contact sections visually inspected.",
+    "limits": "11 forms use2x nearest device reduction; Vegiemon uses1x. Browser64 uses1x. Source pixel detail and colors can be lost; exact conversion measurements are retained. This is private import approval, not proof of original game provenance, copyright permission, hardware readiness, or bespoke action animation."
+  }
+}

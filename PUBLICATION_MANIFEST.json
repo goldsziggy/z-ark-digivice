@@ -1,0 +1,4796 @@
+{
+  "formatVersion": 3,
+  "sourceCommit": "f74ee4c132b4b9bc6407d99bbc20b13af9dfd962",
+  "hardwareRevision": "C14-P19",
+  "freshExportWithoutDevelopmentHistory": true,
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 471,
+      "sha256": "cc262eeb4f13d1661d89543a0a9212d03b263d44916c39ae3352e3d0f4403dd1",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "CMakeLists.txt",
+      "bytes": 9939,
+      "sha256": "e5f105bd8bd3078864bb99e4540ce8bc504f59687675fecfb416a05a59a58a7c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "PUBLICATION.md",
+      "bytes": 4319,
+      "sha256": "e431984d7c9ccd3e16b3fed33b80d3252ddcc674e4194dbac48cd06bbeab1466",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "PUBLICATION_VALIDATION.json",
+      "bytes": 5414,
+      "sha256": "4c614de49ca97a673a034351ab320824574bcab924450541415225c1d68f0111",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "README.md",
+      "bytes": 5363,
+      "sha256": "ed3378e766d0ba8f6f69fdf63808a3100741a2e9936dee8c6ab37de979f642f5",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "assets/device/FORMAT.md",
+      "bytes": 8289,
+      "sha256": "719b4d91824a1b63e07a46c3661973b36f6f27672defb0072e3b5eb477fbadcc",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "assets/device/budget.json",
+      "bytes": 13189,
+      "sha256": "4b232e9f399baf1fad0efccaa1f44e9768277810b0dfa663e1bee0b9824e0866",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "assets/device/index.json",
+      "bytes": 2012,
+      "sha256": "fd0de5c85e1ded35e0280f737d9992afb6ecd74c84460c5b710b83fba7966bec",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "assets/device/previews/resident-fallback.png",
+      "bytes": 6345,
+      "sha256": "06ee4fa4ae36cc6bdfb67f8f3e0c03f1428d408038cf8ecd0c2cca322ae4a262",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sources.json",
+      "bytes": 947,
+      "sha256": "2e934f11830e408b02cdb3a3a753a57ed74f984686ca497081e17a166d2db624",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "assets/device/sprite-brine-v1.dva",
+      "bytes": 8816,
+      "sha256": "5d3d5095266e7e65c5bcac2a58019ef313355f01e0ea9863c89beaf901b502cc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-cinder-v1.dva",
+      "bytes": 8816,
+      "sha256": "ae84336ed583a9c96f4ee9d0a0db165e0e1e21f58c551545e5b5f2d91d7dba40",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-flicker-v1.dva",
+      "bytes": 8816,
+      "sha256": "904a46024b374ae8a412c77fda3f343ba38f883ca1d58625680fc878a4d2950c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-glint-v1.dva",
+      "bytes": 8816,
+      "sha256": "feab85b85639ca90abe3132d989654e406da714b357c4a429e8128c554d51e04",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-lumen-v1.dva",
+      "bytes": 8816,
+      "sha256": "cc8b089f41b5cbaeeae4a7fda652095cf74f758db8d93e1e4222d6ab96f1fa52",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-mote-v1.dva",
+      "bytes": 8816,
+      "sha256": "592b30ef0b1d13c7a9c7d9504548531b4ea9b770f541ed7725633b47cc3fc59e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-pelagia-v1.dva",
+      "bytes": 8816,
+      "sha256": "04dc82df3eccb05058d28f31f5023f4c1d8f62af79c0133fb421184f2f0761d7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-pyrel-v1.dva",
+      "bytes": 8816,
+      "sha256": "74159fab233c8eb59477cabdcec45240e556838633cf690b8b5ecac889e8c0bd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-rill-v1.dva",
+      "bytes": 8816,
+      "sha256": "5aaa2ecc1ebcb696e14dd42ba42b889d16429844d21577de1ed413db731ebc31",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/sprite-scoria-v1.dva",
+      "bytes": 8816,
+      "sha256": "99ce0b6f63182da978259cc1f12422e6e6422151829fbf7a5ae46d1d8c459888",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/device/verification.json",
+      "bytes": 491,
+      "sha256": "78d6c8c3b24b427eeceb78b91f68acacba6d796d981e402b22cf9648f2223e17",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "assets/packs/budget.json",
+      "bytes": 3177,
+      "sha256": "e44c55ed4c222bfcb26f9a29ec6977cf9a9263aa0d2667f9dc6617e3f1492168",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/catalog.json",
+      "bytes": 1027,
+      "sha256": "cb380fea7c010bb71ab6d63361c13efcee47cf7c823e198cb93c063093737acb",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "assets/packs/ember-v1.json",
+      "bytes": 36451,
+      "sha256": "8a60822cbbb0fab31878a33a9ff0b4b7d2e40467971aff950fb9a16eb7a35c78",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/creature-animation.gif",
+      "bytes": 429967,
+      "sha256": "9212459a122cf2f92e15ecbd4dd91197c6f959cdf795abc1ea4ee046a76e6d42",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/creature-roster.png",
+      "bytes": 30503,
+      "sha256": "d5659c4eed8f2fce75d07d0645a708316caf67c08d5e3f85c9a9f6d6c12e1c96",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/ember-v1-contact.png",
+      "bytes": 22017,
+      "sha256": "d396b5328949de5dc9b4d8eab071ff6cbf019343cc138c4a5a62dc4d8bf2d2f3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/ember-v1-frames.png",
+      "bytes": 18767,
+      "sha256": "792c09ccb1559f740ba6efdec49406da510da3208ee18be3bcc0b7eec8dee0ee",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/interface-contact.png",
+      "bytes": 10312,
+      "sha256": "02db61c64115a0b43811ea64ad7157352e7d40cbdb237d95028e24b226970d77",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/starter-v2-contact.png",
+      "bytes": 26820,
+      "sha256": "4d7f048092c4022d8d11e4a14139b6fd90995c524ce302cb70e20f84daa8def5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/starter-v2-frames.png",
+      "bytes": 23675,
+      "sha256": "2ef185d47de62cbd120f9852f9714461cc823841efab5e001c546ce0538ae547",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/tide-v1-contact.png",
+      "bytes": 22534,
+      "sha256": "ff7a6d5531bbf2e31e3def77ca06c344b227b022403472cac05247637a8af15d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/previews/tide-v1-frames.png",
+      "bytes": 19246,
+      "sha256": "09e9271864372bbf66380a36d10ccf57271b4b17eca07c906ee1d22f0675890b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/starter-v2.json",
+      "bytes": 61485,
+      "sha256": "d51c43149672b7b6bc136d19327a3c80cc9836ac72009f58eb19e7d23ab11a1f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/packs/tide-v1.json",
+      "bytes": 36433,
+      "sha256": "2b83823286b7c895dd50174d3e8c7f1f8092476ea309f6eace59ab4ba104792f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/source/ember.py",
+      "bytes": 11997,
+      "sha256": "b5767f046b7bf76b4947af12c22dafec4cdb509607c292b0c7e697ff8d9639f5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/source/forest.py",
+      "bytes": 6373,
+      "sha256": "b201b196e93da830d4f1aab517514f2c8f0790e96c4f81247d82ad07e5e2fd68",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/source/interface.py",
+      "bytes": 4724,
+      "sha256": "5d1bef107305ac4b0416d65e1ed4843ebc3bd3643d9155d24664b1849af80f4b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/source/pixel.py",
+      "bytes": 3500,
+      "sha256": "15b629628ebae191c3b0c6141bdd434d7106be537894f58b33de8019bc3b4f84",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/source/tide.py",
+      "bytes": 11594,
+      "sha256": "2a04d3add47e81e8ea679a06ea18e05f9313727fb2d609c2f807e69f24c5516e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "assets/starter-v1.json",
+      "bytes": 6953,
+      "sha256": "5ffb75c5917c4b265e080c81bc71af64b4efb7f4afdeb0881aab7e220a1e683c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/battle_skill_bindings_generated.inc",
+      "bytes": 1361,
+      "sha256": "cc150e7b90c0b6d5e5044450a20d3322fc245e4f9f10867b0d8d177c16d9634a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/battle_trace.cpp",
+      "bytes": 8441,
+      "sha256": "dff947d2f135cd70b8d326f6e63749e6632a073dcecebfc078c112f9be16ca14",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/battle_trace.hpp",
+      "bytes": 1855,
+      "sha256": "422abbc3a58c85e278c0959317dee50e7b97394538d50297ada6e3718fcb9d02",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/cli.cpp",
+      "bytes": 37107,
+      "sha256": "6e720637c5b030eb8e1719798d35a6f5da06a201004b58cc38de87c6efe21512",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/combat.cpp",
+      "bytes": 20538,
+      "sha256": "f3504aacb5e7198717f13eaaba89266d9d470ac07fa558418ce1d20ee9031ad9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/combat.hpp",
+      "bytes": 4145,
+      "sha256": "44f1dbfcb8f4ab4d3891515c2def6180ade18f504d8c78170ea0be757611474b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/encounter_rarity_generated.inc",
+      "bytes": 10642,
+      "sha256": "b1e48e7a562f464d30b1a17cd3a536ea53f43a6c6c5e2940263bd4d3e1125555",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/encounters.cpp",
+      "bytes": 3443,
+      "sha256": "752f6fb46ae7b11c76ee6a93757240f9621798904acc4008eaf3b51f5bf8e94d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/encounters.hpp",
+      "bytes": 884,
+      "sha256": "da38b78a4d2b4201e5ca97ed1f556618a6dc0cd669fc8608ace5b99a8150c4c1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/forms.cpp",
+      "bytes": 19944,
+      "sha256": "baae04c225922a964029ebfdf14da62738257e60b73ff90f654c3b75423fb0ba",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/forms.hpp",
+      "bytes": 4041,
+      "sha256": "1696793d80cde0b42faebceb9e22fb8a85fa18fdb6d1f3bfde2351eb367f31a7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/game.cpp",
+      "bytes": 83660,
+      "sha256": "cee6b8f21f0da43c8aa36d8b8288bd65f55df1442149ca251f92425a21fb9d84",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/game.hpp",
+      "bytes": 11257,
+      "sha256": "01cad2ce584d3eaec1bf6bced10c49c615c3cf09bcf4862896dcc73926e5e059",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_battle_skill_bindings_v8.inc",
+      "bytes": 1431,
+      "sha256": "9f844246bb26222be4bedc504a179a2ad9992336187f5320a8f742524b707dbd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_battle_skill_bindings_v9.inc",
+      "bytes": 1431,
+      "sha256": "9210af368a3e0038d585c2bf8d4751d1296d4d3ea92c37635ba91cea75d41723",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v3.cpp",
+      "bytes": 10008,
+      "sha256": "d7280128dcc6932537e8e421d0dbde5be7a02bb237c23b3c18abf0c348ab0202",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v3.hpp",
+      "bytes": 2280,
+      "sha256": "529de13dee7f86b18f15e5df75b49bce8b28c8fd3afc3f0ff24c76f91d727c95",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v5.cpp",
+      "bytes": 14322,
+      "sha256": "9c1c55040eeab89b10406901126e908a32f1541cb22367ec3e74a17f074b3015",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v5.hpp",
+      "bytes": 3171,
+      "sha256": "2759326f7ccdd0c70d64dd9342031022023266f4a39ce12b5e8d6e14217d54db",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v6.cpp",
+      "bytes": 18338,
+      "sha256": "4f21a5d6981061ab74d68f69402f3aeeef43ca1cee624043df625ceba279811f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v6.hpp",
+      "bytes": 3449,
+      "sha256": "56221636e394de78e94ee3a9c5232b91a6606c6783a7d7467ebc815b07bb37d5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v7.cpp",
+      "bytes": 18310,
+      "sha256": "fdef1db6793ee031c8fc9de21cc54b1f44de0805484d93612d50fde3088178a9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v7.hpp",
+      "bytes": 3421,
+      "sha256": "5b6c2d18c2a16879e9321a643569a304d0143986779224266bdc9aad014c77b3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v8.cpp",
+      "bytes": 18872,
+      "sha256": "48bf52a9769f2ce0de37696eaa5a0c223dac25dc7dd3b6c207596875f16c3b88",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v8.hpp",
+      "bytes": 3619,
+      "sha256": "dad2ced421eb73b91240c5aa0e9b1adae557f0b423a77b9059cb257258c893f7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v9.cpp",
+      "bytes": 18872,
+      "sha256": "595ec9d18c40fb8c390e2475afcdd0df34bf0a3896bd269ac76c6fd00033aa71",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_combat_v9.hpp",
+      "bytes": 3619,
+      "sha256": "9a2c19a22306f71579eb395b747311be8160f310445e91a774c0fcbf3b1988d3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v5.cpp",
+      "bytes": 18089,
+      "sha256": "1fb81525eb126b545e1155f90876ba97d4e1e880473af75f12f628a0be24202a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v5.hpp",
+      "bytes": 3283,
+      "sha256": "1ac526ef115d2d6636c906b6ef35c2eae81cdef63f9f2e7604083b1856fa5310",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v6.cpp",
+      "bytes": 19981,
+      "sha256": "d85114024cd2653a99b8ba7c059e78543105034d9bac4bdeda28e105861c5d5c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v6.hpp",
+      "bytes": 3928,
+      "sha256": "edb5de407800a8dc166925c4622d0d4865aad49800e14a794b8b4f793cf7fd07",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v7.cpp",
+      "bytes": 19953,
+      "sha256": "a4a8a13bf82bcaddd2cae169032a33b05143ddd226da4e850bf3097e149730c1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v7.hpp",
+      "bytes": 3900,
+      "sha256": "ff4a92ec01e15856b040ea57e3280139027f207488aaa3006385a6ec67d45932",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v8.cpp",
+      "bytes": 19952,
+      "sha256": "d12fcf3ad4a3caec4b543db484111f211dc8452ca4d41485686faa3bae9659cc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v8.hpp",
+      "bytes": 3899,
+      "sha256": "f8920f698763102f7834c0aa466db3603c3adccba41c40f887a4429e6e07b6c2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v9.cpp",
+      "bytes": 19952,
+      "sha256": "9aab4b4bb972dfac51475a0ed13fe53a0aad8b46315e0c3451aa4bcc60ec2f9f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_forms_v9.hpp",
+      "bytes": 3899,
+      "sha256": "7af8052b3dd1d25d7e0dbd5d2769c16cb604a8b02f39565a32178f1cdb27781a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v1.cpp",
+      "bytes": 15007,
+      "sha256": "586e6543a93bd66a317e90758c802a1160d77b6f70c385cfa449fcd8d01ef60f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v1.hpp",
+      "bytes": 3010,
+      "sha256": "c77345738c6137b0bc60647a03693d2c0f19f43820ef072671bb4c4c9a8a039e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v10.cpp",
+      "bytes": 64127,
+      "sha256": "72f49abe24c66ffd40037dbc6c849239892f07af45f935494ab0f835684bf501",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v10.hpp",
+      "bytes": 7711,
+      "sha256": "08345ba822c957a4a56f6bc2c33467c4fb059a4f90cedf898b632373a01f3641",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v11.cpp",
+      "bytes": 69679,
+      "sha256": "037269ed394dd5a6ac81e7dfd4640dfb015902a9f483d535d90731df6cebf816",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v11.hpp",
+      "bytes": 9328,
+      "sha256": "48fb35f324c21f824e9d842b273a6a378ac75cbedf55f11b26e8f431a8eac85c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v12.cpp",
+      "bytes": 81890,
+      "sha256": "b9122c18b0bb0c06885aab52ec15b67c5a0190b665dc90fd192a17c9e926b8a1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v12.hpp",
+      "bytes": 10978,
+      "sha256": "f099626a3123d40a5783aa6d6e6cf6e2ae3cdda286722a84b2b6647063625aa9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v2.cpp",
+      "bytes": 23649,
+      "sha256": "bdaf32b8613ba6d905940cf536693ccbe43191664c8ab6a899523f588be1c453",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v2.hpp",
+      "bytes": 3940,
+      "sha256": "6edaf2b4a17cdb4366eb55b0802fabe73ddc01981b3efc46e653e9d27dfa8141",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v3.cpp",
+      "bytes": 37345,
+      "sha256": "05982a1a93f952de2e91f61e6ca1919c1c25cead3d820a693f37ef3374e5c3b6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v3.hpp",
+      "bytes": 5225,
+      "sha256": "04f05fe3e0b87ee517ed97d67df265e2878ba2ee9554ee6e6adaa27e3d8119cc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v4.cpp",
+      "bytes": 46552,
+      "sha256": "ea2e1ae4e7a6a87da60baba57b391892d7c99cb9f1dde95ffed0fe68c97ae40b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v4.hpp",
+      "bytes": 5701,
+      "sha256": "73fa8a0cf283617147b6087f7ad1db579b8abe687d12d4e17dbbfae46d957958",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v5.cpp",
+      "bytes": 56501,
+      "sha256": "ba2da1cf90544ec7283f7e848156a8459cb71d7b72236378f78e6466f7660edb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v5.hpp",
+      "bytes": 6545,
+      "sha256": "f821d8374b815bd959952b6a93a1cd669b15f7f36b2b08c548734808f7e62401",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v6.cpp",
+      "bytes": 57148,
+      "sha256": "d986d278679b5dd50871bcfe89f3cacc6780d91bdbd4f73b6d1d148678cb27b8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v6.hpp",
+      "bytes": 6659,
+      "sha256": "1d3a572706e4abe1798059b5fc2c740666d4d4355d75057f7aeb38fcb4683ea8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v7.cpp",
+      "bytes": 57574,
+      "sha256": "e607986adc748d6574b6b80720a2f27c60439e60917e33c8b09fd61e1da9c49a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v7.hpp",
+      "bytes": 6621,
+      "sha256": "11dedcc06e84d559df0f18b018a89dc76c78014702dde5cb5b3d37aa46e93cb2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v8.cpp",
+      "bytes": 59662,
+      "sha256": "db6fc73b90e8646c568eda9234284f1b79b8df6ec4af1fb879ed7fcde5b801db",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v8.hpp",
+      "bytes": 6753,
+      "sha256": "d4772f219640b347b68abc11923781df49710604a0b5d7af6ee430f6cabffc06",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v9.cpp",
+      "bytes": 62876,
+      "sha256": "bff9e9be98a18ece625da36fc60e510cc042f3795b00f0d8dbd2a349a53d2199",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_v9.hpp",
+      "bytes": 6753,
+      "sha256": "d23efb3277bdf63389fd6928ca590bdb8b944dbfb350a4ce2ca8928521655998",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_catalog_v5.inc",
+      "bytes": 11963,
+      "sha256": "7e521bb5114c7e2ead51986e86eb6121d437b2822e908dc12cc25f98505e6596",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_catalog_v6.inc",
+      "bytes": 12062,
+      "sha256": "b9589a1d30f51f0c8271105fcd07cb754a299488309b8c9101b16d35579e41be",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_catalog_v7.inc",
+      "bytes": 11963,
+      "sha256": "89d4322c148a724bc2e620501c32546921b680eadbf3571220e02392b18e8020",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_catalog_v8.inc",
+      "bytes": 12033,
+      "sha256": "23db66db9541685721f8cfaa2f30cb4e210e3f8c97d45c7e80bd378088adf9f0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_catalog_v9.inc",
+      "bytes": 12033,
+      "sha256": "a33a071b1e04836fc9922e2dd4d1d7983fac0af890426ff28d3d148807ba6014",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_evolutions_v6.inc",
+      "bytes": 22989,
+      "sha256": "8eafdeec0bc4d252c4a92734c463c9c5359fa186fd7348e3c7c2be097e685608",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_evolutions_v7.inc",
+      "bytes": 21951,
+      "sha256": "e65e106ba1ee6707118df50daf6bf46ec2abd2b122f28a675fcd410f6bee4af3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_evolutions_v8.inc",
+      "bytes": 21472,
+      "sha256": "e7d7707109cd62b816890002c032ee391b44ac0b539fa5798bce3ffb9452fa0d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_evolutions_v9.inc",
+      "bytes": 21472,
+      "sha256": "f3ac20046b555e8d1c89a7a0a5ffbbea9bfb9809a26714b5836d1ca10c279577",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_forms_v5.inc",
+      "bytes": 38033,
+      "sha256": "73d3f507c358debd4060ab5b403a27db0f459749bbc3677e4586f45b71efb40c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_forms_v6.inc",
+      "bytes": 38132,
+      "sha256": "04bc58f2f19fcd7947b806761e7ad3d140fbbcac4a66eff53916e879463d1961",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_forms_v7.inc",
+      "bytes": 38033,
+      "sha256": "73d3f507c358debd4060ab5b403a27db0f459749bbc3677e4586f45b71efb40c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_forms_v8.inc",
+      "bytes": 38103,
+      "sha256": "e9290dc13aa41df1a7591d7eda100a9e463de995d9feb7de7e572fbb965f0578",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/legacy_world_ds_forms_v9.inc",
+      "bytes": 38103,
+      "sha256": "01b939f32c20df129f2702a9651d05dc838abe91af5487d1ed6738f6b6a5d018",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/nearby_match.cpp",
+      "bytes": 7214,
+      "sha256": "5dec3609a77adbc4aa9bcc3af952a4d7674ffd2cb166a6203765c7dc471e8644",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/nearby_match.hpp",
+      "bytes": 1865,
+      "sha256": "68f7e8e66bae6ea0d7e2ef0001d93dc46fac4f52e500d14868ece3e063e2dd8b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/practice_auto_policy.hpp",
+      "bytes": 2832,
+      "sha256": "c693a8e89c0fde2fbef3652831407d2f9bdaa978472a0bf1fa93b63675f5ae02",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/practice_battle.cpp",
+      "bytes": 29483,
+      "sha256": "2af3cc0982293bd6bdea8e113303916c9ac241f03af09e1ac41ea2f8512baf7a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/practice_battle.hpp",
+      "bytes": 4753,
+      "sha256": "918fca1884718122c1da7365d20ec94bd3274734e15b4718229588f8dbc89b0e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/practice_cli.cpp",
+      "bytes": 8541,
+      "sha256": "c5d50ff1d47b6666a37a3f820a97ed8535879baf0fc875d45e1377b45df72056",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/world_ds_catalog_generated.inc",
+      "bytes": 11963,
+      "sha256": "2f0c20419c0f0c8a6834824fa02811b5251541b9fc6825b08dad770ccf62aa26",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/world_ds_evolutions_generated.inc",
+      "bytes": 21402,
+      "sha256": "e1b20e2167b3099a2a7c439c33d47713e26e17173646cea847086466a13cc8b0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "core/world_ds_forms_generated.inc",
+      "bytes": 38033,
+      "sha256": "73d3f507c358debd4060ab5b403a27db0f459749bbc3677e4586f45b71efb40c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "data/encounter-rarity.json",
+      "bytes": 32860,
+      "sha256": "1e93fab508c22292c0f63d16562c0ddbc626584c594839fb56602b0cb0c5fd5d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "data/world-ds-catalog.json",
+      "bytes": 1124747,
+      "sha256": "82aaf88a0de92d19fc22bdbbb1a168e2f314e15f691ba2a214a7acbfd095a001",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "data/world-ds-evolutions.json",
+      "bytes": 142647,
+      "sha256": "8304e14dabb28d8881956bded65c283b1c63b731839b6e3bc91f851104c51f03",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "data/world-ds-family-identities.json",
+      "bytes": 32942,
+      "sha256": "9f143c856575dc66c55bcbd36b7abac663de63ff9ff1f5fc583b0fc64bd7049d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "data/world-ds-ids.json",
+      "bytes": 72716,
+      "sha256": "1787eddd5d88ec0e26c4465d14848df624c1a44d357daad5522ebf3733e9c336",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "data/world-ds-runtime.json",
+      "bytes": 982240,
+      "sha256": "c121a72b9a18372f3be9ac05c2a45b23272ce7bc35520cc89c923ce8bc0bcbad",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "data/world-ds-source-reviews.json",
+      "bytes": 1790,
+      "sha256": "fab45fb7b1618900126c7bb9eacb9658b9ce8e4b0dc847ab56eba994c961981e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "demos/battle/README.md",
+      "bytes": 2313,
+      "sha256": "da8d7b658b2114357b2aabab4883620dde7f2c998eb39f2e0fcee08b13154ae4",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "demos/battle/VALIDATION.json",
+      "bytes": 1505,
+      "sha256": "327ed5ef9539fbe987ed32f2aa97cc7890638028150bf6adafda71e3cd69bc66",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "demos/battle/battle-events.json",
+      "bytes": 10162,
+      "sha256": "0bed811bd1066029d4315aae2620ea15eb2387fad7e26bcfcacbaa96feaa6af4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "demos/battle/render_battle.py",
+      "bytes": 16778,
+      "sha256": "2ecfb7c3e1839d434bdc9028d48b1dc8fcd35a90f681cdae2c2dc980394b5435",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 20667,
+      "sha256": "1086c4d03dc93478eaf94bf136b43919b10f198ccfd76c041a4d02a5509a1ad4",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/ASSET_ART.md",
+      "bytes": 7347,
+      "sha256": "0528b9dd2a2460aa2bb23e3ebd9fbe0c428d9453b06479aeb1ac199f1b08f657",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/ASSET_CACHE.md",
+      "bytes": 11902,
+      "sha256": "74201f38a8c271a82d278c39495fe154ccf6b9f5f362eb3d3100c010874ec07c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/ASSET_DELIVERY_PLAN.md",
+      "bytes": 17587,
+      "sha256": "5173cc5cb0009164c3b045fbb41a8a768cca0d3f6699702e0532c2abfa3cf77f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/AUDIO.md",
+      "bytes": 6362,
+      "sha256": "2213cd4a6dce6108597065146f352702498ceafb80b2156b5e6862a0dd671321",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/AUDIO_CUES.md",
+      "bytes": 8568,
+      "sha256": "ca915cae20c7dd70db47828a4aa97f88b4b3f8fa418b187b0c78dd4fdd155db3",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/BACKLOG.md",
+      "bytes": 8047,
+      "sha256": "5d9d51acb6f3a90a566ef81844dc34bdb8a9508377ad8a4c6db03fcaf3bd1a51",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/BALANCE.md",
+      "bytes": 29444,
+      "sha256": "f989f89ec76acc094d2c87f12781f4ed0420a7250c4f55413f6ae40de3d70cc1",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/BATTLE_ART_RELEASE.md",
+      "bytes": 6012,
+      "sha256": "25fe72584816541a080c9b0a035c17535ffda4cc323732adbc55586793ad64f0",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/BATTLE_MODES.md",
+      "bytes": 17621,
+      "sha256": "11d285be8dc1ce686d07e67b83b716bcf1924ec40294cdd5719fadb5c0ef83ed",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/BATTLE_STATS.md",
+      "bytes": 15376,
+      "sha256": "c43d79fed7dde8857b4c68ac7119eb4b919893ab4e3da14a275f56446792574d",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/CARE_CAPTURE_RELEASE.md",
+      "bytes": 13821,
+      "sha256": "5f539dd631eee02fd2f0206122a200fe62e4a070149cdf4c7b91ed60c5097d03",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/CARE_CAPTURE_RULES12.md",
+      "bytes": 8338,
+      "sha256": "c020ac09c5a2c3c9bb2fe99500b64d058f6aec0fa9672dee84e90aed202e595c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/COLLECTION_RULES.md",
+      "bytes": 11782,
+      "sha256": "4226ba5d11aa91774f8095c03796eb90681731748856778b5dce293b961aa6fe",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/DEVICE_NAVIGATION.md",
+      "bytes": 11831,
+      "sha256": "7a5e03263caaf0aab6cbbef8a118a4ca97ed1ccf0a4974bd44f29ed75aab2ed7",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/DEVICE_READINESS.md",
+      "bytes": 11498,
+      "sha256": "9247ac20da328c2055cf9e9d6dfb95039325e1e23c3ea7da696fb7abc6c56a01",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/DEVICE_SETUP.md",
+      "bytes": 8389,
+      "sha256": "19441c8b22bbbfa2b9ca0063782ddd4be2885cb1069968da9393285460fff3d4",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/DIGIGAME_IMPORT.md",
+      "bytes": 8422,
+      "sha256": "59e9a68212fe4469340b9d875ce0bed852da62f6af2f2cd8b88968aab99deda6",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/DISPLAY_ORIENTATION.md",
+      "bytes": 3977,
+      "sha256": "771b0280e38419426ec1de54de959971cdcb5b3d1c643248e45148f2d09f79f6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/ESP_BUILD.md",
+      "bytes": 15485,
+      "sha256": "0a2143dcb7f06f2389e563f674e93062f03ecc510ec2da979b87910260ebe4f6",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/ESP_PRACTICE.md",
+      "bytes": 6218,
+      "sha256": "fddad0503f2980395732c2c29be21b7fda128f5c0fc730691e8027d058ccad4d",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/FEATURE_ROSTER.md",
+      "bytes": 13500,
+      "sha256": "245855f78c6e10678565ff590cf9ef683715a95f6edc816759b142dae54eaacf",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/FINAL_TUNING.md",
+      "bytes": 7292,
+      "sha256": "70906e1f294cb1909e646f081c6f447b70a330246b7cefdaec7c847ddc36a747",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/FIRMWARE.md",
+      "bytes": 20073,
+      "sha256": "7ef91a5aed5c4d8835c8db6536b056993dc04efa9d64f4b83f100cfbd04c17e4",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/FIRST_USE_CHECKLIST.md",
+      "bytes": 5315,
+      "sha256": "bc43f484888e79ddf9d7ba3c9a088988b754774c240f955cd1b72276a0ea524c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/FLICK_CAPTURE_CONTRACT.md",
+      "bytes": 6829,
+      "sha256": "253f94e6a646306ccaca20c92b52b9fd3ee7eaa5d26f84d162193f809c47541c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/GAMEPLAY_REVIEW.md",
+      "bytes": 12309,
+      "sha256": "d88e0df9b4999bfef944fffa2e10c4c8dd29aa97a3ddb960b6ae672d3d10ff5e",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/GARAGE_ASSETS.md",
+      "bytes": 8175,
+      "sha256": "a4c7a6b5835700e10aa219310ee7b838551d601a29d22629f996b5fe41b75923",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/HANDHELD_FOUNDATION.md",
+      "bytes": 9846,
+      "sha256": "6007e23bdb0c51c4982a3c0a895dc8cf3701c03b92f29a475d5d5896acd31af5",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/HARDWARE.md",
+      "bytes": 9414,
+      "sha256": "853cbf3d31f435323bfaf39838e33bc2742f32ad8073626990f3eac8a3d3a4d3",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/HARDWARE_CONNECTORS.md",
+      "bytes": 4371,
+      "sha256": "69ed2fdcb75d50dc67fa0f83908e776aea59a06a5bfdd7534e19739043d1cf93",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/HOME_CAROUSEL.md",
+      "bytes": 5427,
+      "sha256": "4fc9c069920168fc9f19a9acf5edfdc930f4cff52fe58fe3fc86f0495a9ea56a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "bytes": 33231,
+      "sha256": "b3ba789379abb97cd2b9e336cf856bda17dbc4ef088d09c9e9b17b269b6bb816",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/MOTION_AND_SOUND.md",
+      "bytes": 7775,
+      "sha256": "35b1e73de9962dd85ca9311d21b473a94551bdd8934fb4eda53298d9c62e01ff",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/NEARBY_PROTOCOL.md",
+      "bytes": 8562,
+      "sha256": "6f2ee8f0e48022113e2aa2d1e96d2c7a49f075111104b16ae03e098497d176d3",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/NFC_OPTIONAL.md",
+      "bytes": 2248,
+      "sha256": "4eafe573e80cc6cb30567ff0029fda1fc4aa4133c7b07095c0cb9e1c70bd00f7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/ONBOARDING.md",
+      "bytes": 17207,
+      "sha256": "fc7deb94e48cf55552d16fd60539e4337c2bbf1753b132c73832fac4658fa3de",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/PARK_HARDWARE.md",
+      "bytes": 23618,
+      "sha256": "b414a3c9709fcb51d375de2ee1a98651be9c79ce5928a7a2f53ac6d59a12a7fc",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/PARK_PLAYTEST.md",
+      "bytes": 11833,
+      "sha256": "351683ebdef8070e83fc7bb79e54cdf97ec07e63ff9c3d2aa027f0dc2659922d",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/PARTNER_ROSTER.md",
+      "bytes": 4270,
+      "sha256": "386089bb7296ebcc6dd0a805ce7b98dbe5d531c9c75e03e34be87264056ba165",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/PERSONAL_ART_IMPORT.md",
+      "bytes": 9023,
+      "sha256": "e38260630eece122c8bbdce8a13d31818e356f5bc1e78205fab103359ef8e8a9",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/PLAYTEST_GUIDE.md",
+      "bytes": 12760,
+      "sha256": "5d0478d7f864a400fa43860551a2527856abf889836ca5eae09ed211139a43c0",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/POWER_CONTROL.md",
+      "bytes": 8905,
+      "sha256": "ebd5ffe3dbb04ce2c6b9fb994597fd1330b42f10c16e6d9f0af59c3649bfc4f9",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/PRACTICE_BATTLE.md",
+      "bytes": 5660,
+      "sha256": "096c7ed0e0d84636a9cd7281e4ad11d318a54ac46762a5d962eb055fdf5c06f4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/SD_ASSETS.md",
+      "bytes": 4372,
+      "sha256": "b943e54fd0dca2473ee927be6359d139120662d973f45ca87ee1d360cdbb82a7",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/STARTER_OFFERS.md",
+      "bytes": 3448,
+      "sha256": "882d7e6eaeaea5e26a41a11d5708518b422a26ffe073cb178936cdecf8137802",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/TOMORROW_READINESS.md",
+      "bytes": 15800,
+      "sha256": "5b5b79e13325d3a687875f6740052274cf015bb3e259e2e8df24b5bc49bc310f",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/TOUCH_READINESS.md",
+      "bytes": 16316,
+      "sha256": "2ee89d3f2fa2afd8d20e2bdd6cdc3eb738af5ded4971983a5e98ba7e1189359e",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/TWO_DEVICE_PREPARATION.md",
+      "bytes": 11072,
+      "sha256": "be46ff33e648188c2480d6d6d70d3495f0e7e3652bc046aaafaa8cce01c46f8f",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/USB_BOOT_RELIABILITY.md",
+      "bytes": 6201,
+      "sha256": "dde1e65d983770be2c7afebd4a9e569d8107e0cba5dd29813c2bb16250ee1603",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/USB_SD_TRANSFER.md",
+      "bytes": 16133,
+      "sha256": "a5280fc9fd82e4a778852edb034f88caf075df7e0cc412339c493e29bb47506d",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/VERIFICATION.md",
+      "bytes": 46895,
+      "sha256": "2f312340588a3daa0fa3f2b21fcd7d62fca9363efc69a18963863f207859b1e9",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/WALKING_NEARBY_RELEASE.md",
+      "bytes": 15690,
+      "sha256": "bda1968d2909dbe3157c4b2c71c793ac63fc243ae3c3e85f326b0f2336328ac3",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/WORLD_DS_ROSTER.md",
+      "bytes": 17095,
+      "sha256": "5ce667e5842521423b1b5f986e37d6300b646dfa7f73be2fe5de72748e34e7d0",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/research/battle-skill-bindings.json",
+      "bytes": 57426,
+      "sha256": "bcc940f54f10f08da3c3f7b186712a1e9e255ac2a8764cfb9c46557135dc6f63",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-asset-inventory.json",
+      "bytes": 4273176,
+      "sha256": "99d42c9dab2f850ae750d4be8b840653d6e8c5ac1018d4e20763320d3f4f9d10",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-database-review.json",
+      "bytes": 24746,
+      "sha256": "8363409bd2853983081fc592a7a7e32c4ae726eb2f80d1eb2e3df95c3f5aa7e1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-evolution-conditions-review.json",
+      "bytes": 54301,
+      "sha256": "e2abd53bd2ff53e31e3c6c60f0a8aa418587f3ff5945bcdd9231ebe72f01b37b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-evolution-review.json",
+      "bytes": 205909,
+      "sha256": "624fef376a68dc9080c3b0696e757d5cb40048ecbbe1591daaf0892a5da6192d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-gameplay-evolutions.json",
+      "bytes": 173818,
+      "sha256": "9ac33f76dce8067b70ebaf75a3cbcf3696e8b0c5cbd568997a7b0bdbb17579c4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-identity-candidates.json",
+      "bytes": 1103424,
+      "sha256": "9f38db64a6ae03123d93b67c38d7de5ae760903ac6deea4fd61b13ef65e58652",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-import-review.json",
+      "bytes": 47877,
+      "sha256": "a596e1bccc63e582d603bb9f9c149cd9270cd25aca073703f59b92e968ce1502",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/digigame-source-review.json",
+      "bytes": 35846,
+      "sha256": "7c07a646d7d8b1c8289fbb029bdee1616817ed404fef5c7f099cce84311a33b8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/preserved-forms.json",
+      "bytes": 187022,
+      "sha256": "fd144581100fa56afa98de0325990537e4800ee75d91e4e62f0e14329bec369c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-authored-early.json",
+      "bytes": 61721,
+      "sha256": "ec3f29826ee51eb2cffc0b09545e8253b16628ae3df9435685c130deb9b80304",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-authored-late.json",
+      "bytes": 75772,
+      "sha256": "9961ed8b202e549a6cf1cca3cbe553eb13dc8794787bc8b7bc31a0dc824b9a20",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-balance-design.md",
+      "bytes": 17631,
+      "sha256": "3ceefde4303e6c97b974db29dc9ed02038878f4b1625657b9a3418cd1fb7cc87",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/research/world-ds-content-audit.md",
+      "bytes": 50332,
+      "sha256": "3e19f2f49f791a3cd5da77990aeb21095166f61d739ee206cb59d27186b9c5df",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "docs/research/world-ds-evolution-proposals-early.json",
+      "bytes": 122412,
+      "sha256": "8645c4b119b2b5954f911a0124ce09324197121cc1862451093b08836e7daa94",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-evolution-proposals-late.json",
+      "bytes": 111628,
+      "sha256": "c85caad7d65547ed450dc21974039c72fd1dc1443ec0d44febdf00a3ca907c34",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "bytes": 58043,
+      "sha256": "0bd35b8f7b8e7b03f69e82841f5af820130385729c42ae46d537ce2de857fdfd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-identity-audit.json",
+      "bytes": 182091,
+      "sha256": "ee76821d75b394a697ac97c3f4e67bb6206c39d0c3a751b4c316df567245457f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-identity-audit.md",
+      "bytes": 7203,
+      "sha256": "d2e906a87b4435904bf9b49c9f73433b5e1b35433778618347652b055a970e9f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-inventory.json",
+      "bytes": 201965,
+      "sha256": "6bbc86a4d71e2913454398a03a629ec2e0644f92b238f6d845f5650c34318358",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-official-early.json",
+      "bytes": 109999,
+      "sha256": "d018d99e52ba08a28f0ad4ace2a2aa539dc2a7477fc2f8335772f1f3a97a4712",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-official-late.json",
+      "bytes": 209062,
+      "sha256": "613e5999d32e7b3f381a8462fae1bdc22042f4c52201d3d7641b09794b575553",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-role-identity-review.json",
+      "bytes": 793936,
+      "sha256": "f2d2783fe1ea439a0809ea0853468e0b89dc476dc3dfbe92fa6c15672340a335",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "docs/research/world-ds-role-identity-review.md",
+      "bytes": 8534,
+      "sha256": "a160db183e2885c59f8cf1a76c690a33d454ed1461830253aae89b2cdcf8ce72",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "firmware/CMakeLists.txt",
+      "bytes": 470,
+      "sha256": "c3a580cdd6981f53b8f91e2c6768a12beac50f1af53f6946168f5812bc4bfaf8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/CMakeLists.txt",
+      "bytes": 507,
+      "sha256": "174e39aa06aee26c7f1980fb57aa52aea60ca394ee5acf11510b5c72d1755825",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/Kconfig",
+      "bytes": 753,
+      "sha256": "094d981bb3577a7d7b054dfac334a36e3dd3a435f7b5faafdcb202ffc8c5456d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/LICENSE.ESPRESSIF",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/README.digivice.md",
+      "bytes": 3185,
+      "sha256": "b5f12703b09347154bab075eea5a428821cdd34098d35e22aaa446c90e1267b0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/UPSTREAM.json",
+      "bytes": 2936,
+      "sha256": "f6266a4dee5ba7d15a404290268e9a3135fe0e8b140340867363436e078b5663",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/bounded-nack.patch",
+      "bytes": 1320,
+      "sha256": "0a0f8c756ed1dd3dd4e0108b3b07944315352ece6ab04433120bc1af7c211a81",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/i2c_common.c",
+      "bytes": 14754,
+      "sha256": "2dd38bdf169e5580125ebde7a48ad5b66a9c91ee7ecf616c761dba8810303cff",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/i2c_master.c",
+      "bytes": 63626,
+      "sha256": "839380639573f53dacf248873fe57f1d3eddfc1f5864bafd2d25263d43d1959c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/i2c_private.h",
+      "bytes": 11994,
+      "sha256": "04f01273d5f808622fc58eeb3ba8e60213ae8ccee2c75cca553baff380ac59d6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/i2c_slave.c",
+      "bytes": 18575,
+      "sha256": "aee3e571ca23fd14ab42ae4719e10f773599ca31049a59c59ab2e76d3706c3fe",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/include/driver/i2c_master.h",
+      "bytes": 16323,
+      "sha256": "a80d91cf7561ded20f43fc3a040f085037e29762ef1cf19ce01e21e3947716d5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/include/driver/i2c_slave.h",
+      "bytes": 8221,
+      "sha256": "1f3467a7c675ac3129e12010af685ea669750577b57d49e0c87553a581ca8e2a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/include/driver/i2c_types.h",
+      "bytes": 4413,
+      "sha256": "76afa4818a5fcdcb4f5964f9f1f937b4fe95f470a5da9adacd3b4f5e4da639e1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/esp_driver_i2c/linker.lf",
+      "bytes": 427,
+      "sha256": "d8826aada4458d0236bfab67caec76936a365c56fc1803f85b4d20f2b71183d9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/CMakeLists.txt",
+      "bytes": 996,
+      "sha256": "007c88dab43adaf0a23a83b898276ac4d046ba748dedbc4ac0f0048ab914a5e0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/Kconfig",
+      "bytes": 11321,
+      "sha256": "51e3d30541660707a3563184c0eb925a44576f6af3dba6aed3333f66fc972549",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/LICENSE.ESPRESSIF",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/README.digivice.md",
+      "bytes": 2988,
+      "sha256": "91fde597f4476ad74c3b23aafc9676e75f2e1da726003c2f90d0416e396242c7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/UPSTREAM.json",
+      "bytes": 3299,
+      "sha256": "78323781515532676249a483cde6e2137be1c699195a7c99ad75290ac83506d8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio.c",
+      "bytes": 3626,
+      "sha256": "09d15850894c7a845cb8000f241cabb6a07f95cc2efd12ede2e29ab584349c50",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio_impl.h",
+      "bytes": 2442,
+      "sha256": "b14ddbcedfe06e0668f8040eaec993c5ea076d71dbd30aaf53cd8485c93036bf",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio_rawflash.c",
+      "bytes": 4013,
+      "sha256": "b8c7f9ac84b1eb0cfb2195f0bbb17096d52b6cead64f498a0d82ba1ae90e3f87",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio_rawflash.h",
+      "bytes": 1118,
+      "sha256": "5a8a44bf20e83a4e8db8a2d7cfe05d8ad847bad33523d7b9392b443e6b1dcf01",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio_sdmmc.c",
+      "bytes": 3910,
+      "sha256": "262c549981883f3888b23b1d9e13b4f1af6c11a80e6ad7e43c9483937ad86295",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio_sdmmc.h",
+      "bytes": 937,
+      "sha256": "0cfdabcb8548dfb8e1f46ca6413e78a23b0f7cb3b676d6a97a659e8be10bdfd1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio_wl.c",
+      "bytes": 3306,
+      "sha256": "6f9466e5da84ee3f1d6d66db49896728cccb171536a2927ba5430879fce7fd28",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/diskio/diskio_wl.h",
+      "bytes": 1145,
+      "sha256": "1ccea0718ee9cfd0e045c11b03762b5376fb3b6502e2c97f69e4fda0ef409500",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/port/freertos/ffsystem.c",
+      "bytes": 6237,
+      "sha256": "17a29aa226ee74b0947eb5e5f471599e091a732d923a31800799fd6c85971c75",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/port/linux/ffsystem.c",
+      "bytes": 962,
+      "sha256": "4cde69e6e02c4664a1640c11d4cdf8efae2c3a1948653ebbf3aa1c35f0019a0b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/project_include.cmake",
+      "bytes": 4611,
+      "sha256": "f437952f7d7e5fb6a19c09548037bcc670b9b6838b24f47066d209dd037ac0df",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/sbom.yml",
+      "bytes": 2208,
+      "sha256": "327978f07428ad3f3d65cf7ba3c43d7a8859b5941003735dd72cdc5840a4418a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/00history.txt",
+      "bytes": 12822,
+      "sha256": "abfe51fe276cc1f5df984646d7248c3e1e4357bc0e76c9d998df8494122f3724",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/00readme.txt",
+      "bytes": 839,
+      "sha256": "2dbbb8c647699ee10b27f30e9ef46b6ee821c231db97b5298a6cc8d1cc5c829c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/diskio.c",
+      "bytes": 5057,
+      "sha256": "5b4273e37d96de7618a6d970b91f736f04722030fb5e31c375e6fc3db974ea4a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/diskio.h",
+      "bytes": 2633,
+      "sha256": "60beaaca712a9d5126f41362fa68ce7f30e26e115b310a20d79e5639b6fcc3b5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/ff.c",
+      "bytes": 252760,
+      "sha256": "197b6705c1395ee6bae0c1b1ad4a3a2ffaa50834ed112488e73b4a23c9317718",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/ff.h",
+      "bytes": 16261,
+      "sha256": "90d3efa38c24078651702dd5997ac022ddef127f336f25b9aac1eafcdbb660fc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/ffconf.h",
+      "bytes": 13697,
+      "sha256": "d78977f77e922860ce953ad90f68ba0639c4eae0ee9c65f21ff1f6e9ce05f4c5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/ffsystem.c",
+      "bytes": 5964,
+      "sha256": "68e6d533645c81e053ffc9fa6c293a0aa3162d6439151404866931c64f423dd3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/src/ffunicode.c",
+      "bytes": 1959402,
+      "sha256": "f2e03e97fccd9d7b0614b48ee02b7e49fb21c5196d3ff77ba5d8e4558a064d5d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/vfs/esp_vfs_fat.h",
+      "bytes": 21638,
+      "sha256": "e97cc946cd4662878370cbf275f86fd2522b98ff5b0e1a011c8832a06ee5f68e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/vfs/vfs_fat.c",
+      "bytes": 43145,
+      "sha256": "d9db182d7f7f1909487b16d4b40caf0d11df25a4b4aece20f5ee86bc4f0a9ed1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/vfs/vfs_fat_internal.h",
+      "bytes": 2081,
+      "sha256": "4f9b2be65bfe0a7ce6ef12fbff9caceac487ba3e28aaf387c9c49dbc7f244769",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/vfs/vfs_fat_sdmmc.c",
+      "bytes": 15652,
+      "sha256": "e109d9b9af47945e6e4b6ebcd8c706800f8431bbd6b746b20babc5e061cbea38",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/components/fatfs/vfs/vfs_fat_spiflash.c",
+      "bytes": 14893,
+      "sha256": "94a3960491b924e1ef871daf142842a06d1c73c2ec0c29c746a483a48547d258",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/config/sdkconfig.generic.defaults",
+      "bytes": 402,
+      "sha256": "fd265b1086525bbdaeaabf6f72a3bc7a98cbeb8b8242f1994d9a73ed3b1a7753",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/config/sdkconfig.waveshare-dev.defaults",
+      "bytes": 579,
+      "sha256": "3ca50d48e2e7e41e41f5d56a55f5ce5ac2b3dda7e2d272ad1a8e9e71f5f47ec7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/config/sdkconfig.waveshare.defaults",
+      "bytes": 1374,
+      "sha256": "8c620e109b2baa0f8e2741f1a12b7ae4557bb8f1ee8f15af80edb4c04ab14908",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/CMakeLists.txt",
+      "bytes": 2483,
+      "sha256": "9d1882ba1b9764b0c3cc85160f2be823a0ec5992678a7dd3b28f99b4b9f50545",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/Kconfig.projbuild",
+      "bytes": 5239,
+      "sha256": "b9d76cf1e9b0d1f545bc4b2ba54d852c5efa283db1d4bd7c6fdb15f3cb987a5a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/app_main.cpp",
+      "bytes": 12790,
+      "sha256": "7853fc440fb2cd43d46c511efecaedd9d275762199ef1c4ce5d18e8077d86208",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/asset_partition.cpp",
+      "bytes": 4350,
+      "sha256": "10b4b8d790cceb6d2286794ec491ca94c534f5deaf2cc837adfd920aff191053",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/asset_partition.hpp",
+      "bytes": 1166,
+      "sha256": "61066cdbbe5c579d3b5b96d372d686315ad3f15527740f0e298cae329f043b97",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/board_hal.cpp",
+      "bytes": 8912,
+      "sha256": "bd4615385f0d57837fd7a6c2a48e3fd80dff8d104489ffe0b2f625b521116316",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/board_hal.hpp",
+      "bytes": 2647,
+      "sha256": "b45bacd04427fb2677b2ddffc905ae678317055a5653b9cf022e4563a67c100f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/board_profiles.hpp",
+      "bytes": 4202,
+      "sha256": "3523f6f49e96bf24639a8d3f1d3e0d102ef7467ae7fbf2abdf4ddcb03d61de48",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_art.cpp",
+      "bytes": 11780,
+      "sha256": "3b367b61b60f2cd4c10aaf054a564533f060f762d5b9eb767f8a45561e8b7ee2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_art.hpp",
+      "bytes": 1556,
+      "sha256": "073e37a8df1a4ddee020abe81a7a8f1b9f6696e54bc7a6e141d6adfdcf465e24",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_assets_client.cpp",
+      "bytes": 28076,
+      "sha256": "14a91172c26734ff288f35d733ad867b7c5f2aa80b697e26131dca5bdad7bfdc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_assets_client.hpp",
+      "bytes": 4094,
+      "sha256": "f8dc581d6c5965f4ac99ae19b54a0b387e38066a2d4773d7e6b137e8f9dd2b5f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_audio.cpp",
+      "bytes": 6011,
+      "sha256": "16fe070234e28b6ab5e8d11aab56739f9147bc00d9197ec875059a5f29312e5e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_audio.hpp",
+      "bytes": 1664,
+      "sha256": "5782148779df91185cfbd885e9daaa803b5a7d9da1ed65e7b3ac3af7a15c4203",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_imu.cpp",
+      "bytes": 7614,
+      "sha256": "e66979fdfa13a6731b2c9f38fb7f29414ebca8315518ef0d4e709069ce7397ac",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_imu.hpp",
+      "bytes": 1989,
+      "sha256": "8440ed7c95e012b10690ee98f423f50b04fd7096bcf0daa1a23de2fcf1bcc451",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_setup.cpp",
+      "bytes": 3569,
+      "sha256": "7277b78e02701fcc7a7b3d7a6e57b97558ce1fc78b96d51b658a2b269e27b4ec",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/device_setup.hpp",
+      "bytes": 1067,
+      "sha256": "28a3ee078df8f3ab682251fb1fbec76eb43db0d6deb8541f19b7659ba23923bf",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/display_orientation.hpp",
+      "bytes": 4951,
+      "sha256": "7dca9e10065eec96e32fd7bf6eb76ee879b9de2aa473bfc597fc1272f73fcaa1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/display_touch.cpp",
+      "bytes": 18477,
+      "sha256": "0306e87e61e90627efca18c6d59a1ab2b7a5b73c53ef0462d3197d9aae9e9593",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/display_touch.hpp",
+      "bytes": 3111,
+      "sha256": "e245e1e55d72cddf971fde32f0260193dbe306317f527fd2f2e845b7f7ddb039",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/handheld_idle.cpp",
+      "bytes": 2943,
+      "sha256": "14714962e6c4c091afc57afe1cf978992879cbc300f59521651427e67785895b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/handheld_nearby.cpp",
+      "bytes": 7660,
+      "sha256": "7158c6bc8925ce7fa8301c101deeecc18807c76fb9e0e43fd4758e27791a959c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/handheld_runtime.cpp",
+      "bytes": 55242,
+      "sha256": "ef48af60828beec05f34de12fd3082ea20af80f8e3f52ded7631fb4bfadeb262",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/handheld_runtime.hpp",
+      "bytes": 8696,
+      "sha256": "257d0bfb9f2a57e4ae14bd92274191c0c7e2e6644584f413aec3e3459848c2e9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/handheld_ui.cpp",
+      "bytes": 18948,
+      "sha256": "c3a53bb7531433d1602e1edda9d8755c56f953971cc3903d8822a730e6e9c15b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/handheld_walking.cpp",
+      "bytes": 6946,
+      "sha256": "79e9585ec6c6d9ce35faf525cb8b3dcdd87fecd1c6c753c6ed8534cef5293caf",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/idle_settings.cpp",
+      "bytes": 1685,
+      "sha256": "5a1847c2dc21ce468a4dbd1c2d3b16891b4273c43160cb4643a385c0d4d6099e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/idle_settings.hpp",
+      "bytes": 779,
+      "sha256": "122dde0000f95c40b9f114a474515af8ddec37bf0e95e9385b6169f66713f3a1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/motion_adapter.cpp",
+      "bytes": 6499,
+      "sha256": "d8e1ff398fb4b84f8e389abe682405581aeb459ee9cac34155290e430bed5953",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/motion_adapter.hpp",
+      "bytes": 2269,
+      "sha256": "6b12f69949f6fc4bc88051a2ff10b2004983a5b2da8194e92906596a36292cdb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/nearby_radio.cpp",
+      "bytes": 12045,
+      "sha256": "5d0c41f43127273667935cf3a5e669481bd32af040153a83e1fd4e2e65f8b532",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/nearby_radio.hpp",
+      "bytes": 3837,
+      "sha256": "90c2e145b0db24fb9f98b33264cfead94fd3aeee26185a5c5b22811061bae4c5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/network_adapter.cpp",
+      "bytes": 28528,
+      "sha256": "87feedeae5a4e97a3e7e883690907b0b5361a62ed4d54ca753d6163b54a0a0ef",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/network_adapter.hpp",
+      "bytes": 6153,
+      "sha256": "972d51b7ae10d66560d7830083c79d0ce9f3bcdefcba346b33fe0e5c55708de0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/nvs_backend.cpp",
+      "bytes": 1515,
+      "sha256": "9b1743077064105694ffd325fce3680c9e949000ab942d62cd8b9786ded8aabd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/nvs_backend.hpp",
+      "bytes": 450,
+      "sha256": "b66c9a3a26844fa37ed4361ac877634273fad3e9780157e37e9cee68b28f16a4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/practice_nvs.cpp",
+      "bytes": 1204,
+      "sha256": "e1b3cf030b2cd4e6d6310ffb356f276471f1d8fcbfae9c2b90a30391173dce38",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/practice_nvs.hpp",
+      "bytes": 602,
+      "sha256": "43b1fc470bc135333b6789aa61b6e00c6e940d1dfc4105b1ee6471578d03adae",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/save_store.cpp",
+      "bytes": 3166,
+      "sha256": "45071e8df0052cb4dc9d593c11aff2e8884e56260181b8ce794342e50f1ddd4c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/save_store.hpp",
+      "bytes": 1156,
+      "sha256": "d58596bf6037fd329133e02d7a4121abecc78d2b739b30bab2bcb0941f2fd8df",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/sd_asset_storage.cpp",
+      "bytes": 9029,
+      "sha256": "2de191442b0831bb66b46efcfd1296fa460de4e26440c6535dca0f50a466fab8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/sd_asset_storage.hpp",
+      "bytes": 2671,
+      "sha256": "4e95eedf27c27373f36450903a0e80d636e330c2448a2632da1ed48a3c0b47cf",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/sd_inspect.cpp",
+      "bytes": 17980,
+      "sha256": "c6238468c7f6d99732492fc9ffb8b9410420e5760b93ce7475da1e80e24f5f61",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/sd_inspect.hpp",
+      "bytes": 1023,
+      "sha256": "8cae53b50ca1e1c0b0d9ca79b968f8fd64f303183b3eeb04495cfd85ed5623f1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/third_party/spd2010/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/third_party/spd2010/PROVENANCE.json",
+      "bytes": 3021,
+      "sha256": "f37d0293e46b72eaf134c9abdf28855a1a9ff5ce77d299fa8890f691ae107f1a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/third_party/spd2010/esp_lcd_spd2010.c",
+      "bytes": 29432,
+      "sha256": "72d60272c66b67d172a088c51dc164d1bec5ed0c37c9ec6e12cf44c8b7cd348d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/third_party/spd2010/esp_lcd_spd2010.h",
+      "bytes": 4958,
+      "sha256": "7d1b304f4a06a9add4293c97eb8c6cc4e12a599699df4fc744c783566213097c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/usage_nvs.cpp",
+      "bytes": 1134,
+      "sha256": "402d48a59556a473cc69b8f9d5e275bc6ced91d4521e85c2cbc17dd8aacbb6b0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/main/usage_nvs.hpp",
+      "bytes": 410,
+      "sha256": "c2fbb8fe810e25d6bd96889fa25823f13760a68571dce09775a9c69de66615ac",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/partitions.csv",
+      "bytes": 545,
+      "sha256": "190296f37c0c8e60e491bd4f8ed31c7a550f1cb473ffa42fb8f51a1fa120084a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/asset_cache.cpp",
+      "bytes": 14150,
+      "sha256": "9b0ee9ba64879ba76c74f352f73ed7dd281183d57b41a6c4043b7a289b12ed12",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/asset_cache.hpp",
+      "bytes": 3249,
+      "sha256": "6c278ea812444c6936e1284460b977738c044e50c346c8096754766a14b111ce",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/audio_cues.cpp",
+      "bytes": 4636,
+      "sha256": "6313957ffb9ae2daaa8049b3a5b05a684554cd582e57d7ac280680b84f52baa7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/audio_cues.hpp",
+      "bytes": 1044,
+      "sha256": "29ecabd3d8f3234b299c9b3d1926352e3e0ccc73f092849bc7887fb7402490b3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/background_decode.cpp",
+      "bytes": 4966,
+      "sha256": "db2dac011dea89cab3ea315775725901252a05b49854b496e0f633cdb82c9f9f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/background_decode.hpp",
+      "bytes": 979,
+      "sha256": "3e8bdd2f3604f3fefb5af4eada0ab505922a629b9f4e73096a591b8119db954a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/battle_mode_choice.cpp",
+      "bytes": 629,
+      "sha256": "b422e8ad3b7f606cd7248c08bf7777dfcee385a2d31fcb0926796d54673ad5a3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/battle_mode_choice.hpp",
+      "bytes": 739,
+      "sha256": "8a23b5b1a62837f273b5f358c4e8ac4be0aecac1c12f0765b4efdd23a4cafa43",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/battle_presentation.cpp",
+      "bytes": 19755,
+      "sha256": "9f17d7acf661d0371ad44f7a660fd4deab1324d0e07807b6d6c25f6c72d64611",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/battle_presentation.hpp",
+      "bytes": 3397,
+      "sha256": "4715dde4b606be4415cf2bd5b58b74e91b538afade8e58d0e0a9886a474de3c2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/device_ui.cpp",
+      "bytes": 93277,
+      "sha256": "f9cd7e91a94a732aadde77278d010ce93125491695c9bf98b66bdab9c81dcd73",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/device_ui.hpp",
+      "bytes": 8421,
+      "sha256": "e032583ff5ed36390735f0fc2b3c20748feaff4df80502279e399b25e5801a3a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/evolution_choice.cpp",
+      "bytes": 1123,
+      "sha256": "1f73af4cd734344aa0fc4addac5c3be95fbbb8dd08fe6b8a4bc696a722bb12f0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/evolution_choice.hpp",
+      "bytes": 659,
+      "sha256": "69f9966984f6d6ee8de961c819b7035361fbd5ed90f092b1a65a0e26f944d813",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/fallback_asset.hpp",
+      "bytes": 16480,
+      "sha256": "d867a42ecb314c6c23488a2379aa5d76841c01bd02749f9f1fcfc8cb4a70b68b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/file_asset_storage.cpp",
+      "bytes": 6156,
+      "sha256": "e79718466d64e228d5f07e782e25bea259f83ea1dd2380ff750a2cb02c3a714c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/file_asset_storage.hpp",
+      "bytes": 2364,
+      "sha256": "1eca4fa43a840130d77c4e85d66de2f6d8df71a6d1c0c4e223c8c485135b46e7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/idle.cpp",
+      "bytes": 4009,
+      "sha256": "3272e4d7d3476a1c7b15137ef0b73dab9986509e1763dfb192fb9d9eea0a7ece",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/idle.hpp",
+      "bytes": 1686,
+      "sha256": "ed37c9bd77be072308e293e7a9e0387b0306db3551b012960df6c5cde0c64141",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/idle_settings.cpp",
+      "bytes": 1224,
+      "sha256": "5f76e2fc59da40d05ab3b887742aa379cf22fb9adfd22fa4db42b6dc520c854e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/idle_settings.hpp",
+      "bytes": 366,
+      "sha256": "02236f0a46bcdbc82a86b764e546d6d6985f8c97c23ea5dd8483ab35e92a5f01",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/imu_filter.cpp",
+      "bytes": 2752,
+      "sha256": "f2acf78aef20f4e6a2ca5778e9f14bd3294bef05285c714cef5b23a7677aac78",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/imu_filter.hpp",
+      "bytes": 1139,
+      "sha256": "474b42de68007ab8b038808a4b8c526d31ed1d624fefdf34546cce001c757e04",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/local_form_art.cpp",
+      "bytes": 3321,
+      "sha256": "f577811ec97f41c15ad0c6772ee8d793346dc6e658436c4ce53f641e260824ad",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/local_form_art.hpp",
+      "bytes": 1367,
+      "sha256": "9c8d465e56152c46849b0549f0d75e4daf01a384509a2be321c1722706200e39",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/local_form_facing.hpp",
+      "bytes": 1467,
+      "sha256": "7fcecfb5e8be984347d4f58068c2664b49ec10ee968cdf66d811cdcfe3df219a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/motion.cpp",
+      "bytes": 6301,
+      "sha256": "95963670f1f0f0b43310b557c4395908822b849c33bd39d36ec5647538f8e077",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/motion.hpp",
+      "bytes": 3661,
+      "sha256": "c5af3aef4a74e0c00e5bc69ce5649e2ea72b5d711246a7b689607f157863e7ec",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/nearby_protocol.cpp",
+      "bytes": 16931,
+      "sha256": "3e73ccf857287788e4d88a5d6fee8a0973bdf69a368b8b65a91d1d61b8c7a99d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/nearby_protocol.hpp",
+      "bytes": 2907,
+      "sha256": "5af873844001fa77b42f0328738a14e09000ae3dc58a126f74ea7314a8e053de",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/network.cpp",
+      "bytes": 13276,
+      "sha256": "4ea81e481484c74e559533bed7df4a7b7525e1ac8e88bd426fd59822ca4db676",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/network.hpp",
+      "bytes": 3144,
+      "sha256": "23a0fc70a658b51fbf00e0e3ccad844a33072f7b6dd4c3233cf625487e0ddd39",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/pedometer.cpp",
+      "bytes": 4955,
+      "sha256": "6ee660734b2213dd6ce76886c69f4318cb96e707d4a45aecc37d33aaf25e3856",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/pedometer.hpp",
+      "bytes": 1840,
+      "sha256": "7c1d2d6c2f6d957c6743fe92ca15962ed769801e5160bc7b07bc98d1f222a254",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/power.cpp",
+      "bytes": 6038,
+      "sha256": "4730cbdc3557d94c26029e7ef0e51084ddcc30c04051a28e15a9c8b8650a3bdd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/power.hpp",
+      "bytes": 2638,
+      "sha256": "0ed9bcb1a7fee5adcd4ba0f28496d804c64799be4d5a7c4893ba9487a43a9f55",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/practice_session.cpp",
+      "bytes": 14402,
+      "sha256": "bd692e38244b6829cfcfa108d5b4193367316f6657e9a9c80b58acfc4ce65bd4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/practice_session.hpp",
+      "bytes": 3283,
+      "sha256": "81f72e2ccbd0d74c80e708ca728634124460fa516f2330bbb3a607439fa3bef7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/prefetch.cpp",
+      "bytes": 2415,
+      "sha256": "0219a445ad90a1de22d8898af65f182a25473ddc333214476fda3087b6eef85d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/prefetch.hpp",
+      "bytes": 725,
+      "sha256": "0cd12d0bce07392c74bd47ab15530d7ece409befa913d923954e14d37e413acc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/recovery_choice.cpp",
+      "bytes": 834,
+      "sha256": "939cfa4797edb23eba2514ac895fbde40d96b680e5c49bfb0ce3b561f258f8eb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/recovery_choice.hpp",
+      "bytes": 506,
+      "sha256": "b46e9f319e9af4301f76ae737bd696786fd6a225fbe2bef8aee027b3327a08de",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/release_confirmation.cpp",
+      "bytes": 990,
+      "sha256": "880d59e3348ddbd593811918a3ba30279ae977fa58c08aeb01e66e6adc6a385e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/release_confirmation.hpp",
+      "bytes": 390,
+      "sha256": "cfa217940c8b68db037805fba8b47ed2e36bdf95a872d6dedc2352ab9fba00aa",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/sd_boot_probe.hpp",
+      "bytes": 7293,
+      "sha256": "dbd17b07604d6728404f5c5b9e5d0ecde9038689fe540b8bbe3dbd6b326f0904",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/setup_ui.cpp",
+      "bytes": 21222,
+      "sha256": "dc0e8103fbebf39bfa587e954d9cf23b87fe998d929289b28defe7c064046b5a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/setup_ui.hpp",
+      "bytes": 2694,
+      "sha256": "868bbd36494baeec3a2c4fafe96c998652fc7b723abf086a49cb7696c35090a4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/sprite.cpp",
+      "bytes": 6823,
+      "sha256": "35e9f56d71a005e20ef6237f111f62e8a1c0d593a1785387c78d7ee67ec9ad82",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/sprite.hpp",
+      "bytes": 3102,
+      "sha256": "0d46c9f93ad0166dedd8193cd332c1476da9914b9c3044215bd1454b2f75e508",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/sprite_bounds.hpp",
+      "bytes": 2305,
+      "sha256": "54f8dc8079d52f1fc5fe7e71a5d4b783dbdd7912041ceb3a1eabc68ddfa82a6c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/starter.cpp",
+      "bytes": 2081,
+      "sha256": "ae034c45c8da97980adceab5f66e0f8befe86e2dc92db4f38ddead4e36a256b7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/starter.hpp",
+      "bytes": 1349,
+      "sha256": "6d3a312e4c2bb4395f20bf9e4cc7cc747eac0711ec09b03b654713054e15f6e1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/step_delivery.cpp",
+      "bytes": 2344,
+      "sha256": "38d5f0b223bbefe61491f940d7ff15328a447b504c560c24e74829ad2682447f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/step_delivery.hpp",
+      "bytes": 1647,
+      "sha256": "8ff9933c6f9683a97f52f39ed2cbcbe84765af957ffac82c095805b184429206",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/usage_store.cpp",
+      "bytes": 4123,
+      "sha256": "2ee139277c3feb31fa291c4d58c2967eb8bdf95129d148336e930bc21371016c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/usage_store.hpp",
+      "bytes": 1520,
+      "sha256": "2e147c7dd34263d29515b9a80f256f205391811e1d6b277cb8bd89019a99f01f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/usb_sd_transfer.cpp",
+      "bytes": 18329,
+      "sha256": "43105ded31c3e2211034ba3d53ed4442370221a5a1c47e7ebede5af8bb430349",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/runtime/usb_sd_transfer.hpp",
+      "bytes": 2098,
+      "sha256": "e5b528ac301a68a22775f0456e977f623b71167daf32f6e94b609c7926551717",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/sdkconfig.defaults",
+      "bytes": 586,
+      "sha256": "07b3e8c234425dead07cd59f538b79aa53f4cf659b31ae3e709ac4baf298b85d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/asset_cache_test.cpp",
+      "bytes": 21102,
+      "sha256": "bafd2653e3ca2428a3691e1ac13f44f9b349c4f68c5f3c3c618bae59535dc79a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/esp_crt_bundle.h",
+      "bytes": 74,
+      "sha256": "9105f5350b875e1ab8cca0086ab005eebc64bc4842654d7ba6761f2c9a32c8c8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/esp_err.h",
+      "bytes": 147,
+      "sha256": "6e5e69eda70e67c1d41cbed2000b6eecb7a71c00db7462576c04f50598e57294",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/esp_http_client.h",
+      "bytes": 1425,
+      "sha256": "0798f8f3d533dc2372df117beb7ac5ad8426bd3528b5437d457eddf7dc65e0a6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/esp_timer.h",
+      "bytes": 67,
+      "sha256": "6ad471c0abf88f3f513efdd639ab3637a8be1f641ac47dff54ebaf352842f8e3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/freertos/FreeRTOS.h",
+      "bytes": 249,
+      "sha256": "4f4e8ad8b7a9b4df572a86c11bc610bb92d487121b3d826944af5f75549aee81",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/freertos/queue.h",
+      "bytes": 324,
+      "sha256": "89d1acd89f6466a1d73e2c84836376ace13437dd443436b7ec1a594f4e6e7e8a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/freertos/semphr.h",
+      "bytes": 236,
+      "sha256": "5063fd72bbab4bf8a73e70dcdc3b258c5eae4fde49b5240b7b54ba5f8b71aa6a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/freertos/task.h",
+      "bytes": 159,
+      "sha256": "7ee9d570ee43e963ee2c199e87d1cba179265728b22c18b6c1588ca90693fba6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/assets_client_stubs/sdkconfig.h",
+      "bytes": 197,
+      "sha256": "e0d0cf59c296cef0b85f59ceb04d5b196d47f1251f6b8d396e7676932780d47a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/audio_imu_test.cpp",
+      "bytes": 3941,
+      "sha256": "fc823ff92e772cee395a924b168f7f70694421270c9c870c97c0efe7199acb2b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/background_decode_test.cpp",
+      "bytes": 4615,
+      "sha256": "126d22eaa9111aea9f0e2bb25d262d71513dacd8e14f31e84cc281d85ee950ac",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/battle_mode_choice_test.cpp",
+      "bytes": 1814,
+      "sha256": "29298b72bf47220b469ddd08fa4eeb2e251ef5668c4d14c42c56e4836e6413df",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/catalog_fixture.hpp",
+      "bytes": 1250,
+      "sha256": "20b5d1bdd54a44a0c835b66736b664f72ee63c5f8584f2a762605c696ab2abf3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/device_assets_client_test.cpp",
+      "bytes": 15084,
+      "sha256": "25639e5033057e9b06a85c509a1903f2e7886390e44e917e35df4509635fa7d0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/display_orientation_test.cpp",
+      "bytes": 8384,
+      "sha256": "868a24db1dbbcccd1e2b6ae80ca5230ce8e5e225a6b8e5b76dda64d6b4e8a049",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/evolution_choice_test.cpp",
+      "bytes": 5648,
+      "sha256": "bfe5db43552f7745e6ede5f2f66c0d72ca52415abe14406108406d932cca6afb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/fatfs_exfat_test.c",
+      "bytes": 10026,
+      "sha256": "c525f710b954e0d584b6b280314a5c2b4641262ffde86db0d777e080f04b4fed",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/file_asset_storage_test.cpp",
+      "bytes": 15124,
+      "sha256": "86dff79666d73d1717712ee0620c66cdd25355f25f306519437555bee8a313ba",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/i2c_nack_timeout_test.c",
+      "bytes": 7838,
+      "sha256": "9d3595940a5f7c5d11b5d5a1db87dc01f57276611b1bbc0ff400d14b24bd4111",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/idle_runtime_stubs/handheld_runtime_double.hpp",
+      "bytes": 4984,
+      "sha256": "0db3aadea63dd6380c04366a880d1321031d9adb7d623f42059e97db1901cd60",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/idle_runtime_test.cpp",
+      "bytes": 11768,
+      "sha256": "8d9f3a7e93993d4c4c64b7fa54254348663f207d5bb2a76ecdd3993335aa5119",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/idle_stubs/esp_err.h",
+      "bytes": 282,
+      "sha256": "a0aa392cae43ee9f69075a19887f4b365914f3c3cbc27e88afd22d3eaae939a0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/idle_stubs/nvs.h",
+      "bytes": 373,
+      "sha256": "c9e5404d2b8308b624f17e6d319d5649559303da4eaf8d47734b48020b3548d0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/idle_test.cpp",
+      "bytes": 10670,
+      "sha256": "e6befdb419224f9a1965122d6fc5c65b16be7820a30c6a3029c3183dde685313",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/imu_worker_stubs/driver/i2c_master.h",
+      "bytes": 625,
+      "sha256": "c9ae7b76192f2520a54ca6a288f1b0d662acad9ece02615442b6d838655a85fc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/imu_worker_stubs/esp_err.h",
+      "bytes": 226,
+      "sha256": "b3696d189cc82f32ed1968c620069697656d19366b5f67a23cbdea099d84fb09",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/imu_worker_stubs/esp_timer.h",
+      "bytes": 67,
+      "sha256": "6ad471c0abf88f3f513efdd639ab3637a8be1f641ac47dff54ebaf352842f8e3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/imu_worker_stubs/freertos/FreeRTOS.h",
+      "bytes": 434,
+      "sha256": "87bee1f318d168be36a732486d9776c7a9346f2a0846cc8c112f8c01e0b28f22",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/imu_worker_stubs/freertos/task.h",
+      "bytes": 225,
+      "sha256": "b008a9b82680d4021598b5593f976b997fcc4274bce77308de1495e94c146f3e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/imu_worker_stubs/sdkconfig.h",
+      "bytes": 52,
+      "sha256": "ce900290469bcfccd80e8794775354580d1bd41ef7eff19a56ccbd250a89bacd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/imu_worker_test.cpp",
+      "bytes": 6706,
+      "sha256": "aa5a5a20f35cce1fdd3fae3752348d839d676e6479d3d77bedfba03e3039b335",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_practice_v2.hpp",
+      "bytes": 961,
+      "sha256": "cf8887eed22813694afa360e56fabef0372f58eafd8d1511bccdfa1cf9b18186",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_practice_v3.hpp",
+      "bytes": 1000,
+      "sha256": "fd3c7a0339efeb85bfd71cd4162e490ccc5baa876e04aa1218ac24491358b088",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_practice_v5.hpp",
+      "bytes": 954,
+      "sha256": "eba4b41922cb161fa3902ea78fd96a50a168b867674175769da22858b558deb4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_practice_v6.hpp",
+      "bytes": 966,
+      "sha256": "728ebf552a5d49f562c2947faf8b79acb2be577ff8e8f906ae66473388ee65eb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_v15_snapshot.hpp",
+      "bytes": 4564,
+      "sha256": "712f73f1e53c36cfad600ab49792b32129e44afe5263afba2f75d3753165e639",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_v4_snapshot.hpp",
+      "bytes": 1074,
+      "sha256": "7e172c5eb41aa0b2cccf42ff771a7f48de8e44a4597867e6bb7f6b919c295b89",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_v5_snapshot.hpp",
+      "bytes": 1085,
+      "sha256": "60ecaa97c56e67b0a8bd56812ac63d7697ea154ba9e2fdb7c7b5cd3d606b364a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_v6_snapshot.hpp",
+      "bytes": 1057,
+      "sha256": "8c9c41bb3e5ab582b81aefdf744649b86fb8d479e555426c2831fe576a42b3e7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_v7_snapshot.hpp",
+      "bytes": 1201,
+      "sha256": "e04a7768cf1889e04a79e9fdcd9c25ec5e5f2b978febae86c9ff3562e254b13c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/legacy_v8_profile_snapshots.hpp",
+      "bytes": 12154,
+      "sha256": "75e5c7a3c8b8e8cb2ae86dd73b4df0e2e38c68c75363100cf1c45cb27e7adee7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/local_form_art_test.cpp",
+      "bytes": 3547,
+      "sha256": "628d99c575342c69a57f1ab0e5545229d7feaabd67459421d58efda73211f039",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/motion_test.cpp",
+      "bytes": 7616,
+      "sha256": "7edb62a99b98f9111b7e650c05b0041b8415ad392aa38c413e34ca399a4b3764",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_stubs/esp_err.h",
+      "bytes": 263,
+      "sha256": "2cbf682dfb6503d01466db843d100077b05d799f1f22498affc99d69e6ed5bd6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_stubs/esp_now.h",
+      "bytes": 1042,
+      "sha256": "415fbd8da51e134c2bca8f9d7c114a16ac7279a35de6b6ac1a46bbbdbce5e59d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_stubs/esp_random.h",
+      "bytes": 73,
+      "sha256": "8a79423b1ac8357693b7b3eb4866fca448c9973838b507fb3ea38845b0a30439",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_stubs/esp_timer.h",
+      "bytes": 67,
+      "sha256": "6ad471c0abf88f3f513efdd639ab3637a8be1f641ac47dff54ebaf352842f8e3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_stubs/esp_wifi.h",
+      "bytes": 569,
+      "sha256": "b9d8a5704c18b5c195985ecb2e514e201c1a60cb0503596924c099f274686de0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_stubs/freertos/FreeRTOS.h",
+      "bytes": 377,
+      "sha256": "bce6cc1e6e69a9a5040549bf13b262a89c0739cfbc6dfd2d3f6f3b38a38e9fdb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_stubs/freertos/queue.h",
+      "bytes": 486,
+      "sha256": "141fa450e3a307a8edb9231c82f6cacf4f2141bb162bb03d0215cfcf76b63276",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/nearby_radio_test.cpp",
+      "bytes": 11704,
+      "sha256": "411c07f70b6eba681555d904ca55ca6b1890113702c6af50286c6c36a30bef2d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/esp_err.h",
+      "bytes": 193,
+      "sha256": "2b866b4a6b66af60095ec2a9f11b66b30fe0fadc5b3c152ffc4aee4dcacb8d85",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/esp_event.h",
+      "bytes": 635,
+      "sha256": "d2daf314b073beb27acd91eaf16887723e4ccc0aaa0df66dcafdc56883951d4e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/esp_netif.h",
+      "bytes": 265,
+      "sha256": "37f0d218404b1d513566237ca0fcdd52a3880291cfde06e7b3c7235fb45ec104",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/esp_netif_sntp.h",
+      "bytes": 339,
+      "sha256": "a5540d5bb9c52fff6451f01354e73a7124a28bfb311ff9ec6218d395fb34dc5f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/esp_random.h",
+      "bytes": 60,
+      "sha256": "2a143f9418acd0c6f48b3eacbf94db4bf4de6d5a3a9082b3286c055a9e9b3320",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/esp_wifi.h",
+      "bytes": 1295,
+      "sha256": "637e45b67591bcf079e864a8dfa2cd25fac5fef85e8d355deff6b091472f8037",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/nvs.h",
+      "bytes": 394,
+      "sha256": "36918097da17325b06f71a3a7ce24538244c5832b5bdfd54b51e997bc6bd988d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_stubs/nvs_flash.h",
+      "bytes": 62,
+      "sha256": "29ae7d6acaa6355dbfd726c33a795a2f91c96178c8fa569ef8f90cfd267b1808",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_adapter_test.cpp",
+      "bytes": 19440,
+      "sha256": "15ca943f270ef49cd589833f9e17179db05c40f8e9895a9679bedc2d5abf596c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/network_test.cpp",
+      "bytes": 9811,
+      "sha256": "daaa1d9ac115d641e261302a2887e75a814922c79bc904b34467d1855a60edc8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/park_save_backend.hpp",
+      "bytes": 1245,
+      "sha256": "d99d2edb0a84d66ce6fb300d3b98095350a42dee21a92e30ed21221aa5f263c0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/pedometer_test.cpp",
+      "bytes": 5149,
+      "sha256": "afa90dccfa93a7a2f5f0ee6870bf3c9ccb74543f8f10697aceffbc652d6a68d5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_hal_stubs/driver/gpio.h",
+      "bytes": 753,
+      "sha256": "29a5ea881009af1e844db6058c979e292fee9a348f0d19842dbdbaf1af3765f9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_hal_stubs/driver/i2c_master.h",
+      "bytes": 171,
+      "sha256": "b05e5fa0c431067485d0cd16a865e0a8f0e044f9841b21890a9ed7bc54f62312",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_hal_stubs/esp_err.h",
+      "bytes": 294,
+      "sha256": "434a869e5990993658f687abbe00b0d0f97acd5b2febaa2a8dd560a8ae34c83c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_hal_stubs/freertos/FreeRTOS.h",
+      "bytes": 146,
+      "sha256": "4b8acb3289963ae4836a64e0a9488ecf282fbdcc5cffdb7afb147f8d49649308",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_hal_stubs/freertos/semphr.h",
+      "bytes": 250,
+      "sha256": "77d057f20b50dc17369b6c0bc9c70bc7fbbfcd8e3c261a43b2ec663f28e1bcf3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_hal_stubs/sdkconfig.h",
+      "bytes": 167,
+      "sha256": "082d837576a561b5e4c277d59dcb30c01394a331667146552ecdc9f839ea061c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_hal_test.cpp",
+      "bytes": 6078,
+      "sha256": "5bfb184202d007284aaeb63c7d77647886f99c925c653ab4b32fd5d6a85a37dc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/driver/i2c_master.h",
+      "bytes": 91,
+      "sha256": "01a8a201b2cb5f6d551d37f8c77e654be4419741fc32414cea25f42b519876a0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/esp_err.h",
+      "bytes": 368,
+      "sha256": "a9d60dbcdd069816779b0876a2a510761bd8ae4d47efd11b46ba2defe41427e0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/esp_event.h",
+      "bytes": 95,
+      "sha256": "c013a566c6c9a5f12f9f923693f8b486777ea1ddf0b40261f7634af65499b3d5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/esp_netif.h",
+      "bytes": 36,
+      "sha256": "447786a39b34383159ec5e7b6c4b21376d8b9938e33c3aad1db5674bc2ae36ad",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/esp_random.h",
+      "bytes": 60,
+      "sha256": "2a143f9418acd0c6f48b3eacbf94db4bf4de6d5a3a9082b3286c055a9e9b3320",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/esp_system.h",
+      "bytes": 33,
+      "sha256": "616f599eba4e201cb6768758af489e6c7ab323f736d65bcb100a4f8bca17bc5a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/esp_timer.h",
+      "bytes": 67,
+      "sha256": "6ad471c0abf88f3f513efdd639ab3637a8be1f641ac47dff54ebaf352842f8e3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/freertos/FreeRTOS.h",
+      "bytes": 303,
+      "sha256": "7d76561341e00b0f6de8243620f8852c18d7a9966b6fe8cb60f288dff7dce84b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/freertos/queue.h",
+      "bytes": 62,
+      "sha256": "f587c781e51e572f4858507494f61ab5a6f4d75940d86855fc6a875c5c7d16eb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/freertos/semphr.h",
+      "bytes": 66,
+      "sha256": "10974a231ca45c83aa144f4b54ceed1ba66ae00e99fb680a0f6f074d695e77e5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/freertos/task.h",
+      "bytes": 96,
+      "sha256": "1ab99ac433b9f4f32877a57f4f704baeadb27ab1e2158e1e5dca0e019b687ec6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/nvs.h",
+      "bytes": 44,
+      "sha256": "11bfbcab14f5b759004bae7785aa1ad0f6aa74e941396d4bdc05124d9c5355e1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/sdkconfig.h",
+      "bytes": 190,
+      "sha256": "6abc806667ac9ec26af6ad9bdceea2bc924e59879a5686b67aa5190e817dd005",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_stubs/sdmmc_cmd.h",
+      "bytes": 37,
+      "sha256": "7b14bbf0234d9130de09007510164f24b32a2cdeca4dac3d61c434a1ac92338b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_runtime_test.cpp",
+      "bytes": 45145,
+      "sha256": "cf4bcc01f4f219e4baa108ee45f23c34336ef635e8a6fcda06b9e39b7b51bc33",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/power_test.cpp",
+      "bytes": 9220,
+      "sha256": "a88c32b0f43576cf512ba1f11472562171cdc2db8220522d164cecc816b153e0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/practice_session_test.cpp",
+      "bytes": 20907,
+      "sha256": "c49237b073fe55fa38bca3ad333af977ceb08bc97da9591d7240ba3807394fca",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/prefetch_test.cpp",
+      "bytes": 4517,
+      "sha256": "1de3b11e82d4e3e00396f7d0099375f7a83c965b78b2682daf9c06142c463a86",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/recovery_choice_test.cpp",
+      "bytes": 4492,
+      "sha256": "4323f1a9fe320248b3147826805ca7458a8ae117a126bfe5b37f031f30b6a433",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/release_confirmation_test.cpp",
+      "bytes": 4335,
+      "sha256": "cbf276d0a9ce35968ef2543181410564b25cd278c27877beccb9b8376a0a0906",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/run.sh",
+      "bytes": 2211,
+      "sha256": "45d2b45101637be6502106d4604f47cfa6ea5342c2ba38dcfa6b0b58caa511ea",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/save_store_test.cpp",
+      "bytes": 32130,
+      "sha256": "def85b66d56fc38440dcf988b81e78762ff8b3aaa715bf195bfdbab0fd370743",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sd_boot_probe_test.cpp",
+      "bytes": 5391,
+      "sha256": "4b08c2e3b1ef369662574450dc158a835014883ba9f5a6aecb71dd42252c9119",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sd_power_test.cpp",
+      "bytes": 3687,
+      "sha256": "01d7aab5447244612026f5987e46ebe00cacf0c79b2abc375640096d1c62ddbc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sd_storage_stubs/driver/i2c_master.h",
+      "bytes": 50,
+      "sha256": "ecc9cbc0b9a001873edcf33c2267da3a2cfd35655848f6b84e72b1d60f43b5d7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sd_storage_stubs/driver/sdmmc_host.h",
+      "bytes": 347,
+      "sha256": "452cffd55acff686e856be5c10ff0e26fb1be8d5d07b3d1cf0b0a00b36faea0f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sd_storage_stubs/esp_err.h",
+      "bytes": 100,
+      "sha256": "45eed63746e1234d934aaa28d3e981ad67cb1e3dc8a7c1b12c742b46f0d2be28",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sd_storage_stubs/esp_vfs_fat.h",
+      "bytes": 457,
+      "sha256": "84c01b8898e8a4ba9405e61e60463fb8327983358a7eea1b942a253edaa9ba49",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sd_storage_stubs/sdmmc_cmd.h",
+      "bytes": 37,
+      "sha256": "7b14bbf0234d9130de09007510164f24b32a2cdeca4dac3d61c434a1ac92338b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sprite_bounds_test.cpp",
+      "bytes": 4419,
+      "sha256": "f78cfb3d3d1c42b5741ba966df1fb769196143c928733c5fabcb4b422615a1b3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/sprite_test.cpp",
+      "bytes": 15413,
+      "sha256": "1067c8360aeac1fc7e8a8ac320e3dfaa9ec17f19f8366f17ada5b34f33a05d0b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/starter_test.cpp",
+      "bytes": 9499,
+      "sha256": "4fe63b5c01d7a4287e4b631905cbac6fed3814a28b4505bab8f9161b84f69f3d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/step_delivery_test.cpp",
+      "bytes": 8697,
+      "sha256": "386052a3e18b7589dbea2521d29094e60de49cdb07efbc5488ad7cbf954ab575",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_device_assets_client.sh",
+      "bytes": 4111,
+      "sha256": "1082e78d0473589c6ab10333fd634cec996b52c61cd13e927fdfa930ac462cb6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_display_orientation.sh",
+      "bytes": 402,
+      "sha256": "ef1e293d31c9c3bdb6a5cdb72a766e86261909407fd9980f31fc33d558d1ca96",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_fatfs_exfat.py",
+      "bytes": 4222,
+      "sha256": "f12ddb6273941f887179fa603c347d42312cc206206392f993ce96fad872bc13",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_i2c_nack_timeout.py",
+      "bytes": 3161,
+      "sha256": "8354d1b73e84d964550b3b96bd1ccbe966220138f378c1649c964056041caf7e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_idle.sh",
+      "bytes": 919,
+      "sha256": "02390cd65b326ab78b310d2b5480208eec5b37b4785eed0c2f1f41da8a49abcd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_idle_runtime.sh",
+      "bytes": 2996,
+      "sha256": "6be04945ee362c90120fe7ed891133a32b1e5b214fb0fbf2085077e27cbdcd06",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_imu_worker.sh",
+      "bytes": 502,
+      "sha256": "dd0a53014c5c8ed7d4c36a80eea9e925a9dffd3b0ca48d3c646f5140fcba7e88",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_nearby_radio.sh",
+      "bytes": 426,
+      "sha256": "7e09cf4b14fea09a360f8af6d2410061606a699cf5456cda37ed9cca1a1b8974",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_network_adapter.sh",
+      "bytes": 652,
+      "sha256": "9d48ef3f097af1958314e8af20a6be5e0c83ced4c9aa9ae949c99e51682c4f4a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_pedometer.sh",
+      "bytes": 380,
+      "sha256": "b9fe2e432ed2146f4832044475763fa19cb80c9af68eca32482dd9af6ed55608",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_power.sh",
+      "bytes": 592,
+      "sha256": "951faf78cf032e552e41e3e2db81a07a498c23e3d329c2e23daed2baeefbc56a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_power_hal.sh",
+      "bytes": 804,
+      "sha256": "f13e90541dab2c16c8b7fdaa403e822a4f299bfc9c3eba6c1def1b37b20a72b9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_power_runtime.sh",
+      "bytes": 1145,
+      "sha256": "c59b0fa0bf3883c4dc57c9dbf041b953bf917d7520dfde2557dce3b1717a6509",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_save_store.sh",
+      "bytes": 806,
+      "sha256": "ecd6e34d7299294357614b13ea9522b9a5911ed4dbb8a89ac42d9549cac98a47",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_sd_power.sh",
+      "bytes": 724,
+      "sha256": "de252e81cdc36e72b24cfcb1a193ef340ea5a69ef7af94876b7202efbb20acb8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_sprite_bounds.sh",
+      "bytes": 397,
+      "sha256": "93176bdff668425f712b3c48527012594b60859c60a519fa966f979cccd01639",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_touch_poll.sh",
+      "bytes": 1416,
+      "sha256": "d114e99b4bd21e1b239b4d6e47aaa30096c6f1189fea546d96bbd7b55510f09b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_usb_sd_transfer.sh",
+      "bytes": 714,
+      "sha256": "e3e4a0d0624a50491b4692240553bef1309a7d8eb7267f3dc311a55a654dc021",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/test_walking_runtime.sh",
+      "bytes": 2517,
+      "sha256": "6ce76f593ae482f93d288398d43e2c5d88005797bec29cbd1f687eab4318aa8a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/touch_poll_stubs/esp_err.h",
+      "bytes": 190,
+      "sha256": "d71082f3b27e4a83d4fc2a5aa8f0f03e29f6fde8f68441225160f08aec0fce1b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/touch_poll_test.cpp",
+      "bytes": 5280,
+      "sha256": "a4b35973c2039c0817225410cb924af618cfe1c67df234c5470459d7558bc700",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/usage_store_test.cpp",
+      "bytes": 4097,
+      "sha256": "3ef6355683f11e57bb91efe18ecf6c4419328042916f96e5817bfb8381d628a8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/usb_sd_transfer_test.cpp",
+      "bytes": 14559,
+      "sha256": "380b46fd7d998929ae7be62eed12b6044ab556bdb40acb07b093d73860a02ef4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/walking_runtime_stubs/handheld_runtime_double.hpp",
+      "bytes": 6240,
+      "sha256": "e715f5058afb35da3679f4fb424fbdb5cb0f0d2d1e7e87f1a7fa69063cd1a27a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "firmware/tests/walking_runtime_test.cpp",
+      "bytes": 35270,
+      "sha256": "5bb9ef5bb1d639b39139d2d64e5b5d7f924301beb3d6f3c395c556a31d020718",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "hardware/.gitignore",
+      "bytes": 80,
+      "sha256": "0543f8c7b0b7e72c51b833a85709b105d18732152b4babb4ca390d884ea5a2ae",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/README.md",
+      "bytes": 2986,
+      "sha256": "13117f2731bd864bdf1420fd1834e5b6493aa17aa76af214ae433c1f0a1120f9",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/ASSEMBLY.md",
+      "bytes": 5893,
+      "sha256": "97730b0f881afa73d010dbfaba995aab1ea67284365dd1010f9a46819a53079f",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/REBUILD.md",
+      "bytes": 3146,
+      "sha256": "2e431fc9c70a3bf8558dd01bbe0f85ea0d95c760ee956848eebdc362655ee340",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/README.txt",
+      "bytes": 2597,
+      "sha256": "155457c90309132e2e852538c77cdc9f8ab228ebf569ec1e733e54a014a9603c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/build.py",
+      "bytes": 29900,
+      "sha256": "8f3d28fcaf5e13d3936e1c136c383357d1ae27556bca4e1ebfb0d2699d2cebf3",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/direct_pwr_access.py",
+      "bytes": 1568,
+      "sha256": "a355af27c162f061bd3cf72ddb82314c8ed5b1e67f5246d79312825ba7e33232",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/parameters.json",
+      "bytes": 7275,
+      "sha256": "2e87d7d16bae00c74b47f931fe8c7dafb1fea510e0094bb5cf0b271ff812ab19",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/cad/requirements.txt",
+      "bytes": 327,
+      "sha256": "1984fbc7a1ae3e967df8c4f1d181a6db8835ff73d1c45f1236b834fc40b18f2d",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/C14_P19_CONTRACT.json",
+      "bytes": 7504,
+      "sha256": "bf89167456d4dd3fe421d57f7428ba900872e948862a1dedb85180aaadbf377b",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/C14_P19_SOURCE_PROVENANCE.json",
+      "bytes": 617,
+      "sha256": "588bd67a9413476e9395ca61057963a2f72e46e78aa68ec0038572becfd09c73",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/FASTENER_CONTRACT.json",
+      "bytes": 10626,
+      "sha256": "61e040df87d5ab2967f5ee7497668486b0346a2ea618d565879a7fda4d89abf9",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/MECHANICAL_CONTRACT.json",
+      "bytes": 11020,
+      "sha256": "155a75e4e25050c60e9312b6258bf281a2ab14a5eb9622fbc605434425b4d63c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/PART_REPLACEMENT_AND_PRINT_TRANSFORMS.json",
+      "bytes": 4130,
+      "sha256": "614cc3696c662e528f6d5851670078bef00765cb5a8034f6687f6e509ef16ef2",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/touch-only/reference/RF_ROUTING_CONTRACT.json",
+      "bytes": 345,
+      "sha256": "574fa02c381d882094b84255a03eec2bb348cf8b0f8c96fa5b128611942ad51b",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/README.txt",
+      "bytes": 2594,
+      "sha256": "bf18a29b008c459be858eff8719453c7ea720f31cd109a466bd3d293f4133a3c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/build.py",
+      "bytes": 29023,
+      "sha256": "8b0f7c72c3386225de3154565cb7c55776988019205c372dd613bbba4de8310c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/direct_pwr_access.py",
+      "bytes": 1568,
+      "sha256": "a355af27c162f061bd3cf72ddb82314c8ed5b1e67f5246d79312825ba7e33232",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/parameters.json",
+      "bytes": 7243,
+      "sha256": "4146393d70b9a42824bc5f39699732350647a95c50f23f4f94e9bc046a6dc5b7",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/cad/requirements.txt",
+      "bytes": 327,
+      "sha256": "1984fbc7a1ae3e967df8c4f1d181a6db8835ff73d1c45f1236b834fc40b18f2d",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/C14_P19_CONTRACT.json",
+      "bytes": 7511,
+      "sha256": "04b1cf34e51c1bb41a319fb61b6e26747f5c75e9eb673bc0ef0c0de8f51ca859",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/C14_P19_SOURCE_PROVENANCE.json",
+      "bytes": 612,
+      "sha256": "16cd4ff1c730e4c8c05fc1d7f509796e9d5ead0b3e95d6cb0b645ea063289876",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/FASTENER_CONTRACT.json",
+      "bytes": 10682,
+      "sha256": "2fb7d79a138d4ab7fb77536d711928ec55c41beec867ffb2d2810eee9d8fa339",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/MECHANICAL_CONTRACT.json",
+      "bytes": 11020,
+      "sha256": "155a75e4e25050c60e9312b6258bf281a2ab14a5eb9622fbc605434425b4d63c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/PART_REPLACEMENT_AND_PRINT_TRANSFORMS.json",
+      "bytes": 4142,
+      "sha256": "41f80d4194d7f731fbd2fbd422edc0f6bf02ee1df1c529758ce6cdae51215a91",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/cad/two-button/reference/RF_ROUTING_CONTRACT.json",
+      "bytes": 345,
+      "sha256": "574fa02c381d882094b84255a03eec2bb348cf8b0f8c96fa5b128611942ad51b",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_01_Exploded_Core_TOUCH_ONLY.png",
+      "bytes": 595735,
+      "sha256": "971161394a52c0fd76a7597a06ab07cb55fb12072dda7bd7e1ba2a9665954bc1",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_02_Top_NFC_and_Front_Variants.png",
+      "bytes": 582131,
+      "sha256": "905564697c0a8c055bc0a3f26dcab8bd3e40004ef217bf5ace2c9d2d89a63157",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Assembly_Order_and_Screw_Schedule.png",
+      "bytes": 548147,
+      "sha256": "585dc3c8ec432b4087d9c221beb1b8b8e35ac7e646da2fbbd64874a6b104aa10",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Connections_Phone.png",
+      "bytes": 317651,
+      "sha256": "5c0a8de7bff7533325e0d3a73a1f03a0021506594d1dab76963a6b6f6a2ac8b1",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Screw_Map_01_Exterior.png",
+      "bytes": 488597,
+      "sha256": "6f5acaeb7df3a4576d7ca27eaea8e9a8b1bbfe7393c6ff9add31f1819b4549a7",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/docs/C14_P19_Screw_Map_02_Internal.png",
+      "bytes": 482660,
+      "sha256": "527937371412fc207c17f1a50a4caf0c31a542433dd73cfbaf3eca233a5e04d5",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/docs/z-ark_Digivice_C14_P19_Assembly_and_Screws.pdf",
+      "bytes": 2996080,
+      "sha256": "84f1927aa76969c15c44ca561f43207f8c11655fa2409154241a30f4516044da",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/C14-P19-buttons-front-pair.zip",
+      "bytes": 9146427,
+      "sha256": "52ee0c56895f02dfd3a729e76875aebd3fe8d9dd1c61d5cf0ed666d020c87768",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/C14-P19-buttons-full-white.zip",
+      "bytes": 9261221,
+      "sha256": "4aa472fa0f72cdd7c31ef2dfe22b566d2c4e0b06a59ca283af9a9e156e63f627",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/C14-P19-touch-front-pair.zip",
+      "bytes": 8931568,
+      "sha256": "2d88cf44b2ce38a9f900850ddae2c0015d953018aada4b86fe51a41d1af7419f",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/C14-P19-touch-full-white.zip",
+      "bytes": 9127058,
+      "sha256": "20b334bb5b1c7cd083a1afa39b91401785ec7f7fe7d138ba78a643f3ece794e4",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/README.md",
+      "bytes": 2357,
+      "sha256": "7940ef785aa9cc3bdb4d4c07b25711a358e6efc331a2f0d452b4b4eed642635d",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/SHA256SUMS.txt",
+      "bytes": 572,
+      "sha256": "b1196d89315b46419a17673f49039d19394bbf2848c22bb36a3fa39639aacd8e",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/common-black-two-devices.zip",
+      "bytes": 7718381,
+      "sha256": "fd72d249489681c97264a75f1737c97539f3a1156612f16bced5ee0c884dcd15",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/downloads/common-red-two-devices.zip",
+      "bytes": 2035525,
+      "sha256": "8f067094f61efe33e5e1c1f6b6cebabdd7efbd5f45b15851107e6814a0377435",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/publication-manifest.json",
+      "bytes": 21250,
+      "sha256": "44d7599b9eb782c3d771f206d07f945cb6b4c8c00c1221f36da712dad93f4822",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/release-assets.json",
+      "bytes": 9167,
+      "sha256": "80120e6c453740ed3eecce81417d5bc768b85e38e1d984de107a4560cf3d5cd2",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/back_shell_C10.stl",
+      "bytes": 709784,
+      "sha256": "f58e072c40328cd22b1eb9664ea554ab3da3cb31febfeab899b65ab7cd27ccc7",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/card_RF_window_and_gap_TOP.stl",
+      "bytes": 46684,
+      "sha256": "412f68f5176e8e33d759bbca9a4d7578f8731b9bf0f08d18d54bda925cca2733",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/card_antenna_housing_TOP.stl",
+      "bytes": 99484,
+      "sha256": "3c37360f02fe38b3a161e77172335d90125c4c02bc42e8fda69cf05b104fdb9c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/card_channel_roof_TOP.stl",
+      "bytes": 61884,
+      "sha256": "ab7b7efe96705ed1e435534e895a1f4c3503102b6a6f9c38389606b6e561ce4c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/display_carrier_COMMON.stl",
+      "bytes": 247384,
+      "sha256": "d1af1e83e10984e10189e15e74485a194506d7923868f4e74b26e5ab342f5440",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/nfc_reader_tray_C13.stl",
+      "bytes": 186484,
+      "sha256": "3c370374effe2176b38e0e3436b6870c4f9fc9ece0512be384eceb4416eb46e7",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/common/screen_bezel_COMMON.stl",
+      "bytes": 213484,
+      "sha256": "616ceed092b1ca8684b1de237bdc6c5c02029b0f9bb87d22a2c344c6ff3d5343",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/optional-fit-gauges/battery_41x71_FIT_FRAME.stl",
+      "bytes": 20884,
+      "sha256": "d34c9d234976c0d60a6ea973434211c6e0aabea816c7474ffd44b58644298059",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/optional-fit-gauges/screen_fit_ring_46p8.stl",
+      "bytes": 57684,
+      "sha256": "7bb8ebe2b0f68d0361c60b558ebbf5989e57126c117ba16decc8daf619986d24",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/touch-only/front_shell_TOUCH_ONLY.stl",
+      "bytes": 1167284,
+      "sha256": "c5d049092a8be389fb4adcbef8edb546149d0006371c5cea8db62c474372d7c6",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/stl/two-button/front_shell_PANEL_SWITCHES.stl",
+      "bytes": 1194284,
+      "sha256": "a9639d30bba73181e5bf8a0172239aec4dd3cb4aef35d62ee13323ce3e6aa534",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "hardware/c14-p19/vendor-inputs.json",
+      "bytes": 3488,
+      "sha256": "8a6394fca4a0cb4e4595885ad01fe7bae0571caad44af521220889719a85099c",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "package.json",
+      "bytes": 7462,
+      "sha256": "f75f5f6a55d2d5fa7f9efbfdc67ee7143721dccaf2a77a3e74cf9016e019d073",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "releases/firmware-f74ee4c/README.md",
+      "bytes": 2926,
+      "sha256": "b647c37931ba4a6b4f8f52d9976c12459126d1d9e701a8b3bef2beb2ef566efe",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "releases/firmware-f74ee4c/bootloader/bootloader.bin",
+      "bytes": 21392,
+      "sha256": "3e2d70618d82d036333b9db42a6299d95bfc820f5c72adcc9aab1dd29e3474e9",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "releases/firmware-f74ee4c/digivice.bin",
+      "bytes": 1550512,
+      "sha256": "9e728539f57bd82f3d53e4cc749c8475e52e68b124d8901d1d9324cf692ae324",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "releases/firmware-f74ee4c/manifest.json",
+      "bytes": 1485,
+      "sha256": "d98d959c1b61c163c7eedd7e0f0b4b3f0f99a054aa2213e989cda723865ba3f2",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "releases/firmware-f74ee4c/ota_data_initial.bin",
+      "bytes": 8192,
+      "sha256": "7d2c7ac4888bfd75cd5f56e8d61f69595121183afc81556c876732fd3782c62f",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "releases/firmware-f74ee4c/partition_table/partition-table.bin",
+      "bytes": 3072,
+      "sha256": "703550d3bc9af51a7cf8c96f486ba5acb13f81d2301035b3eae0da4f793d33f1",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "scripts/analyze-capture-pairs.py",
+      "bytes": 1934,
+      "sha256": "bd72c916305f4c901a372df5278345165b025b6923bc6a7b85379c9e24bb576c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/assemble-world-ds-catalog.py",
+      "bytes": 8104,
+      "sha256": "5a83044bb7185eee5b650f4ea035f415a01f5db0386da3bcf85d428315af042a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/audit-digigame-assets.py",
+      "bytes": 6270,
+      "sha256": "cb84175f4d36aa0b67ca22c339cbef69823c188cc192181d8535b23d283c1e6e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/audit-world-ds-assets.py",
+      "bytes": 9724,
+      "sha256": "9c750a0f9525371d038bf43ce2de7a65f128a4bca8fb11b195e18d8cdeb8b4ba",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/audit-world-ds-growth.py",
+      "bytes": 7939,
+      "sha256": "d54cdfb8f6bcfdb6555f635a42b94805677893f339e7b5a2ede33109c4fcfbe5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/balance-sim.cpp",
+      "bytes": 19176,
+      "sha256": "69d4e37cea236886b0117093945f8195008bef189e78969b012e868e4540357d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/check-publication.sh",
+      "bytes": 1144,
+      "sha256": "72f3b66963ef979c5502b70fe817addacda90b18ef937d696c4f22673cc2dd88",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "scripts/demo.sh",
+      "bytes": 164,
+      "sha256": "bd683829f5fa8ce984161e41aa34ce2c0315e8872b1a52c197a8257a7d839da6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/download-world-ds-browser.py",
+      "bytes": 21197,
+      "sha256": "45a07640672ee60ad16f1ba178365e06727f688819cf6bf1bb2dcdbffabf674b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/export-world-ds-roster.py",
+      "bytes": 3643,
+      "sha256": "618308ce8d8c40ccf4444005171e557bab49a3b2e260d25fa94a2f07f8fe5d92",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/flash-device.py",
+      "bytes": 16014,
+      "sha256": "2554e8a3ef8bde0323cef4c23abd4a93120c8321a6651cc77ae1c2b11cd08a3a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/garage-assets.ts",
+      "bytes": 1849,
+      "sha256": "6b3917ea1796b20ba53ac48e2a00d1cdb831ae42ae2274099b0db91e74bdc7a8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/generate-world-ds-profiles.py",
+      "bytes": 23966,
+      "sha256": "66857a54dce96b4af37a92f1178f68eb379611e1a555bfca3f438bbeddd936fe",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/handheld-demo.cpp",
+      "bytes": 23272,
+      "sha256": "6a5e22ad0182691381dd2d5f64fa83ea6a2ac0706aa6d3c61251eb09b7d2e09b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/import-digigame-assets.py",
+      "bytes": 24161,
+      "sha256": "3b1e4d649a35290f1cc1eb70775088785ae9b909b1420c65165ebf3823d08c2a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/import-sprite-sheet.py",
+      "bytes": 23995,
+      "sha256": "20533fe12aa4a0a4b47c565e317cacfdf331777b3c214f6fbe34d9ed77ce7f64",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/install-sd-usb.py",
+      "bytes": 25087,
+      "sha256": "78edb68f0fb19f3de46e1b74da3787b228086db8577f37d8257a296b669c91c3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/investigate-progression.py",
+      "bytes": 7164,
+      "sha256": "599bcecb5d22e424ebe0690a0044d31831779f9073759c39ec13e359594bd833",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/measure-park-readiness.py",
+      "bytes": 17854,
+      "sha256": "94fa4e2d88493df34ac2eb5ef200b4f936e721d311409581a6ddd9af7f9ee0e5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/native-ui-contact-sheet.swift",
+      "bytes": 2124,
+      "sha256": "74a3337aac4006af4071a63c6887d8b45dddb93329ba81091e197dd583f58640",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/node.sh",
+      "bytes": 480,
+      "sha256": "825226cb37e2c5df39ecf2c792639b3ae07e91a53b9ebfa7d3f514abb3b81121",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/power-demo.cpp",
+      "bytes": 2939,
+      "sha256": "4c2c5efaa2c9f7e7a55ad3d38fb7da6b1db95bb422557fd0a97109aefff0fa4d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/practice-serial-host.cpp",
+      "bytes": 6022,
+      "sha256": "70312265388437b8e28420822e1d8dee3faecbb0e1982b8c86968ec824236ea8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/prepare-world-ds-sd.py",
+      "bytes": 4370,
+      "sha256": "27ca5ba88358e79170633b0a475f4d2105df4bef77ce30e36f1c7dc7d433bfc5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/render-native-ui.cpp",
+      "bytes": 29452,
+      "sha256": "c97771fe3f96c8434629126c4cbe75370f66118630d559f7b0802dd3df052d78",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/render-native-ui.py",
+      "bytes": 4622,
+      "sha256": "36d3d0bf0c9abdcdafbc08258a13f2ca3664505bb93fb6919f3335dca6c38bbd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/report-final-auto-balance.py",
+      "bytes": 18319,
+      "sha256": "bae723d6d4c579ef7c4cdf121566354bdecd02175bdfa4eb2b516ff33e34414a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/report-park-session-audit.py",
+      "bytes": 14188,
+      "sha256": "6b684ed31cde6b60f9f20bbf1caf8e496d7750d12fddb0c6135528710f2bb68b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-balance-sim.sh",
+      "bytes": 998,
+      "sha256": "7212efdb700730f1afb3e4165e002512df20fb6b10a5ea1362fd4ade1f5d3f68",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-handheld-demo.sh",
+      "bytes": 3479,
+      "sha256": "f972890760f2a2954b9222a912651396c0f23103ba9fcf97d1932782123c4f55",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-handheld-sd-demo.sh",
+      "bytes": 245,
+      "sha256": "46b49fb4d86763425d82a7bbe6973632c176fa5a0761ca6664aba897a76be6ca",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-park-session-audit.py",
+      "bytes": 8573,
+      "sha256": "2ce78dd512ac9073ab39f1600d2152646ab242dbdffe6ddc795a55cf3649a240",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-power-demo.sh",
+      "bytes": 380,
+      "sha256": "20a5653a94d9e668cdd1254c0e76e7b93dedc30144a48dd27ffc4f6e2b395afc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-practice-serial-demo.sh",
+      "bytes": 4085,
+      "sha256": "757c35e2928dfe0a5684c41b08d55f27caf1701f6cb09446ebb701c3341f7d87",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-world-ds-balance.py",
+      "bytes": 27319,
+      "sha256": "eb70af9f98a40f277e7c5930d405d5979cc2c8ba4bed2888a24b65fbef05e4a9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/run-world-ds-early-baseline.py",
+      "bytes": 5945,
+      "sha256": "54a679e0bfbf41d0264ed827b9bc60f69e5eca16b13427ba6dd5cb62c2eeeb37",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/sign-assets.ts",
+      "bytes": 4777,
+      "sha256": "abc776f6b4e7ea33035bbc90cc52664cacfc78796a12144260099616f58e8ebb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/simulate-display-budget.mjs",
+      "bytes": 16344,
+      "sha256": "1a39b86c6c1010545d9bfb5d75bcc778f9935e07a8854435c830a2d3ba171734",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/simulate-evolution-progression.cpp",
+      "bytes": 7844,
+      "sha256": "d99d3c224a5d1553c8ebc93f869acfcbcd30c67edf015505172c32fdd7f5fbca",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/simulate-evolution-progression.py",
+      "bytes": 4212,
+      "sha256": "3119d7da784e89ac802f8aad8a845c8d3c08a1e1316f59fd12b5f0333b2be508",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/summarize-balance.py",
+      "bytes": 5236,
+      "sha256": "099c15ac882c4c8f7716882ff198689ba9494eea654127296f19da86b49b6ca0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/verify-balance-selection.py",
+      "bytes": 3486,
+      "sha256": "7c83a6f17d446f65a3f6c53bf838a83f0b9ca926636709504edc1830656485f0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/verify-world-ds-catalog.py",
+      "bytes": 8622,
+      "sha256": "77ad4e551460bb8e049fa81987552f5a3a6c2891db362f3fd91a45f40edb7cb8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "scripts/world-ds-assets.py",
+      "bytes": 15467,
+      "sha256": "ad3f935c8242387e212872b20375c64ec70f2c43dc32dadf5d7aecc75912f6e0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "service/API.md",
+      "bytes": 57963,
+      "sha256": "0e1d71ca57bf6bc6ac6f9db95b551cda4ee156bb3e7cb0b4d28c20eddb723bd9",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "service/asset-service.ts",
+      "bytes": 5450,
+      "sha256": "9aa76eacc0e30ca722d0141660dd7c0ff590e52a2ec9cffa6274ddf1f5a344d0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "service/asset-signing.ts",
+      "bytes": 10479,
+      "sha256": "cb0e2c2919fae3b75e86980e2c1cf2942fa1e41858a2e768de8be083a8e7b22b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "service/battle-service.ts",
+      "bytes": 37227,
+      "sha256": "b58e05e7e43437e6ce457cb1cbf5c0e8112891dd33d8e466eff5dfcab2ef15db",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "service/battle-trace.ts",
+      "bytes": 6981,
+      "sha256": "e1738b08fc503628a7838aedd7dbbc473616e51bb758f15ec35c352a5073c109",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "service/device-assets.ts",
+      "bytes": 11584,
+      "sha256": "949c97005c2265406fdba5ae78344b91f9dfd881e73cd821a1377b7f0ceeedad",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "service/garage-assets.ts",
+      "bytes": 22506,
+      "sha256": "1e1a98cbb0eac6d07e0fca520f98820680fd654a3565c414ce511a80a04d552a",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "service/roster-service.ts",
+      "bytes": 16595,
+      "sha256": "2865f2f23cc7b6565f8cdd3d6d7f719551c8904efca12f0bf753d9d5433b42d6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "service/server.ts",
+      "bytes": 80358,
+      "sha256": "13cd186adb83b317118011f01e88dca098be7ee9bd26826a7b6e656222593453",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "service/world-ds-assets.ts",
+      "bytes": 5160,
+      "sha256": "0e93f6b6e4258f2e0dd837ca2c130437f52f69b60fe41d81e0b6a5938c159bb5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/asset-cache.test.mjs",
+      "bytes": 26550,
+      "sha256": "e0e00715d2e35f148dcf3aaaefbb9423b38cdfe752c0cba400ae7b94b2892f39",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/assets-service.test.ts",
+      "bytes": 15569,
+      "sha256": "8061bfcb8632c059e519374e93d5cfabd495133afdf7011e9b0858bf5ab85eee",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/audio-engine.test.mjs",
+      "bytes": 23436,
+      "sha256": "649da475e3dfdeeb9bf64de74cf7ac74655bef96c0a9270a5d9edf4dd160539e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/auto-battle.test.mjs",
+      "bytes": 7333,
+      "sha256": "3ea4943a265007f6174e645634662c3527ecc5fbe6ab5789ed1aa2eb599978f5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/auto-tuning-compat.test.mjs",
+      "bytes": 5262,
+      "sha256": "eb15ac71677151ad784fea1468cf6e837c7a8e178cab0309fc84f8d84b4417a5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/background-player.test.mjs",
+      "bytes": 6722,
+      "sha256": "2e747c382f5ae039a281bfa12e93b4a117e8ebc3e34b6b8ee53bc2fd9ddd7a7e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/battle-client.test.mjs",
+      "bytes": 25329,
+      "sha256": "ab70dfb64e9d29a486b241105f676cc9ae03a08266d303f926335f17658cb892",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/battle-http.test.ts",
+      "bytes": 3563,
+      "sha256": "8b590af5bfdb7f160c7341e904b31f44074f8d3286c75967d2f1e662b2fb151d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/battle-service.test.ts",
+      "bytes": 15821,
+      "sha256": "9081efd583a5e8972d4b955939680f0e6b4d2f4536fd2cf4e379cf37434de1ef",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/battle_presentation_test.cpp",
+      "bytes": 23405,
+      "sha256": "80c7c823f4a11cdb9fbca7389546321e5d4b367c65cce5536db1fc677be3d08a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-assets.mjs",
+      "bytes": 6441,
+      "sha256": "835a5e54f4f8b02dd412aa8d6053ff50b92ef8eca12ec0dc16d88f9e238fe37b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-audio-integration.mjs",
+      "bytes": 11097,
+      "sha256": "789d377817a56cc4157f7fa892a617aba3fa33b1de70aec497d75905938d66c6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-audio.mjs",
+      "bytes": 14109,
+      "sha256": "5cd61ef455c38a86bd0a4d7a2817d11a1ca80a187ce3022120257142ef250e0f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-auto-tuning.mjs",
+      "bytes": 15157,
+      "sha256": "e62727f6d90f6fb374740dac4a721734c59f6079afdd6368158cfab6160b7d48",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-backgrounds.mjs",
+      "bytes": 26157,
+      "sha256": "4ba694f8ed25bf57bf3b5e5c19e0b551aaabd5c7e63a3a6abcd34b4394631445",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-battle-modes.mjs",
+      "bytes": 22396,
+      "sha256": "ec623520f9c5ef20aead0e6a7da7b6fcca647506253f37c38d162436f4f90507",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-battle.mjs",
+      "bytes": 11719,
+      "sha256": "d18fa6af0d9a48ac9e5adc5e3edcc6fc349c5aaca673446fa5f7caf72cfdd71d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-collection.mjs",
+      "bytes": 10864,
+      "sha256": "857ec622e6be808d2a73b898622961d81e8120a9f254a40dd83453eb4b03e4e7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-flick-capture.mjs",
+      "bytes": 25748,
+      "sha256": "8a862c6e024a56c606de26591de0b0e4da3d4efab73d4025b883875d02952f56",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-gameplay.mjs",
+      "bytes": 15457,
+      "sha256": "5cef60b7c0fea4841d14d7eb2a09f1ed518bf5dfb888a8a195446a09e5594de5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-garage.mjs",
+      "bytes": 9387,
+      "sha256": "4e1779755d8f19dcef212706aa98200cf670bea885a49f4739bf541aa377b5f2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-graph.mjs",
+      "bytes": 17357,
+      "sha256": "c47d81970ee5a90fdfa09424c9224493961e8b2facadea74d18131aa46862907",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-navigation.mjs",
+      "bytes": 17187,
+      "sha256": "a838fcd75fbca8fa6b2db5a6728f718c7741a1b148bd51dc5e28d5c443e4dcb2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-onboarding.mjs",
+      "bytes": 18644,
+      "sha256": "eb28a02768b4fa23f733bdf1012319f96009d6aac7f5ea552625dd31f35ac1ed",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-park-connection.mjs",
+      "bytes": 28701,
+      "sha256": "2c86022fb74810f5173bfa1de26b7339f4d4b68d88e22af33adb965c886c0cf0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-park-encounters.mjs",
+      "bytes": 17931,
+      "sha256": "44f3dc03ebdadde38051077084c358c167b85d8f4b3e9f8bbf687bb4537339ab",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-park-first-evolution.mjs",
+      "bytes": 16678,
+      "sha256": "dbe82bd79d0cf3030a6f8247bd0905ff7f520d3c91ce0b38e709ea9d05bb0936",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-partners.mjs",
+      "bytes": 20400,
+      "sha256": "321fdd6c27dae78f758ac18c570e7e2322ef6cfb856e7a531bc49ec07e7d1ab9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-personal-art.mjs",
+      "bytes": 5962,
+      "sha256": "4b7ffdd602181a46ae44a551a2719127f84a3ef4e7be01be4e56e469b9bee9e3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-playtest.mjs",
+      "bytes": 21073,
+      "sha256": "93afd28617bd189fa3fbe6a8178b49a40067895af8db3a929906f6a98c3ba9f2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-power.mjs",
+      "bytes": 10026,
+      "sha256": "ec79577eee7683bf05f5a127bf2768e9f819d7ac39934baea0869ca7a354c045",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-practice-v6.mjs",
+      "bytes": 12750,
+      "sha256": "98ec08913efd0d753d7212d35de75499f47b7480f90955b57fef92602d10addf",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-production-assets.mjs",
+      "bytes": 4728,
+      "sha256": "8a8625745f1bdb65ff4513ad0218a98d1a805c04f032f629286b9e7c9a9c6445",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-production-repair.mjs",
+      "bytes": 6859,
+      "sha256": "509a53aea6fff1c8d7bf4d8aaa7d9b2fcb517b2d6c3db9bb9fb972913d656025",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-rpg.mjs",
+      "bytes": 17536,
+      "sha256": "307b652b132aa0b1b602da6c6ef3106ed8055fcceb0573d3225c228762a966a9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-rules11.mjs",
+      "bytes": 126,
+      "sha256": "46e7910c01ef38edc608a2f60dfa3ed085ad47f197300772f6220c5a640736e9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-rules12.mjs",
+      "bytes": 9983,
+      "sha256": "f8e97db86dda0a9913a28eee89511c9da3f5253de7a8d90b8facbaa0b96fe9a6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-smoke.mjs",
+      "bytes": 6202,
+      "sha256": "b308c6c5086f8ccceca66a22547d5db38ff755cb305e96b47e862293278b9047",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-stats.mjs",
+      "bytes": 17589,
+      "sha256": "c29f49425221903bca07ab0c8276fb65dd27204d44d294ab713782fcb226c68b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-tools.mjs",
+      "bytes": 1531,
+      "sha256": "ca119aa44b5567512199dbb4f1ea9f517b23cf3f267e710bfd2a37a99f7abdd0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-touch-gameplay.mjs",
+      "bytes": 25999,
+      "sha256": "cfba65633a4d80bdb3ed255854804ee69593dd62d805991340c36481e4bbec46",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-touch-recovery.mjs",
+      "bytes": 13689,
+      "sha256": "a95abafedfd31caa22f82264f9650d6102f53de4b88a588d403d6c93e29cba6e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-touch.mjs",
+      "bytes": 19151,
+      "sha256": "5a4959bd1c22845e2f48e14da6bc1eb22a73df31a4c39ad2a36ec8f5324268b0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/browser-world-ds.mjs",
+      "bytes": 23977,
+      "sha256": "c63ecd9eeb11fe11197643e6ab07b53dbfae657619b921aa5b7847f4d969ef89",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/capture-gesture.test.mjs",
+      "bytes": 11695,
+      "sha256": "57c6e38b826b332555fab5a2712d064a5972d4de43edf49ccdcadc0a7c402bd8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/capture-trajectory.test.mjs",
+      "bytes": 2124,
+      "sha256": "dcc5106d5aa7978ff66a60a903fe6fbed65e8204a8e9512f9bf53cfcce3e2d26",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/care-actions.test.mjs",
+      "bytes": 2241,
+      "sha256": "e8ef2958771e980155bb78e5ecf1ff2e62b8f29901b33e2709d04dcde68c50bd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/care-capture-state.test.mjs",
+      "bytes": 2239,
+      "sha256": "03142aa68c66db4c3cfebdd7b62ab016ab57a0e2933938367b63415afb7aebf0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/care_capture_core_test.cpp",
+      "bytes": 13912,
+      "sha256": "0e17e2ed9bc14dd702d22b2a0c9a509ff8bbcd4494f8c1fa2fc8c952ff111f13",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/combat_test.cpp",
+      "bytes": 5913,
+      "sha256": "fdca3efe7222dc7df91f0c8cf03ae540413ef262c08c415c957bd4d77702884e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/core_cli_test.py",
+      "bytes": 21664,
+      "sha256": "2e5adca1e7dfe35fd9707aa3e5efb4096aa7bebaad87ed35316f67dcbdd08249",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/core_test.cpp",
+      "bytes": 53649,
+      "sha256": "4c3abe70a7203d11e95d95982051764e5f7807babe3096736b697bba037eb9aa",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/device-assets.test.ts",
+      "bytes": 12350,
+      "sha256": "bea4342a6b100acb70b02425bb20a33a6179a5ae141aefb60134a54926688433",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "tests/device-navigation.test.mjs",
+      "bytes": 8494,
+      "sha256": "8885826e8169d9477defc6457105f538b1a2c7c80fdd39d8edd7eb5c3c19b88d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/device_ui_test.cpp",
+      "bytes": 83558,
+      "sha256": "dd675b21a6cdcb246f717f3cfe60f543e8a9250545f82e86eff570f465eac8be",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/auto-policy-candidate.hpp",
+      "bytes": 2832,
+      "sha256": "c693a8e89c0fde2fbef3652831407d2f9bdaa978472a0bf1fa93b63675f5ae02",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/auto-tuning-baseline16-service.json",
+      "bytes": 120160,
+      "sha256": "e997ccc87cdecd4fc038a32cce68ed3e4db4f1722b02bd7b5ee4258d26bc2dd6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/battle-labels-frozen-rules7.json",
+      "bytes": 69597,
+      "sha256": "f0434128ddc7720593ac4372cd072616b87d949465f6e69fe19336f6a41fa75c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/care-capture-rules11-baseline.json",
+      "bytes": 32380,
+      "sha256": "57b265b349f26a05a8e728a0dd8f39aa270c6bd21567cc5c97adf2c3b79397de",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/care-v7.json",
+      "bytes": 186793,
+      "sha256": "662d92c3e3f16f4c9b91c393b8647a3ee0a80ed01939e23d3292640a79b48b70",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/care-v8-profile-migration.json",
+      "bytes": 46190,
+      "sha256": "25fa5aa0a25da9d70ba12056f5f7864cee57a311179f785dcd86da3a98c5de08",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/deferred-schema15-baseline.json",
+      "bytes": 15329,
+      "sha256": "23c09c5b1a4eef78d37c7f01c1523be797f998d4f49035549d6a1c4d14149f21",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/digigame-frozen-rules6.json",
+      "bytes": 24161,
+      "sha256": "8240a1355165a68006005915cca0681ff091aa5c3b1d94c3de0bf48c6cdc79a9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/evolution-graph-frozen-rules5.json",
+      "bytes": 21060,
+      "sha256": "26577dc761390b9dcf245d43699b59378f7d2d32054512b877237fe1ca26c385",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/park-baseline-inherited-trace.json",
+      "bytes": 72147,
+      "sha256": "36961ce28c302f4e72d3537f5f244455e9b78517893313f8b40391772dec5be8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/park-baseline-service.json",
+      "bytes": 119484,
+      "sha256": "1462685cbe140072c30e9b01611f98ec9185d10af4c17e254002f44888604e84",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/practice-service-v5.json",
+      "bytes": 60139,
+      "sha256": "bfa1f006ebaad4deaa2258dea21864d591d1fb0f88842dd64e2da429c62956e7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/practice-v2.json",
+      "bytes": 36676,
+      "sha256": "7fba3d4b64413a2eb6cd932740040871b847d1b6e3c2d093e5d7b5cefa156f46",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/practice-v3.json",
+      "bytes": 21992,
+      "sha256": "70d4a81acce135188c1973a9d568a2e44fd0fef61ee2504084e306af831be780",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/practice-v4.json",
+      "bytes": 313636,
+      "sha256": "66c5b7e5d90ea90d50c1772785653f3e65205f9ab84d7f47c6bf54a22ecd79c7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/practice-v5.json",
+      "bytes": 460056,
+      "sha256": "2707f3c0af40c65778693bb288e1bc841146fb1deca47c0a5f20dfdd8b2b5a72",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/practice-v6.json",
+      "bytes": 605008,
+      "sha256": "907bc6ab8a5e2b104083b0d6230e1484adc640930570891ec1a2c9a55b8d976b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/rules5-324b774.json",
+      "bytes": 75754,
+      "sha256": "219d80d13962083edb31c622a04af91ebb898dce737f6013a39b74ec0ee580bc",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/rules6-evolution-baseline.json",
+      "bytes": 16397,
+      "sha256": "a930801dff59a6f7197e64c3035bc661c5cf173dfad0c9447d59264c9ea12658",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/rules7-evolution-baseline.json",
+      "bytes": 18167,
+      "sha256": "294da1fa5d47ddb10ec3cdbdd3bfe8cd8472298c35329b3d76961339eb811b29",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/walking-rules10-baseline.json",
+      "bytes": 40191,
+      "sha256": "f323bcf13d3bfd06ca023187fa7e2a8e1773ce77dd81e75cb9d5a4c2096db80a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/fixtures/world-ds-frozen-rules.json",
+      "bytes": 19006,
+      "sha256": "d6255d481fb1ab857b81a6aa644f746dfc16c3ea5f8068add6bd21b1f1750e14",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/gameplay_progression_audit.cpp",
+      "bytes": 3129,
+      "sha256": "5653cced6a55349b093148846db5bd3470ceb7b0edbacbd98513e6f97b49a00a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/garage-assets.test.ts",
+      "bytes": 12967,
+      "sha256": "c6f0aa543851c320223d82caaf12bb7a508c28847b90fc22dd0109c7fad659a0",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "tests/garage-library.test.mjs",
+      "bytes": 1671,
+      "sha256": "0ca964347485b715a87fa56275ea13b9e7fd3430aac655f1e1c2fcf5b6edb97b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/garage-service.test.ts",
+      "bytes": 13288,
+      "sha256": "7e3a8d2f246534a92cc714de1041673876210788dd9f5c858f84cd8e02e4049d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/legacy-fixture.ts",
+      "bytes": 1568,
+      "sha256": "5c413f56ac68e677f5983013e0fc4e49006d87783d7282c032ec13d00f958eb5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/legacy-state-projection.ts",
+      "bytes": 634,
+      "sha256": "2430d8b57a9bdfe1dcd7cce51bc002efbfc50c51787981729e538d70d2d09f4e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/legacy_v3_test.cpp",
+      "bytes": 46336,
+      "sha256": "ab10843b70159ff73b372eaf57f75167e5521f0b9835338ad5875cdfd8017f7a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/legacy_v4_test.cpp",
+      "bytes": 9892,
+      "sha256": "c45486986205083a13ded44ce72e3df51123e51cdadf93cfbcc3d806fd3f109c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/nearby_protocol_test.cpp",
+      "bytes": 20856,
+      "sha256": "23b86ae10ebb3630c5c69e2f0c5c39a2ec39ff7b9537eb3e44bfc6f6c0ab97d9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/park_rarity_probe.cpp",
+      "bytes": 2282,
+      "sha256": "fa6eda14fa34c3b02ecf6cd387120c49fa840a3a7c8d019c1f4438ef254fe9a5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/park_session_audit.cpp",
+      "bytes": 9798,
+      "sha256": "86d2358c823b873f92d3ee8d73dcfeead08f3acf052f0ed4d0076ed2f39e649b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/personal-art.test.mjs",
+      "bytes": 4234,
+      "sha256": "7324aba535fb920e6870a0486107af54f1ad1ea41b6b15671d6b93b920d224e2",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/practice_battle_test.cpp",
+      "bytes": 28174,
+      "sha256": "cd41a22ee904bd9f84bcacb6bc2f48a548ea2bc03bdd9164869f19001c009de1",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/practice_cli_test.py",
+      "bytes": 12273,
+      "sha256": "0b9973acdd4d41941e9ad1c1cc2557a33df8049a459e3de9b68374d9abc3b092",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/production_roster_core_test.cpp",
+      "bytes": 11425,
+      "sha256": "3be31e59f4669370cb2f1f314dbba59438d1b8b0a0d68e00ece52a173aed0301",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/progression.test.mjs",
+      "bytes": 3804,
+      "sha256": "9a6f239a3659aa81238073888e2c20c5e0cbc11de37915d373a11e5e18103445",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/publication-assets.test.ts",
+      "bytes": 2501,
+      "sha256": "e500d6d396aa4378e675ba4d07dcae97f38b4afbf536c07ec120024ba2b1fdf5",
+      "unchangedFromGameSource": false
+    },
+    {
+      "path": "tests/queued_encounter_core_test.cpp",
+      "bytes": 10879,
+      "sha256": "7ea8609ea03802a969241ac791ae027b078250b5ee2e1f08200bc5a048767aab",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/roster-client.test.mjs",
+      "bytes": 6770,
+      "sha256": "d47159bda1b7ef01ff47ad84bd4598bc6c3d5ed8e1e9305afb71c5c0514e95ac",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-assets-fallback.test.ts",
+      "bytes": 2484,
+      "sha256": "b2d0815102fba6b3d65c4a7565ac14588ec7f0382a63663cf1630e3632c161c9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-auto-tuning.test.ts",
+      "bytes": 18158,
+      "sha256": "fa23316592910636f2e21c02aacede26d380c52fd75e920f006864a05581f8f8",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-battle-label-migration.test.ts",
+      "bytes": 16015,
+      "sha256": "62ed264ace08fc50ababe1a38657417f8386526c4ec754014ecb8444b2f7be58",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-battle-modes.test.ts",
+      "bytes": 14881,
+      "sha256": "f13f7531a946e5510c2f21d3e8088d1a634ea88a24b752aa9fe76a65c37a5149",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-care-capture.test.ts",
+      "bytes": 14447,
+      "sha256": "28bec83dfc03644c6eead99294b35b58877770b3ecc441b079698ad12d36f62d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-deferred-encounters.test.ts",
+      "bytes": 15640,
+      "sha256": "8ac68b7e33f9882f231cc2feeae0f95401d1141f707d32c441f0d528b63f278e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-device.test.ts",
+      "bytes": 6046,
+      "sha256": "659b6c185bcf7639b827e7ecd7695ad26c9167580b0eceee48174e895fa35995",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-digigame-migration.test.ts",
+      "bytes": 9158,
+      "sha256": "485efd707bd8bc6171a4b887d13ed25b904690ae2cabdcbe3ca085ebdf81c94b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-evolution-graph.test.ts",
+      "bytes": 14318,
+      "sha256": "12c7d1a5b66dee81013605e985298687675cffe460ef204372839cd325c1a8ce",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-flick.test.ts",
+      "bytes": 11788,
+      "sha256": "29bf1569005bdb1358f5e3c279b7d8319f70284ef11af39a00e1e1c69851f792",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-migration.test.ts",
+      "bytes": 15473,
+      "sha256": "1d02be5b4f2e60677dc5f085aebaea6f81982bed2b46fc1c0b9676bbd083d81a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-onboarding.test.ts",
+      "bytes": 13814,
+      "sha256": "3f7bfc3f0ffd0176b08d4e5eb28d9d6b4e00bb84a119f3b10c6b0476c7bd9259",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-park-journey.test.ts",
+      "bytes": 11189,
+      "sha256": "4f11d361804275014574d9f830056e1601342e80148d886e0c559b581575d2b0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-park-migration.test.ts",
+      "bytes": 14115,
+      "sha256": "de94fd85b0e2818ade483d377ef526c56a6d1577e9d0e887e6976bbaf448e25e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-partner.test.ts",
+      "bytes": 7299,
+      "sha256": "3a67a62c1341ebbbac51e47882c22bcd0f91d281437b53f82af1e8a8c510af9a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-practice-six.test.ts",
+      "bytes": 5322,
+      "sha256": "4de51e099ef137d4eec48aa0d693b77bc51011a69dbbba31e1cea9362a155f35",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-rpg.test.ts",
+      "bytes": 16868,
+      "sha256": "328c9f8df5201a07466baf17dff1bebcea65cba0be49ed6582cb1f98c332c3b9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-walking.test.ts",
+      "bytes": 13641,
+      "sha256": "7637a1e5126a3d197bedb83b9174b9abe33499425d9e48c76d5e76cf18f0404b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service-world-ds.test.ts",
+      "bytes": 19655,
+      "sha256": "7c41207ab6cf279c310ba4cbe5480363d0a1d505b7fec30a0b0f89ecab4a24c0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/service.test.ts",
+      "bytes": 12508,
+      "sha256": "af4103b478b1571782f2c7c0fd2c90883bf7871f8430f6282be61323f9c1ff7c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/setup_ui_test.cpp",
+      "bytes": 15812,
+      "sha256": "ab0eb9c25b265d328deb33d14b6bc0f4eb707da11089debc3007a48e9f7e5ffe",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/starter-onboarding.test.mjs",
+      "bytes": 2220,
+      "sha256": "b59f6b5eb648c4cbb9481a6a6c63553f0290e5a945d65ba7ee4a71f957776a4f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_battle_skill_bindings.py",
+      "bytes": 4691,
+      "sha256": "d24682c00b74e133fdd0e28306382fa9734d1c662ee05756cac3fe5ccbee28d0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_digigame_asset_import.py",
+      "bytes": 13257,
+      "sha256": "878a403341a3ac96ba1763cb4e2aeecfffa8d33213b331da526ab377e370026e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_flash_device.py",
+      "bytes": 11360,
+      "sha256": "3ee3fcdc7c180ca86e3209b8687a99b80b1f83317e404c2de1cf86ad868adf0d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_install_sd_usb.py",
+      "bytes": 31170,
+      "sha256": "553429f30f9302803a3a6b2f50da12ae299887f55b50ee052eb69e0cddd6b80f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_production_asset_build.py",
+      "bytes": 2246,
+      "sha256": "b92102a7ba9e17eeb9633969130e27feec08abb04a3a91fcdf0e2ec5f064e562",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_sprite_import.py",
+      "bytes": 14284,
+      "sha256": "5df4b31fe279b9a407b3e2c5b3d8ccdbacc011ff5d00f534298e4f6bfbe0888a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_world_ds_asset_audit.py",
+      "bytes": 7119,
+      "sha256": "297c0d7e3d7f7d007839f940ebf27956ddae843ba3c43e99f4511400f32859c7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_world_ds_assets.py",
+      "bytes": 10499,
+      "sha256": "89f00d6e956be38998c1385f859f865ee83d463fe3ebc818e5d6986b74a623ae",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_world_ds_browser_acquisition.py",
+      "bytes": 19902,
+      "sha256": "9c8ac5246e0f43ffe4e4aea882f37272dbc24bc66466392a42d9fefb18d5e6ba",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/test_world_ds_generator.py",
+      "bytes": 18904,
+      "sha256": "caa2381f500778a34f47cbd18d23851ec27382d6a4bd90389c5a8565d79d6c86",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/touch-browser-tools.mjs",
+      "bytes": 4107,
+      "sha256": "897b223af2a8be9bb122c6a3afbfb4f9704fa674c7c491dfc046ad28e860572c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/two-button-input.test.mjs",
+      "bytes": 6175,
+      "sha256": "9595c50fa454eb22dee0c4feb89995ae6c425929ac97f128e1daf04b63828bac",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/walking_core_test.cpp",
+      "bytes": 12464,
+      "sha256": "bb74a7651fd9a2e043c7ebdc6f76817048efe906845d8430c53ec032973f4ce5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/world-ds-assets.test.ts",
+      "bytes": 4302,
+      "sha256": "eeb3293c3e8ccb75efad4d55286d2ba41c73af30f3403f0213e27fcf5b49063c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/world_ds_balance_audit.cpp",
+      "bytes": 16436,
+      "sha256": "e14e6653e49d3793edbf7cf4c2f84c3b1005d899bc597ad3ad54ed80080800df",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/world_ds_catalog_test.cpp",
+      "bytes": 7595,
+      "sha256": "5094d44ccfe3af73179885bf015338701c7d951343889444c60534512b4c266e",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "tests/world_ds_early_baseline.cpp",
+      "bytes": 6890,
+      "sha256": "a375123b5e427352530df6db5c73437b93d94408014ab2354fcfc70fb67f0a02",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/app.js",
+      "bytes": 172231,
+      "sha256": "df9d02037c8178675ac72f78e92d0669420b16ab3d3f74732caf093fd8f704ce",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/asset-cache.js",
+      "bytes": 26437,
+      "sha256": "f5fc5d583441075b00c22198ef362567d16e14cc23c3a433a388ac637ea1383c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/asset-library.js",
+      "bytes": 11350,
+      "sha256": "07d9f9b0c37687a4fc925a730db0e25c3e75cd7473f6cd00071490962b49927d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/asset-public-key.js",
+      "bytes": 382,
+      "sha256": "7982adca7ad1e092fa1c47b5057f0091853f6097b282f77a0322300800515ad9",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/asset-store.js",
+      "bytes": 3425,
+      "sha256": "6a7282b746240f9eab4df2a984b1e0718413e1aa982e8747fbe69f3952e9e473",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/audio-engine.js",
+      "bytes": 20056,
+      "sha256": "d4181401d592a3aa700d12f9b15c14f77ed4853fa742d628cc8fbfa69cec8c04",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/auto-battle.js",
+      "bytes": 6875,
+      "sha256": "1a75b54a3166712f6625fcf98796457ece5feb122930dcaeff1d450c138e06c7",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/background-pack.js",
+      "bytes": 7235,
+      "sha256": "efc0a88e74d7676b0ba9d780916f2a72bb286a4a9efe802d046aedb64afc419c",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/background-player.js",
+      "bytes": 4001,
+      "sha256": "2bdbb3d74558dc46bb50b515fb45b7ceefe3158edc8e00f49300ce2f841b31b3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/battle-client.js",
+      "bytes": 19125,
+      "sha256": "e0362aa8f5dee3f0f1192ac61865cf67dbd6dd7b9fcc923de806288f9e546ea0",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/builtin-pack.js",
+      "bytes": 346,
+      "sha256": "13449dc0e00a6317b59464cb8258a9395cf92bca00b3dbaa592cd8b547ec4bc3",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/capture-gesture.js",
+      "bytes": 8654,
+      "sha256": "ad764b235ab3dc4ec33b3150782916131b9c653e34d3c4ea6b43470f6fc5de05",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/capture-trajectory.js",
+      "bytes": 1333,
+      "sha256": "0a230a40cc60c6f8513efc3c80ef186bc7614d86e4b4e9cce8462432dea11439",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/care-actions.js",
+      "bytes": 1522,
+      "sha256": "069b256c86cd9d82f144c314180856a732bc7f26b600d30cdb68ac5e9ae4922f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/care-capture-state.js",
+      "bytes": 3273,
+      "sha256": "72fa109b15a9960f9e78289d23d8de0b544cc82426b33b6192e6588ed732f7fb",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/device-navigation.js",
+      "bytes": 8172,
+      "sha256": "c8b4edfbb4565c8f99d7249a8199d37cd42140eeede7740508ad6aebc1acfca4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/device-screen.js",
+      "bytes": 14141,
+      "sha256": "c858f557e0c79e2f098f6a4e39b2425feb7d518fa9b2bfd035e7f8eb9f625b8f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/form-art.js",
+      "bytes": 4242,
+      "sha256": "10465de4c10b53035568ba7ed995c7c5a585334fdca90c39650cc79590b6f1cd",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/garage-library.js",
+      "bytes": 6560,
+      "sha256": "4003fe3531dfff51e1b2d4dd9fcc37f5fb34ea5fa5c66a4a2a28417f37e4f595",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/index.html",
+      "bytes": 18524,
+      "sha256": "adeb523214f335eb27f653669393861031f926c3bfa0a8228b503da9e8424f8d",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/personal-art.js",
+      "bytes": 8121,
+      "sha256": "98d99cc196f0e627c4b72b6415b7a3f16f2ec600b786513d8127effa8fcba1a6",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/personal-pack.js",
+      "bytes": 6091,
+      "sha256": "fc824b28ac311d72971606acf5e843d80e22f0841f10dc93c20e40eca30ef563",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/power-demo.css",
+      "bytes": 6028,
+      "sha256": "75a50b572041a5bf3e978bc9457473e93a8975bf50b8d44b046defed3a97fc20",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/power-demo.html",
+      "bytes": 3450,
+      "sha256": "7f2a7dd03bf2699e49568be14ac63ca1382339f1234b7326eebea2a435764fc5",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/power-demo.js",
+      "bytes": 8610,
+      "sha256": "b79d536ade7cb11493e2a32f2e3a700421fd61d564289ee8953a85f1c8b02c9f",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/progression.js",
+      "bytes": 5098,
+      "sha256": "68cf2884ebda56f6787dfcdcffc1109789b8b96f89d355bfae62f4d4b55c8c89",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/roster-client.js",
+      "bytes": 7696,
+      "sha256": "6494a26138d13cef84e84ae3ccf6c5d5e4908104beed6185664827c96e21749a",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/starter-onboarding.js",
+      "bytes": 4441,
+      "sha256": "652ccca2d1a8f8cc91d831d620a4451fb28a75bc7a9b2e8f25bbeb5a05678815",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/styles.css",
+      "bytes": 61262,
+      "sha256": "4a91802a17846d9e2cde5c05107dd506e8ad5bccf6feee551c76938b4060c2a4",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/two-button-input.js",
+      "bytes": 4817,
+      "sha256": "6c13cfa66ace687305aef716caef2b17ee5d56182a6b65480981c4f3ec533f8b",
+      "unchangedFromGameSource": true
+    },
+    {
+      "path": "web/walking-state.js",
+      "bytes": 1962,
+      "sha256": "19ff187a32f6ae5ddbb849c49952c1d5bb6efbf405601a421d502d0a7a7b3a1f",
+      "unchangedFromGameSource": true
+    }
+  ],
+  "fileCountExcludingThisManifest": 785,
+  "bytesExcludingThisManifest": 80735147,
+  "publicationAdaptedSourcePaths": [
+    ".gitignore",
+    "README.md",
+    "assets/device/FORMAT.md",
+    "assets/device/budget.json",
+    "assets/device/index.json",
+    "assets/device/sources.json",
+    "assets/device/verification.json",
+    "assets/packs/catalog.json",
+    "demos/battle/README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/ASSET_CACHE.md",
+    "docs/AUDIO_CUES.md",
+    "docs/BACKLOG.md",
+    "docs/BALANCE.md",
+    "docs/BATTLE_ART_RELEASE.md",
+    "docs/BATTLE_MODES.md",
+    "docs/BATTLE_STATS.md",
+    "docs/CARE_CAPTURE_RELEASE.md",
+    "docs/COLLECTION_RULES.md",
+    "docs/DEVICE_NAVIGATION.md",
+    "docs/DEVICE_READINESS.md",
+    "docs/DEVICE_SETUP.md",
+    "docs/DIGIGAME_IMPORT.md",
+    "docs/ESP_BUILD.md",
+    "docs/ESP_PRACTICE.md",
+    "docs/FINAL_TUNING.md",
+    "docs/FIRMWARE.md",
+    "docs/FIRST_USE_CHECKLIST.md",
+    "docs/FLICK_CAPTURE_CONTRACT.md",
+    "docs/GAMEPLAY_REVIEW.md",
+    "docs/GARAGE_ASSETS.md",
+    "docs/HANDHELD_FOUNDATION.md",
+    "docs/HARDWARE.md",
+    "docs/INSTALLATION.md",
+    "docs/MOTION_AND_SOUND.md",
+    "docs/NEARBY_PROTOCOL.md",
+    "docs/ONBOARDING.md",
+    "docs/PARK_HARDWARE.md",
+    "docs/PARK_PLAYTEST.md",
+    "docs/PARTNER_ROSTER.md",
+    "docs/PERSONAL_ART_IMPORT.md",
+    "docs/PLAYTEST_GUIDE.md",
+    "docs/POWER_CONTROL.md",
+    "docs/SD_ASSETS.md",
+    "docs/TOMORROW_READINESS.md",
+    "docs/TOUCH_READINESS.md",
+    "docs/TWO_DEVICE_PREPARATION.md",
+    "docs/USB_BOOT_RELIABILITY.md",
+    "docs/USB_SD_TRANSFER.md",
+    "docs/VERIFICATION.md",
+    "docs/WALKING_NEARBY_RELEASE.md",
+    "docs/WORLD_DS_ROSTER.md",
+    "docs/research/world-ds-balance-design.md",
+    "docs/research/world-ds-content-audit.md",
+    "docs/research/world-ds-role-identity-review.md",
+    "package.json",
+    "service/API.md",
+    "service/device-assets.ts",
+    "service/garage-assets.ts",
+    "tests/device-assets.test.ts",
+    "tests/garage-assets.test.ts"
+  ],
+  "excludes": [
+    "private saves/NVS/readbacks/device identities/credentials",
+    "private scenery and third-party art without redistribution clearance",
+    "historical device evidence and development Git history",
+    "active audio/music/trading changes",
+    "toolchains and generated host/ESP build directories",
+    "vendor CAD reference meshes/manuals",
+    "superseded C13 white parts/plates"
+  ],
+  "includesVerifiedFirmwareImages": true,
+  "includesActualDownloadablePlateAndGcodeZipPackages": 6,
+  "remotePublicationApproved": true,
+  "approvedDestination": "private goldsziggy/z-ark-digivice"
+}

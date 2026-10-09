@@ -1,0 +1,9175 @@
+{
+  "formatVersion": 1,
+  "baselineCommit": "916c0d8",
+  "scope": "Preserved authored native profiles; no art or canonical-stat claim",
+  "forms": [
+    {
+      "id": 1,
+      "name": "Mote",
+      "lineage": 1,
+      "stage": "Original",
+      "parent": 0,
+      "children": [
+        2,
+        0
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "grove",
+      "skills": {
+        "physical": "Twig Tap",
+        "heavy": "Root Ram",
+        "magic": "Seed Spark"
+      },
+      "artId": "mote",
+      "baseStats": {
+        "maxHp": 100,
+        "attack": 18,
+        "defense": 14,
+        "magic": 16,
+        "resistance": 16
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 100,
+          "attack": 18,
+          "defense": 14,
+          "magic": 16,
+          "resistance": 16
+        },
+        {
+          "level": 2,
+          "maxHp": 103,
+          "attack": 19,
+          "defense": 15,
+          "magic": 17,
+          "resistance": 17
+        },
+        {
+          "level": 3,
+          "maxHp": 106,
+          "attack": 20,
+          "defense": 16,
+          "magic": 18,
+          "resistance": 18
+        },
+        {
+          "level": 4,
+          "maxHp": 109,
+          "attack": 21,
+          "defense": 17,
+          "magic": 19,
+          "resistance": 19
+        },
+        {
+          "level": 5,
+          "maxHp": 112,
+          "attack": 22,
+          "defense": 18,
+          "magic": 20,
+          "resistance": 20
+        },
+        {
+          "level": 6,
+          "maxHp": 115,
+          "attack": 23,
+          "defense": 19,
+          "magic": 21,
+          "resistance": 21
+        },
+        {
+          "level": 7,
+          "maxHp": 118,
+          "attack": 24,
+          "defense": 20,
+          "magic": 22,
+          "resistance": 22
+        },
+        {
+          "level": 8,
+          "maxHp": 121,
+          "attack": 25,
+          "defense": 21,
+          "magic": 23,
+          "resistance": 23
+        },
+        {
+          "level": 9,
+          "maxHp": 124,
+          "attack": 26,
+          "defense": 22,
+          "magic": 24,
+          "resistance": 24
+        },
+        {
+          "level": 10,
+          "maxHp": 127,
+          "attack": 27,
+          "defense": 23,
+          "magic": 25,
+          "resistance": 25
+        },
+        {
+          "level": 11,
+          "maxHp": 130,
+          "attack": 28,
+          "defense": 24,
+          "magic": 26,
+          "resistance": 26
+        },
+        {
+          "level": 12,
+          "maxHp": 133,
+          "attack": 29,
+          "defense": 25,
+          "magic": 27,
+          "resistance": 27
+        },
+        {
+          "level": 13,
+          "maxHp": 136,
+          "attack": 30,
+          "defense": 26,
+          "magic": 28,
+          "resistance": 28
+        },
+        {
+          "level": 14,
+          "maxHp": 139,
+          "attack": 31,
+          "defense": 27,
+          "magic": 29,
+          "resistance": 29
+        },
+        {
+          "level": 15,
+          "maxHp": 142,
+          "attack": 32,
+          "defense": 28,
+          "magic": 30,
+          "resistance": 30
+        },
+        {
+          "level": 16,
+          "maxHp": 145,
+          "attack": 33,
+          "defense": 29,
+          "magic": 31,
+          "resistance": 31
+        },
+        {
+          "level": 17,
+          "maxHp": 148,
+          "attack": 34,
+          "defense": 30,
+          "magic": 32,
+          "resistance": 32
+        },
+        {
+          "level": 18,
+          "maxHp": 151,
+          "attack": 35,
+          "defense": 31,
+          "magic": 33,
+          "resistance": 33
+        },
+        {
+          "level": 19,
+          "maxHp": 154,
+          "attack": 36,
+          "defense": 32,
+          "magic": 34,
+          "resistance": 34
+        },
+        {
+          "level": 20,
+          "maxHp": 157,
+          "attack": 37,
+          "defense": 33,
+          "magic": 35,
+          "resistance": 35
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Glint",
+      "lineage": 1,
+      "stage": "Original",
+      "parent": 1,
+      "children": [
+        3,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "grove",
+      "skills": {
+        "physical": "Briar Swipe",
+        "heavy": "Timber Rush",
+        "magic": "Bloom Flash"
+      },
+      "artId": "glint",
+      "baseStats": {
+        "maxHp": 116,
+        "attack": 24,
+        "defense": 19,
+        "magic": 23,
+        "resistance": 22
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 116,
+          "attack": 24,
+          "defense": 19,
+          "magic": 23,
+          "resistance": 22
+        },
+        {
+          "level": 6,
+          "maxHp": 119,
+          "attack": 25,
+          "defense": 20,
+          "magic": 24,
+          "resistance": 23
+        },
+        {
+          "level": 7,
+          "maxHp": 122,
+          "attack": 26,
+          "defense": 21,
+          "magic": 25,
+          "resistance": 24
+        },
+        {
+          "level": 8,
+          "maxHp": 125,
+          "attack": 27,
+          "defense": 22,
+          "magic": 26,
+          "resistance": 25
+        },
+        {
+          "level": 9,
+          "maxHp": 128,
+          "attack": 28,
+          "defense": 23,
+          "magic": 27,
+          "resistance": 26
+        },
+        {
+          "level": 10,
+          "maxHp": 131,
+          "attack": 29,
+          "defense": 24,
+          "magic": 28,
+          "resistance": 27
+        },
+        {
+          "level": 11,
+          "maxHp": 134,
+          "attack": 30,
+          "defense": 25,
+          "magic": 29,
+          "resistance": 28
+        },
+        {
+          "level": 12,
+          "maxHp": 137,
+          "attack": 31,
+          "defense": 26,
+          "magic": 30,
+          "resistance": 29
+        },
+        {
+          "level": 13,
+          "maxHp": 140,
+          "attack": 32,
+          "defense": 27,
+          "magic": 31,
+          "resistance": 30
+        },
+        {
+          "level": 14,
+          "maxHp": 143,
+          "attack": 33,
+          "defense": 28,
+          "magic": 32,
+          "resistance": 31
+        },
+        {
+          "level": 15,
+          "maxHp": 146,
+          "attack": 34,
+          "defense": 29,
+          "magic": 33,
+          "resistance": 32
+        },
+        {
+          "level": 16,
+          "maxHp": 149,
+          "attack": 35,
+          "defense": 30,
+          "magic": 34,
+          "resistance": 33
+        },
+        {
+          "level": 17,
+          "maxHp": 152,
+          "attack": 36,
+          "defense": 31,
+          "magic": 35,
+          "resistance": 34
+        },
+        {
+          "level": 18,
+          "maxHp": 155,
+          "attack": 37,
+          "defense": 32,
+          "magic": 36,
+          "resistance": 35
+        },
+        {
+          "level": 19,
+          "maxHp": 158,
+          "attack": 38,
+          "defense": 33,
+          "magic": 37,
+          "resistance": 36
+        },
+        {
+          "level": 20,
+          "maxHp": 161,
+          "attack": 39,
+          "defense": 34,
+          "magic": 38,
+          "resistance": 37
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Lumen",
+      "lineage": 1,
+      "stage": "Original",
+      "parent": 2,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "grove",
+      "skills": {
+        "physical": "Canopy Claw",
+        "heavy": "Ancient Crash",
+        "magic": "Solar Bloom"
+      },
+      "artId": "lumen",
+      "baseStats": {
+        "maxHp": 136,
+        "attack": 32,
+        "defense": 26,
+        "magic": 32,
+        "resistance": 30
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 136,
+          "attack": 32,
+          "defense": 26,
+          "magic": 32,
+          "resistance": 30
+        },
+        {
+          "level": 11,
+          "maxHp": 140,
+          "attack": 33,
+          "defense": 27,
+          "magic": 34,
+          "resistance": 32
+        },
+        {
+          "level": 12,
+          "maxHp": 144,
+          "attack": 34,
+          "defense": 28,
+          "magic": 36,
+          "resistance": 34
+        },
+        {
+          "level": 13,
+          "maxHp": 148,
+          "attack": 35,
+          "defense": 29,
+          "magic": 38,
+          "resistance": 36
+        },
+        {
+          "level": 14,
+          "maxHp": 152,
+          "attack": 36,
+          "defense": 30,
+          "magic": 40,
+          "resistance": 38
+        },
+        {
+          "level": 15,
+          "maxHp": 156,
+          "attack": 37,
+          "defense": 31,
+          "magic": 42,
+          "resistance": 40
+        },
+        {
+          "level": 16,
+          "maxHp": 160,
+          "attack": 38,
+          "defense": 32,
+          "magic": 44,
+          "resistance": 42
+        },
+        {
+          "level": 17,
+          "maxHp": 164,
+          "attack": 39,
+          "defense": 33,
+          "magic": 46,
+          "resistance": 44
+        },
+        {
+          "level": 18,
+          "maxHp": 168,
+          "attack": 40,
+          "defense": 34,
+          "magic": 48,
+          "resistance": 46
+        },
+        {
+          "level": 19,
+          "maxHp": 172,
+          "attack": 41,
+          "defense": 35,
+          "magic": 50,
+          "resistance": 48
+        },
+        {
+          "level": 20,
+          "maxHp": 176,
+          "attack": 42,
+          "defense": 36,
+          "magic": 52,
+          "resistance": 50
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Flicker",
+      "lineage": 2,
+      "stage": "Original",
+      "parent": 0,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "neutral",
+      "skills": {
+        "physical": "Quick Peck",
+        "heavy": "Comet Dive",
+        "magic": "Glimmer Pulse"
+      },
+      "artId": "flicker",
+      "baseStats": {
+        "maxHp": 88,
+        "attack": 20,
+        "defense": 12,
+        "magic": 14,
+        "resistance": 12
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 88,
+          "attack": 20,
+          "defense": 12,
+          "magic": 14,
+          "resistance": 12
+        },
+        {
+          "level": 2,
+          "maxHp": 91,
+          "attack": 21,
+          "defense": 13,
+          "magic": 15,
+          "resistance": 13
+        },
+        {
+          "level": 3,
+          "maxHp": 94,
+          "attack": 22,
+          "defense": 14,
+          "magic": 16,
+          "resistance": 14
+        },
+        {
+          "level": 4,
+          "maxHp": 97,
+          "attack": 23,
+          "defense": 15,
+          "magic": 17,
+          "resistance": 15
+        },
+        {
+          "level": 5,
+          "maxHp": 100,
+          "attack": 24,
+          "defense": 16,
+          "magic": 18,
+          "resistance": 16
+        },
+        {
+          "level": 6,
+          "maxHp": 103,
+          "attack": 25,
+          "defense": 17,
+          "magic": 19,
+          "resistance": 17
+        },
+        {
+          "level": 7,
+          "maxHp": 106,
+          "attack": 26,
+          "defense": 18,
+          "magic": 20,
+          "resistance": 18
+        },
+        {
+          "level": 8,
+          "maxHp": 109,
+          "attack": 27,
+          "defense": 19,
+          "magic": 21,
+          "resistance": 19
+        },
+        {
+          "level": 9,
+          "maxHp": 112,
+          "attack": 28,
+          "defense": 20,
+          "magic": 22,
+          "resistance": 20
+        },
+        {
+          "level": 10,
+          "maxHp": 115,
+          "attack": 29,
+          "defense": 21,
+          "magic": 23,
+          "resistance": 21
+        },
+        {
+          "level": 11,
+          "maxHp": 118,
+          "attack": 30,
+          "defense": 22,
+          "magic": 24,
+          "resistance": 22
+        },
+        {
+          "level": 12,
+          "maxHp": 121,
+          "attack": 31,
+          "defense": 23,
+          "magic": 25,
+          "resistance": 23
+        },
+        {
+          "level": 13,
+          "maxHp": 124,
+          "attack": 32,
+          "defense": 24,
+          "magic": 26,
+          "resistance": 24
+        },
+        {
+          "level": 14,
+          "maxHp": 127,
+          "attack": 33,
+          "defense": 25,
+          "magic": 27,
+          "resistance": 25
+        },
+        {
+          "level": 15,
+          "maxHp": 130,
+          "attack": 34,
+          "defense": 26,
+          "magic": 28,
+          "resistance": 26
+        },
+        {
+          "level": 16,
+          "maxHp": 133,
+          "attack": 35,
+          "defense": 27,
+          "magic": 29,
+          "resistance": 27
+        },
+        {
+          "level": 17,
+          "maxHp": 136,
+          "attack": 36,
+          "defense": 28,
+          "magic": 30,
+          "resistance": 28
+        },
+        {
+          "level": 18,
+          "maxHp": 139,
+          "attack": 37,
+          "defense": 29,
+          "magic": 31,
+          "resistance": 29
+        },
+        {
+          "level": 19,
+          "maxHp": 142,
+          "attack": 38,
+          "defense": 30,
+          "magic": 32,
+          "resistance": 30
+        },
+        {
+          "level": 20,
+          "maxHp": 145,
+          "attack": 39,
+          "defense": 31,
+          "magic": 33,
+          "resistance": 31
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Rill",
+      "lineage": 3,
+      "stage": "Original",
+      "parent": 0,
+      "children": [
+        6,
+        0
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "tide",
+      "skills": {
+        "physical": "Fin Slap",
+        "heavy": "River Rush",
+        "magic": "Bubble Burst"
+      },
+      "artId": "rill",
+      "baseStats": {
+        "maxHp": 104,
+        "attack": 14,
+        "defense": 16,
+        "magic": 20,
+        "resistance": 18
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 104,
+          "attack": 14,
+          "defense": 16,
+          "magic": 20,
+          "resistance": 18
+        },
+        {
+          "level": 2,
+          "maxHp": 107,
+          "attack": 15,
+          "defense": 17,
+          "magic": 21,
+          "resistance": 19
+        },
+        {
+          "level": 3,
+          "maxHp": 110,
+          "attack": 16,
+          "defense": 18,
+          "magic": 22,
+          "resistance": 20
+        },
+        {
+          "level": 4,
+          "maxHp": 113,
+          "attack": 17,
+          "defense": 19,
+          "magic": 23,
+          "resistance": 21
+        },
+        {
+          "level": 5,
+          "maxHp": 116,
+          "attack": 18,
+          "defense": 20,
+          "magic": 24,
+          "resistance": 22
+        },
+        {
+          "level": 6,
+          "maxHp": 119,
+          "attack": 19,
+          "defense": 21,
+          "magic": 25,
+          "resistance": 23
+        },
+        {
+          "level": 7,
+          "maxHp": 122,
+          "attack": 20,
+          "defense": 22,
+          "magic": 26,
+          "resistance": 24
+        },
+        {
+          "level": 8,
+          "maxHp": 125,
+          "attack": 21,
+          "defense": 23,
+          "magic": 27,
+          "resistance": 25
+        },
+        {
+          "level": 9,
+          "maxHp": 128,
+          "attack": 22,
+          "defense": 24,
+          "magic": 28,
+          "resistance": 26
+        },
+        {
+          "level": 10,
+          "maxHp": 131,
+          "attack": 23,
+          "defense": 25,
+          "magic": 29,
+          "resistance": 27
+        },
+        {
+          "level": 11,
+          "maxHp": 134,
+          "attack": 24,
+          "defense": 26,
+          "magic": 30,
+          "resistance": 28
+        },
+        {
+          "level": 12,
+          "maxHp": 137,
+          "attack": 25,
+          "defense": 27,
+          "magic": 31,
+          "resistance": 29
+        },
+        {
+          "level": 13,
+          "maxHp": 140,
+          "attack": 26,
+          "defense": 28,
+          "magic": 32,
+          "resistance": 30
+        },
+        {
+          "level": 14,
+          "maxHp": 143,
+          "attack": 27,
+          "defense": 29,
+          "magic": 33,
+          "resistance": 31
+        },
+        {
+          "level": 15,
+          "maxHp": 146,
+          "attack": 28,
+          "defense": 30,
+          "magic": 34,
+          "resistance": 32
+        },
+        {
+          "level": 16,
+          "maxHp": 149,
+          "attack": 29,
+          "defense": 31,
+          "magic": 35,
+          "resistance": 33
+        },
+        {
+          "level": 17,
+          "maxHp": 152,
+          "attack": 30,
+          "defense": 32,
+          "magic": 36,
+          "resistance": 34
+        },
+        {
+          "level": 18,
+          "maxHp": 155,
+          "attack": 31,
+          "defense": 33,
+          "magic": 37,
+          "resistance": 35
+        },
+        {
+          "level": 19,
+          "maxHp": 158,
+          "attack": 32,
+          "defense": 34,
+          "magic": 38,
+          "resistance": 36
+        },
+        {
+          "level": 20,
+          "maxHp": 161,
+          "attack": 33,
+          "defense": 35,
+          "magic": 39,
+          "resistance": 37
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Brine",
+      "lineage": 3,
+      "stage": "Original",
+      "parent": 5,
+      "children": [
+        7,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "tide",
+      "skills": {
+        "physical": "Reef Strike",
+        "heavy": "Breaker Bash",
+        "magic": "Tidal Orb"
+      },
+      "artId": "brine",
+      "baseStats": {
+        "maxHp": 120,
+        "attack": 20,
+        "defense": 23,
+        "magic": 29,
+        "resistance": 26
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 20,
+          "defense": 23,
+          "magic": 29,
+          "resistance": 26
+        },
+        {
+          "level": 6,
+          "maxHp": 124,
+          "attack": 21,
+          "defense": 24,
+          "magic": 31,
+          "resistance": 27
+        },
+        {
+          "level": 7,
+          "maxHp": 128,
+          "attack": 22,
+          "defense": 25,
+          "magic": 33,
+          "resistance": 28
+        },
+        {
+          "level": 8,
+          "maxHp": 132,
+          "attack": 23,
+          "defense": 26,
+          "magic": 35,
+          "resistance": 29
+        },
+        {
+          "level": 9,
+          "maxHp": 136,
+          "attack": 24,
+          "defense": 27,
+          "magic": 37,
+          "resistance": 30
+        },
+        {
+          "level": 10,
+          "maxHp": 140,
+          "attack": 25,
+          "defense": 28,
+          "magic": 39,
+          "resistance": 31
+        },
+        {
+          "level": 11,
+          "maxHp": 144,
+          "attack": 26,
+          "defense": 29,
+          "magic": 41,
+          "resistance": 32
+        },
+        {
+          "level": 12,
+          "maxHp": 148,
+          "attack": 27,
+          "defense": 30,
+          "magic": 43,
+          "resistance": 33
+        },
+        {
+          "level": 13,
+          "maxHp": 152,
+          "attack": 28,
+          "defense": 31,
+          "magic": 45,
+          "resistance": 34
+        },
+        {
+          "level": 14,
+          "maxHp": 156,
+          "attack": 29,
+          "defense": 32,
+          "magic": 47,
+          "resistance": 35
+        },
+        {
+          "level": 15,
+          "maxHp": 160,
+          "attack": 30,
+          "defense": 33,
+          "magic": 49,
+          "resistance": 36
+        },
+        {
+          "level": 16,
+          "maxHp": 164,
+          "attack": 31,
+          "defense": 34,
+          "magic": 51,
+          "resistance": 37
+        },
+        {
+          "level": 17,
+          "maxHp": 168,
+          "attack": 32,
+          "defense": 35,
+          "magic": 53,
+          "resistance": 38
+        },
+        {
+          "level": 18,
+          "maxHp": 172,
+          "attack": 33,
+          "defense": 36,
+          "magic": 55,
+          "resistance": 39
+        },
+        {
+          "level": 19,
+          "maxHp": 176,
+          "attack": 34,
+          "defense": 37,
+          "magic": 57,
+          "resistance": 40
+        },
+        {
+          "level": 20,
+          "maxHp": 180,
+          "attack": 35,
+          "defense": 38,
+          "magic": 59,
+          "resistance": 41
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Pelagia",
+      "lineage": 3,
+      "stage": "Original",
+      "parent": 6,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "tide",
+      "skills": {
+        "physical": "Trident Sweep",
+        "heavy": "Maelstrom Ram",
+        "magic": "Abyssal Wave"
+      },
+      "artId": "pelagia",
+      "baseStats": {
+        "maxHp": 142,
+        "attack": 28,
+        "defense": 31,
+        "magic": 40,
+        "resistance": 36
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 142,
+          "attack": 28,
+          "defense": 31,
+          "magic": 40,
+          "resistance": 36
+        },
+        {
+          "level": 11,
+          "maxHp": 146,
+          "attack": 29,
+          "defense": 32,
+          "magic": 42,
+          "resistance": 38
+        },
+        {
+          "level": 12,
+          "maxHp": 150,
+          "attack": 30,
+          "defense": 33,
+          "magic": 44,
+          "resistance": 40
+        },
+        {
+          "level": 13,
+          "maxHp": 154,
+          "attack": 31,
+          "defense": 34,
+          "magic": 46,
+          "resistance": 42
+        },
+        {
+          "level": 14,
+          "maxHp": 158,
+          "attack": 32,
+          "defense": 35,
+          "magic": 48,
+          "resistance": 44
+        },
+        {
+          "level": 15,
+          "maxHp": 162,
+          "attack": 33,
+          "defense": 36,
+          "magic": 50,
+          "resistance": 46
+        },
+        {
+          "level": 16,
+          "maxHp": 166,
+          "attack": 34,
+          "defense": 37,
+          "magic": 52,
+          "resistance": 48
+        },
+        {
+          "level": 17,
+          "maxHp": 170,
+          "attack": 35,
+          "defense": 38,
+          "magic": 54,
+          "resistance": 50
+        },
+        {
+          "level": 18,
+          "maxHp": 174,
+          "attack": 36,
+          "defense": 39,
+          "magic": 56,
+          "resistance": 52
+        },
+        {
+          "level": 19,
+          "maxHp": 178,
+          "attack": 37,
+          "defense": 40,
+          "magic": 58,
+          "resistance": 54
+        },
+        {
+          "level": 20,
+          "maxHp": 182,
+          "attack": 38,
+          "defense": 41,
+          "magic": 60,
+          "resistance": 56
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Cinder",
+      "lineage": 4,
+      "stage": "Original",
+      "parent": 0,
+      "children": [
+        9,
+        0
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "ember",
+      "skills": {
+        "physical": "Coal Claw",
+        "heavy": "Furnace Charge",
+        "magic": "Ember Shot"
+      },
+      "artId": "cinder",
+      "baseStats": {
+        "maxHp": 96,
+        "attack": 22,
+        "defense": 12,
+        "magic": 18,
+        "resistance": 12
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 96,
+          "attack": 22,
+          "defense": 12,
+          "magic": 18,
+          "resistance": 12
+        },
+        {
+          "level": 2,
+          "maxHp": 99,
+          "attack": 24,
+          "defense": 13,
+          "magic": 19,
+          "resistance": 13
+        },
+        {
+          "level": 3,
+          "maxHp": 102,
+          "attack": 26,
+          "defense": 14,
+          "magic": 20,
+          "resistance": 14
+        },
+        {
+          "level": 4,
+          "maxHp": 105,
+          "attack": 28,
+          "defense": 15,
+          "magic": 21,
+          "resistance": 15
+        },
+        {
+          "level": 5,
+          "maxHp": 108,
+          "attack": 30,
+          "defense": 16,
+          "magic": 22,
+          "resistance": 16
+        },
+        {
+          "level": 6,
+          "maxHp": 111,
+          "attack": 32,
+          "defense": 17,
+          "magic": 23,
+          "resistance": 17
+        },
+        {
+          "level": 7,
+          "maxHp": 114,
+          "attack": 34,
+          "defense": 18,
+          "magic": 24,
+          "resistance": 18
+        },
+        {
+          "level": 8,
+          "maxHp": 117,
+          "attack": 36,
+          "defense": 19,
+          "magic": 25,
+          "resistance": 19
+        },
+        {
+          "level": 9,
+          "maxHp": 120,
+          "attack": 38,
+          "defense": 20,
+          "magic": 26,
+          "resistance": 20
+        },
+        {
+          "level": 10,
+          "maxHp": 123,
+          "attack": 40,
+          "defense": 21,
+          "magic": 27,
+          "resistance": 21
+        },
+        {
+          "level": 11,
+          "maxHp": 126,
+          "attack": 42,
+          "defense": 22,
+          "magic": 28,
+          "resistance": 22
+        },
+        {
+          "level": 12,
+          "maxHp": 129,
+          "attack": 44,
+          "defense": 23,
+          "magic": 29,
+          "resistance": 23
+        },
+        {
+          "level": 13,
+          "maxHp": 132,
+          "attack": 46,
+          "defense": 24,
+          "magic": 30,
+          "resistance": 24
+        },
+        {
+          "level": 14,
+          "maxHp": 135,
+          "attack": 48,
+          "defense": 25,
+          "magic": 31,
+          "resistance": 25
+        },
+        {
+          "level": 15,
+          "maxHp": 138,
+          "attack": 50,
+          "defense": 26,
+          "magic": 32,
+          "resistance": 26
+        },
+        {
+          "level": 16,
+          "maxHp": 141,
+          "attack": 52,
+          "defense": 27,
+          "magic": 33,
+          "resistance": 27
+        },
+        {
+          "level": 17,
+          "maxHp": 144,
+          "attack": 54,
+          "defense": 28,
+          "magic": 34,
+          "resistance": 28
+        },
+        {
+          "level": 18,
+          "maxHp": 147,
+          "attack": 56,
+          "defense": 29,
+          "magic": 35,
+          "resistance": 29
+        },
+        {
+          "level": 19,
+          "maxHp": 150,
+          "attack": 58,
+          "defense": 30,
+          "magic": 36,
+          "resistance": 30
+        },
+        {
+          "level": 20,
+          "maxHp": 153,
+          "attack": 60,
+          "defense": 31,
+          "magic": 37,
+          "resistance": 31
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Scoria",
+      "lineage": 4,
+      "stage": "Original",
+      "parent": 8,
+      "children": [
+        10,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "ember",
+      "skills": {
+        "physical": "Obsidian Slash",
+        "heavy": "Magma Crash",
+        "magic": "Lava Lance"
+      },
+      "artId": "scoria",
+      "baseStats": {
+        "maxHp": 112,
+        "attack": 32,
+        "defense": 18,
+        "magic": 25,
+        "resistance": 18
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 112,
+          "attack": 32,
+          "defense": 18,
+          "magic": 25,
+          "resistance": 18
+        },
+        {
+          "level": 6,
+          "maxHp": 115,
+          "attack": 34,
+          "defense": 19,
+          "magic": 26,
+          "resistance": 19
+        },
+        {
+          "level": 7,
+          "maxHp": 118,
+          "attack": 36,
+          "defense": 20,
+          "magic": 27,
+          "resistance": 20
+        },
+        {
+          "level": 8,
+          "maxHp": 121,
+          "attack": 38,
+          "defense": 21,
+          "magic": 28,
+          "resistance": 21
+        },
+        {
+          "level": 9,
+          "maxHp": 124,
+          "attack": 40,
+          "defense": 22,
+          "magic": 29,
+          "resistance": 22
+        },
+        {
+          "level": 10,
+          "maxHp": 127,
+          "attack": 42,
+          "defense": 23,
+          "magic": 30,
+          "resistance": 23
+        },
+        {
+          "level": 11,
+          "maxHp": 130,
+          "attack": 44,
+          "defense": 24,
+          "magic": 31,
+          "resistance": 24
+        },
+        {
+          "level": 12,
+          "maxHp": 133,
+          "attack": 46,
+          "defense": 25,
+          "magic": 32,
+          "resistance": 25
+        },
+        {
+          "level": 13,
+          "maxHp": 136,
+          "attack": 48,
+          "defense": 26,
+          "magic": 33,
+          "resistance": 26
+        },
+        {
+          "level": 14,
+          "maxHp": 139,
+          "attack": 50,
+          "defense": 27,
+          "magic": 34,
+          "resistance": 27
+        },
+        {
+          "level": 15,
+          "maxHp": 142,
+          "attack": 52,
+          "defense": 28,
+          "magic": 35,
+          "resistance": 28
+        },
+        {
+          "level": 16,
+          "maxHp": 145,
+          "attack": 54,
+          "defense": 29,
+          "magic": 36,
+          "resistance": 29
+        },
+        {
+          "level": 17,
+          "maxHp": 148,
+          "attack": 56,
+          "defense": 30,
+          "magic": 37,
+          "resistance": 30
+        },
+        {
+          "level": 18,
+          "maxHp": 151,
+          "attack": 58,
+          "defense": 31,
+          "magic": 38,
+          "resistance": 31
+        },
+        {
+          "level": 19,
+          "maxHp": 154,
+          "attack": 60,
+          "defense": 32,
+          "magic": 39,
+          "resistance": 32
+        },
+        {
+          "level": 20,
+          "maxHp": 157,
+          "attack": 62,
+          "defense": 33,
+          "magic": 40,
+          "resistance": 33
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Pyrel",
+      "lineage": 4,
+      "stage": "Original",
+      "parent": 9,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "ember",
+      "skills": {
+        "physical": "Inferno Talon",
+        "heavy": "Volcano Break",
+        "magic": "Phoenix Flare"
+      },
+      "artId": "pyrel",
+      "baseStats": {
+        "maxHp": 132,
+        "attack": 44,
+        "defense": 25,
+        "magic": 34,
+        "resistance": 26
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 132,
+          "attack": 44,
+          "defense": 25,
+          "magic": 34,
+          "resistance": 26
+        },
+        {
+          "level": 11,
+          "maxHp": 136,
+          "attack": 46,
+          "defense": 26,
+          "magic": 36,
+          "resistance": 27
+        },
+        {
+          "level": 12,
+          "maxHp": 140,
+          "attack": 48,
+          "defense": 27,
+          "magic": 38,
+          "resistance": 28
+        },
+        {
+          "level": 13,
+          "maxHp": 144,
+          "attack": 50,
+          "defense": 28,
+          "magic": 40,
+          "resistance": 29
+        },
+        {
+          "level": 14,
+          "maxHp": 148,
+          "attack": 52,
+          "defense": 29,
+          "magic": 42,
+          "resistance": 30
+        },
+        {
+          "level": 15,
+          "maxHp": 152,
+          "attack": 54,
+          "defense": 30,
+          "magic": 44,
+          "resistance": 31
+        },
+        {
+          "level": 16,
+          "maxHp": 156,
+          "attack": 56,
+          "defense": 31,
+          "magic": 46,
+          "resistance": 32
+        },
+        {
+          "level": 17,
+          "maxHp": 160,
+          "attack": 58,
+          "defense": 32,
+          "magic": 48,
+          "resistance": 33
+        },
+        {
+          "level": 18,
+          "maxHp": 164,
+          "attack": 60,
+          "defense": 33,
+          "magic": 50,
+          "resistance": 34
+        },
+        {
+          "level": 19,
+          "maxHp": 168,
+          "attack": 62,
+          "defense": 34,
+          "magic": 52,
+          "resistance": 35
+        },
+        {
+          "level": 20,
+          "maxHp": 172,
+          "attack": 64,
+          "defense": 35,
+          "magic": 54,
+          "resistance": 36
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Impmon",
+      "lineage": 5,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        12,
+        15
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "ember",
+      "skills": {
+        "physical": "Prank Jab",
+        "heavy": "Imp Rush",
+        "magic": "Night of Fire"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 92,
+        "attack": 16,
+        "defense": 12,
+        "magic": 24,
+        "resistance": 14
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 92,
+          "attack": 16,
+          "defense": 12,
+          "magic": 24,
+          "resistance": 14
+        },
+        {
+          "level": 2,
+          "maxHp": 96,
+          "attack": 17,
+          "defense": 13,
+          "magic": 25,
+          "resistance": 15
+        },
+        {
+          "level": 3,
+          "maxHp": 100,
+          "attack": 19,
+          "defense": 14,
+          "magic": 27,
+          "resistance": 17
+        },
+        {
+          "level": 4,
+          "maxHp": 104,
+          "attack": 20,
+          "defense": 15,
+          "magic": 29,
+          "resistance": 18
+        },
+        {
+          "level": 5,
+          "maxHp": 108,
+          "attack": 22,
+          "defense": 17,
+          "magic": 31,
+          "resistance": 20
+        },
+        {
+          "level": 6,
+          "maxHp": 112,
+          "attack": 23,
+          "defense": 18,
+          "magic": 32,
+          "resistance": 21
+        },
+        {
+          "level": 7,
+          "maxHp": 116,
+          "attack": 25,
+          "defense": 19,
+          "magic": 34,
+          "resistance": 23
+        },
+        {
+          "level": 8,
+          "maxHp": 120,
+          "attack": 26,
+          "defense": 21,
+          "magic": 36,
+          "resistance": 24
+        },
+        {
+          "level": 9,
+          "maxHp": 124,
+          "attack": 28,
+          "defense": 22,
+          "magic": 38,
+          "resistance": 26
+        },
+        {
+          "level": 10,
+          "maxHp": 128,
+          "attack": 30,
+          "defense": 24,
+          "magic": 40,
+          "resistance": 28
+        },
+        {
+          "level": 11,
+          "maxHp": 131,
+          "attack": 31,
+          "defense": 25,
+          "magic": 42,
+          "resistance": 30
+        },
+        {
+          "level": 12,
+          "maxHp": 134,
+          "attack": 32,
+          "defense": 26,
+          "magic": 44,
+          "resistance": 32
+        },
+        {
+          "level": 13,
+          "maxHp": 137,
+          "attack": 33,
+          "defense": 27,
+          "magic": 46,
+          "resistance": 34
+        },
+        {
+          "level": 14,
+          "maxHp": 140,
+          "attack": 34,
+          "defense": 28,
+          "magic": 48,
+          "resistance": 36
+        },
+        {
+          "level": 15,
+          "maxHp": 143,
+          "attack": 35,
+          "defense": 29,
+          "magic": 50,
+          "resistance": 38
+        },
+        {
+          "level": 16,
+          "maxHp": 146,
+          "attack": 36,
+          "defense": 30,
+          "magic": 52,
+          "resistance": 40
+        },
+        {
+          "level": 17,
+          "maxHp": 149,
+          "attack": 37,
+          "defense": 31,
+          "magic": 54,
+          "resistance": 42
+        },
+        {
+          "level": 18,
+          "maxHp": 152,
+          "attack": 38,
+          "defense": 32,
+          "magic": 56,
+          "resistance": 44
+        },
+        {
+          "level": 19,
+          "maxHp": 155,
+          "attack": 39,
+          "defense": 33,
+          "magic": 58,
+          "resistance": 46
+        },
+        {
+          "level": 20,
+          "maxHp": 158,
+          "attack": 40,
+          "defense": 34,
+          "magic": 60,
+          "resistance": 48
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Wizardmon",
+      "lineage": 5,
+      "stage": "Champion",
+      "parent": 11,
+      "children": [
+        13,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "ember",
+      "skills": {
+        "physical": "Staff Tap",
+        "heavy": "Rune Crash",
+        "magic": "Hex Spark"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 120,
+        "attack": 26,
+        "defense": 21,
+        "magic": 37,
+        "resistance": 26
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 26,
+          "defense": 21,
+          "magic": 37,
+          "resistance": 26
+        },
+        {
+          "level": 6,
+          "maxHp": 123,
+          "attack": 27,
+          "defense": 22,
+          "magic": 39,
+          "resistance": 28
+        },
+        {
+          "level": 7,
+          "maxHp": 126,
+          "attack": 28,
+          "defense": 23,
+          "magic": 41,
+          "resistance": 30
+        },
+        {
+          "level": 8,
+          "maxHp": 129,
+          "attack": 29,
+          "defense": 24,
+          "magic": 43,
+          "resistance": 32
+        },
+        {
+          "level": 9,
+          "maxHp": 132,
+          "attack": 30,
+          "defense": 25,
+          "magic": 45,
+          "resistance": 34
+        },
+        {
+          "level": 10,
+          "maxHp": 135,
+          "attack": 31,
+          "defense": 26,
+          "magic": 47,
+          "resistance": 36
+        },
+        {
+          "level": 11,
+          "maxHp": 138,
+          "attack": 32,
+          "defense": 27,
+          "magic": 49,
+          "resistance": 38
+        },
+        {
+          "level": 12,
+          "maxHp": 141,
+          "attack": 33,
+          "defense": 28,
+          "magic": 51,
+          "resistance": 40
+        },
+        {
+          "level": 13,
+          "maxHp": 144,
+          "attack": 34,
+          "defense": 29,
+          "magic": 53,
+          "resistance": 42
+        },
+        {
+          "level": 14,
+          "maxHp": 147,
+          "attack": 35,
+          "defense": 30,
+          "magic": 55,
+          "resistance": 44
+        },
+        {
+          "level": 15,
+          "maxHp": 150,
+          "attack": 36,
+          "defense": 31,
+          "magic": 57,
+          "resistance": 46
+        },
+        {
+          "level": 16,
+          "maxHp": 153,
+          "attack": 37,
+          "defense": 32,
+          "magic": 59,
+          "resistance": 48
+        },
+        {
+          "level": 17,
+          "maxHp": 156,
+          "attack": 38,
+          "defense": 33,
+          "magic": 61,
+          "resistance": 50
+        },
+        {
+          "level": 18,
+          "maxHp": 159,
+          "attack": 39,
+          "defense": 34,
+          "magic": 63,
+          "resistance": 52
+        },
+        {
+          "level": 19,
+          "maxHp": 162,
+          "attack": 40,
+          "defense": 35,
+          "magic": 65,
+          "resistance": 54
+        },
+        {
+          "level": 20,
+          "maxHp": 165,
+          "attack": 41,
+          "defense": 36,
+          "magic": 67,
+          "resistance": 56
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Baalmon",
+      "lineage": 5,
+      "stage": "Ultimate",
+      "parent": 12,
+      "children": [
+        14,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "ember",
+      "skills": {
+        "physical": "Charm Slash",
+        "heavy": "Script Break",
+        "magic": "Dusk Seal"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 156,
+        "attack": 40,
+        "defense": 34,
+        "magic": 54,
+        "resistance": 42
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 156,
+          "attack": 40,
+          "defense": 34,
+          "magic": 54,
+          "resistance": 42
+        },
+        {
+          "level": 11,
+          "maxHp": 159,
+          "attack": 41,
+          "defense": 35,
+          "magic": 56,
+          "resistance": 44
+        },
+        {
+          "level": 12,
+          "maxHp": 162,
+          "attack": 42,
+          "defense": 36,
+          "magic": 58,
+          "resistance": 46
+        },
+        {
+          "level": 13,
+          "maxHp": 165,
+          "attack": 43,
+          "defense": 37,
+          "magic": 60,
+          "resistance": 48
+        },
+        {
+          "level": 14,
+          "maxHp": 168,
+          "attack": 44,
+          "defense": 38,
+          "magic": 62,
+          "resistance": 50
+        },
+        {
+          "level": 15,
+          "maxHp": 171,
+          "attack": 45,
+          "defense": 39,
+          "magic": 64,
+          "resistance": 52
+        },
+        {
+          "level": 16,
+          "maxHp": 174,
+          "attack": 46,
+          "defense": 40,
+          "magic": 66,
+          "resistance": 54
+        },
+        {
+          "level": 17,
+          "maxHp": 177,
+          "attack": 47,
+          "defense": 41,
+          "magic": 68,
+          "resistance": 56
+        },
+        {
+          "level": 18,
+          "maxHp": 180,
+          "attack": 48,
+          "defense": 42,
+          "magic": 70,
+          "resistance": 58
+        },
+        {
+          "level": 19,
+          "maxHp": 183,
+          "attack": 49,
+          "defense": 43,
+          "magic": 72,
+          "resistance": 60
+        },
+        {
+          "level": 20,
+          "maxHp": 186,
+          "attack": 50,
+          "defense": 44,
+          "magic": 74,
+          "resistance": 62
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Beelzemon",
+      "lineage": 5,
+      "stage": "Mega",
+      "parent": 13,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "ember",
+      "skills": {
+        "physical": "Claw Sweep",
+        "heavy": "Demon Rush",
+        "magic": "Night Barrage"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 196,
+        "attack": 56,
+        "defense": 48,
+        "magic": 73,
+        "resistance": 60
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 196,
+          "attack": 56,
+          "defense": 48,
+          "magic": 73,
+          "resistance": 60
+        },
+        {
+          "level": 16,
+          "maxHp": 199,
+          "attack": 57,
+          "defense": 49,
+          "magic": 75,
+          "resistance": 62
+        },
+        {
+          "level": 17,
+          "maxHp": 202,
+          "attack": 58,
+          "defense": 50,
+          "magic": 77,
+          "resistance": 64
+        },
+        {
+          "level": 18,
+          "maxHp": 205,
+          "attack": 59,
+          "defense": 51,
+          "magic": 79,
+          "resistance": 66
+        },
+        {
+          "level": 19,
+          "maxHp": 208,
+          "attack": 60,
+          "defense": 52,
+          "magic": 81,
+          "resistance": 68
+        },
+        {
+          "level": 20,
+          "maxHp": 211,
+          "attack": 61,
+          "defense": 53,
+          "magic": 83,
+          "resistance": 70
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Devimon",
+      "lineage": 5,
+      "stage": "Champion",
+      "parent": 11,
+      "children": [
+        16,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "ember",
+      "skills": {
+        "physical": "Wing Rake",
+        "heavy": "Shadow Lunge",
+        "magic": "Void Claw"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 120,
+        "attack": 27,
+        "defense": 21,
+        "magic": 36,
+        "resistance": 24
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 27,
+          "defense": 21,
+          "magic": 36,
+          "resistance": 24
+        },
+        {
+          "level": 6,
+          "maxHp": 124,
+          "attack": 29,
+          "defense": 22,
+          "magic": 38,
+          "resistance": 25
+        },
+        {
+          "level": 7,
+          "maxHp": 128,
+          "attack": 31,
+          "defense": 23,
+          "magic": 40,
+          "resistance": 26
+        },
+        {
+          "level": 8,
+          "maxHp": 132,
+          "attack": 33,
+          "defense": 24,
+          "magic": 42,
+          "resistance": 27
+        },
+        {
+          "level": 9,
+          "maxHp": 136,
+          "attack": 35,
+          "defense": 25,
+          "magic": 44,
+          "resistance": 28
+        },
+        {
+          "level": 10,
+          "maxHp": 140,
+          "attack": 37,
+          "defense": 26,
+          "magic": 46,
+          "resistance": 29
+        },
+        {
+          "level": 11,
+          "maxHp": 144,
+          "attack": 39,
+          "defense": 27,
+          "magic": 48,
+          "resistance": 30
+        },
+        {
+          "level": 12,
+          "maxHp": 148,
+          "attack": 41,
+          "defense": 28,
+          "magic": 50,
+          "resistance": 31
+        },
+        {
+          "level": 13,
+          "maxHp": 152,
+          "attack": 43,
+          "defense": 29,
+          "magic": 52,
+          "resistance": 32
+        },
+        {
+          "level": 14,
+          "maxHp": 156,
+          "attack": 45,
+          "defense": 30,
+          "magic": 54,
+          "resistance": 33
+        },
+        {
+          "level": 15,
+          "maxHp": 160,
+          "attack": 47,
+          "defense": 31,
+          "magic": 56,
+          "resistance": 34
+        },
+        {
+          "level": 16,
+          "maxHp": 164,
+          "attack": 49,
+          "defense": 32,
+          "magic": 58,
+          "resistance": 35
+        },
+        {
+          "level": 17,
+          "maxHp": 168,
+          "attack": 51,
+          "defense": 33,
+          "magic": 60,
+          "resistance": 36
+        },
+        {
+          "level": 18,
+          "maxHp": 172,
+          "attack": 53,
+          "defense": 34,
+          "magic": 62,
+          "resistance": 37
+        },
+        {
+          "level": 19,
+          "maxHp": 176,
+          "attack": 55,
+          "defense": 35,
+          "magic": 64,
+          "resistance": 38
+        },
+        {
+          "level": 20,
+          "maxHp": 180,
+          "attack": 57,
+          "defense": 36,
+          "magic": 66,
+          "resistance": 39
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Myotismon",
+      "lineage": 5,
+      "stage": "Ultimate",
+      "parent": 15,
+      "children": [
+        17,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "ember",
+      "skills": {
+        "physical": "Cape Slash",
+        "heavy": "Midnight Crush",
+        "magic": "Bat Swarm"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 156,
+        "attack": 42,
+        "defense": 34,
+        "magic": 52,
+        "resistance": 38
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 156,
+          "attack": 42,
+          "defense": 34,
+          "magic": 52,
+          "resistance": 38
+        },
+        {
+          "level": 11,
+          "maxHp": 160,
+          "attack": 44,
+          "defense": 35,
+          "magic": 54,
+          "resistance": 39
+        },
+        {
+          "level": 12,
+          "maxHp": 164,
+          "attack": 46,
+          "defense": 36,
+          "magic": 56,
+          "resistance": 40
+        },
+        {
+          "level": 13,
+          "maxHp": 168,
+          "attack": 48,
+          "defense": 37,
+          "magic": 58,
+          "resistance": 41
+        },
+        {
+          "level": 14,
+          "maxHp": 172,
+          "attack": 50,
+          "defense": 38,
+          "magic": 60,
+          "resistance": 42
+        },
+        {
+          "level": 15,
+          "maxHp": 176,
+          "attack": 52,
+          "defense": 39,
+          "magic": 62,
+          "resistance": 43
+        },
+        {
+          "level": 16,
+          "maxHp": 180,
+          "attack": 54,
+          "defense": 40,
+          "magic": 64,
+          "resistance": 44
+        },
+        {
+          "level": 17,
+          "maxHp": 184,
+          "attack": 56,
+          "defense": 41,
+          "magic": 66,
+          "resistance": 45
+        },
+        {
+          "level": 18,
+          "maxHp": 188,
+          "attack": 58,
+          "defense": 42,
+          "magic": 68,
+          "resistance": 46
+        },
+        {
+          "level": 19,
+          "maxHp": 192,
+          "attack": 60,
+          "defense": 43,
+          "magic": 70,
+          "resistance": 47
+        },
+        {
+          "level": 20,
+          "maxHp": 196,
+          "attack": 62,
+          "defense": 44,
+          "magic": 72,
+          "resistance": 48
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "VenomMyotismon",
+      "lineage": 5,
+      "stage": "Mega",
+      "parent": 16,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "ember",
+      "skills": {
+        "physical": "Venom Rake",
+        "heavy": "Abyss Stomp",
+        "magic": "Toxic Eclipse"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 196,
+        "attack": 59,
+        "defense": 48,
+        "magic": 70,
+        "resistance": 54
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 196,
+          "attack": 59,
+          "defense": 48,
+          "magic": 70,
+          "resistance": 54
+        },
+        {
+          "level": 16,
+          "maxHp": 200,
+          "attack": 61,
+          "defense": 49,
+          "magic": 72,
+          "resistance": 55
+        },
+        {
+          "level": 17,
+          "maxHp": 204,
+          "attack": 63,
+          "defense": 50,
+          "magic": 74,
+          "resistance": 56
+        },
+        {
+          "level": 18,
+          "maxHp": 208,
+          "attack": 65,
+          "defense": 51,
+          "magic": 76,
+          "resistance": 57
+        },
+        {
+          "level": 19,
+          "maxHp": 212,
+          "attack": 67,
+          "defense": 52,
+          "magic": 78,
+          "resistance": 58
+        },
+        {
+          "level": 20,
+          "maxHp": 216,
+          "attack": 69,
+          "defense": 53,
+          "magic": 80,
+          "resistance": 59
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Agumon",
+      "lineage": 6,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        19,
+        22
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "ember",
+      "skills": {
+        "physical": "Claw Jab",
+        "heavy": "Dino Charge",
+        "magic": "Pepper Breath"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 104,
+        "attack": 24,
+        "defense": 14,
+        "magic": 14,
+        "resistance": 11
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 104,
+          "attack": 24,
+          "defense": 14,
+          "magic": 14,
+          "resistance": 11
+        },
+        {
+          "level": 2,
+          "maxHp": 108,
+          "attack": 25,
+          "defense": 15,
+          "magic": 15,
+          "resistance": 12
+        },
+        {
+          "level": 3,
+          "maxHp": 112,
+          "attack": 27,
+          "defense": 16,
+          "magic": 17,
+          "resistance": 14
+        },
+        {
+          "level": 4,
+          "maxHp": 116,
+          "attack": 28,
+          "defense": 17,
+          "magic": 19,
+          "resistance": 15
+        },
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 30,
+          "defense": 19,
+          "magic": 21,
+          "resistance": 17
+        },
+        {
+          "level": 6,
+          "maxHp": 124,
+          "attack": 31,
+          "defense": 20,
+          "magic": 22,
+          "resistance": 18
+        },
+        {
+          "level": 7,
+          "maxHp": 128,
+          "attack": 33,
+          "defense": 21,
+          "magic": 24,
+          "resistance": 20
+        },
+        {
+          "level": 8,
+          "maxHp": 132,
+          "attack": 34,
+          "defense": 23,
+          "magic": 26,
+          "resistance": 21
+        },
+        {
+          "level": 9,
+          "maxHp": 136,
+          "attack": 36,
+          "defense": 24,
+          "magic": 28,
+          "resistance": 23
+        },
+        {
+          "level": 10,
+          "maxHp": 140,
+          "attack": 38,
+          "defense": 26,
+          "magic": 30,
+          "resistance": 25
+        },
+        {
+          "level": 11,
+          "maxHp": 144,
+          "attack": 40,
+          "defense": 27,
+          "magic": 31,
+          "resistance": 26
+        },
+        {
+          "level": 12,
+          "maxHp": 148,
+          "attack": 42,
+          "defense": 28,
+          "magic": 32,
+          "resistance": 27
+        },
+        {
+          "level": 13,
+          "maxHp": 152,
+          "attack": 44,
+          "defense": 29,
+          "magic": 33,
+          "resistance": 28
+        },
+        {
+          "level": 14,
+          "maxHp": 156,
+          "attack": 46,
+          "defense": 30,
+          "magic": 34,
+          "resistance": 29
+        },
+        {
+          "level": 15,
+          "maxHp": 160,
+          "attack": 48,
+          "defense": 31,
+          "magic": 35,
+          "resistance": 30
+        },
+        {
+          "level": 16,
+          "maxHp": 164,
+          "attack": 50,
+          "defense": 32,
+          "magic": 36,
+          "resistance": 31
+        },
+        {
+          "level": 17,
+          "maxHp": 168,
+          "attack": 52,
+          "defense": 33,
+          "magic": 37,
+          "resistance": 32
+        },
+        {
+          "level": 18,
+          "maxHp": 172,
+          "attack": 54,
+          "defense": 34,
+          "magic": 38,
+          "resistance": 33
+        },
+        {
+          "level": 19,
+          "maxHp": 176,
+          "attack": 56,
+          "defense": 35,
+          "magic": 39,
+          "resistance": 34
+        },
+        {
+          "level": 20,
+          "maxHp": 180,
+          "attack": 58,
+          "defense": 36,
+          "magic": 40,
+          "resistance": 35
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Greymon",
+      "lineage": 6,
+      "stage": "Champion",
+      "parent": 18,
+      "children": [
+        20,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "ember",
+      "skills": {
+        "physical": "Horn Sweep",
+        "heavy": "Tyrant Charge",
+        "magic": "Blazing Breath"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 132,
+        "attack": 36,
+        "defense": 23,
+        "magic": 25,
+        "resistance": 21
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 132,
+          "attack": 36,
+          "defense": 23,
+          "magic": 25,
+          "resistance": 21
+        },
+        {
+          "level": 6,
+          "maxHp": 136,
+          "attack": 38,
+          "defense": 24,
+          "magic": 26,
+          "resistance": 22
+        },
+        {
+          "level": 7,
+          "maxHp": 140,
+          "attack": 40,
+          "defense": 25,
+          "magic": 27,
+          "resistance": 23
+        },
+        {
+          "level": 8,
+          "maxHp": 144,
+          "attack": 42,
+          "defense": 26,
+          "magic": 28,
+          "resistance": 24
+        },
+        {
+          "level": 9,
+          "maxHp": 148,
+          "attack": 44,
+          "defense": 27,
+          "magic": 29,
+          "resistance": 25
+        },
+        {
+          "level": 10,
+          "maxHp": 152,
+          "attack": 46,
+          "defense": 28,
+          "magic": 30,
+          "resistance": 26
+        },
+        {
+          "level": 11,
+          "maxHp": 156,
+          "attack": 48,
+          "defense": 29,
+          "magic": 31,
+          "resistance": 27
+        },
+        {
+          "level": 12,
+          "maxHp": 160,
+          "attack": 50,
+          "defense": 30,
+          "magic": 32,
+          "resistance": 28
+        },
+        {
+          "level": 13,
+          "maxHp": 164,
+          "attack": 52,
+          "defense": 31,
+          "magic": 33,
+          "resistance": 29
+        },
+        {
+          "level": 14,
+          "maxHp": 168,
+          "attack": 54,
+          "defense": 32,
+          "magic": 34,
+          "resistance": 30
+        },
+        {
+          "level": 15,
+          "maxHp": 172,
+          "attack": 56,
+          "defense": 33,
+          "magic": 35,
+          "resistance": 31
+        },
+        {
+          "level": 16,
+          "maxHp": 176,
+          "attack": 58,
+          "defense": 34,
+          "magic": 36,
+          "resistance": 32
+        },
+        {
+          "level": 17,
+          "maxHp": 180,
+          "attack": 60,
+          "defense": 35,
+          "magic": 37,
+          "resistance": 33
+        },
+        {
+          "level": 18,
+          "maxHp": 184,
+          "attack": 62,
+          "defense": 36,
+          "magic": 38,
+          "resistance": 34
+        },
+        {
+          "level": 19,
+          "maxHp": 188,
+          "attack": 64,
+          "defense": 37,
+          "magic": 39,
+          "resistance": 35
+        },
+        {
+          "level": 20,
+          "maxHp": 192,
+          "attack": 66,
+          "defense": 38,
+          "magic": 40,
+          "resistance": 36
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "MetalGreymon (Vaccine)",
+      "lineage": 6,
+      "stage": "Ultimate",
+      "parent": 19,
+      "children": [
+        21,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "ember",
+      "skills": {
+        "physical": "Steel Claw",
+        "heavy": "Trident Crash",
+        "magic": "Missile Flare"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 168,
+        "attack": 52,
+        "defense": 36,
+        "magic": 40,
+        "resistance": 35
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 168,
+          "attack": 52,
+          "defense": 36,
+          "magic": 40,
+          "resistance": 35
+        },
+        {
+          "level": 11,
+          "maxHp": 172,
+          "attack": 54,
+          "defense": 37,
+          "magic": 41,
+          "resistance": 36
+        },
+        {
+          "level": 12,
+          "maxHp": 176,
+          "attack": 56,
+          "defense": 38,
+          "magic": 42,
+          "resistance": 37
+        },
+        {
+          "level": 13,
+          "maxHp": 180,
+          "attack": 58,
+          "defense": 39,
+          "magic": 43,
+          "resistance": 38
+        },
+        {
+          "level": 14,
+          "maxHp": 184,
+          "attack": 60,
+          "defense": 40,
+          "magic": 44,
+          "resistance": 39
+        },
+        {
+          "level": 15,
+          "maxHp": 188,
+          "attack": 62,
+          "defense": 41,
+          "magic": 45,
+          "resistance": 40
+        },
+        {
+          "level": 16,
+          "maxHp": 192,
+          "attack": 64,
+          "defense": 42,
+          "magic": 46,
+          "resistance": 41
+        },
+        {
+          "level": 17,
+          "maxHp": 196,
+          "attack": 66,
+          "defense": 43,
+          "magic": 47,
+          "resistance": 42
+        },
+        {
+          "level": 18,
+          "maxHp": 200,
+          "attack": 68,
+          "defense": 44,
+          "magic": 48,
+          "resistance": 43
+        },
+        {
+          "level": 19,
+          "maxHp": 204,
+          "attack": 70,
+          "defense": 45,
+          "magic": 49,
+          "resistance": 44
+        },
+        {
+          "level": 20,
+          "maxHp": 208,
+          "attack": 72,
+          "defense": 46,
+          "magic": 50,
+          "resistance": 45
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "WarGreymon",
+      "lineage": 6,
+      "stage": "Mega",
+      "parent": 20,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "ember",
+      "skills": {
+        "physical": "Drill Claw",
+        "heavy": "Brave Rush",
+        "magic": "Terra Blaze"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 208,
+        "attack": 70,
+        "defense": 50,
+        "magic": 57,
+        "resistance": 51
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 208,
+          "attack": 70,
+          "defense": 50,
+          "magic": 57,
+          "resistance": 51
+        },
+        {
+          "level": 16,
+          "maxHp": 212,
+          "attack": 72,
+          "defense": 51,
+          "magic": 58,
+          "resistance": 52
+        },
+        {
+          "level": 17,
+          "maxHp": 216,
+          "attack": 74,
+          "defense": 52,
+          "magic": 59,
+          "resistance": 53
+        },
+        {
+          "level": 18,
+          "maxHp": 220,
+          "attack": 76,
+          "defense": 53,
+          "magic": 60,
+          "resistance": 54
+        },
+        {
+          "level": 19,
+          "maxHp": 224,
+          "attack": 78,
+          "defense": 54,
+          "magic": 61,
+          "resistance": 55
+        },
+        {
+          "level": 20,
+          "maxHp": 228,
+          "attack": 80,
+          "defense": 55,
+          "magic": 62,
+          "resistance": 56
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Tyrannomon",
+      "lineage": 6,
+      "stage": "Champion",
+      "parent": 18,
+      "children": [
+        23,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "ember",
+      "skills": {
+        "physical": "Tail Swipe",
+        "heavy": "Dino Stomp",
+        "magic": "Ember Roar"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 136,
+        "attack": 34,
+        "defense": 25,
+        "magic": 25,
+        "resistance": 23
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 136,
+          "attack": 34,
+          "defense": 25,
+          "magic": 25,
+          "resistance": 23
+        },
+        {
+          "level": 6,
+          "maxHp": 141,
+          "attack": 35,
+          "defense": 27,
+          "magic": 26,
+          "resistance": 25
+        },
+        {
+          "level": 7,
+          "maxHp": 146,
+          "attack": 36,
+          "defense": 29,
+          "magic": 27,
+          "resistance": 27
+        },
+        {
+          "level": 8,
+          "maxHp": 151,
+          "attack": 37,
+          "defense": 31,
+          "magic": 28,
+          "resistance": 29
+        },
+        {
+          "level": 9,
+          "maxHp": 156,
+          "attack": 38,
+          "defense": 33,
+          "magic": 29,
+          "resistance": 31
+        },
+        {
+          "level": 10,
+          "maxHp": 161,
+          "attack": 39,
+          "defense": 35,
+          "magic": 30,
+          "resistance": 33
+        },
+        {
+          "level": 11,
+          "maxHp": 166,
+          "attack": 40,
+          "defense": 37,
+          "magic": 31,
+          "resistance": 35
+        },
+        {
+          "level": 12,
+          "maxHp": 171,
+          "attack": 41,
+          "defense": 39,
+          "magic": 32,
+          "resistance": 37
+        },
+        {
+          "level": 13,
+          "maxHp": 176,
+          "attack": 42,
+          "defense": 41,
+          "magic": 33,
+          "resistance": 39
+        },
+        {
+          "level": 14,
+          "maxHp": 181,
+          "attack": 43,
+          "defense": 43,
+          "magic": 34,
+          "resistance": 41
+        },
+        {
+          "level": 15,
+          "maxHp": 186,
+          "attack": 44,
+          "defense": 45,
+          "magic": 35,
+          "resistance": 43
+        },
+        {
+          "level": 16,
+          "maxHp": 191,
+          "attack": 45,
+          "defense": 47,
+          "magic": 36,
+          "resistance": 45
+        },
+        {
+          "level": 17,
+          "maxHp": 196,
+          "attack": 46,
+          "defense": 49,
+          "magic": 37,
+          "resistance": 47
+        },
+        {
+          "level": 18,
+          "maxHp": 201,
+          "attack": 47,
+          "defense": 51,
+          "magic": 38,
+          "resistance": 49
+        },
+        {
+          "level": 19,
+          "maxHp": 206,
+          "attack": 48,
+          "defense": 53,
+          "magic": 39,
+          "resistance": 51
+        },
+        {
+          "level": 20,
+          "maxHp": 211,
+          "attack": 49,
+          "defense": 55,
+          "magic": 40,
+          "resistance": 53
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "MetalTyrannomon",
+      "lineage": 6,
+      "stage": "Ultimate",
+      "parent": 22,
+      "children": [
+        24,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "ember",
+      "skills": {
+        "physical": "Alloy Talon",
+        "heavy": "Siege Stomp",
+        "magic": "Reactor Bolt"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 176,
+        "attack": 48,
+        "defense": 40,
+        "magic": 40,
+        "resistance": 39
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 176,
+          "attack": 48,
+          "defense": 40,
+          "magic": 40,
+          "resistance": 39
+        },
+        {
+          "level": 11,
+          "maxHp": 181,
+          "attack": 49,
+          "defense": 42,
+          "magic": 41,
+          "resistance": 41
+        },
+        {
+          "level": 12,
+          "maxHp": 186,
+          "attack": 50,
+          "defense": 44,
+          "magic": 42,
+          "resistance": 43
+        },
+        {
+          "level": 13,
+          "maxHp": 191,
+          "attack": 51,
+          "defense": 46,
+          "magic": 43,
+          "resistance": 45
+        },
+        {
+          "level": 14,
+          "maxHp": 196,
+          "attack": 52,
+          "defense": 48,
+          "magic": 44,
+          "resistance": 47
+        },
+        {
+          "level": 15,
+          "maxHp": 201,
+          "attack": 53,
+          "defense": 50,
+          "magic": 45,
+          "resistance": 49
+        },
+        {
+          "level": 16,
+          "maxHp": 206,
+          "attack": 54,
+          "defense": 52,
+          "magic": 46,
+          "resistance": 51
+        },
+        {
+          "level": 17,
+          "maxHp": 211,
+          "attack": 55,
+          "defense": 54,
+          "magic": 47,
+          "resistance": 53
+        },
+        {
+          "level": 18,
+          "maxHp": 216,
+          "attack": 56,
+          "defense": 56,
+          "magic": 48,
+          "resistance": 55
+        },
+        {
+          "level": 19,
+          "maxHp": 221,
+          "attack": 57,
+          "defense": 58,
+          "magic": 49,
+          "resistance": 57
+        },
+        {
+          "level": 20,
+          "maxHp": 226,
+          "attack": 58,
+          "defense": 60,
+          "magic": 50,
+          "resistance": 59
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "RustTyrannomon",
+      "lineage": 6,
+      "stage": "Mega",
+      "parent": 23,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "ember",
+      "skills": {
+        "physical": "Rust Claw",
+        "heavy": "Fortress Break",
+        "magic": "Core Cannon"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 220,
+        "attack": 64,
+        "defense": 56,
+        "magic": 57,
+        "resistance": 57
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 220,
+          "attack": 64,
+          "defense": 56,
+          "magic": 57,
+          "resistance": 57
+        },
+        {
+          "level": 16,
+          "maxHp": 225,
+          "attack": 65,
+          "defense": 58,
+          "magic": 58,
+          "resistance": 59
+        },
+        {
+          "level": 17,
+          "maxHp": 230,
+          "attack": 66,
+          "defense": 60,
+          "magic": 59,
+          "resistance": 61
+        },
+        {
+          "level": 18,
+          "maxHp": 235,
+          "attack": 67,
+          "defense": 62,
+          "magic": 60,
+          "resistance": 63
+        },
+        {
+          "level": 19,
+          "maxHp": 240,
+          "attack": 68,
+          "defense": 64,
+          "magic": 61,
+          "resistance": 65
+        },
+        {
+          "level": 20,
+          "maxHp": 245,
+          "attack": 69,
+          "defense": 66,
+          "magic": 62,
+          "resistance": 67
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Gabumon",
+      "lineage": 7,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        26,
+        29
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "tide",
+      "skills": {
+        "physical": "Horn Jab",
+        "heavy": "Horn Rush",
+        "magic": "Blue Blaster"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 104,
+        "attack": 20,
+        "defense": 18,
+        "magic": 13,
+        "resistance": 12
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 104,
+          "attack": 20,
+          "defense": 18,
+          "magic": 13,
+          "resistance": 12
+        },
+        {
+          "level": 2,
+          "maxHp": 108,
+          "attack": 21,
+          "defense": 19,
+          "magic": 14,
+          "resistance": 13
+        },
+        {
+          "level": 3,
+          "maxHp": 112,
+          "attack": 23,
+          "defense": 20,
+          "magic": 16,
+          "resistance": 15
+        },
+        {
+          "level": 4,
+          "maxHp": 116,
+          "attack": 24,
+          "defense": 21,
+          "magic": 18,
+          "resistance": 16
+        },
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 26,
+          "defense": 23,
+          "magic": 20,
+          "resistance": 18
+        },
+        {
+          "level": 6,
+          "maxHp": 124,
+          "attack": 27,
+          "defense": 24,
+          "magic": 21,
+          "resistance": 19
+        },
+        {
+          "level": 7,
+          "maxHp": 128,
+          "attack": 29,
+          "defense": 25,
+          "magic": 23,
+          "resistance": 21
+        },
+        {
+          "level": 8,
+          "maxHp": 132,
+          "attack": 30,
+          "defense": 27,
+          "magic": 25,
+          "resistance": 22
+        },
+        {
+          "level": 9,
+          "maxHp": 136,
+          "attack": 32,
+          "defense": 28,
+          "magic": 27,
+          "resistance": 24
+        },
+        {
+          "level": 10,
+          "maxHp": 140,
+          "attack": 34,
+          "defense": 30,
+          "magic": 29,
+          "resistance": 26
+        },
+        {
+          "level": 11,
+          "maxHp": 144,
+          "attack": 35,
+          "defense": 31,
+          "magic": 30,
+          "resistance": 27
+        },
+        {
+          "level": 12,
+          "maxHp": 148,
+          "attack": 36,
+          "defense": 32,
+          "magic": 31,
+          "resistance": 28
+        },
+        {
+          "level": 13,
+          "maxHp": 152,
+          "attack": 37,
+          "defense": 33,
+          "magic": 32,
+          "resistance": 29
+        },
+        {
+          "level": 14,
+          "maxHp": 156,
+          "attack": 38,
+          "defense": 34,
+          "magic": 33,
+          "resistance": 30
+        },
+        {
+          "level": 15,
+          "maxHp": 160,
+          "attack": 39,
+          "defense": 35,
+          "magic": 34,
+          "resistance": 31
+        },
+        {
+          "level": 16,
+          "maxHp": 164,
+          "attack": 40,
+          "defense": 36,
+          "magic": 35,
+          "resistance": 32
+        },
+        {
+          "level": 17,
+          "maxHp": 168,
+          "attack": 41,
+          "defense": 37,
+          "magic": 36,
+          "resistance": 33
+        },
+        {
+          "level": 18,
+          "maxHp": 172,
+          "attack": 42,
+          "defense": 38,
+          "magic": 37,
+          "resistance": 34
+        },
+        {
+          "level": 19,
+          "maxHp": 176,
+          "attack": 43,
+          "defense": 39,
+          "magic": 38,
+          "resistance": 35
+        },
+        {
+          "level": 20,
+          "maxHp": 180,
+          "attack": 44,
+          "defense": 40,
+          "magic": 39,
+          "resistance": 36
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Garurumon",
+      "lineage": 7,
+      "stage": "Champion",
+      "parent": 25,
+      "children": [
+        27,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "tide",
+      "skills": {
+        "physical": "Fang Snap",
+        "heavy": "Wolf Rush",
+        "magic": "Frost Howl"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 132,
+        "attack": 32,
+        "defense": 27,
+        "magic": 24,
+        "resistance": 22
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 132,
+          "attack": 32,
+          "defense": 27,
+          "magic": 24,
+          "resistance": 22
+        },
+        {
+          "level": 6,
+          "maxHp": 136,
+          "attack": 34,
+          "defense": 28,
+          "magic": 25,
+          "resistance": 23
+        },
+        {
+          "level": 7,
+          "maxHp": 140,
+          "attack": 36,
+          "defense": 29,
+          "magic": 26,
+          "resistance": 24
+        },
+        {
+          "level": 8,
+          "maxHp": 144,
+          "attack": 38,
+          "defense": 30,
+          "magic": 27,
+          "resistance": 25
+        },
+        {
+          "level": 9,
+          "maxHp": 148,
+          "attack": 40,
+          "defense": 31,
+          "magic": 28,
+          "resistance": 26
+        },
+        {
+          "level": 10,
+          "maxHp": 152,
+          "attack": 42,
+          "defense": 32,
+          "magic": 29,
+          "resistance": 27
+        },
+        {
+          "level": 11,
+          "maxHp": 156,
+          "attack": 44,
+          "defense": 33,
+          "magic": 30,
+          "resistance": 28
+        },
+        {
+          "level": 12,
+          "maxHp": 160,
+          "attack": 46,
+          "defense": 34,
+          "magic": 31,
+          "resistance": 29
+        },
+        {
+          "level": 13,
+          "maxHp": 164,
+          "attack": 48,
+          "defense": 35,
+          "magic": 32,
+          "resistance": 30
+        },
+        {
+          "level": 14,
+          "maxHp": 168,
+          "attack": 50,
+          "defense": 36,
+          "magic": 33,
+          "resistance": 31
+        },
+        {
+          "level": 15,
+          "maxHp": 172,
+          "attack": 52,
+          "defense": 37,
+          "magic": 34,
+          "resistance": 32
+        },
+        {
+          "level": 16,
+          "maxHp": 176,
+          "attack": 54,
+          "defense": 38,
+          "magic": 35,
+          "resistance": 33
+        },
+        {
+          "level": 17,
+          "maxHp": 180,
+          "attack": 56,
+          "defense": 39,
+          "magic": 36,
+          "resistance": 34
+        },
+        {
+          "level": 18,
+          "maxHp": 184,
+          "attack": 58,
+          "defense": 40,
+          "magic": 37,
+          "resistance": 35
+        },
+        {
+          "level": 19,
+          "maxHp": 188,
+          "attack": 60,
+          "defense": 41,
+          "magic": 38,
+          "resistance": 36
+        },
+        {
+          "level": 20,
+          "maxHp": 192,
+          "attack": 62,
+          "defense": 42,
+          "magic": 39,
+          "resistance": 37
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "WereGarurumon",
+      "lineage": 7,
+      "stage": "Ultimate",
+      "parent": 26,
+      "children": [
+        28,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "tide",
+      "skills": {
+        "physical": "Wolf Kick",
+        "heavy": "Crescent Rush",
+        "magic": "Moon Pulse"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 168,
+        "attack": 48,
+        "defense": 40,
+        "magic": 39,
+        "resistance": 36
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 168,
+          "attack": 48,
+          "defense": 40,
+          "magic": 39,
+          "resistance": 36
+        },
+        {
+          "level": 11,
+          "maxHp": 172,
+          "attack": 50,
+          "defense": 41,
+          "magic": 40,
+          "resistance": 37
+        },
+        {
+          "level": 12,
+          "maxHp": 176,
+          "attack": 52,
+          "defense": 42,
+          "magic": 41,
+          "resistance": 38
+        },
+        {
+          "level": 13,
+          "maxHp": 180,
+          "attack": 54,
+          "defense": 43,
+          "magic": 42,
+          "resistance": 39
+        },
+        {
+          "level": 14,
+          "maxHp": 184,
+          "attack": 56,
+          "defense": 44,
+          "magic": 43,
+          "resistance": 40
+        },
+        {
+          "level": 15,
+          "maxHp": 188,
+          "attack": 58,
+          "defense": 45,
+          "magic": 44,
+          "resistance": 41
+        },
+        {
+          "level": 16,
+          "maxHp": 192,
+          "attack": 60,
+          "defense": 46,
+          "magic": 45,
+          "resistance": 42
+        },
+        {
+          "level": 17,
+          "maxHp": 196,
+          "attack": 62,
+          "defense": 47,
+          "magic": 46,
+          "resistance": 43
+        },
+        {
+          "level": 18,
+          "maxHp": 200,
+          "attack": 64,
+          "defense": 48,
+          "magic": 47,
+          "resistance": 44
+        },
+        {
+          "level": 19,
+          "maxHp": 204,
+          "attack": 66,
+          "defense": 49,
+          "magic": 48,
+          "resistance": 45
+        },
+        {
+          "level": 20,
+          "maxHp": 208,
+          "attack": 68,
+          "defense": 50,
+          "magic": 49,
+          "resistance": 46
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "MetalGarurumon",
+      "lineage": 7,
+      "stage": "Mega",
+      "parent": 27,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "tide",
+      "skills": {
+        "physical": "Steel Fang",
+        "heavy": "Glacier Charge",
+        "magic": "Ice Barrage"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 208,
+        "attack": 66,
+        "defense": 54,
+        "magic": 56,
+        "resistance": 52
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 208,
+          "attack": 66,
+          "defense": 54,
+          "magic": 56,
+          "resistance": 52
+        },
+        {
+          "level": 16,
+          "maxHp": 212,
+          "attack": 68,
+          "defense": 55,
+          "magic": 57,
+          "resistance": 53
+        },
+        {
+          "level": 17,
+          "maxHp": 216,
+          "attack": 70,
+          "defense": 56,
+          "magic": 58,
+          "resistance": 54
+        },
+        {
+          "level": 18,
+          "maxHp": 220,
+          "attack": 72,
+          "defense": 57,
+          "magic": 59,
+          "resistance": 55
+        },
+        {
+          "level": 19,
+          "maxHp": 224,
+          "attack": 74,
+          "defense": 58,
+          "magic": 60,
+          "resistance": 56
+        },
+        {
+          "level": 20,
+          "maxHp": 228,
+          "attack": 76,
+          "defense": 59,
+          "magic": 61,
+          "resistance": 57
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Leomon",
+      "lineage": 7,
+      "stage": "Champion",
+      "parent": 25,
+      "children": [
+        30,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "tide",
+      "skills": {
+        "physical": "Lion Palm",
+        "heavy": "Pride Rush",
+        "magic": "Roaring Fist"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 136,
+        "attack": 30,
+        "defense": 29,
+        "magic": 24,
+        "resistance": 24
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 136,
+          "attack": 30,
+          "defense": 29,
+          "magic": 24,
+          "resistance": 24
+        },
+        {
+          "level": 6,
+          "maxHp": 141,
+          "attack": 31,
+          "defense": 31,
+          "magic": 25,
+          "resistance": 26
+        },
+        {
+          "level": 7,
+          "maxHp": 146,
+          "attack": 32,
+          "defense": 33,
+          "magic": 26,
+          "resistance": 28
+        },
+        {
+          "level": 8,
+          "maxHp": 151,
+          "attack": 33,
+          "defense": 35,
+          "magic": 27,
+          "resistance": 30
+        },
+        {
+          "level": 9,
+          "maxHp": 156,
+          "attack": 34,
+          "defense": 37,
+          "magic": 28,
+          "resistance": 32
+        },
+        {
+          "level": 10,
+          "maxHp": 161,
+          "attack": 35,
+          "defense": 39,
+          "magic": 29,
+          "resistance": 34
+        },
+        {
+          "level": 11,
+          "maxHp": 166,
+          "attack": 36,
+          "defense": 41,
+          "magic": 30,
+          "resistance": 36
+        },
+        {
+          "level": 12,
+          "maxHp": 171,
+          "attack": 37,
+          "defense": 43,
+          "magic": 31,
+          "resistance": 38
+        },
+        {
+          "level": 13,
+          "maxHp": 176,
+          "attack": 38,
+          "defense": 45,
+          "magic": 32,
+          "resistance": 40
+        },
+        {
+          "level": 14,
+          "maxHp": 181,
+          "attack": 39,
+          "defense": 47,
+          "magic": 33,
+          "resistance": 42
+        },
+        {
+          "level": 15,
+          "maxHp": 186,
+          "attack": 40,
+          "defense": 49,
+          "magic": 34,
+          "resistance": 44
+        },
+        {
+          "level": 16,
+          "maxHp": 191,
+          "attack": 41,
+          "defense": 51,
+          "magic": 35,
+          "resistance": 46
+        },
+        {
+          "level": 17,
+          "maxHp": 196,
+          "attack": 42,
+          "defense": 53,
+          "magic": 36,
+          "resistance": 48
+        },
+        {
+          "level": 18,
+          "maxHp": 201,
+          "attack": 43,
+          "defense": 55,
+          "magic": 37,
+          "resistance": 50
+        },
+        {
+          "level": 19,
+          "maxHp": 206,
+          "attack": 44,
+          "defense": 57,
+          "magic": 38,
+          "resistance": 52
+        },
+        {
+          "level": 20,
+          "maxHp": 211,
+          "attack": 45,
+          "defense": 59,
+          "magic": 39,
+          "resistance": 54
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "GrapLeomon",
+      "lineage": 7,
+      "stage": "Ultimate",
+      "parent": 29,
+      "children": [
+        31,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "tide",
+      "skills": {
+        "physical": "Gear Jab",
+        "heavy": "Cyclone Slam",
+        "magic": "Spiral Burst"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 176,
+        "attack": 44,
+        "defense": 44,
+        "magic": 39,
+        "resistance": 40
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 176,
+          "attack": 44,
+          "defense": 44,
+          "magic": 39,
+          "resistance": 40
+        },
+        {
+          "level": 11,
+          "maxHp": 181,
+          "attack": 45,
+          "defense": 46,
+          "magic": 40,
+          "resistance": 42
+        },
+        {
+          "level": 12,
+          "maxHp": 186,
+          "attack": 46,
+          "defense": 48,
+          "magic": 41,
+          "resistance": 44
+        },
+        {
+          "level": 13,
+          "maxHp": 191,
+          "attack": 47,
+          "defense": 50,
+          "magic": 42,
+          "resistance": 46
+        },
+        {
+          "level": 14,
+          "maxHp": 196,
+          "attack": 48,
+          "defense": 52,
+          "magic": 43,
+          "resistance": 48
+        },
+        {
+          "level": 15,
+          "maxHp": 201,
+          "attack": 49,
+          "defense": 54,
+          "magic": 44,
+          "resistance": 50
+        },
+        {
+          "level": 16,
+          "maxHp": 206,
+          "attack": 50,
+          "defense": 56,
+          "magic": 45,
+          "resistance": 52
+        },
+        {
+          "level": 17,
+          "maxHp": 211,
+          "attack": 51,
+          "defense": 58,
+          "magic": 46,
+          "resistance": 54
+        },
+        {
+          "level": 18,
+          "maxHp": 216,
+          "attack": 52,
+          "defense": 60,
+          "magic": 47,
+          "resistance": 56
+        },
+        {
+          "level": 19,
+          "maxHp": 221,
+          "attack": 53,
+          "defense": 62,
+          "magic": 48,
+          "resistance": 58
+        },
+        {
+          "level": 20,
+          "maxHp": 226,
+          "attack": 54,
+          "defense": 64,
+          "magic": 49,
+          "resistance": 60
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "BanchoLeomon",
+      "lineage": 7,
+      "stage": "Mega",
+      "parent": 30,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "tide",
+      "skills": {
+        "physical": "Brave Fist",
+        "heavy": "King Rush",
+        "magic": "Justice Roar"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 220,
+        "attack": 60,
+        "defense": 60,
+        "magic": 56,
+        "resistance": 58
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 220,
+          "attack": 60,
+          "defense": 60,
+          "magic": 56,
+          "resistance": 58
+        },
+        {
+          "level": 16,
+          "maxHp": 225,
+          "attack": 61,
+          "defense": 62,
+          "magic": 57,
+          "resistance": 60
+        },
+        {
+          "level": 17,
+          "maxHp": 230,
+          "attack": 62,
+          "defense": 64,
+          "magic": 58,
+          "resistance": 62
+        },
+        {
+          "level": 18,
+          "maxHp": 235,
+          "attack": 63,
+          "defense": 66,
+          "magic": 59,
+          "resistance": 64
+        },
+        {
+          "level": 19,
+          "maxHp": 240,
+          "attack": 64,
+          "defense": 68,
+          "magic": 60,
+          "resistance": 66
+        },
+        {
+          "level": 20,
+          "maxHp": 245,
+          "attack": 65,
+          "defense": 70,
+          "magic": 61,
+          "resistance": 68
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Patamon",
+      "lineage": 8,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        33,
+        36
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "neutral",
+      "skills": {
+        "physical": "Wing Slap",
+        "heavy": "Air Tackle",
+        "magic": "Air Shot"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 96,
+        "attack": 14,
+        "defense": 13,
+        "magic": 18,
+        "resistance": 20
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 96,
+          "attack": 14,
+          "defense": 13,
+          "magic": 18,
+          "resistance": 20
+        },
+        {
+          "level": 2,
+          "maxHp": 100,
+          "attack": 15,
+          "defense": 14,
+          "magic": 19,
+          "resistance": 21
+        },
+        {
+          "level": 3,
+          "maxHp": 104,
+          "attack": 17,
+          "defense": 15,
+          "magic": 21,
+          "resistance": 23
+        },
+        {
+          "level": 4,
+          "maxHp": 108,
+          "attack": 18,
+          "defense": 16,
+          "magic": 23,
+          "resistance": 24
+        },
+        {
+          "level": 5,
+          "maxHp": 112,
+          "attack": 20,
+          "defense": 18,
+          "magic": 25,
+          "resistance": 26
+        },
+        {
+          "level": 6,
+          "maxHp": 116,
+          "attack": 21,
+          "defense": 19,
+          "magic": 26,
+          "resistance": 27
+        },
+        {
+          "level": 7,
+          "maxHp": 120,
+          "attack": 23,
+          "defense": 20,
+          "magic": 28,
+          "resistance": 29
+        },
+        {
+          "level": 8,
+          "maxHp": 124,
+          "attack": 24,
+          "defense": 22,
+          "magic": 30,
+          "resistance": 30
+        },
+        {
+          "level": 9,
+          "maxHp": 128,
+          "attack": 26,
+          "defense": 23,
+          "magic": 32,
+          "resistance": 32
+        },
+        {
+          "level": 10,
+          "maxHp": 132,
+          "attack": 28,
+          "defense": 25,
+          "magic": 34,
+          "resistance": 34
+        },
+        {
+          "level": 11,
+          "maxHp": 135,
+          "attack": 29,
+          "defense": 26,
+          "magic": 36,
+          "resistance": 36
+        },
+        {
+          "level": 12,
+          "maxHp": 138,
+          "attack": 30,
+          "defense": 27,
+          "magic": 38,
+          "resistance": 38
+        },
+        {
+          "level": 13,
+          "maxHp": 141,
+          "attack": 31,
+          "defense": 28,
+          "magic": 40,
+          "resistance": 40
+        },
+        {
+          "level": 14,
+          "maxHp": 144,
+          "attack": 32,
+          "defense": 29,
+          "magic": 42,
+          "resistance": 42
+        },
+        {
+          "level": 15,
+          "maxHp": 147,
+          "attack": 33,
+          "defense": 30,
+          "magic": 44,
+          "resistance": 44
+        },
+        {
+          "level": 16,
+          "maxHp": 150,
+          "attack": 34,
+          "defense": 31,
+          "magic": 46,
+          "resistance": 46
+        },
+        {
+          "level": 17,
+          "maxHp": 153,
+          "attack": 35,
+          "defense": 32,
+          "magic": 48,
+          "resistance": 48
+        },
+        {
+          "level": 18,
+          "maxHp": 156,
+          "attack": 36,
+          "defense": 33,
+          "magic": 50,
+          "resistance": 50
+        },
+        {
+          "level": 19,
+          "maxHp": 159,
+          "attack": 37,
+          "defense": 34,
+          "magic": 52,
+          "resistance": 52
+        },
+        {
+          "level": 20,
+          "maxHp": 162,
+          "attack": 38,
+          "defense": 35,
+          "magic": 54,
+          "resistance": 54
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "name": "Angemon",
+      "lineage": 8,
+      "stage": "Champion",
+      "parent": 32,
+      "children": [
+        34,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "neutral",
+      "skills": {
+        "physical": "Staff Strike",
+        "heavy": "Halo Dive",
+        "magic": "Radiant Fist"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 124,
+        "attack": 24,
+        "defense": 22,
+        "magic": 31,
+        "resistance": 32
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 124,
+          "attack": 24,
+          "defense": 22,
+          "magic": 31,
+          "resistance": 32
+        },
+        {
+          "level": 6,
+          "maxHp": 127,
+          "attack": 25,
+          "defense": 23,
+          "magic": 33,
+          "resistance": 34
+        },
+        {
+          "level": 7,
+          "maxHp": 130,
+          "attack": 26,
+          "defense": 24,
+          "magic": 35,
+          "resistance": 36
+        },
+        {
+          "level": 8,
+          "maxHp": 133,
+          "attack": 27,
+          "defense": 25,
+          "magic": 37,
+          "resistance": 38
+        },
+        {
+          "level": 9,
+          "maxHp": 136,
+          "attack": 28,
+          "defense": 26,
+          "magic": 39,
+          "resistance": 40
+        },
+        {
+          "level": 10,
+          "maxHp": 139,
+          "attack": 29,
+          "defense": 27,
+          "magic": 41,
+          "resistance": 42
+        },
+        {
+          "level": 11,
+          "maxHp": 142,
+          "attack": 30,
+          "defense": 28,
+          "magic": 43,
+          "resistance": 44
+        },
+        {
+          "level": 12,
+          "maxHp": 145,
+          "attack": 31,
+          "defense": 29,
+          "magic": 45,
+          "resistance": 46
+        },
+        {
+          "level": 13,
+          "maxHp": 148,
+          "attack": 32,
+          "defense": 30,
+          "magic": 47,
+          "resistance": 48
+        },
+        {
+          "level": 14,
+          "maxHp": 151,
+          "attack": 33,
+          "defense": 31,
+          "magic": 49,
+          "resistance": 50
+        },
+        {
+          "level": 15,
+          "maxHp": 154,
+          "attack": 34,
+          "defense": 32,
+          "magic": 51,
+          "resistance": 52
+        },
+        {
+          "level": 16,
+          "maxHp": 157,
+          "attack": 35,
+          "defense": 33,
+          "magic": 53,
+          "resistance": 54
+        },
+        {
+          "level": 17,
+          "maxHp": 160,
+          "attack": 36,
+          "defense": 34,
+          "magic": 55,
+          "resistance": 56
+        },
+        {
+          "level": 18,
+          "maxHp": 163,
+          "attack": 37,
+          "defense": 35,
+          "magic": 57,
+          "resistance": 58
+        },
+        {
+          "level": 19,
+          "maxHp": 166,
+          "attack": 38,
+          "defense": 36,
+          "magic": 59,
+          "resistance": 60
+        },
+        {
+          "level": 20,
+          "maxHp": 169,
+          "attack": 39,
+          "defense": 37,
+          "magic": 61,
+          "resistance": 62
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "MagnaAngemon",
+      "lineage": 8,
+      "stage": "Ultimate",
+      "parent": 33,
+      "children": [
+        35,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "neutral",
+      "skills": {
+        "physical": "Holy Edge",
+        "heavy": "Gate Rush",
+        "magic": "Radiant Seal"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 160,
+        "attack": 38,
+        "defense": 35,
+        "magic": 48,
+        "resistance": 48
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 160,
+          "attack": 38,
+          "defense": 35,
+          "magic": 48,
+          "resistance": 48
+        },
+        {
+          "level": 11,
+          "maxHp": 163,
+          "attack": 39,
+          "defense": 36,
+          "magic": 50,
+          "resistance": 50
+        },
+        {
+          "level": 12,
+          "maxHp": 166,
+          "attack": 40,
+          "defense": 37,
+          "magic": 52,
+          "resistance": 52
+        },
+        {
+          "level": 13,
+          "maxHp": 169,
+          "attack": 41,
+          "defense": 38,
+          "magic": 54,
+          "resistance": 54
+        },
+        {
+          "level": 14,
+          "maxHp": 172,
+          "attack": 42,
+          "defense": 39,
+          "magic": 56,
+          "resistance": 56
+        },
+        {
+          "level": 15,
+          "maxHp": 175,
+          "attack": 43,
+          "defense": 40,
+          "magic": 58,
+          "resistance": 58
+        },
+        {
+          "level": 16,
+          "maxHp": 178,
+          "attack": 44,
+          "defense": 41,
+          "magic": 60,
+          "resistance": 60
+        },
+        {
+          "level": 17,
+          "maxHp": 181,
+          "attack": 45,
+          "defense": 42,
+          "magic": 62,
+          "resistance": 62
+        },
+        {
+          "level": 18,
+          "maxHp": 184,
+          "attack": 46,
+          "defense": 43,
+          "magic": 64,
+          "resistance": 64
+        },
+        {
+          "level": 19,
+          "maxHp": 187,
+          "attack": 47,
+          "defense": 44,
+          "magic": 66,
+          "resistance": 66
+        },
+        {
+          "level": 20,
+          "maxHp": 190,
+          "attack": 48,
+          "defense": 45,
+          "magic": 68,
+          "resistance": 68
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Seraphimon",
+      "lineage": 8,
+      "stage": "Mega",
+      "parent": 34,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "neutral",
+      "skills": {
+        "physical": "Seraph Edge",
+        "heavy": "Heavenfall",
+        "magic": "Sevenfold Ray"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 200,
+        "attack": 54,
+        "defense": 49,
+        "magic": 67,
+        "resistance": 66
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 200,
+          "attack": 54,
+          "defense": 49,
+          "magic": 67,
+          "resistance": 66
+        },
+        {
+          "level": 16,
+          "maxHp": 203,
+          "attack": 55,
+          "defense": 50,
+          "magic": 69,
+          "resistance": 68
+        },
+        {
+          "level": 17,
+          "maxHp": 206,
+          "attack": 56,
+          "defense": 51,
+          "magic": 71,
+          "resistance": 70
+        },
+        {
+          "level": 18,
+          "maxHp": 209,
+          "attack": 57,
+          "defense": 52,
+          "magic": 73,
+          "resistance": 72
+        },
+        {
+          "level": 19,
+          "maxHp": 212,
+          "attack": 58,
+          "defense": 53,
+          "magic": 75,
+          "resistance": 74
+        },
+        {
+          "level": 20,
+          "maxHp": 215,
+          "attack": 59,
+          "defense": 54,
+          "magic": 77,
+          "resistance": 76
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Unimon",
+      "lineage": 8,
+      "stage": "Champion",
+      "parent": 32,
+      "children": [
+        37,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "neutral",
+      "skills": {
+        "physical": "Horn Strike",
+        "heavy": "Cloud Charge",
+        "magic": "Sky Bolt"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 126,
+        "attack": 25,
+        "defense": 23,
+        "magic": 30,
+        "resistance": 31
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 126,
+          "attack": 25,
+          "defense": 23,
+          "magic": 30,
+          "resistance": 31
+        },
+        {
+          "level": 6,
+          "maxHp": 130,
+          "attack": 26,
+          "defense": 24,
+          "magic": 31,
+          "resistance": 32
+        },
+        {
+          "level": 7,
+          "maxHp": 134,
+          "attack": 27,
+          "defense": 25,
+          "magic": 32,
+          "resistance": 33
+        },
+        {
+          "level": 8,
+          "maxHp": 138,
+          "attack": 28,
+          "defense": 26,
+          "magic": 33,
+          "resistance": 34
+        },
+        {
+          "level": 9,
+          "maxHp": 142,
+          "attack": 29,
+          "defense": 27,
+          "magic": 34,
+          "resistance": 35
+        },
+        {
+          "level": 10,
+          "maxHp": 146,
+          "attack": 30,
+          "defense": 28,
+          "magic": 35,
+          "resistance": 36
+        },
+        {
+          "level": 11,
+          "maxHp": 150,
+          "attack": 31,
+          "defense": 29,
+          "magic": 36,
+          "resistance": 37
+        },
+        {
+          "level": 12,
+          "maxHp": 154,
+          "attack": 32,
+          "defense": 30,
+          "magic": 37,
+          "resistance": 38
+        },
+        {
+          "level": 13,
+          "maxHp": 158,
+          "attack": 33,
+          "defense": 31,
+          "magic": 38,
+          "resistance": 39
+        },
+        {
+          "level": 14,
+          "maxHp": 162,
+          "attack": 34,
+          "defense": 32,
+          "magic": 39,
+          "resistance": 40
+        },
+        {
+          "level": 15,
+          "maxHp": 166,
+          "attack": 35,
+          "defense": 33,
+          "magic": 40,
+          "resistance": 41
+        },
+        {
+          "level": 16,
+          "maxHp": 170,
+          "attack": 36,
+          "defense": 34,
+          "magic": 41,
+          "resistance": 42
+        },
+        {
+          "level": 17,
+          "maxHp": 174,
+          "attack": 37,
+          "defense": 35,
+          "magic": 42,
+          "resistance": 43
+        },
+        {
+          "level": 18,
+          "maxHp": 178,
+          "attack": 38,
+          "defense": 36,
+          "magic": 43,
+          "resistance": 44
+        },
+        {
+          "level": 19,
+          "maxHp": 182,
+          "attack": 39,
+          "defense": 37,
+          "magic": 44,
+          "resistance": 45
+        },
+        {
+          "level": 20,
+          "maxHp": 186,
+          "attack": 40,
+          "defense": 38,
+          "magic": 45,
+          "resistance": 46
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "name": "HippoGryphonmon",
+      "lineage": 8,
+      "stage": "Ultimate",
+      "parent": 36,
+      "children": [
+        38,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "neutral",
+      "skills": {
+        "physical": "Talon Sweep",
+        "heavy": "Gale Pounce",
+        "magic": "Sky Cyclone"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 164,
+        "attack": 40,
+        "defense": 37,
+        "magic": 46,
+        "resistance": 46
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 164,
+          "attack": 40,
+          "defense": 37,
+          "magic": 46,
+          "resistance": 46
+        },
+        {
+          "level": 11,
+          "maxHp": 168,
+          "attack": 41,
+          "defense": 38,
+          "magic": 47,
+          "resistance": 47
+        },
+        {
+          "level": 12,
+          "maxHp": 172,
+          "attack": 42,
+          "defense": 39,
+          "magic": 48,
+          "resistance": 48
+        },
+        {
+          "level": 13,
+          "maxHp": 176,
+          "attack": 43,
+          "defense": 40,
+          "magic": 49,
+          "resistance": 49
+        },
+        {
+          "level": 14,
+          "maxHp": 180,
+          "attack": 44,
+          "defense": 41,
+          "magic": 50,
+          "resistance": 50
+        },
+        {
+          "level": 15,
+          "maxHp": 184,
+          "attack": 45,
+          "defense": 42,
+          "magic": 51,
+          "resistance": 51
+        },
+        {
+          "level": 16,
+          "maxHp": 188,
+          "attack": 46,
+          "defense": 43,
+          "magic": 52,
+          "resistance": 52
+        },
+        {
+          "level": 17,
+          "maxHp": 192,
+          "attack": 47,
+          "defense": 44,
+          "magic": 53,
+          "resistance": 53
+        },
+        {
+          "level": 18,
+          "maxHp": 196,
+          "attack": 48,
+          "defense": 45,
+          "magic": 54,
+          "resistance": 54
+        },
+        {
+          "level": 19,
+          "maxHp": 200,
+          "attack": 49,
+          "defense": 46,
+          "magic": 55,
+          "resistance": 55
+        },
+        {
+          "level": 20,
+          "maxHp": 204,
+          "attack": 50,
+          "defense": 47,
+          "magic": 56,
+          "resistance": 56
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Gryphonmon",
+      "lineage": 8,
+      "stage": "Mega",
+      "parent": 37,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "neutral",
+      "skills": {
+        "physical": "Royal Talon",
+        "heavy": "Mythic Dive",
+        "magic": "Storm Cry"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 206,
+        "attack": 57,
+        "defense": 52,
+        "magic": 64,
+        "resistance": 63
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 1,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 206,
+          "attack": 57,
+          "defense": 52,
+          "magic": 64,
+          "resistance": 63
+        },
+        {
+          "level": 16,
+          "maxHp": 210,
+          "attack": 58,
+          "defense": 53,
+          "magic": 65,
+          "resistance": 64
+        },
+        {
+          "level": 17,
+          "maxHp": 214,
+          "attack": 59,
+          "defense": 54,
+          "magic": 66,
+          "resistance": 65
+        },
+        {
+          "level": 18,
+          "maxHp": 218,
+          "attack": 60,
+          "defense": 55,
+          "magic": 67,
+          "resistance": 66
+        },
+        {
+          "level": 19,
+          "maxHp": 222,
+          "attack": 61,
+          "defense": 56,
+          "magic": 68,
+          "resistance": 67
+        },
+        {
+          "level": 20,
+          "maxHp": 226,
+          "attack": 62,
+          "defense": 57,
+          "magic": 69,
+          "resistance": 68
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "name": "Tentomon",
+      "lineage": 9,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        40,
+        43
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "grove",
+      "skills": {
+        "physical": "Shell Tap",
+        "heavy": "Beetle Bash",
+        "magic": "Super Shocker"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 108,
+        "attack": 16,
+        "defense": 23,
+        "magic": 12,
+        "resistance": 11
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 108,
+          "attack": 16,
+          "defense": 23,
+          "magic": 12,
+          "resistance": 11
+        },
+        {
+          "level": 2,
+          "maxHp": 112,
+          "attack": 17,
+          "defense": 24,
+          "magic": 13,
+          "resistance": 12
+        },
+        {
+          "level": 3,
+          "maxHp": 116,
+          "attack": 19,
+          "defense": 25,
+          "magic": 15,
+          "resistance": 14
+        },
+        {
+          "level": 4,
+          "maxHp": 120,
+          "attack": 20,
+          "defense": 26,
+          "magic": 17,
+          "resistance": 15
+        },
+        {
+          "level": 5,
+          "maxHp": 124,
+          "attack": 22,
+          "defense": 28,
+          "magic": 19,
+          "resistance": 17
+        },
+        {
+          "level": 6,
+          "maxHp": 128,
+          "attack": 23,
+          "defense": 29,
+          "magic": 20,
+          "resistance": 18
+        },
+        {
+          "level": 7,
+          "maxHp": 132,
+          "attack": 25,
+          "defense": 30,
+          "magic": 22,
+          "resistance": 20
+        },
+        {
+          "level": 8,
+          "maxHp": 136,
+          "attack": 26,
+          "defense": 32,
+          "magic": 24,
+          "resistance": 21
+        },
+        {
+          "level": 9,
+          "maxHp": 140,
+          "attack": 28,
+          "defense": 33,
+          "magic": 26,
+          "resistance": 23
+        },
+        {
+          "level": 10,
+          "maxHp": 144,
+          "attack": 30,
+          "defense": 35,
+          "magic": 28,
+          "resistance": 25
+        },
+        {
+          "level": 11,
+          "maxHp": 149,
+          "attack": 31,
+          "defense": 37,
+          "magic": 29,
+          "resistance": 27
+        },
+        {
+          "level": 12,
+          "maxHp": 154,
+          "attack": 32,
+          "defense": 39,
+          "magic": 30,
+          "resistance": 29
+        },
+        {
+          "level": 13,
+          "maxHp": 159,
+          "attack": 33,
+          "defense": 41,
+          "magic": 31,
+          "resistance": 31
+        },
+        {
+          "level": 14,
+          "maxHp": 164,
+          "attack": 34,
+          "defense": 43,
+          "magic": 32,
+          "resistance": 33
+        },
+        {
+          "level": 15,
+          "maxHp": 169,
+          "attack": 35,
+          "defense": 45,
+          "magic": 33,
+          "resistance": 35
+        },
+        {
+          "level": 16,
+          "maxHp": 174,
+          "attack": 36,
+          "defense": 47,
+          "magic": 34,
+          "resistance": 37
+        },
+        {
+          "level": 17,
+          "maxHp": 179,
+          "attack": 37,
+          "defense": 49,
+          "magic": 35,
+          "resistance": 39
+        },
+        {
+          "level": 18,
+          "maxHp": 184,
+          "attack": 38,
+          "defense": 51,
+          "magic": 36,
+          "resistance": 41
+        },
+        {
+          "level": 19,
+          "maxHp": 189,
+          "attack": 39,
+          "defense": 53,
+          "magic": 37,
+          "resistance": 43
+        },
+        {
+          "level": 20,
+          "maxHp": 194,
+          "attack": 40,
+          "defense": 55,
+          "magic": 38,
+          "resistance": 45
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "name": "Kabuterimon",
+      "lineage": 9,
+      "stage": "Champion",
+      "parent": 39,
+      "children": [
+        41,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "grove",
+      "skills": {
+        "physical": "Horn Thrust",
+        "heavy": "Shell Break",
+        "magic": "Thunder Orb"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 140,
+        "attack": 26,
+        "defense": 34,
+        "magic": 23,
+        "resistance": 23
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 140,
+          "attack": 26,
+          "defense": 34,
+          "magic": 23,
+          "resistance": 23
+        },
+        {
+          "level": 6,
+          "maxHp": 145,
+          "attack": 27,
+          "defense": 36,
+          "magic": 24,
+          "resistance": 25
+        },
+        {
+          "level": 7,
+          "maxHp": 150,
+          "attack": 28,
+          "defense": 38,
+          "magic": 25,
+          "resistance": 27
+        },
+        {
+          "level": 8,
+          "maxHp": 155,
+          "attack": 29,
+          "defense": 40,
+          "magic": 26,
+          "resistance": 29
+        },
+        {
+          "level": 9,
+          "maxHp": 160,
+          "attack": 30,
+          "defense": 42,
+          "magic": 27,
+          "resistance": 31
+        },
+        {
+          "level": 10,
+          "maxHp": 165,
+          "attack": 31,
+          "defense": 44,
+          "magic": 28,
+          "resistance": 33
+        },
+        {
+          "level": 11,
+          "maxHp": 170,
+          "attack": 32,
+          "defense": 46,
+          "magic": 29,
+          "resistance": 35
+        },
+        {
+          "level": 12,
+          "maxHp": 175,
+          "attack": 33,
+          "defense": 48,
+          "magic": 30,
+          "resistance": 37
+        },
+        {
+          "level": 13,
+          "maxHp": 180,
+          "attack": 34,
+          "defense": 50,
+          "magic": 31,
+          "resistance": 39
+        },
+        {
+          "level": 14,
+          "maxHp": 185,
+          "attack": 35,
+          "defense": 52,
+          "magic": 32,
+          "resistance": 41
+        },
+        {
+          "level": 15,
+          "maxHp": 190,
+          "attack": 36,
+          "defense": 54,
+          "magic": 33,
+          "resistance": 43
+        },
+        {
+          "level": 16,
+          "maxHp": 195,
+          "attack": 37,
+          "defense": 56,
+          "magic": 34,
+          "resistance": 45
+        },
+        {
+          "level": 17,
+          "maxHp": 200,
+          "attack": 38,
+          "defense": 58,
+          "magic": 35,
+          "resistance": 47
+        },
+        {
+          "level": 18,
+          "maxHp": 205,
+          "attack": 39,
+          "defense": 60,
+          "magic": 36,
+          "resistance": 49
+        },
+        {
+          "level": 19,
+          "maxHp": 210,
+          "attack": 40,
+          "defense": 62,
+          "magic": 37,
+          "resistance": 51
+        },
+        {
+          "level": 20,
+          "maxHp": 215,
+          "attack": 41,
+          "defense": 64,
+          "magic": 38,
+          "resistance": 53
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "name": "MegaKabuterimon (Red)",
+      "lineage": 9,
+      "stage": "Ultimate",
+      "parent": 40,
+      "children": [
+        42,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "grove",
+      "skills": {
+        "physical": "Crimson Horn",
+        "heavy": "Atlas Charge",
+        "magic": "Volt Cannon"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 180,
+        "attack": 40,
+        "defense": 49,
+        "magic": 38,
+        "resistance": 39
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 180,
+          "attack": 40,
+          "defense": 49,
+          "magic": 38,
+          "resistance": 39
+        },
+        {
+          "level": 11,
+          "maxHp": 185,
+          "attack": 41,
+          "defense": 51,
+          "magic": 39,
+          "resistance": 41
+        },
+        {
+          "level": 12,
+          "maxHp": 190,
+          "attack": 42,
+          "defense": 53,
+          "magic": 40,
+          "resistance": 43
+        },
+        {
+          "level": 13,
+          "maxHp": 195,
+          "attack": 43,
+          "defense": 55,
+          "magic": 41,
+          "resistance": 45
+        },
+        {
+          "level": 14,
+          "maxHp": 200,
+          "attack": 44,
+          "defense": 57,
+          "magic": 42,
+          "resistance": 47
+        },
+        {
+          "level": 15,
+          "maxHp": 205,
+          "attack": 45,
+          "defense": 59,
+          "magic": 43,
+          "resistance": 49
+        },
+        {
+          "level": 16,
+          "maxHp": 210,
+          "attack": 46,
+          "defense": 61,
+          "magic": 44,
+          "resistance": 51
+        },
+        {
+          "level": 17,
+          "maxHp": 215,
+          "attack": 47,
+          "defense": 63,
+          "magic": 45,
+          "resistance": 53
+        },
+        {
+          "level": 18,
+          "maxHp": 220,
+          "attack": 48,
+          "defense": 65,
+          "magic": 46,
+          "resistance": 55
+        },
+        {
+          "level": 19,
+          "maxHp": 225,
+          "attack": 49,
+          "defense": 67,
+          "magic": 47,
+          "resistance": 57
+        },
+        {
+          "level": 20,
+          "maxHp": 230,
+          "attack": 50,
+          "defense": 69,
+          "magic": 48,
+          "resistance": 59
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "name": "HerculesKabuterimon",
+      "lineage": 9,
+      "stage": "Mega",
+      "parent": 41,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "grove",
+      "skills": {
+        "physical": "Titan Horn",
+        "heavy": "Hercules Crush",
+        "magic": "Storm Nova"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 224,
+        "attack": 56,
+        "defense": 65,
+        "magic": 55,
+        "resistance": 57
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 224,
+          "attack": 56,
+          "defense": 65,
+          "magic": 55,
+          "resistance": 57
+        },
+        {
+          "level": 16,
+          "maxHp": 229,
+          "attack": 57,
+          "defense": 67,
+          "magic": 56,
+          "resistance": 59
+        },
+        {
+          "level": 17,
+          "maxHp": 234,
+          "attack": 58,
+          "defense": 69,
+          "magic": 57,
+          "resistance": 61
+        },
+        {
+          "level": 18,
+          "maxHp": 239,
+          "attack": 59,
+          "defense": 71,
+          "magic": 58,
+          "resistance": 63
+        },
+        {
+          "level": 19,
+          "maxHp": 244,
+          "attack": 60,
+          "defense": 73,
+          "magic": 59,
+          "resistance": 65
+        },
+        {
+          "level": 20,
+          "maxHp": 249,
+          "attack": 61,
+          "defense": 75,
+          "magic": 60,
+          "resistance": 67
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Kuwagamon",
+      "lineage": 9,
+      "stage": "Champion",
+      "parent": 39,
+      "children": [
+        44,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "grove",
+      "skills": {
+        "physical": "Pincer Cut",
+        "heavy": "Scissor Rush",
+        "magic": "Sonic Edge"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 136,
+        "attack": 28,
+        "defense": 32,
+        "magic": 23,
+        "resistance": 21
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 136,
+          "attack": 28,
+          "defense": 32,
+          "magic": 23,
+          "resistance": 21
+        },
+        {
+          "level": 6,
+          "maxHp": 140,
+          "attack": 30,
+          "defense": 33,
+          "magic": 24,
+          "resistance": 22
+        },
+        {
+          "level": 7,
+          "maxHp": 144,
+          "attack": 32,
+          "defense": 34,
+          "magic": 25,
+          "resistance": 23
+        },
+        {
+          "level": 8,
+          "maxHp": 148,
+          "attack": 34,
+          "defense": 35,
+          "magic": 26,
+          "resistance": 24
+        },
+        {
+          "level": 9,
+          "maxHp": 152,
+          "attack": 36,
+          "defense": 36,
+          "magic": 27,
+          "resistance": 25
+        },
+        {
+          "level": 10,
+          "maxHp": 156,
+          "attack": 38,
+          "defense": 37,
+          "magic": 28,
+          "resistance": 26
+        },
+        {
+          "level": 11,
+          "maxHp": 160,
+          "attack": 40,
+          "defense": 38,
+          "magic": 29,
+          "resistance": 27
+        },
+        {
+          "level": 12,
+          "maxHp": 164,
+          "attack": 42,
+          "defense": 39,
+          "magic": 30,
+          "resistance": 28
+        },
+        {
+          "level": 13,
+          "maxHp": 168,
+          "attack": 44,
+          "defense": 40,
+          "magic": 31,
+          "resistance": 29
+        },
+        {
+          "level": 14,
+          "maxHp": 172,
+          "attack": 46,
+          "defense": 41,
+          "magic": 32,
+          "resistance": 30
+        },
+        {
+          "level": 15,
+          "maxHp": 176,
+          "attack": 48,
+          "defense": 42,
+          "magic": 33,
+          "resistance": 31
+        },
+        {
+          "level": 16,
+          "maxHp": 180,
+          "attack": 50,
+          "defense": 43,
+          "magic": 34,
+          "resistance": 32
+        },
+        {
+          "level": 17,
+          "maxHp": 184,
+          "attack": 52,
+          "defense": 44,
+          "magic": 35,
+          "resistance": 33
+        },
+        {
+          "level": 18,
+          "maxHp": 188,
+          "attack": 54,
+          "defense": 45,
+          "magic": 36,
+          "resistance": 34
+        },
+        {
+          "level": 19,
+          "maxHp": 192,
+          "attack": 56,
+          "defense": 46,
+          "magic": 37,
+          "resistance": 35
+        },
+        {
+          "level": 20,
+          "maxHp": 196,
+          "attack": 58,
+          "defense": 47,
+          "magic": 38,
+          "resistance": 36
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "name": "Okuwamon",
+      "lineage": 9,
+      "stage": "Ultimate",
+      "parent": 43,
+      "children": [
+        45,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "grove",
+      "skills": {
+        "physical": "Obsidian Claw",
+        "heavy": "Hollow Cleave",
+        "magic": "Void Cutter"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 172,
+        "attack": 44,
+        "defense": 45,
+        "magic": 38,
+        "resistance": 35
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 172,
+          "attack": 44,
+          "defense": 45,
+          "magic": 38,
+          "resistance": 35
+        },
+        {
+          "level": 11,
+          "maxHp": 176,
+          "attack": 46,
+          "defense": 46,
+          "magic": 39,
+          "resistance": 36
+        },
+        {
+          "level": 12,
+          "maxHp": 180,
+          "attack": 48,
+          "defense": 47,
+          "magic": 40,
+          "resistance": 37
+        },
+        {
+          "level": 13,
+          "maxHp": 184,
+          "attack": 50,
+          "defense": 48,
+          "magic": 41,
+          "resistance": 38
+        },
+        {
+          "level": 14,
+          "maxHp": 188,
+          "attack": 52,
+          "defense": 49,
+          "magic": 42,
+          "resistance": 39
+        },
+        {
+          "level": 15,
+          "maxHp": 192,
+          "attack": 54,
+          "defense": 50,
+          "magic": 43,
+          "resistance": 40
+        },
+        {
+          "level": 16,
+          "maxHp": 196,
+          "attack": 56,
+          "defense": 51,
+          "magic": 44,
+          "resistance": 41
+        },
+        {
+          "level": 17,
+          "maxHp": 200,
+          "attack": 58,
+          "defense": 52,
+          "magic": 45,
+          "resistance": 42
+        },
+        {
+          "level": 18,
+          "maxHp": 204,
+          "attack": 60,
+          "defense": 53,
+          "magic": 46,
+          "resistance": 43
+        },
+        {
+          "level": 19,
+          "maxHp": 208,
+          "attack": 62,
+          "defense": 54,
+          "magic": 47,
+          "resistance": 44
+        },
+        {
+          "level": 20,
+          "maxHp": 212,
+          "attack": 64,
+          "defense": 55,
+          "magic": 48,
+          "resistance": 45
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "name": "GranKuwagamon",
+      "lineage": 9,
+      "stage": "Mega",
+      "parent": 44,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "grove",
+      "skills": {
+        "physical": "Grand Pincer",
+        "heavy": "Dimension Rush",
+        "magic": "Abyss Edge"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 212,
+        "attack": 62,
+        "defense": 59,
+        "magic": 55,
+        "resistance": 51
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 1,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 212,
+          "attack": 62,
+          "defense": 59,
+          "magic": 55,
+          "resistance": 51
+        },
+        {
+          "level": 16,
+          "maxHp": 216,
+          "attack": 64,
+          "defense": 60,
+          "magic": 56,
+          "resistance": 52
+        },
+        {
+          "level": 17,
+          "maxHp": 220,
+          "attack": 66,
+          "defense": 61,
+          "magic": 57,
+          "resistance": 53
+        },
+        {
+          "level": 18,
+          "maxHp": 224,
+          "attack": 68,
+          "defense": 62,
+          "magic": 58,
+          "resistance": 54
+        },
+        {
+          "level": 19,
+          "maxHp": 228,
+          "attack": 70,
+          "defense": 63,
+          "magic": 59,
+          "resistance": 55
+        },
+        {
+          "level": 20,
+          "maxHp": 232,
+          "attack": 72,
+          "defense": 64,
+          "magic": 60,
+          "resistance": 56
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Palmon",
+      "lineage": 10,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        47,
+        50
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "grove",
+      "skills": {
+        "physical": "Vine Lash",
+        "heavy": "Root Slam",
+        "magic": "Poison Ivy"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 104,
+        "attack": 13,
+        "defense": 16,
+        "magic": 22,
+        "resistance": 12
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 104,
+          "attack": 13,
+          "defense": 16,
+          "magic": 22,
+          "resistance": 12
+        },
+        {
+          "level": 2,
+          "maxHp": 108,
+          "attack": 14,
+          "defense": 17,
+          "magic": 23,
+          "resistance": 13
+        },
+        {
+          "level": 3,
+          "maxHp": 112,
+          "attack": 16,
+          "defense": 18,
+          "magic": 25,
+          "resistance": 15
+        },
+        {
+          "level": 4,
+          "maxHp": 116,
+          "attack": 17,
+          "defense": 19,
+          "magic": 27,
+          "resistance": 16
+        },
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 19,
+          "defense": 21,
+          "magic": 29,
+          "resistance": 18
+        },
+        {
+          "level": 6,
+          "maxHp": 124,
+          "attack": 20,
+          "defense": 22,
+          "magic": 30,
+          "resistance": 19
+        },
+        {
+          "level": 7,
+          "maxHp": 128,
+          "attack": 22,
+          "defense": 23,
+          "magic": 32,
+          "resistance": 21
+        },
+        {
+          "level": 8,
+          "maxHp": 132,
+          "attack": 23,
+          "defense": 25,
+          "magic": 34,
+          "resistance": 22
+        },
+        {
+          "level": 9,
+          "maxHp": 136,
+          "attack": 25,
+          "defense": 26,
+          "magic": 36,
+          "resistance": 24
+        },
+        {
+          "level": 10,
+          "maxHp": 140,
+          "attack": 27,
+          "defense": 28,
+          "magic": 38,
+          "resistance": 26
+        },
+        {
+          "level": 11,
+          "maxHp": 143,
+          "attack": 28,
+          "defense": 29,
+          "magic": 40,
+          "resistance": 28
+        },
+        {
+          "level": 12,
+          "maxHp": 146,
+          "attack": 29,
+          "defense": 30,
+          "magic": 42,
+          "resistance": 30
+        },
+        {
+          "level": 13,
+          "maxHp": 149,
+          "attack": 30,
+          "defense": 31,
+          "magic": 44,
+          "resistance": 32
+        },
+        {
+          "level": 14,
+          "maxHp": 152,
+          "attack": 31,
+          "defense": 32,
+          "magic": 46,
+          "resistance": 34
+        },
+        {
+          "level": 15,
+          "maxHp": 155,
+          "attack": 32,
+          "defense": 33,
+          "magic": 48,
+          "resistance": 36
+        },
+        {
+          "level": 16,
+          "maxHp": 158,
+          "attack": 33,
+          "defense": 34,
+          "magic": 50,
+          "resistance": 38
+        },
+        {
+          "level": 17,
+          "maxHp": 161,
+          "attack": 34,
+          "defense": 35,
+          "magic": 52,
+          "resistance": 40
+        },
+        {
+          "level": 18,
+          "maxHp": 164,
+          "attack": 35,
+          "defense": 36,
+          "magic": 54,
+          "resistance": 42
+        },
+        {
+          "level": 19,
+          "maxHp": 167,
+          "attack": 36,
+          "defense": 37,
+          "magic": 56,
+          "resistance": 44
+        },
+        {
+          "level": 20,
+          "maxHp": 170,
+          "attack": 37,
+          "defense": 38,
+          "magic": 58,
+          "resistance": 46
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Togemon",
+      "lineage": 10,
+      "stage": "Champion",
+      "parent": 46,
+      "children": [
+        48,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "grove",
+      "skills": {
+        "physical": "Cactus Jab",
+        "heavy": "Needle Slam",
+        "magic": "Thorn Volley"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 132,
+        "attack": 23,
+        "defense": 25,
+        "magic": 35,
+        "resistance": 24
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 132,
+          "attack": 23,
+          "defense": 25,
+          "magic": 35,
+          "resistance": 24
+        },
+        {
+          "level": 6,
+          "maxHp": 135,
+          "attack": 24,
+          "defense": 26,
+          "magic": 37,
+          "resistance": 26
+        },
+        {
+          "level": 7,
+          "maxHp": 138,
+          "attack": 25,
+          "defense": 27,
+          "magic": 39,
+          "resistance": 28
+        },
+        {
+          "level": 8,
+          "maxHp": 141,
+          "attack": 26,
+          "defense": 28,
+          "magic": 41,
+          "resistance": 30
+        },
+        {
+          "level": 9,
+          "maxHp": 144,
+          "attack": 27,
+          "defense": 29,
+          "magic": 43,
+          "resistance": 32
+        },
+        {
+          "level": 10,
+          "maxHp": 147,
+          "attack": 28,
+          "defense": 30,
+          "magic": 45,
+          "resistance": 34
+        },
+        {
+          "level": 11,
+          "maxHp": 150,
+          "attack": 29,
+          "defense": 31,
+          "magic": 47,
+          "resistance": 36
+        },
+        {
+          "level": 12,
+          "maxHp": 153,
+          "attack": 30,
+          "defense": 32,
+          "magic": 49,
+          "resistance": 38
+        },
+        {
+          "level": 13,
+          "maxHp": 156,
+          "attack": 31,
+          "defense": 33,
+          "magic": 51,
+          "resistance": 40
+        },
+        {
+          "level": 14,
+          "maxHp": 159,
+          "attack": 32,
+          "defense": 34,
+          "magic": 53,
+          "resistance": 42
+        },
+        {
+          "level": 15,
+          "maxHp": 162,
+          "attack": 33,
+          "defense": 35,
+          "magic": 55,
+          "resistance": 44
+        },
+        {
+          "level": 16,
+          "maxHp": 165,
+          "attack": 34,
+          "defense": 36,
+          "magic": 57,
+          "resistance": 46
+        },
+        {
+          "level": 17,
+          "maxHp": 168,
+          "attack": 35,
+          "defense": 37,
+          "magic": 59,
+          "resistance": 48
+        },
+        {
+          "level": 18,
+          "maxHp": 171,
+          "attack": 36,
+          "defense": 38,
+          "magic": 61,
+          "resistance": 50
+        },
+        {
+          "level": 19,
+          "maxHp": 174,
+          "attack": 37,
+          "defense": 39,
+          "magic": 63,
+          "resistance": 52
+        },
+        {
+          "level": 20,
+          "maxHp": 177,
+          "attack": 38,
+          "defense": 40,
+          "magic": 65,
+          "resistance": 54
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "name": "Lillymon",
+      "lineage": 10,
+      "stage": "Ultimate",
+      "parent": 47,
+      "children": [
+        49,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "grove",
+      "skills": {
+        "physical": "Petal Strike",
+        "heavy": "Bloom Rush",
+        "magic": "Floral Ray"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 168,
+        "attack": 37,
+        "defense": 38,
+        "magic": 52,
+        "resistance": 40
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 168,
+          "attack": 37,
+          "defense": 38,
+          "magic": 52,
+          "resistance": 40
+        },
+        {
+          "level": 11,
+          "maxHp": 171,
+          "attack": 38,
+          "defense": 39,
+          "magic": 54,
+          "resistance": 42
+        },
+        {
+          "level": 12,
+          "maxHp": 174,
+          "attack": 39,
+          "defense": 40,
+          "magic": 56,
+          "resistance": 44
+        },
+        {
+          "level": 13,
+          "maxHp": 177,
+          "attack": 40,
+          "defense": 41,
+          "magic": 58,
+          "resistance": 46
+        },
+        {
+          "level": 14,
+          "maxHp": 180,
+          "attack": 41,
+          "defense": 42,
+          "magic": 60,
+          "resistance": 48
+        },
+        {
+          "level": 15,
+          "maxHp": 183,
+          "attack": 42,
+          "defense": 43,
+          "magic": 62,
+          "resistance": 50
+        },
+        {
+          "level": 16,
+          "maxHp": 186,
+          "attack": 43,
+          "defense": 44,
+          "magic": 64,
+          "resistance": 52
+        },
+        {
+          "level": 17,
+          "maxHp": 189,
+          "attack": 44,
+          "defense": 45,
+          "magic": 66,
+          "resistance": 54
+        },
+        {
+          "level": 18,
+          "maxHp": 192,
+          "attack": 45,
+          "defense": 46,
+          "magic": 68,
+          "resistance": 56
+        },
+        {
+          "level": 19,
+          "maxHp": 195,
+          "attack": 46,
+          "defense": 47,
+          "magic": 70,
+          "resistance": 58
+        },
+        {
+          "level": 20,
+          "maxHp": 198,
+          "attack": 47,
+          "defense": 48,
+          "magic": 72,
+          "resistance": 60
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Rosemon",
+      "lineage": 10,
+      "stage": "Mega",
+      "parent": 48,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "grove",
+      "skills": {
+        "physical": "Rose Lash",
+        "heavy": "Thorn Waltz",
+        "magic": "Crimson Bloom"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 208,
+        "attack": 53,
+        "defense": 52,
+        "magic": 71,
+        "resistance": 58
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 208,
+          "attack": 53,
+          "defense": 52,
+          "magic": 71,
+          "resistance": 58
+        },
+        {
+          "level": 16,
+          "maxHp": 211,
+          "attack": 54,
+          "defense": 53,
+          "magic": 73,
+          "resistance": 60
+        },
+        {
+          "level": 17,
+          "maxHp": 214,
+          "attack": 55,
+          "defense": 54,
+          "magic": 75,
+          "resistance": 62
+        },
+        {
+          "level": 18,
+          "maxHp": 217,
+          "attack": 56,
+          "defense": 55,
+          "magic": 77,
+          "resistance": 64
+        },
+        {
+          "level": 19,
+          "maxHp": 220,
+          "attack": 57,
+          "defense": 56,
+          "magic": 79,
+          "resistance": 66
+        },
+        {
+          "level": 20,
+          "maxHp": 223,
+          "attack": 58,
+          "defense": 57,
+          "magic": 81,
+          "resistance": 68
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Woodmon",
+      "lineage": 10,
+      "stage": "Champion",
+      "parent": 46,
+      "children": [
+        51,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "grove",
+      "skills": {
+        "physical": "Branch Swipe",
+        "heavy": "Trunk Slam",
+        "magic": "Sap Snare"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 136,
+        "attack": 23,
+        "defense": 27,
+        "magic": 33,
+        "resistance": 24
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 136,
+          "attack": 23,
+          "defense": 27,
+          "magic": 33,
+          "resistance": 24
+        },
+        {
+          "level": 6,
+          "maxHp": 141,
+          "attack": 24,
+          "defense": 29,
+          "magic": 34,
+          "resistance": 26
+        },
+        {
+          "level": 7,
+          "maxHp": 146,
+          "attack": 25,
+          "defense": 31,
+          "magic": 35,
+          "resistance": 28
+        },
+        {
+          "level": 8,
+          "maxHp": 151,
+          "attack": 26,
+          "defense": 33,
+          "magic": 36,
+          "resistance": 30
+        },
+        {
+          "level": 9,
+          "maxHp": 156,
+          "attack": 27,
+          "defense": 35,
+          "magic": 37,
+          "resistance": 32
+        },
+        {
+          "level": 10,
+          "maxHp": 161,
+          "attack": 28,
+          "defense": 37,
+          "magic": 38,
+          "resistance": 34
+        },
+        {
+          "level": 11,
+          "maxHp": 166,
+          "attack": 29,
+          "defense": 39,
+          "magic": 39,
+          "resistance": 36
+        },
+        {
+          "level": 12,
+          "maxHp": 171,
+          "attack": 30,
+          "defense": 41,
+          "magic": 40,
+          "resistance": 38
+        },
+        {
+          "level": 13,
+          "maxHp": 176,
+          "attack": 31,
+          "defense": 43,
+          "magic": 41,
+          "resistance": 40
+        },
+        {
+          "level": 14,
+          "maxHp": 181,
+          "attack": 32,
+          "defense": 45,
+          "magic": 42,
+          "resistance": 42
+        },
+        {
+          "level": 15,
+          "maxHp": 186,
+          "attack": 33,
+          "defense": 47,
+          "magic": 43,
+          "resistance": 44
+        },
+        {
+          "level": 16,
+          "maxHp": 191,
+          "attack": 34,
+          "defense": 49,
+          "magic": 44,
+          "resistance": 46
+        },
+        {
+          "level": 17,
+          "maxHp": 196,
+          "attack": 35,
+          "defense": 51,
+          "magic": 45,
+          "resistance": 48
+        },
+        {
+          "level": 18,
+          "maxHp": 201,
+          "attack": 36,
+          "defense": 53,
+          "magic": 46,
+          "resistance": 50
+        },
+        {
+          "level": 19,
+          "maxHp": 206,
+          "attack": 37,
+          "defense": 55,
+          "magic": 47,
+          "resistance": 52
+        },
+        {
+          "level": 20,
+          "maxHp": 211,
+          "attack": 38,
+          "defense": 57,
+          "magic": 48,
+          "resistance": 54
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "name": "Cherrymon",
+      "lineage": 10,
+      "stage": "Ultimate",
+      "parent": 50,
+      "children": [
+        52,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "grove",
+      "skills": {
+        "physical": "Bough Sweep",
+        "heavy": "Forest Crush",
+        "magic": "Cherry Burst"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 176,
+        "attack": 37,
+        "defense": 42,
+        "magic": 48,
+        "resistance": 40
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 176,
+          "attack": 37,
+          "defense": 42,
+          "magic": 48,
+          "resistance": 40
+        },
+        {
+          "level": 11,
+          "maxHp": 181,
+          "attack": 38,
+          "defense": 44,
+          "magic": 49,
+          "resistance": 42
+        },
+        {
+          "level": 12,
+          "maxHp": 186,
+          "attack": 39,
+          "defense": 46,
+          "magic": 50,
+          "resistance": 44
+        },
+        {
+          "level": 13,
+          "maxHp": 191,
+          "attack": 40,
+          "defense": 48,
+          "magic": 51,
+          "resistance": 46
+        },
+        {
+          "level": 14,
+          "maxHp": 196,
+          "attack": 41,
+          "defense": 50,
+          "magic": 52,
+          "resistance": 48
+        },
+        {
+          "level": 15,
+          "maxHp": 201,
+          "attack": 42,
+          "defense": 52,
+          "magic": 53,
+          "resistance": 50
+        },
+        {
+          "level": 16,
+          "maxHp": 206,
+          "attack": 43,
+          "defense": 54,
+          "magic": 54,
+          "resistance": 52
+        },
+        {
+          "level": 17,
+          "maxHp": 211,
+          "attack": 44,
+          "defense": 56,
+          "magic": 55,
+          "resistance": 54
+        },
+        {
+          "level": 18,
+          "maxHp": 216,
+          "attack": 45,
+          "defense": 58,
+          "magic": 56,
+          "resistance": 56
+        },
+        {
+          "level": 19,
+          "maxHp": 221,
+          "attack": 46,
+          "defense": 60,
+          "magic": 57,
+          "resistance": 58
+        },
+        {
+          "level": 20,
+          "maxHp": 226,
+          "attack": 47,
+          "defense": 62,
+          "magic": 58,
+          "resistance": 60
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "name": "Puppetmon",
+      "lineage": 10,
+      "stage": "Mega",
+      "parent": 51,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "grove",
+      "skills": {
+        "physical": "Wooden Hammer",
+        "heavy": "Marionette Slam",
+        "magic": "String Storm"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 220,
+        "attack": 53,
+        "defense": 58,
+        "magic": 65,
+        "resistance": 58
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 220,
+          "attack": 53,
+          "defense": 58,
+          "magic": 65,
+          "resistance": 58
+        },
+        {
+          "level": 16,
+          "maxHp": 225,
+          "attack": 54,
+          "defense": 60,
+          "magic": 66,
+          "resistance": 60
+        },
+        {
+          "level": 17,
+          "maxHp": 230,
+          "attack": 55,
+          "defense": 62,
+          "magic": 67,
+          "resistance": 62
+        },
+        {
+          "level": 18,
+          "maxHp": 235,
+          "attack": 56,
+          "defense": 64,
+          "magic": 68,
+          "resistance": 64
+        },
+        {
+          "level": 19,
+          "maxHp": 240,
+          "attack": 57,
+          "defense": 66,
+          "magic": 69,
+          "resistance": 66
+        },
+        {
+          "level": 20,
+          "maxHp": 245,
+          "attack": 58,
+          "defense": 68,
+          "magic": 70,
+          "resistance": 68
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "name": "Gomamon",
+      "lineage": 11,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        54,
+        57
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "tide",
+      "skills": {
+        "physical": "Flipper Slap",
+        "heavy": "Iceberg Rush",
+        "magic": "Marching Fishes"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 112,
+        "attack": 16,
+        "defense": 19,
+        "magic": 12,
+        "resistance": 14
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 112,
+          "attack": 16,
+          "defense": 19,
+          "magic": 12,
+          "resistance": 14
+        },
+        {
+          "level": 2,
+          "maxHp": 116,
+          "attack": 17,
+          "defense": 20,
+          "magic": 13,
+          "resistance": 15
+        },
+        {
+          "level": 3,
+          "maxHp": 120,
+          "attack": 19,
+          "defense": 21,
+          "magic": 15,
+          "resistance": 17
+        },
+        {
+          "level": 4,
+          "maxHp": 124,
+          "attack": 20,
+          "defense": 22,
+          "magic": 17,
+          "resistance": 18
+        },
+        {
+          "level": 5,
+          "maxHp": 128,
+          "attack": 22,
+          "defense": 24,
+          "magic": 19,
+          "resistance": 20
+        },
+        {
+          "level": 6,
+          "maxHp": 132,
+          "attack": 23,
+          "defense": 25,
+          "magic": 20,
+          "resistance": 21
+        },
+        {
+          "level": 7,
+          "maxHp": 136,
+          "attack": 25,
+          "defense": 26,
+          "magic": 22,
+          "resistance": 23
+        },
+        {
+          "level": 8,
+          "maxHp": 140,
+          "attack": 26,
+          "defense": 28,
+          "magic": 24,
+          "resistance": 24
+        },
+        {
+          "level": 9,
+          "maxHp": 144,
+          "attack": 28,
+          "defense": 29,
+          "magic": 26,
+          "resistance": 26
+        },
+        {
+          "level": 10,
+          "maxHp": 148,
+          "attack": 30,
+          "defense": 31,
+          "magic": 28,
+          "resistance": 28
+        },
+        {
+          "level": 11,
+          "maxHp": 153,
+          "attack": 31,
+          "defense": 33,
+          "magic": 29,
+          "resistance": 30
+        },
+        {
+          "level": 12,
+          "maxHp": 158,
+          "attack": 32,
+          "defense": 35,
+          "magic": 30,
+          "resistance": 32
+        },
+        {
+          "level": 13,
+          "maxHp": 163,
+          "attack": 33,
+          "defense": 37,
+          "magic": 31,
+          "resistance": 34
+        },
+        {
+          "level": 14,
+          "maxHp": 168,
+          "attack": 34,
+          "defense": 39,
+          "magic": 32,
+          "resistance": 36
+        },
+        {
+          "level": 15,
+          "maxHp": 173,
+          "attack": 35,
+          "defense": 41,
+          "magic": 33,
+          "resistance": 38
+        },
+        {
+          "level": 16,
+          "maxHp": 178,
+          "attack": 36,
+          "defense": 43,
+          "magic": 34,
+          "resistance": 40
+        },
+        {
+          "level": 17,
+          "maxHp": 183,
+          "attack": 37,
+          "defense": 45,
+          "magic": 35,
+          "resistance": 42
+        },
+        {
+          "level": 18,
+          "maxHp": 188,
+          "attack": 38,
+          "defense": 47,
+          "magic": 36,
+          "resistance": 44
+        },
+        {
+          "level": 19,
+          "maxHp": 193,
+          "attack": 39,
+          "defense": 49,
+          "magic": 37,
+          "resistance": 46
+        },
+        {
+          "level": 20,
+          "maxHp": 198,
+          "attack": 40,
+          "defense": 51,
+          "magic": 38,
+          "resistance": 48
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "name": "Ikkakumon",
+      "lineage": 11,
+      "stage": "Champion",
+      "parent": 53,
+      "children": [
+        55,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "tide",
+      "skills": {
+        "physical": "Tusk Jab",
+        "heavy": "Icebreaker",
+        "magic": "Harpoon Burst"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 144,
+        "attack": 26,
+        "defense": 30,
+        "magic": 23,
+        "resistance": 26
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 144,
+          "attack": 26,
+          "defense": 30,
+          "magic": 23,
+          "resistance": 26
+        },
+        {
+          "level": 6,
+          "maxHp": 149,
+          "attack": 27,
+          "defense": 32,
+          "magic": 24,
+          "resistance": 28
+        },
+        {
+          "level": 7,
+          "maxHp": 154,
+          "attack": 28,
+          "defense": 34,
+          "magic": 25,
+          "resistance": 30
+        },
+        {
+          "level": 8,
+          "maxHp": 159,
+          "attack": 29,
+          "defense": 36,
+          "magic": 26,
+          "resistance": 32
+        },
+        {
+          "level": 9,
+          "maxHp": 164,
+          "attack": 30,
+          "defense": 38,
+          "magic": 27,
+          "resistance": 34
+        },
+        {
+          "level": 10,
+          "maxHp": 169,
+          "attack": 31,
+          "defense": 40,
+          "magic": 28,
+          "resistance": 36
+        },
+        {
+          "level": 11,
+          "maxHp": 174,
+          "attack": 32,
+          "defense": 42,
+          "magic": 29,
+          "resistance": 38
+        },
+        {
+          "level": 12,
+          "maxHp": 179,
+          "attack": 33,
+          "defense": 44,
+          "magic": 30,
+          "resistance": 40
+        },
+        {
+          "level": 13,
+          "maxHp": 184,
+          "attack": 34,
+          "defense": 46,
+          "magic": 31,
+          "resistance": 42
+        },
+        {
+          "level": 14,
+          "maxHp": 189,
+          "attack": 35,
+          "defense": 48,
+          "magic": 32,
+          "resistance": 44
+        },
+        {
+          "level": 15,
+          "maxHp": 194,
+          "attack": 36,
+          "defense": 50,
+          "magic": 33,
+          "resistance": 46
+        },
+        {
+          "level": 16,
+          "maxHp": 199,
+          "attack": 37,
+          "defense": 52,
+          "magic": 34,
+          "resistance": 48
+        },
+        {
+          "level": 17,
+          "maxHp": 204,
+          "attack": 38,
+          "defense": 54,
+          "magic": 35,
+          "resistance": 50
+        },
+        {
+          "level": 18,
+          "maxHp": 209,
+          "attack": 39,
+          "defense": 56,
+          "magic": 36,
+          "resistance": 52
+        },
+        {
+          "level": 19,
+          "maxHp": 214,
+          "attack": 40,
+          "defense": 58,
+          "magic": 37,
+          "resistance": 54
+        },
+        {
+          "level": 20,
+          "maxHp": 219,
+          "attack": 41,
+          "defense": 60,
+          "magic": 38,
+          "resistance": 56
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "name": "Zudomon",
+      "lineage": 11,
+      "stage": "Ultimate",
+      "parent": 54,
+      "children": [
+        56,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "tide",
+      "skills": {
+        "physical": "Hammer Tap",
+        "heavy": "Glacier Smash",
+        "magic": "Thunder Tide"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 184,
+        "attack": 40,
+        "defense": 45,
+        "magic": 38,
+        "resistance": 42
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 184,
+          "attack": 40,
+          "defense": 45,
+          "magic": 38,
+          "resistance": 42
+        },
+        {
+          "level": 11,
+          "maxHp": 189,
+          "attack": 41,
+          "defense": 47,
+          "magic": 39,
+          "resistance": 44
+        },
+        {
+          "level": 12,
+          "maxHp": 194,
+          "attack": 42,
+          "defense": 49,
+          "magic": 40,
+          "resistance": 46
+        },
+        {
+          "level": 13,
+          "maxHp": 199,
+          "attack": 43,
+          "defense": 51,
+          "magic": 41,
+          "resistance": 48
+        },
+        {
+          "level": 14,
+          "maxHp": 204,
+          "attack": 44,
+          "defense": 53,
+          "magic": 42,
+          "resistance": 50
+        },
+        {
+          "level": 15,
+          "maxHp": 209,
+          "attack": 45,
+          "defense": 55,
+          "magic": 43,
+          "resistance": 52
+        },
+        {
+          "level": 16,
+          "maxHp": 214,
+          "attack": 46,
+          "defense": 57,
+          "magic": 44,
+          "resistance": 54
+        },
+        {
+          "level": 17,
+          "maxHp": 219,
+          "attack": 47,
+          "defense": 59,
+          "magic": 45,
+          "resistance": 56
+        },
+        {
+          "level": 18,
+          "maxHp": 224,
+          "attack": 48,
+          "defense": 61,
+          "magic": 46,
+          "resistance": 58
+        },
+        {
+          "level": 19,
+          "maxHp": 229,
+          "attack": 49,
+          "defense": 63,
+          "magic": 47,
+          "resistance": 60
+        },
+        {
+          "level": 20,
+          "maxHp": 234,
+          "attack": 50,
+          "defense": 65,
+          "magic": 48,
+          "resistance": 62
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "name": "Vikemon",
+      "lineage": 11,
+      "stage": "Mega",
+      "parent": 55,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "tide",
+      "skills": {
+        "physical": "Mace Sweep",
+        "heavy": "Viking Crash",
+        "magic": "Polar Tempest"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 228,
+        "attack": 56,
+        "defense": 61,
+        "magic": 55,
+        "resistance": 60
+      },
+      "growth": {
+        "maxHp": 5,
+        "attack": 1,
+        "defense": 2,
+        "magic": 1,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 228,
+          "attack": 56,
+          "defense": 61,
+          "magic": 55,
+          "resistance": 60
+        },
+        {
+          "level": 16,
+          "maxHp": 233,
+          "attack": 57,
+          "defense": 63,
+          "magic": 56,
+          "resistance": 62
+        },
+        {
+          "level": 17,
+          "maxHp": 238,
+          "attack": 58,
+          "defense": 65,
+          "magic": 57,
+          "resistance": 64
+        },
+        {
+          "level": 18,
+          "maxHp": 243,
+          "attack": 59,
+          "defense": 67,
+          "magic": 58,
+          "resistance": 66
+        },
+        {
+          "level": 19,
+          "maxHp": 248,
+          "attack": 60,
+          "defense": 69,
+          "magic": 59,
+          "resistance": 68
+        },
+        {
+          "level": 20,
+          "maxHp": 253,
+          "attack": 61,
+          "defense": 71,
+          "magic": 60,
+          "resistance": 70
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "name": "Shellmon",
+      "lineage": 11,
+      "stage": "Champion",
+      "parent": 53,
+      "children": [
+        58,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "tide",
+      "skills": {
+        "physical": "Shell Strike",
+        "heavy": "Reef Crash",
+        "magic": "Water Jet"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 140,
+        "attack": 26,
+        "defense": 28,
+        "magic": 25,
+        "resistance": 26
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 140,
+          "attack": 26,
+          "defense": 28,
+          "magic": 25,
+          "resistance": 26
+        },
+        {
+          "level": 6,
+          "maxHp": 143,
+          "attack": 27,
+          "defense": 29,
+          "magic": 27,
+          "resistance": 28
+        },
+        {
+          "level": 7,
+          "maxHp": 146,
+          "attack": 28,
+          "defense": 30,
+          "magic": 29,
+          "resistance": 30
+        },
+        {
+          "level": 8,
+          "maxHp": 149,
+          "attack": 29,
+          "defense": 31,
+          "magic": 31,
+          "resistance": 32
+        },
+        {
+          "level": 9,
+          "maxHp": 152,
+          "attack": 30,
+          "defense": 32,
+          "magic": 33,
+          "resistance": 34
+        },
+        {
+          "level": 10,
+          "maxHp": 155,
+          "attack": 31,
+          "defense": 33,
+          "magic": 35,
+          "resistance": 36
+        },
+        {
+          "level": 11,
+          "maxHp": 158,
+          "attack": 32,
+          "defense": 34,
+          "magic": 37,
+          "resistance": 38
+        },
+        {
+          "level": 12,
+          "maxHp": 161,
+          "attack": 33,
+          "defense": 35,
+          "magic": 39,
+          "resistance": 40
+        },
+        {
+          "level": 13,
+          "maxHp": 164,
+          "attack": 34,
+          "defense": 36,
+          "magic": 41,
+          "resistance": 42
+        },
+        {
+          "level": 14,
+          "maxHp": 167,
+          "attack": 35,
+          "defense": 37,
+          "magic": 43,
+          "resistance": 44
+        },
+        {
+          "level": 15,
+          "maxHp": 170,
+          "attack": 36,
+          "defense": 38,
+          "magic": 45,
+          "resistance": 46
+        },
+        {
+          "level": 16,
+          "maxHp": 173,
+          "attack": 37,
+          "defense": 39,
+          "magic": 47,
+          "resistance": 48
+        },
+        {
+          "level": 17,
+          "maxHp": 176,
+          "attack": 38,
+          "defense": 40,
+          "magic": 49,
+          "resistance": 50
+        },
+        {
+          "level": 18,
+          "maxHp": 179,
+          "attack": 39,
+          "defense": 41,
+          "magic": 51,
+          "resistance": 52
+        },
+        {
+          "level": 19,
+          "maxHp": 182,
+          "attack": 40,
+          "defense": 42,
+          "magic": 53,
+          "resistance": 54
+        },
+        {
+          "level": 20,
+          "maxHp": 185,
+          "attack": 41,
+          "defense": 43,
+          "magic": 55,
+          "resistance": 56
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "name": "Whamon",
+      "lineage": 11,
+      "stage": "Ultimate",
+      "parent": 57,
+      "children": [
+        59,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "tide",
+      "skills": {
+        "physical": "Fin Sweep",
+        "heavy": "Deepwater Crush",
+        "magic": "Ocean Surge"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 176,
+        "attack": 40,
+        "defense": 41,
+        "magic": 42,
+        "resistance": 42
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 176,
+          "attack": 40,
+          "defense": 41,
+          "magic": 42,
+          "resistance": 42
+        },
+        {
+          "level": 11,
+          "maxHp": 179,
+          "attack": 41,
+          "defense": 42,
+          "magic": 44,
+          "resistance": 44
+        },
+        {
+          "level": 12,
+          "maxHp": 182,
+          "attack": 42,
+          "defense": 43,
+          "magic": 46,
+          "resistance": 46
+        },
+        {
+          "level": 13,
+          "maxHp": 185,
+          "attack": 43,
+          "defense": 44,
+          "magic": 48,
+          "resistance": 48
+        },
+        {
+          "level": 14,
+          "maxHp": 188,
+          "attack": 44,
+          "defense": 45,
+          "magic": 50,
+          "resistance": 50
+        },
+        {
+          "level": 15,
+          "maxHp": 191,
+          "attack": 45,
+          "defense": 46,
+          "magic": 52,
+          "resistance": 52
+        },
+        {
+          "level": 16,
+          "maxHp": 194,
+          "attack": 46,
+          "defense": 47,
+          "magic": 54,
+          "resistance": 54
+        },
+        {
+          "level": 17,
+          "maxHp": 197,
+          "attack": 47,
+          "defense": 48,
+          "magic": 56,
+          "resistance": 56
+        },
+        {
+          "level": 18,
+          "maxHp": 200,
+          "attack": 48,
+          "defense": 49,
+          "magic": 58,
+          "resistance": 58
+        },
+        {
+          "level": 19,
+          "maxHp": 203,
+          "attack": 49,
+          "defense": 50,
+          "magic": 60,
+          "resistance": 60
+        },
+        {
+          "level": 20,
+          "maxHp": 206,
+          "attack": 50,
+          "defense": 51,
+          "magic": 62,
+          "resistance": 62
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "name": "Plesiomon",
+      "lineage": 11,
+      "stage": "Mega",
+      "parent": 58,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "tide",
+      "skills": {
+        "physical": "Neck Sweep",
+        "heavy": "Abyss Ram",
+        "magic": "Sorrow Tide"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 216,
+        "attack": 56,
+        "defense": 55,
+        "magic": 61,
+        "resistance": 60
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 216,
+          "attack": 56,
+          "defense": 55,
+          "magic": 61,
+          "resistance": 60
+        },
+        {
+          "level": 16,
+          "maxHp": 219,
+          "attack": 57,
+          "defense": 56,
+          "magic": 63,
+          "resistance": 62
+        },
+        {
+          "level": 17,
+          "maxHp": 222,
+          "attack": 58,
+          "defense": 57,
+          "magic": 65,
+          "resistance": 64
+        },
+        {
+          "level": 18,
+          "maxHp": 225,
+          "attack": 59,
+          "defense": 58,
+          "magic": 67,
+          "resistance": 66
+        },
+        {
+          "level": 19,
+          "maxHp": 228,
+          "attack": 60,
+          "defense": 59,
+          "magic": 69,
+          "resistance": 68
+        },
+        {
+          "level": 20,
+          "maxHp": 231,
+          "attack": 61,
+          "defense": 60,
+          "magic": 71,
+          "resistance": 70
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "name": "Renamon",
+      "lineage": 12,
+      "stage": "Rookie",
+      "parent": 0,
+      "children": [
+        61,
+        64
+      ],
+      "minLevel": 1,
+      "minBond": 0,
+      "type": "neutral",
+      "skills": {
+        "physical": "Palm Strike",
+        "heavy": "Fox Rush",
+        "magic": "Diamond Storm"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 92,
+        "attack": 23,
+        "defense": 12,
+        "magic": 18,
+        "resistance": 13
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 1,
+          "maxHp": 92,
+          "attack": 23,
+          "defense": 12,
+          "magic": 18,
+          "resistance": 13
+        },
+        {
+          "level": 2,
+          "maxHp": 96,
+          "attack": 24,
+          "defense": 13,
+          "magic": 19,
+          "resistance": 14
+        },
+        {
+          "level": 3,
+          "maxHp": 100,
+          "attack": 26,
+          "defense": 14,
+          "magic": 21,
+          "resistance": 16
+        },
+        {
+          "level": 4,
+          "maxHp": 104,
+          "attack": 27,
+          "defense": 15,
+          "magic": 23,
+          "resistance": 17
+        },
+        {
+          "level": 5,
+          "maxHp": 108,
+          "attack": 29,
+          "defense": 17,
+          "magic": 25,
+          "resistance": 19
+        },
+        {
+          "level": 6,
+          "maxHp": 112,
+          "attack": 30,
+          "defense": 18,
+          "magic": 26,
+          "resistance": 20
+        },
+        {
+          "level": 7,
+          "maxHp": 116,
+          "attack": 32,
+          "defense": 19,
+          "magic": 28,
+          "resistance": 22
+        },
+        {
+          "level": 8,
+          "maxHp": 120,
+          "attack": 33,
+          "defense": 21,
+          "magic": 30,
+          "resistance": 23
+        },
+        {
+          "level": 9,
+          "maxHp": 124,
+          "attack": 35,
+          "defense": 22,
+          "magic": 32,
+          "resistance": 25
+        },
+        {
+          "level": 10,
+          "maxHp": 128,
+          "attack": 37,
+          "defense": 24,
+          "magic": 34,
+          "resistance": 27
+        },
+        {
+          "level": 11,
+          "maxHp": 132,
+          "attack": 39,
+          "defense": 25,
+          "magic": 36,
+          "resistance": 28
+        },
+        {
+          "level": 12,
+          "maxHp": 136,
+          "attack": 41,
+          "defense": 26,
+          "magic": 38,
+          "resistance": 29
+        },
+        {
+          "level": 13,
+          "maxHp": 140,
+          "attack": 43,
+          "defense": 27,
+          "magic": 40,
+          "resistance": 30
+        },
+        {
+          "level": 14,
+          "maxHp": 144,
+          "attack": 45,
+          "defense": 28,
+          "magic": 42,
+          "resistance": 31
+        },
+        {
+          "level": 15,
+          "maxHp": 148,
+          "attack": 47,
+          "defense": 29,
+          "magic": 44,
+          "resistance": 32
+        },
+        {
+          "level": 16,
+          "maxHp": 152,
+          "attack": 49,
+          "defense": 30,
+          "magic": 46,
+          "resistance": 33
+        },
+        {
+          "level": 17,
+          "maxHp": 156,
+          "attack": 51,
+          "defense": 31,
+          "magic": 48,
+          "resistance": 34
+        },
+        {
+          "level": 18,
+          "maxHp": 160,
+          "attack": 53,
+          "defense": 32,
+          "magic": 50,
+          "resistance": 35
+        },
+        {
+          "level": 19,
+          "maxHp": 164,
+          "attack": 55,
+          "defense": 33,
+          "magic": 52,
+          "resistance": 36
+        },
+        {
+          "level": 20,
+          "maxHp": 168,
+          "attack": 57,
+          "defense": 34,
+          "magic": 54,
+          "resistance": 37
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "name": "Kyubimon",
+      "lineage": 12,
+      "stage": "Champion",
+      "parent": 60,
+      "children": [
+        62,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "neutral",
+      "skills": {
+        "physical": "Fox Claw",
+        "heavy": "Spiral Rush",
+        "magic": "Spirit Flame"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 120,
+        "attack": 33,
+        "defense": 21,
+        "magic": 31,
+        "resistance": 25
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 33,
+          "defense": 21,
+          "magic": 31,
+          "resistance": 25
+        },
+        {
+          "level": 6,
+          "maxHp": 123,
+          "attack": 34,
+          "defense": 22,
+          "magic": 33,
+          "resistance": 27
+        },
+        {
+          "level": 7,
+          "maxHp": 126,
+          "attack": 35,
+          "defense": 23,
+          "magic": 35,
+          "resistance": 29
+        },
+        {
+          "level": 8,
+          "maxHp": 129,
+          "attack": 36,
+          "defense": 24,
+          "magic": 37,
+          "resistance": 31
+        },
+        {
+          "level": 9,
+          "maxHp": 132,
+          "attack": 37,
+          "defense": 25,
+          "magic": 39,
+          "resistance": 33
+        },
+        {
+          "level": 10,
+          "maxHp": 135,
+          "attack": 38,
+          "defense": 26,
+          "magic": 41,
+          "resistance": 35
+        },
+        {
+          "level": 11,
+          "maxHp": 138,
+          "attack": 39,
+          "defense": 27,
+          "magic": 43,
+          "resistance": 37
+        },
+        {
+          "level": 12,
+          "maxHp": 141,
+          "attack": 40,
+          "defense": 28,
+          "magic": 45,
+          "resistance": 39
+        },
+        {
+          "level": 13,
+          "maxHp": 144,
+          "attack": 41,
+          "defense": 29,
+          "magic": 47,
+          "resistance": 41
+        },
+        {
+          "level": 14,
+          "maxHp": 147,
+          "attack": 42,
+          "defense": 30,
+          "magic": 49,
+          "resistance": 43
+        },
+        {
+          "level": 15,
+          "maxHp": 150,
+          "attack": 43,
+          "defense": 31,
+          "magic": 51,
+          "resistance": 45
+        },
+        {
+          "level": 16,
+          "maxHp": 153,
+          "attack": 44,
+          "defense": 32,
+          "magic": 53,
+          "resistance": 47
+        },
+        {
+          "level": 17,
+          "maxHp": 156,
+          "attack": 45,
+          "defense": 33,
+          "magic": 55,
+          "resistance": 49
+        },
+        {
+          "level": 18,
+          "maxHp": 159,
+          "attack": 46,
+          "defense": 34,
+          "magic": 57,
+          "resistance": 51
+        },
+        {
+          "level": 19,
+          "maxHp": 162,
+          "attack": 47,
+          "defense": 35,
+          "magic": 59,
+          "resistance": 53
+        },
+        {
+          "level": 20,
+          "maxHp": 165,
+          "attack": 48,
+          "defense": 36,
+          "magic": 61,
+          "resistance": 55
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "name": "Taomon",
+      "lineage": 12,
+      "stage": "Ultimate",
+      "parent": 61,
+      "children": [
+        63,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "neutral",
+      "skills": {
+        "physical": "Talisman Swipe",
+        "heavy": "Seal Rush",
+        "magic": "Radiant Script"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 156,
+        "attack": 47,
+        "defense": 34,
+        "magic": 48,
+        "resistance": 41
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 156,
+          "attack": 47,
+          "defense": 34,
+          "magic": 48,
+          "resistance": 41
+        },
+        {
+          "level": 11,
+          "maxHp": 159,
+          "attack": 48,
+          "defense": 35,
+          "magic": 50,
+          "resistance": 43
+        },
+        {
+          "level": 12,
+          "maxHp": 162,
+          "attack": 49,
+          "defense": 36,
+          "magic": 52,
+          "resistance": 45
+        },
+        {
+          "level": 13,
+          "maxHp": 165,
+          "attack": 50,
+          "defense": 37,
+          "magic": 54,
+          "resistance": 47
+        },
+        {
+          "level": 14,
+          "maxHp": 168,
+          "attack": 51,
+          "defense": 38,
+          "magic": 56,
+          "resistance": 49
+        },
+        {
+          "level": 15,
+          "maxHp": 171,
+          "attack": 52,
+          "defense": 39,
+          "magic": 58,
+          "resistance": 51
+        },
+        {
+          "level": 16,
+          "maxHp": 174,
+          "attack": 53,
+          "defense": 40,
+          "magic": 60,
+          "resistance": 53
+        },
+        {
+          "level": 17,
+          "maxHp": 177,
+          "attack": 54,
+          "defense": 41,
+          "magic": 62,
+          "resistance": 55
+        },
+        {
+          "level": 18,
+          "maxHp": 180,
+          "attack": 55,
+          "defense": 42,
+          "magic": 64,
+          "resistance": 57
+        },
+        {
+          "level": 19,
+          "maxHp": 183,
+          "attack": 56,
+          "defense": 43,
+          "magic": 66,
+          "resistance": 59
+        },
+        {
+          "level": 20,
+          "maxHp": 186,
+          "attack": 57,
+          "defense": 44,
+          "magic": 68,
+          "resistance": 61
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "name": "Sakuyamon",
+      "lineage": 12,
+      "stage": "Mega",
+      "parent": 62,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "neutral",
+      "skills": {
+        "physical": "Ritual Staff",
+        "heavy": "Spirit Descent",
+        "magic": "Celestial Seal"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 196,
+        "attack": 63,
+        "defense": 48,
+        "magic": 67,
+        "resistance": 59
+      },
+      "growth": {
+        "maxHp": 3,
+        "attack": 1,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 2
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 196,
+          "attack": 63,
+          "defense": 48,
+          "magic": 67,
+          "resistance": 59
+        },
+        {
+          "level": 16,
+          "maxHp": 199,
+          "attack": 64,
+          "defense": 49,
+          "magic": 69,
+          "resistance": 61
+        },
+        {
+          "level": 17,
+          "maxHp": 202,
+          "attack": 65,
+          "defense": 50,
+          "magic": 71,
+          "resistance": 63
+        },
+        {
+          "level": 18,
+          "maxHp": 205,
+          "attack": 66,
+          "defense": 51,
+          "magic": 73,
+          "resistance": 65
+        },
+        {
+          "level": 19,
+          "maxHp": 208,
+          "attack": 67,
+          "defense": 52,
+          "magic": 75,
+          "resistance": 67
+        },
+        {
+          "level": 20,
+          "maxHp": 211,
+          "attack": 68,
+          "defense": 53,
+          "magic": 77,
+          "resistance": 69
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "name": "Youkomon",
+      "lineage": 12,
+      "stage": "Champion",
+      "parent": 60,
+      "children": [
+        65,
+        0
+      ],
+      "minLevel": 5,
+      "minBond": 20,
+      "type": "neutral",
+      "skills": {
+        "physical": "Ghost Claw",
+        "heavy": "Phantom Rush",
+        "magic": "Foxfire Ring"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 120,
+        "attack": 34,
+        "defense": 21,
+        "magic": 30,
+        "resistance": 23
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 5,
+          "maxHp": 120,
+          "attack": 34,
+          "defense": 21,
+          "magic": 30,
+          "resistance": 23
+        },
+        {
+          "level": 6,
+          "maxHp": 124,
+          "attack": 36,
+          "defense": 22,
+          "magic": 32,
+          "resistance": 24
+        },
+        {
+          "level": 7,
+          "maxHp": 128,
+          "attack": 38,
+          "defense": 23,
+          "magic": 34,
+          "resistance": 25
+        },
+        {
+          "level": 8,
+          "maxHp": 132,
+          "attack": 40,
+          "defense": 24,
+          "magic": 36,
+          "resistance": 26
+        },
+        {
+          "level": 9,
+          "maxHp": 136,
+          "attack": 42,
+          "defense": 25,
+          "magic": 38,
+          "resistance": 27
+        },
+        {
+          "level": 10,
+          "maxHp": 140,
+          "attack": 44,
+          "defense": 26,
+          "magic": 40,
+          "resistance": 28
+        },
+        {
+          "level": 11,
+          "maxHp": 144,
+          "attack": 46,
+          "defense": 27,
+          "magic": 42,
+          "resistance": 29
+        },
+        {
+          "level": 12,
+          "maxHp": 148,
+          "attack": 48,
+          "defense": 28,
+          "magic": 44,
+          "resistance": 30
+        },
+        {
+          "level": 13,
+          "maxHp": 152,
+          "attack": 50,
+          "defense": 29,
+          "magic": 46,
+          "resistance": 31
+        },
+        {
+          "level": 14,
+          "maxHp": 156,
+          "attack": 52,
+          "defense": 30,
+          "magic": 48,
+          "resistance": 32
+        },
+        {
+          "level": 15,
+          "maxHp": 160,
+          "attack": 54,
+          "defense": 31,
+          "magic": 50,
+          "resistance": 33
+        },
+        {
+          "level": 16,
+          "maxHp": 164,
+          "attack": 56,
+          "defense": 32,
+          "magic": 52,
+          "resistance": 34
+        },
+        {
+          "level": 17,
+          "maxHp": 168,
+          "attack": 58,
+          "defense": 33,
+          "magic": 54,
+          "resistance": 35
+        },
+        {
+          "level": 18,
+          "maxHp": 172,
+          "attack": 60,
+          "defense": 34,
+          "magic": 56,
+          "resistance": 36
+        },
+        {
+          "level": 19,
+          "maxHp": 176,
+          "attack": 62,
+          "defense": 35,
+          "magic": 58,
+          "resistance": 37
+        },
+        {
+          "level": 20,
+          "maxHp": 180,
+          "attack": 64,
+          "defense": 36,
+          "magic": 60,
+          "resistance": 38
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "name": "Doumon",
+      "lineage": 12,
+      "stage": "Ultimate",
+      "parent": 64,
+      "children": [
+        66,
+        0
+      ],
+      "minLevel": 10,
+      "minBond": 50,
+      "type": "neutral",
+      "skills": {
+        "physical": "Scroll Lash",
+        "heavy": "Shadow Seal",
+        "magic": "Dusk Script"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 156,
+        "attack": 49,
+        "defense": 34,
+        "magic": 46,
+        "resistance": 37
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 10,
+          "maxHp": 156,
+          "attack": 49,
+          "defense": 34,
+          "magic": 46,
+          "resistance": 37
+        },
+        {
+          "level": 11,
+          "maxHp": 160,
+          "attack": 51,
+          "defense": 35,
+          "magic": 48,
+          "resistance": 38
+        },
+        {
+          "level": 12,
+          "maxHp": 164,
+          "attack": 53,
+          "defense": 36,
+          "magic": 50,
+          "resistance": 39
+        },
+        {
+          "level": 13,
+          "maxHp": 168,
+          "attack": 55,
+          "defense": 37,
+          "magic": 52,
+          "resistance": 40
+        },
+        {
+          "level": 14,
+          "maxHp": 172,
+          "attack": 57,
+          "defense": 38,
+          "magic": 54,
+          "resistance": 41
+        },
+        {
+          "level": 15,
+          "maxHp": 176,
+          "attack": 59,
+          "defense": 39,
+          "magic": 56,
+          "resistance": 42
+        },
+        {
+          "level": 16,
+          "maxHp": 180,
+          "attack": 61,
+          "defense": 40,
+          "magic": 58,
+          "resistance": 43
+        },
+        {
+          "level": 17,
+          "maxHp": 184,
+          "attack": 63,
+          "defense": 41,
+          "magic": 60,
+          "resistance": 44
+        },
+        {
+          "level": 18,
+          "maxHp": 188,
+          "attack": 65,
+          "defense": 42,
+          "magic": 62,
+          "resistance": 45
+        },
+        {
+          "level": 19,
+          "maxHp": 192,
+          "attack": 67,
+          "defense": 43,
+          "magic": 64,
+          "resistance": 46
+        },
+        {
+          "level": 20,
+          "maxHp": 196,
+          "attack": 69,
+          "defense": 44,
+          "magic": 66,
+          "resistance": 47
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "name": "Kuzuhamon",
+      "lineage": 12,
+      "stage": "Mega",
+      "parent": 65,
+      "children": [
+        0,
+        0
+      ],
+      "minLevel": 15,
+      "minBond": 80,
+      "type": "neutral",
+      "skills": {
+        "physical": "Sacred Staff",
+        "heavy": "Twilight Descent",
+        "magic": "Veiled Mandala"
+      },
+      "artId": null,
+      "baseStats": {
+        "maxHp": 196,
+        "attack": 66,
+        "defense": 48,
+        "magic": 64,
+        "resistance": 53
+      },
+      "growth": {
+        "maxHp": 4,
+        "attack": 2,
+        "defense": 1,
+        "magic": 2,
+        "resistance": 1
+      },
+      "levels": [
+        {
+          "level": 15,
+          "maxHp": 196,
+          "attack": 66,
+          "defense": 48,
+          "magic": 64,
+          "resistance": 53
+        },
+        {
+          "level": 16,
+          "maxHp": 200,
+          "attack": 68,
+          "defense": 49,
+          "magic": 66,
+          "resistance": 54
+        },
+        {
+          "level": 17,
+          "maxHp": 204,
+          "attack": 70,
+          "defense": 50,
+          "magic": 68,
+          "resistance": 55
+        },
+        {
+          "level": 18,
+          "maxHp": 208,
+          "attack": 72,
+          "defense": 51,
+          "magic": 70,
+          "resistance": 56
+        },
+        {
+          "level": 19,
+          "maxHp": 212,
+          "attack": 74,
+          "defense": 52,
+          "magic": 72,
+          "resistance": 57
+        },
+        {
+          "level": 20,
+          "maxHp": 216,
+          "attack": 76,
+          "defense": 53,
+          "magic": 74,
+          "resistance": 58
+        }
+      ]
+    }
+  ]
+}

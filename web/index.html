@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f3eb">
+  <title>Digivice · Field Lab</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <a class="wordmark" href="/" aria-label="Digivice Field Lab home"><span class="brand-glyph" aria-hidden="true">✳</span> digivice<span class="wordmark-divider">/</span><span class="lab-name">FIELD LAB</span></a>
+      <span class="connection" id="connection"><span class="status-dot"></span><span id="connection-text">Connecting to local service</span></span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">DIGIVICE · YOUR POCKET COMPANION</p>
+        <h1 id="page-title">A little world. Right here.</h1>
+        <p class="lede">Touch a little world. Care, companions and every next adventure are inside.</p>
+      </section>
+
+      <div class="workspace">
+        <section class="device-panel" aria-labelledby="device-heading">
+          <div class="panel-caption"><h2 id="device-heading">Virtual device</h2><label>Controls <select id="device-input-mode"><option value="touch">Touch screen</option><option value="buttons">Two buttons</option></select></label></div>
+          <div class="device-shell" id="device-shell">
+            <div class="shell-mark"><span>FIELD UNIT</span><span>01</span></div>
+            <div class="device-screen">
+              <div class="screen-surface" id="screen-surface" tabindex="0" aria-label="Digivice touch screen"><canvas id="display" width="480" height="480" role="img" aria-label="Round virtual device display. Waiting for the original starter asset pack."></canvas><div id="device-ui" class="device-ui" data-screen="home"></div></div>
+            </div>
+            <div class="shell-bottom"><span class="shell-slots" aria-hidden="true"><i></i><i></i><i></i></span><span>DIGIVICE</span><span class="shell-light" aria-hidden="true"></span></div>
+          </div>
+          <div class="device-hardware-buttons" aria-label="Two-button controls"><button id="device-back-button" type="button" aria-label="Next choice; hold to go back">Next <small>hold: Back</small><kbd>A</kbd></button><button id="device-confirm-button" type="button">Confirm <kbd>D</kbd></button></div>
+          <p class="device-input-hint">Left tap: next · left hold: back · right tap: confirm · keys A / D</p>
+          <p class="device-touch-hint">Tap a choice · Prev / Next to browse · Back to return.<br>Swipe the details panel to read more.</p>
+          <p class="device-caption"><span class="caption-dot"></span> Browser simulator · sensors are simulated</p>
+          <p class="device-caption" id="background-status" role="status">Built-in landscape · restoring saved scenery</p>
+          <p class="device-note">Uses the shared game core through your local service.<br>Hardware firmware runs its game core offline.</p>
+        </section>
+
+      </div>
+      <details class="playtest-tools" id="playtest-tools"><summary>Playtest tools <span>Setup, detailed stats, artwork and test controls</span></summary>
+          <p class="hint"><a href="/power-demo.html" target="_blank" rel="noopener">Open the power button demo</a> · Browser simulation of hold, cancel, save failure and standby; your game stays unchanged.</p>
+          <div class="playtest-feedback" id="playtest-feedback" role="status" aria-live="polite" data-stage="ready"><span class="eyebrow" id="playtest-stage">READY WHEN YOU ARE</span><h2 id="playtest-title">Say hello to your companion.</h2><p id="playtest-detail">Pair a virtual device below to begin.</p></div>
+          <div class="sound-bar"><button class="button secondary" id="sound-toggle" type="button" aria-pressed="false">Enable sound</button><details class="sound-options"><summary>Sound settings</summary><label for="sound-volume">Volume <input id="sound-volume" type="range" min="0" max="100" value="35"></label><label><input id="sound-music" type="checkbox"> Gentle background music</label></details><span id="sound-status" class="hint">Sound is optional.</span></div>
+        <div class="controls">
+          <section class="card companion-card" aria-labelledby="companion-heading">
+            <div class="card-heading"><div><p class="eyebrow">YOUR COMPANION</p><h2 id="companion-heading"><span id="creature-name">Your partner</span> <span class="level" id="level">LV. 1</span></h2></div><span class="leaf-icon" aria-hidden="true">✳</span></div>
+            <p class="creature-description" id="creature-description">A curious forest sprite. Big ears, small adventures.</p>
+            <div class="stats" id="stats">
+              <div class="stat"><div><label for="stat-hp">Health</label><span id="hp-value">—</span></div><meter id="stat-hp" min="0" max="100" value="0"></meter></div>
+              <div class="stat"><div><label for="stat-energy">Energy</label><span id="energy-value">—</span></div><meter id="stat-energy" min="0" max="100" value="0"></meter></div>
+              <div class="stat"><div><label for="stat-fullness">Fullness</label><span id="fullness-value">—</span></div><meter id="stat-fullness" min="0" max="100" value="0"></meter></div>
+              <div class="stat"><div><label for="stat-mood">Mood</label><span id="mood-value">—</span></div><meter id="stat-mood" min="0" max="100" value="0"></meter></div>
+            </div>
+            <div class="care-buttons">
+              <button class="button secondary" data-event="feed" disabled><span aria-hidden="true">◒</span> Feed</button>
+              <button class="button secondary" data-event="play" disabled><span aria-hidden="true">✧</span> Play</button>
+              <button class="button secondary" data-event="rest" disabled><span aria-hidden="true">☾</span> Rest</button>
+            </div>
+            <div class="milestones"><span><strong id="bond">—</strong> companion bond</span><span><strong id="captures">—</strong> captures recorded</span></div>
+            <p class="hint companion-art-status" id="companion-art-status" hidden></p>
+          </section>
+
+          <section class="card field-card" aria-labelledby="field-heading">
+            <div class="card-heading"><div><p class="eyebrow">OUT IN THE FIELD</p><h2 id="field-heading">Who’s out there?</h2></div><span class="mock-badge">SIMULATED WALK</span></div>
+            <div class="step-row"><div><strong id="steps">0</strong><span>steps explored</span></div><button class="button primary explore-button" data-event="walk" data-value="100" disabled>Explore <span aria-hidden="true">↗</span></button></div>
+            <p class="hint">One short walk adds 100 simulated steps. No location data is collected.</p>
+            <div class="card-divider"></div>
+            <label class="input-label" for="card-choice">Swipe a field card <span>simulated NFC</span></label>
+            <div class="card-input"><select id="card-choice"><option value="1">01 · Spark — boost next attack</option><option value="2">02 · Shelter — guard next hit</option></select><button class="button secondary" id="swipe-card" disabled>Swipe</button></div>
+            <div class="battle-actions" id="battle-actions" hidden><p id="encounter-copy">A wild companion appeared.</p><p class="battle-modifiers" id="battle-modifiers"></p><div><button class="button primary" data-event="attack" disabled>Attack</button><button class="button secondary" data-event="heavy" disabled>Heavy</button><button class="button secondary" data-event="magic" disabled>Magic</button><button class="button secondary" data-event="capture" disabled>Capture <span aria-hidden="true">◎</span></button></div><p class="hint">Weaken a wild companion first. Capture success comes from the game rules; button timing adds no bonus.</p></div>
+            <div class="capture-windup" id="capture-windup" hidden><p>Preparing the capture beam…</p><span class="hint">Nothing has been sent yet. You can cancel now.</span><button class="button secondary" id="cancel-capture" type="button">Cancel capture</button></div>
+          </section>
+          <section class="card journal-card playtest-log" aria-labelledby="journal-heading"><div class="card-heading"><div><p class="eyebrow">ADVENTURE LOG</p><h2 id="journal-heading">The story so far.</h2></div><span class="journal-mark" aria-hidden="true">≋</span></div><ol id="journal"><li><span class="journal-dot"></span><p>Your adventure begins with a hello.<small>Pair a virtual device to start.</small></p></li></ol></section>
+        </div>
+
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden><p id="notice-text"></p><div><button class="button compact" id="retry-sync" hidden>Retry saved action</button><button class="button compact" id="discard-conflict" hidden>Discard local action</button><button class="button compact" id="reconnect" hidden>Reconnect</button></div></div>
+
+      <section class="card roster-browser" aria-labelledby="roster-heading">
+        <div class="card-heading"><div><p class="eyebrow">REFERENCE CATALOG</p><h2 id="roster-heading">Find a familiar form.</h2></div></div>
+        <p class="hint">Source-game stages and official references are separate from our authored battle roles, numbers and evolution routes. Artwork availability is reported per form.</p>
+        <form id="roster-search-form" class="asset-select-row"><label for="roster-search">Name <input id="roster-search" type="search" maxlength="64" placeholder="Search the World DS roster"></label><button class="button secondary" type="submit">Search roster</button></form>
+        <p id="roster-search-status" class="hint" role="status">Search metadata without downloading artwork.</p>
+        <div id="roster-results" class="roster-browser-results"></div>
+        <h3 id="roster-reference-title" tabindex="-1">Select a form to see its references.</h3><div id="roster-references" class="roster-browser-results"></div>
+      </section>
+      <section class="card collection-panel" aria-labelledby="collection-heading">
+        <div class="card-heading"><div><p class="eyebrow">YOUR LITTLE CREW</p><h2 id="collection-heading">Every companion, their own story.</h2></div><span class="collection-count" id="collection-count">0 / 8</span></div>
+        <p class="hint" id="collection-status">Pair a virtual device to meet your first companion.</p>
+        <p class="hint collection-history" id="collection-history" hidden></p>
+        <div class="collection-grid" id="collection-grid" role="list" aria-label="Your individual companions"></div>
+      </section>
+
+      <div class="bottom-grid">
+        <section class="card setup-card" aria-labelledby="setup-heading">
+          <div class="card-heading"><div><p class="eyebrow">LOCAL SETUP</p><h2 id="setup-heading">Meet your device.</h2></div><span class="setup-number" aria-hidden="true">01</span></div>
+          <div id="setup-unpaired"><p>A browser is all you need for this first adventure. Create a pairing code, then claim a virtual device.</p><button class="button primary" id="start-pairing" disabled>Create pairing code <span aria-hidden="true">→</span></button><div class="pairing-box" id="pairing-box" hidden><div><span class="input-label">PAIRING CODE</span><strong id="pairing-code"></strong><span class="hint" id="pairing-expiry"></span></div><button class="button secondary" id="claim-device">Claim virtual device</button></div></div>
+          <div id="setup-paired" hidden><p class="paired-title"><span class="status-dot"></span> Virtual device paired</p><p class="device-id" id="device-id"></p><dl class="setup-details"><div><dt>Save revision</dt><dd id="revision">0</dd></div><div><dt>Asset pack</dt><dd id="pack-name">Loading…</dd></div></dl><p class="hint">Development identity is stored in this browser. No native phone app or cloud account needed.</p></div>
+          <div class="saved-playtests" id="saved-playtests" hidden><label class="input-label" for="saved-playtest-select">SAVED PLAYTESTS</label><div class="asset-select-row"><select id="saved-playtest-select" aria-label="Saved playtest"></select><button class="button secondary" id="load-playtest" type="button">Load save</button></div><button class="button secondary" id="new-playtest" type="button">Start a new playtest</button><p class="hint" id="playtest-save-note">Your current game is saved after every action.</p></div>
+          <div class="new-playtest-confirm" id="new-playtest-confirm" hidden><p>Start a fresh playtest? Your current game will be kept in Saved playtests. You can load it again at any time. This local service supports up to eight playtests.</p><div><button class="button primary" id="confirm-new-playtest" type="button">Keep current & start new</button><button class="button secondary" id="cancel-new-playtest" type="button">Stay here</button></div></div>
+        </section>
+        <section class="card playtest-guide"><p class="eyebrow">A SMALL ADVENTURE</p><h2>Explore. Connect. Grow.</h2><ol><li>Care for the companion travelling with you.</li><li>Explore to meet forms in your current stage range.</li><li>Watch the rival’s guard, then attack or capture.</li><li>Choose who travels with you; keep discoveries in your journal.</li></ol><p class="hint">A gentle retreat brings you home. Rest whenever you are ready. No missed-care punishment or real-world route tracking.</p></section>
+      </div>
+      <section class="card asset-library" aria-labelledby="asset-heading">
+        <div class="card-heading"><div><p class="eyebrow">A WORLD IN YOUR POCKET</p><h2 id="asset-heading">Scenery for your journey.</h2></div><span class="mock-badge">ORIGINAL ART</span></div>
+        <p class="asset-intro">Keep eight places on this device. Scenery changes the view while your companions, encounters and battle rules stay the same.</p>
+        <div class="asset-layout">
+          <div class="asset-preview"><canvas id="asset-display" width="320" height="256" role="img" aria-label="Saved artwork preview"></canvas><strong id="asset-creature-name">Your scenery</strong><span id="asset-creature-detail">Locally saved artwork</span></div>
+          <div class="asset-options">
+            <label class="input-label" for="asset-pack-select">PACK LIBRARY</label>
+            <select id="asset-pack-select"></select>
+            <p id="asset-pack-detail" class="hint">Looking for locally saved packs…</p>
+            <div class="asset-download-row"><button class="button primary" id="asset-download" disabled>Download / resume pack</button><button class="button secondary" id="asset-cancel" hidden>Pause</button></div>
+            <progress id="asset-progress" max="1" value="0" aria-label="Asset download progress"></progress>
+            <p id="asset-status" class="hint" role="status" aria-live="polite">Checking locally saved scenery…</p>
+            <label class="input-label" for="asset-creature-select">ART PREVIEW</label>
+            <div class="asset-select-row"><select id="asset-creature-select" aria-label="Creature to preview" disabled><option>Artwork</option></select><select id="asset-animation-select" aria-label="Animation to preview" disabled><option value="idle">Idle</option><option value="attack">Attack</option><option value="hurt">Hurt</option><option value="sleep">Sleep</option><option value="care">Care</option><option value="celebrate">Celebrate</option></select></div>
+            <p class="hint">Care and evolution belong to each individual companion. Choose who travels with you in your collection above; artwork never changes game rules.</p>
+          </div>
+        </div>
+        <p class="asset-footnote">Downloads can pause and resume. Verified packs stay in this browser; changing art never changes a save. Physical Wi-Fi setup and firmware downloads are planned.</p>
+      </section>
+      <section class="card asset-library personal-library" aria-labelledby="personal-heading">
+        <div class="card-heading"><div><p class="eyebrow">YOUR PERSONAL VERSION</p><h2 id="personal-heading">A familiar face.</h2></div><span class="mock-badge">LOCAL IMPORT</span></div>
+        <p class="asset-intro">Use a converted sprite sheet as an optional appearance. Your companions, care stats and battle rules stay the same.</p>
+        <div class="asset-layout">
+          <div class="asset-preview"><canvas id="personal-display" width="320" height="256" role="img" aria-label="Personal appearance preview"></canvas><strong id="personal-name">Your personal appearance pack</strong><span id="personal-coverage">Your partner keeps its identity when artwork is unavailable.</span></div>
+          <div class="asset-options">
+            <label class="input-label" for="personal-files">CHOOSE PACK.JSON + PROVENANCE.JSON</label>
+            <input id="personal-files" type="file" accept=".json,application/json" multiple>
+            <div class="asset-download-row"><button class="button primary" id="personal-import">Import and use locally</button><button class="button secondary" id="personal-remove" disabled>Remove personal art</button></div>
+            <label class="personal-toggle"><input id="personal-use" type="checkbox" disabled> Use personal appearances</label>
+            <p id="personal-status" class="hint" role="status" aria-live="polite">Files stay in this browser. They are never sent to the service.</p>
+            <div class="asset-select-row"><select id="personal-creature" aria-label="Personal creature appearance" disabled><option>Creature</option></select><select id="personal-animation" aria-label="Personal animation preview" disabled><option value="idle">Idle</option><option value="attack">Attack</option><option value="hurt">Hurt</option><option value="sleep">Sleep</option><option value="care">Care</option><option value="celebrate">Celebrate</option></select></div>
+            <p class="hint"><a id="personal-source" target="_blank" rel="noopener noreferrer" hidden></a></p>
+            <p id="personal-rights" class="hint">Importing a sheet does not grant rights to its characters or artwork. Keep restricted personal packs out of public distribution.</p>
+          </div>
+        </div>
+      </section>
+      </details>
+    </main>
+
+    <footer><span>BUILT FOR LITTLE ADVENTURES.</span><span>Local prototype · No physical device connected</span></footer>
+  </div>
+</body>
+</html>

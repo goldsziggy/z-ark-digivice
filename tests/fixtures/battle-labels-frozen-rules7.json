@@ -1,0 +1,3237 @@
+{
+  "formatVersion": 1,
+  "sourceCommit": "aea1a41",
+  "careRules": 7,
+  "practiceRules": 4,
+  "method": "Public deterministic output of privately frozen native binaries; no live store read or mutation.",
+  "binarySha256": {
+    "care": "a0f2f9398aec1a3f845633de98f29d9cb5d6710bf38fbe08531ff2b181f0f835",
+    "practice": "996aeed3a39bfb64d0908baadb4fe4f171a0028d18da0839e032755f81c32ad8"
+  },
+  "prefixEvents": [
+    {
+      "type": "hatch",
+      "value": 1
+    },
+    {
+      "type": "mode",
+      "value": 1
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "evolve",
+      "value": 12
+    }
+  ],
+  "suffixEvents": [
+    {
+      "type": "feed",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    }
+  ],
+  "baseline": {
+    "state": {
+      "schemaVersion": 10,
+      "rulesVersion": 7,
+      "sequence": 123,
+      "seed": 12345,
+      "rngState": 4285686168,
+      "steps": 1400,
+      "stepCredit": 0,
+      "hp": 38,
+      "energy": 66,
+      "fullness": 70,
+      "mood": 100,
+      "bond": 180,
+      "level": 5,
+      "maxLevel": 20,
+      "captures": 7,
+      "encounters": 14,
+      "phase": "home",
+      "wildHp": 0,
+      "wildMaxHp": 0,
+      "wildLevel": 0,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Wizardmon",
+      "species": "impmon",
+      "formId": 12,
+      "xp": 438,
+      "xpToNext": 162,
+      "stage": "Champion",
+      "artId": null,
+      "combat": {
+        "maxHp": 120,
+        "attack": 26,
+        "defense": 21,
+        "magic": 37,
+        "resistance": 26,
+        "type": "ember",
+        "skills": {
+          "physical": "Staff Tap",
+          "heavy": "Rune Crash",
+          "magic": "Hex Spark"
+        }
+      },
+      "message": "Your bond helped your creature evolve!",
+      "activeCreatureId": 1,
+      "collectionCapacity": 8,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": {
+        "sequence": 122,
+        "turns": 7,
+        "outcome": "won"
+      },
+      "wildSpecies": null,
+      "wildName": null,
+      "wildCombat": null,
+      "wildFormId": 0,
+      "wildRules": 0,
+      "wildGuard": null,
+      "nextMemberId": 9,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          1,
+          4,
+          11,
+          12,
+          115,
+          116,
+          117,
+          118,
+          276
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Wizardmon",
+          "hp": 38,
+          "energy": 66,
+          "fullness": 70,
+          "mood": 100,
+          "bond": 180,
+          "level": 5,
+          "capturedAtSequence": 0,
+          "formId": 12,
+          "xp": 438,
+          "xpToNext": 162,
+          "stage": "Champion",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 26,
+            "defense": 21,
+            "magic": 37,
+            "resistance": 26,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Hex Spark"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "species": "flicker",
+          "name": "Flicker",
+          "hp": 88,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 60,
+          "formId": 4,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": null,
+          "artId": "flicker",
+          "combat": {
+            "maxHp": 88,
+            "attack": 20,
+            "defense": 12,
+            "magic": 14,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Quick Peck",
+              "heavy": "Comet Dive",
+              "magic": "Glimmer Pulse"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "species": "toyagumon",
+          "name": "ToyAgumon",
+          "hp": 112,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 64,
+          "formId": 115,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 112,
+            "attack": 16,
+            "defense": 17,
+            "magic": 16,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Toy Agu Peg Tap",
+              "heavy": "Toy Agu Brick Press",
+              "magic": "Toy Agu Prism Spray"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "species": "tsukaimon",
+          "name": "Tsukaimon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 68,
+          "formId": 116,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 16,
+            "defense": 14,
+            "magic": 25,
+            "resistance": 14,
+            "type": "neutral",
+            "skills": {
+              "physical": "Tsukai Wing Nick",
+              "heavy": "Tsukai Night Barrel",
+              "magic": "Tsukai Plum Haze"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "species": "veemon",
+          "name": "Veemon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 72,
+          "formId": 117,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 25,
+            "defense": 15,
+            "magic": 16,
+            "resistance": 13,
+            "type": "tide",
+            "skills": {
+              "physical": "Vee Claw Dash",
+              "heavy": "Vee Crest Smash",
+              "magic": "Vee Sapphire Arc"
+            }
+          }
+        },
+        {
+          "id": 6,
+          "species": "wormmon",
+          "name": "Wormmon",
+          "hp": 120,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 77,
+          "formId": 118,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 17,
+            "defense": 14,
+            "magic": 17,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Worm Antenna Tap",
+              "heavy": "Worm Cocoon Roll",
+              "magic": "Worm Silk Lantern"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "species": "calumon",
+          "name": "Calumon",
+          "hp": 128,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 81,
+          "formId": 276,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": "No Level",
+          "artId": null,
+          "combat": {
+            "maxHp": 128,
+            "attack": 18,
+            "defense": 15,
+            "magic": 18,
+            "resistance": 20,
+            "type": "neutral",
+            "skills": {
+              "physical": "Playful Ear Tap",
+              "heavy": "Tumbling Somersault",
+              "magic": "Gentle Crestglow"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "species": "mote",
+          "name": "Mote",
+          "hp": 106,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 85,
+          "formId": 1,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": null,
+          "artId": "mote",
+          "combat": {
+            "maxHp": 106,
+            "attack": 20,
+            "defense": 16,
+            "magic": 18,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Twig Tap",
+              "heavy": "Root Ram",
+              "magic": "Seed Spark"
+            }
+          }
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 13,
+            "name": "Baalmon",
+            "stage": "Ultimate",
+            "artId": null,
+            "requiredLevel": 10,
+            "requiredBond": 50,
+            "previewLevel": 10,
+            "eligible": false,
+            "combat": {
+              "maxHp": 156,
+              "attack": 40,
+              "defense": 34,
+              "magic": 54,
+              "resistance": 42,
+              "type": "ember",
+              "skills": {
+                "physical": "Charm Slash",
+                "heavy": "Script Break",
+                "magic": "Dusk Seal"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "snapshotBase64": "REdWUwoANAIHAAAAewAAADkwAACYYXL/eAUAAAAAAAAmAAAAQgAAAEYAAABkAAAAtAAAAAUAAAAHAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAAAAAAAAAAEAAAAIAAAAAAAAAAEAAAAFAAAAJgAAAEIAAABGAAAAZAAAALQAAAAFAAAAAAAAALYBAAAMAAAAAgAAAAIAAABYAAAAUAAAAEYAAABQAAAAAAAAAAEAAAA8AAAAAAAAAAQAAAADAAAAWwQAAHAAAABQAAAARgAAAFAAAAAAAAAAAQAAAEAAAAAAAAAAcwAAAAQAAABcBAAAbAAAAFAAAABGAAAAUAAAAAAAAAACAAAARAAAACgAAAB0AAAABQAAAF0EAABsAAAAUAAAAEYAAABQAAAAAAAAAAIAAABIAAAAKAAAAHUAAAAGAAAAXgQAAHgAAABQAAAARgAAAFAAAAAAAAAAAgAAAE0AAAAoAAAAdgAAAAcAAAD8BAAAgAAAAFAAAABGAAAAUAAAAAAAAAADAAAAUQAAAHgAAAAUAQAACAAAAAEAAABqAAAAUAAAAEYAAABQAAAAAAAAAAMAAABVAAAAeAAAAAEAAAABAAAAAQAAAAEAAAABAAAABwAAAHoAAAAAAAAAAAAAAAAAAAAAAAAACQAAAAkMAAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADf9JW7"
+  },
+  "suffixResult": {
+    "state": {
+      "schemaVersion": 10,
+      "rulesVersion": 7,
+      "sequence": 125,
+      "seed": 12345,
+      "rngState": 4285686168,
+      "steps": 1400,
+      "stepCredit": 0,
+      "hp": 63,
+      "energy": 94,
+      "fullness": 85,
+      "mood": 100,
+      "bond": 183,
+      "level": 5,
+      "maxLevel": 20,
+      "captures": 7,
+      "encounters": 14,
+      "phase": "home",
+      "wildHp": 0,
+      "wildMaxHp": 0,
+      "wildLevel": 0,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Wizardmon",
+      "species": "impmon",
+      "formId": 12,
+      "xp": 438,
+      "xpToNext": 162,
+      "stage": "Champion",
+      "artId": null,
+      "combat": {
+        "maxHp": 120,
+        "attack": 26,
+        "defense": 21,
+        "magic": 37,
+        "resistance": 26,
+        "type": "ember",
+        "skills": {
+          "physical": "Staff Tap",
+          "heavy": "Rune Crash",
+          "magic": "Hex Spark"
+        }
+      },
+      "message": "Rested and ready.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 8,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": {
+        "sequence": 122,
+        "turns": 7,
+        "outcome": "won"
+      },
+      "wildSpecies": null,
+      "wildName": null,
+      "wildCombat": null,
+      "wildFormId": 0,
+      "wildRules": 0,
+      "wildGuard": null,
+      "nextMemberId": 9,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          1,
+          4,
+          11,
+          12,
+          115,
+          116,
+          117,
+          118,
+          276
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Wizardmon",
+          "hp": 63,
+          "energy": 94,
+          "fullness": 85,
+          "mood": 100,
+          "bond": 183,
+          "level": 5,
+          "capturedAtSequence": 0,
+          "formId": 12,
+          "xp": 438,
+          "xpToNext": 162,
+          "stage": "Champion",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 26,
+            "defense": 21,
+            "magic": 37,
+            "resistance": 26,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Hex Spark"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "species": "flicker",
+          "name": "Flicker",
+          "hp": 88,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 60,
+          "formId": 4,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": null,
+          "artId": "flicker",
+          "combat": {
+            "maxHp": 88,
+            "attack": 20,
+            "defense": 12,
+            "magic": 14,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Quick Peck",
+              "heavy": "Comet Dive",
+              "magic": "Glimmer Pulse"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "species": "toyagumon",
+          "name": "ToyAgumon",
+          "hp": 112,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 64,
+          "formId": 115,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 112,
+            "attack": 16,
+            "defense": 17,
+            "magic": 16,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Toy Agu Peg Tap",
+              "heavy": "Toy Agu Brick Press",
+              "magic": "Toy Agu Prism Spray"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "species": "tsukaimon",
+          "name": "Tsukaimon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 68,
+          "formId": 116,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 16,
+            "defense": 14,
+            "magic": 25,
+            "resistance": 14,
+            "type": "neutral",
+            "skills": {
+              "physical": "Tsukai Wing Nick",
+              "heavy": "Tsukai Night Barrel",
+              "magic": "Tsukai Plum Haze"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "species": "veemon",
+          "name": "Veemon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 72,
+          "formId": 117,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 25,
+            "defense": 15,
+            "magic": 16,
+            "resistance": 13,
+            "type": "tide",
+            "skills": {
+              "physical": "Vee Claw Dash",
+              "heavy": "Vee Crest Smash",
+              "magic": "Vee Sapphire Arc"
+            }
+          }
+        },
+        {
+          "id": 6,
+          "species": "wormmon",
+          "name": "Wormmon",
+          "hp": 120,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 77,
+          "formId": 118,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 17,
+            "defense": 14,
+            "magic": 17,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Worm Antenna Tap",
+              "heavy": "Worm Cocoon Roll",
+              "magic": "Worm Silk Lantern"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "species": "calumon",
+          "name": "Calumon",
+          "hp": 128,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 81,
+          "formId": 276,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": "No Level",
+          "artId": null,
+          "combat": {
+            "maxHp": 128,
+            "attack": 18,
+            "defense": 15,
+            "magic": 18,
+            "resistance": 20,
+            "type": "neutral",
+            "skills": {
+              "physical": "Playful Ear Tap",
+              "heavy": "Tumbling Somersault",
+              "magic": "Gentle Crestglow"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "species": "mote",
+          "name": "Mote",
+          "hp": 106,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 85,
+          "formId": 1,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": null,
+          "artId": "mote",
+          "combat": {
+            "maxHp": 106,
+            "attack": 20,
+            "defense": 16,
+            "magic": 18,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Twig Tap",
+              "heavy": "Root Ram",
+              "magic": "Seed Spark"
+            }
+          }
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 13,
+            "name": "Baalmon",
+            "stage": "Ultimate",
+            "artId": null,
+            "requiredLevel": 10,
+            "requiredBond": 50,
+            "previewLevel": 10,
+            "eligible": false,
+            "combat": {
+              "maxHp": 156,
+              "attack": 40,
+              "defense": 34,
+              "magic": 54,
+              "resistance": 42,
+              "type": "ember",
+              "skills": {
+                "physical": "Charm Slash",
+                "heavy": "Script Break",
+                "magic": "Dusk Seal"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "trace": null
+  },
+  "encounterEvents": [
+    {
+      "type": "hatch",
+      "value": 1
+    },
+    {
+      "type": "mode",
+      "value": 1
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "play",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "rest",
+      "value": 0
+    },
+    {
+      "type": "walk",
+      "value": 100
+    },
+    {
+      "type": "auto",
+      "value": 0
+    },
+    {
+      "type": "evolve",
+      "value": 12
+    },
+    {
+      "type": "walk",
+      "value": 100
+    }
+  ],
+  "encounterResult": {
+    "state": {
+      "schemaVersion": 10,
+      "rulesVersion": 7,
+      "sequence": 124,
+      "seed": 12345,
+      "rngState": 4285686168,
+      "steps": 1500,
+      "stepCredit": 0,
+      "hp": 38,
+      "energy": 66,
+      "fullness": 70,
+      "mood": 100,
+      "bond": 180,
+      "level": 5,
+      "maxLevel": 20,
+      "captures": 7,
+      "encounters": 15,
+      "phase": "encounter",
+      "wildHp": 152,
+      "wildMaxHp": 152,
+      "wildLevel": 5,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Wizardmon",
+      "species": "impmon",
+      "formId": 12,
+      "xp": 438,
+      "xpToNext": 162,
+      "stage": "Champion",
+      "artId": null,
+      "combat": {
+        "maxHp": 120,
+        "attack": 26,
+        "defense": 21,
+        "magic": 37,
+        "resistance": 26,
+        "type": "ember",
+        "skills": {
+          "physical": "Staff Tap",
+          "heavy": "Rune Crash",
+          "magic": "Hex Spark"
+        }
+      },
+      "message": "A wild Sukamon appeared!",
+      "activeCreatureId": 1,
+      "collectionCapacity": 8,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": {
+        "sequence": 122,
+        "turns": 7,
+        "outcome": "won"
+      },
+      "wildSpecies": "sukamon",
+      "wildName": "Sukamon",
+      "wildCombat": {
+        "maxHp": 152,
+        "attack": 24,
+        "defense": 30,
+        "magic": 25,
+        "resistance": 23,
+        "type": "neutral",
+        "skills": {
+          "physical": "Suka Slime Jab",
+          "heavy": "Suka Muck Boulder",
+          "magic": "Suka Amber Haze"
+        }
+      },
+      "wildFormId": 162,
+      "wildRules": 7,
+      "wildGuard": "counter",
+      "nextMemberId": 9,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          1,
+          4,
+          11,
+          12,
+          115,
+          116,
+          117,
+          118,
+          276
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Wizardmon",
+          "hp": 38,
+          "energy": 66,
+          "fullness": 70,
+          "mood": 100,
+          "bond": 180,
+          "level": 5,
+          "capturedAtSequence": 0,
+          "formId": 12,
+          "xp": 438,
+          "xpToNext": 162,
+          "stage": "Champion",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 26,
+            "defense": 21,
+            "magic": 37,
+            "resistance": 26,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Hex Spark"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "species": "flicker",
+          "name": "Flicker",
+          "hp": 88,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 60,
+          "formId": 4,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": null,
+          "artId": "flicker",
+          "combat": {
+            "maxHp": 88,
+            "attack": 20,
+            "defense": 12,
+            "magic": 14,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Quick Peck",
+              "heavy": "Comet Dive",
+              "magic": "Glimmer Pulse"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "species": "toyagumon",
+          "name": "ToyAgumon",
+          "hp": 112,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 64,
+          "formId": 115,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 112,
+            "attack": 16,
+            "defense": 17,
+            "magic": 16,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Toy Agu Peg Tap",
+              "heavy": "Toy Agu Brick Press",
+              "magic": "Toy Agu Prism Spray"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "species": "tsukaimon",
+          "name": "Tsukaimon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 68,
+          "formId": 116,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 16,
+            "defense": 14,
+            "magic": 25,
+            "resistance": 14,
+            "type": "neutral",
+            "skills": {
+              "physical": "Tsukai Wing Nick",
+              "heavy": "Tsukai Night Barrel",
+              "magic": "Tsukai Plum Haze"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "species": "veemon",
+          "name": "Veemon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 72,
+          "formId": 117,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 25,
+            "defense": 15,
+            "magic": 16,
+            "resistance": 13,
+            "type": "tide",
+            "skills": {
+              "physical": "Vee Claw Dash",
+              "heavy": "Vee Crest Smash",
+              "magic": "Vee Sapphire Arc"
+            }
+          }
+        },
+        {
+          "id": 6,
+          "species": "wormmon",
+          "name": "Wormmon",
+          "hp": 120,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 77,
+          "formId": 118,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 17,
+            "defense": 14,
+            "magic": 17,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Worm Antenna Tap",
+              "heavy": "Worm Cocoon Roll",
+              "magic": "Worm Silk Lantern"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "species": "calumon",
+          "name": "Calumon",
+          "hp": 128,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 81,
+          "formId": 276,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": "No Level",
+          "artId": null,
+          "combat": {
+            "maxHp": 128,
+            "attack": 18,
+            "defense": 15,
+            "magic": 18,
+            "resistance": 20,
+            "type": "neutral",
+            "skills": {
+              "physical": "Playful Ear Tap",
+              "heavy": "Tumbling Somersault",
+              "magic": "Gentle Crestglow"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "species": "mote",
+          "name": "Mote",
+          "hp": 106,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 85,
+          "formId": 1,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": null,
+          "artId": "mote",
+          "combat": {
+            "maxHp": 106,
+            "attack": 20,
+            "defense": 16,
+            "magic": 18,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Twig Tap",
+              "heavy": "Root Ram",
+              "magic": "Seed Spark"
+            }
+          }
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 13,
+            "name": "Baalmon",
+            "stage": "Ultimate",
+            "artId": null,
+            "requiredLevel": 10,
+            "requiredBond": 50,
+            "previewLevel": 10,
+            "eligible": false,
+            "combat": {
+              "maxHp": 156,
+              "attack": 40,
+              "defense": 34,
+              "magic": 54,
+              "resistance": 42,
+              "type": "ember",
+              "skills": {
+                "physical": "Charm Slash",
+                "heavy": "Script Break",
+                "magic": "Dusk Seal"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "trace": {
+      "formatVersion": 1,
+      "mode": "auto",
+      "kind": "wild",
+      "startSequence": 121,
+      "endSequence": 122,
+      "outcome": "won",
+      "player": {
+        "species": "impmon",
+        "name": "Impmon",
+        "level": 4,
+        "combat": {
+          "maxHp": 104,
+          "attack": 20,
+          "defense": 15,
+          "magic": 29,
+          "resistance": 18,
+          "type": "ember",
+          "skills": {
+            "physical": "Prank Jab",
+            "heavy": "Imp Rush",
+            "magic": "Night of Fire"
+          }
+        },
+        "formId": 11
+      },
+      "enemy": {
+        "species": "patamon",
+        "name": "Patamon",
+        "level": 4,
+        "combat": {
+          "maxHp": 108,
+          "attack": 18,
+          "defense": 16,
+          "magic": 23,
+          "resistance": 24,
+          "type": "neutral",
+          "skills": {
+            "physical": "Wing Slap",
+            "heavy": "Air Tackle",
+            "magic": "Air Shot"
+          }
+        },
+        "formId": 32
+      },
+      "steps": [
+        {
+          "turn": 1,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "physical",
+          "playerHpBefore": 104,
+          "playerHpAfter": 93,
+          "enemyHpBefore": 108,
+          "enemyHpAfter": 88,
+          "reflected": false,
+          "captured": false,
+          "guard": "ward"
+        },
+        {
+          "turn": 2,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "magic",
+          "playerHpBefore": 93,
+          "playerHpAfter": 80,
+          "enemyHpBefore": 88,
+          "enemyHpAfter": 75,
+          "reflected": false,
+          "captured": false,
+          "guard": "counter"
+        },
+        {
+          "turn": 3,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "physical",
+          "playerHpBefore": 80,
+          "playerHpAfter": 69,
+          "enemyHpBefore": 75,
+          "enemyHpAfter": 55,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        },
+        {
+          "turn": 4,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "magic",
+          "playerHpBefore": 69,
+          "playerHpAfter": 56,
+          "enemyHpBefore": 55,
+          "enemyHpAfter": 35,
+          "reflected": false,
+          "captured": false,
+          "guard": "ward"
+        },
+        {
+          "turn": 5,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "physical",
+          "playerHpBefore": 56,
+          "playerHpAfter": 45,
+          "enemyHpBefore": 35,
+          "enemyHpAfter": 22,
+          "reflected": false,
+          "captured": false,
+          "guard": "counter"
+        },
+        {
+          "turn": 6,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "magic",
+          "playerHpBefore": 45,
+          "playerHpAfter": 32,
+          "enemyHpBefore": 22,
+          "enemyHpAfter": 2,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        },
+        {
+          "turn": 7,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": null,
+          "playerHpBefore": 32,
+          "playerHpAfter": 32,
+          "enemyHpBefore": 2,
+          "enemyHpAfter": 0,
+          "reflected": false,
+          "captured": false,
+          "guard": "ward"
+        }
+      ]
+    }
+  },
+  "autoResult": {
+    "state": {
+      "schemaVersion": 10,
+      "rulesVersion": 7,
+      "sequence": 125,
+      "seed": 12345,
+      "rngState": 4285686168,
+      "steps": 1500,
+      "stepCredit": 0,
+      "hp": 12,
+      "energy": 52,
+      "fullness": 70,
+      "mood": 100,
+      "bond": 180,
+      "level": 5,
+      "maxLevel": 20,
+      "captures": 7,
+      "encounters": 15,
+      "phase": "home",
+      "wildHp": 0,
+      "wildMaxHp": 0,
+      "wildLevel": 0,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Wizardmon",
+      "species": "impmon",
+      "formId": 12,
+      "xp": 438,
+      "xpToNext": 162,
+      "stage": "Champion",
+      "artId": null,
+      "combat": {
+        "maxHp": 120,
+        "attack": 26,
+        "defense": 21,
+        "magic": 37,
+        "resistance": 26,
+        "type": "ember",
+        "skills": {
+          "physical": "Staff Tap",
+          "heavy": "Rune Crash",
+          "magic": "Hex Spark"
+        }
+      },
+      "message": "A gentle retreat. Rest whenever you are ready.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 8,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": {
+        "sequence": 125,
+        "turns": 5,
+        "outcome": "retreated"
+      },
+      "wildSpecies": null,
+      "wildName": null,
+      "wildCombat": null,
+      "wildFormId": 0,
+      "wildRules": 0,
+      "wildGuard": null,
+      "nextMemberId": 9,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          1,
+          4,
+          11,
+          12,
+          115,
+          116,
+          117,
+          118,
+          276
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Wizardmon",
+          "hp": 12,
+          "energy": 52,
+          "fullness": 70,
+          "mood": 100,
+          "bond": 180,
+          "level": 5,
+          "capturedAtSequence": 0,
+          "formId": 12,
+          "xp": 438,
+          "xpToNext": 162,
+          "stage": "Champion",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 26,
+            "defense": 21,
+            "magic": 37,
+            "resistance": 26,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Hex Spark"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "species": "flicker",
+          "name": "Flicker",
+          "hp": 88,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 60,
+          "formId": 4,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": null,
+          "artId": "flicker",
+          "combat": {
+            "maxHp": 88,
+            "attack": 20,
+            "defense": 12,
+            "magic": 14,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Quick Peck",
+              "heavy": "Comet Dive",
+              "magic": "Glimmer Pulse"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "species": "toyagumon",
+          "name": "ToyAgumon",
+          "hp": 112,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 64,
+          "formId": 115,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 112,
+            "attack": 16,
+            "defense": 17,
+            "magic": 16,
+            "resistance": 12,
+            "type": "neutral",
+            "skills": {
+              "physical": "Toy Agu Peg Tap",
+              "heavy": "Toy Agu Brick Press",
+              "magic": "Toy Agu Prism Spray"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "species": "tsukaimon",
+          "name": "Tsukaimon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 68,
+          "formId": 116,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 16,
+            "defense": 14,
+            "magic": 25,
+            "resistance": 14,
+            "type": "neutral",
+            "skills": {
+              "physical": "Tsukai Wing Nick",
+              "heavy": "Tsukai Night Barrel",
+              "magic": "Tsukai Plum Haze"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "species": "veemon",
+          "name": "Veemon",
+          "hp": 108,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 72,
+          "formId": 117,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 108,
+            "attack": 25,
+            "defense": 15,
+            "magic": 16,
+            "resistance": 13,
+            "type": "tide",
+            "skills": {
+              "physical": "Vee Claw Dash",
+              "heavy": "Vee Crest Smash",
+              "magic": "Vee Sapphire Arc"
+            }
+          }
+        },
+        {
+          "id": 6,
+          "species": "wormmon",
+          "name": "Wormmon",
+          "hp": 120,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 2,
+          "capturedAtSequence": 77,
+          "formId": 118,
+          "xp": 40,
+          "xpToNext": 80,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 120,
+            "attack": 17,
+            "defense": 14,
+            "magic": 17,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Worm Antenna Tap",
+              "heavy": "Worm Cocoon Roll",
+              "magic": "Worm Silk Lantern"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "species": "calumon",
+          "name": "Calumon",
+          "hp": 128,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 81,
+          "formId": 276,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": "No Level",
+          "artId": null,
+          "combat": {
+            "maxHp": 128,
+            "attack": 18,
+            "defense": 15,
+            "magic": 18,
+            "resistance": 20,
+            "type": "neutral",
+            "skills": {
+              "physical": "Playful Ear Tap",
+              "heavy": "Tumbling Somersault",
+              "magic": "Gentle Crestglow"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "species": "mote",
+          "name": "Mote",
+          "hp": 106,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 3,
+          "capturedAtSequence": 85,
+          "formId": 1,
+          "xp": 120,
+          "xpToNext": 120,
+          "stage": null,
+          "artId": "mote",
+          "combat": {
+            "maxHp": 106,
+            "attack": 20,
+            "defense": 16,
+            "magic": 18,
+            "resistance": 18,
+            "type": "grove",
+            "skills": {
+              "physical": "Twig Tap",
+              "heavy": "Root Ram",
+              "magic": "Seed Spark"
+            }
+          }
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 13,
+            "name": "Baalmon",
+            "stage": "Ultimate",
+            "artId": null,
+            "requiredLevel": 10,
+            "requiredBond": 50,
+            "previewLevel": 10,
+            "eligible": false,
+            "combat": {
+              "maxHp": 156,
+              "attack": 40,
+              "defense": 34,
+              "magic": 54,
+              "resistance": 42,
+              "type": "ember",
+              "skills": {
+                "physical": "Charm Slash",
+                "heavy": "Script Break",
+                "magic": "Dusk Seal"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "trace": {
+      "formatVersion": 1,
+      "mode": "auto",
+      "kind": "wild",
+      "startSequence": 124,
+      "endSequence": 125,
+      "outcome": "retreated",
+      "player": {
+        "species": "impmon",
+        "name": "Wizardmon",
+        "level": 5,
+        "combat": {
+          "maxHp": 120,
+          "attack": 26,
+          "defense": 21,
+          "magic": 37,
+          "resistance": 26,
+          "type": "ember",
+          "skills": {
+            "physical": "Staff Tap",
+            "heavy": "Rune Crash",
+            "magic": "Hex Spark"
+          }
+        },
+        "formId": 12
+      },
+      "enemy": {
+        "species": "sukamon",
+        "name": "Sukamon",
+        "level": 5,
+        "combat": {
+          "maxHp": 152,
+          "attack": 24,
+          "defense": 30,
+          "magic": 25,
+          "resistance": 23,
+          "type": "neutral",
+          "skills": {
+            "physical": "Suka Slime Jab",
+            "heavy": "Suka Muck Boulder",
+            "magic": "Suka Amber Haze"
+          }
+        },
+        "formId": 162
+      },
+      "steps": [
+        {
+          "turn": 1,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "physical",
+          "playerHpBefore": 38,
+          "playerHpAfter": 27,
+          "enemyHpBefore": 152,
+          "enemyHpAfter": 130,
+          "reflected": false,
+          "captured": false,
+          "guard": "counter"
+        },
+        {
+          "turn": 2,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "magic",
+          "playerHpBefore": 27,
+          "playerHpAfter": 20,
+          "enemyHpBefore": 130,
+          "enemyHpAfter": 108,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        },
+        {
+          "turn": 3,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "physical",
+          "playerHpBefore": 20,
+          "playerHpAfter": 9,
+          "enemyHpBefore": 108,
+          "enemyHpAfter": 96,
+          "reflected": false,
+          "captured": false,
+          "guard": "ward"
+        },
+        {
+          "turn": 4,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "magic",
+          "playerHpBefore": 9,
+          "playerHpAfter": 2,
+          "enemyHpBefore": 96,
+          "enemyHpAfter": 74,
+          "reflected": false,
+          "captured": false,
+          "guard": "counter"
+        },
+        {
+          "turn": 5,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "physical",
+          "playerHpBefore": 2,
+          "playerHpAfter": 0,
+          "enemyHpBefore": 74,
+          "enemyHpAfter": 52,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        }
+      ]
+    }
+  },
+  "practice": {
+    "profile": {
+      "id": 1,
+      "species": "impmon",
+      "name": "Wizardmon",
+      "level": 5,
+      "formId": 12
+    },
+    "start": {
+      "state": {
+        "schemaVersion": 4,
+        "rulesVersion": 4,
+        "sequence": 0,
+        "phase": "attack",
+        "status": "active",
+        "playerHp": 120,
+        "enemyHp": 104,
+        "playerLevel": 5,
+        "enemyLevel": 1,
+        "exchanges": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "playerSpecies": "impmon",
+        "enemySpecies": "agumon",
+        "playerFormId": 12,
+        "enemyFormId": 18,
+        "playerFormName": "Wizardmon",
+        "enemyFormName": "Agumon",
+        "playerCombat": {
+          "maxHp": 120,
+          "attack": 26,
+          "defense": 21,
+          "magic": 37,
+          "resistance": 26,
+          "type": "ember",
+          "skills": {
+            "physical": "Staff Tap",
+            "heavy": "Rune Crash",
+            "magic": "Hex Spark"
+          }
+        },
+        "enemyCombat": {
+          "maxHp": 104,
+          "attack": 24,
+          "defense": 14,
+          "magic": 14,
+          "resistance": 11,
+          "type": "ember",
+          "skills": {
+            "physical": "Claw Jab",
+            "heavy": "Dino Charge",
+            "magic": "Pepper Breath"
+          }
+        },
+        "enemyHint": [
+          "brace",
+          "ward"
+        ],
+        "lastEnemyMoves": [],
+        "lastTurn": null
+      },
+      "snapshotBase64": "REdCUAQAbAAEAAAAAAAAAK8JKmUFAAAAeAAAAGgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAYAAAABAAAADAAAABIAAACz9uJd"
+    },
+    "heavy": {
+      "state": {
+        "schemaVersion": 4,
+        "rulesVersion": 4,
+        "sequence": 1,
+        "phase": "defend",
+        "status": "active",
+        "playerHp": 120,
+        "enemyHp": 76,
+        "playerLevel": 5,
+        "enemyLevel": 1,
+        "exchanges": 1,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "playerSpecies": "impmon",
+        "enemySpecies": "agumon",
+        "playerFormId": 12,
+        "enemyFormId": 18,
+        "playerFormName": "Wizardmon",
+        "enemyFormName": "Agumon",
+        "playerCombat": {
+          "maxHp": 120,
+          "attack": 26,
+          "defense": 21,
+          "magic": 37,
+          "resistance": 26,
+          "type": "ember",
+          "skills": {
+            "physical": "Staff Tap",
+            "heavy": "Rune Crash",
+            "magic": "Hex Spark"
+          }
+        },
+        "enemyCombat": {
+          "maxHp": 104,
+          "attack": 24,
+          "defense": 14,
+          "magic": 14,
+          "resistance": 11,
+          "type": "ember",
+          "skills": {
+            "physical": "Claw Jab",
+            "heavy": "Dino Charge",
+            "magic": "Pepper Breath"
+          }
+        },
+        "enemyHint": [
+          "physical",
+          "heavy"
+        ],
+        "lastEnemyMoves": [
+          "ward"
+        ],
+        "lastTurn": {
+          "phase": "attack",
+          "playerChoice": "heavy",
+          "enemyChoice": "ward",
+          "playerDamage": 0,
+          "enemyDamage": 28,
+          "reflected": false
+        }
+      },
+      "snapshotBase64": "REdCUAQAbAAEAAAAAQAAAOpBjnQFAAAAeAAAAEwAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAwAAAAAAAAAGAAAAAgAAAAYAAAAAAAAAHAAAAAAAAAAAAAAABQAAAAYAAAABAAAADAAAABIAAAAbuzyG"
+    },
+    "auto": {
+      "state": {
+        "schemaVersion": 4,
+        "rulesVersion": 4,
+        "sequence": 9,
+        "phase": "finished",
+        "status": "won",
+        "playerHp": 66,
+        "enemyHp": 0,
+        "playerLevel": 5,
+        "enemyLevel": 1,
+        "exchanges": 9,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "playerSpecies": "impmon",
+        "enemySpecies": "agumon",
+        "playerFormId": 12,
+        "enemyFormId": 18,
+        "playerFormName": "Wizardmon",
+        "enemyFormName": "Agumon",
+        "playerCombat": {
+          "maxHp": 120,
+          "attack": 26,
+          "defense": 21,
+          "magic": 37,
+          "resistance": 26,
+          "type": "ember",
+          "skills": {
+            "physical": "Staff Tap",
+            "heavy": "Rune Crash",
+            "magic": "Hex Spark"
+          }
+        },
+        "enemyCombat": {
+          "maxHp": 104,
+          "attack": 24,
+          "defense": 14,
+          "magic": 14,
+          "resistance": 11,
+          "type": "ember",
+          "skills": {
+            "physical": "Claw Jab",
+            "heavy": "Dino Charge",
+            "magic": "Pepper Breath"
+          }
+        },
+        "enemyHint": [],
+        "lastEnemyMoves": [
+          "heavy",
+          "brace"
+        ],
+        "lastTurn": {
+          "phase": "attack",
+          "playerChoice": "heavy",
+          "enemyChoice": "brace",
+          "playerDamage": 0,
+          "enemyDamage": 12,
+          "reflected": false
+        }
+      },
+      "snapshotBase64": "REdCUAQAbAAEAAAACQAAAHIOPsEFAAAAQgAAAAAAAAAJAAAAAgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAgAAAAQAAAAAAAAADAAAAAAAAAAAAAAABQAAAAYAAAABAAAADAAAABIAAAAdn33E",
+      "mode": "auto",
+      "initialSnapshotBase64": "REdCUAQAbAAEAAAAAAAAAK8JKmUFAAAAeAAAAGgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAYAAAABAAAADAAAABIAAACz9uJd",
+      "trace": {
+        "formatVersion": 1,
+        "mode": "auto",
+        "kind": "practice",
+        "startSequence": 0,
+        "endSequence": 9,
+        "outcome": "won",
+        "player": {
+          "species": "impmon",
+          "name": "Wizardmon",
+          "level": 5,
+          "combat": {
+            "maxHp": 120,
+            "attack": 26,
+            "defense": 21,
+            "magic": 37,
+            "resistance": 26,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Hex Spark"
+            }
+          },
+          "formId": 12
+        },
+        "enemy": {
+          "species": "agumon",
+          "name": "Agumon",
+          "level": 1,
+          "combat": {
+            "maxHp": 104,
+            "attack": 24,
+            "defense": 14,
+            "magic": 14,
+            "resistance": 11,
+            "type": "ember",
+            "skills": {
+              "physical": "Claw Jab",
+              "heavy": "Dino Charge",
+              "magic": "Pepper Breath"
+            }
+          },
+          "formId": 18
+        },
+        "steps": [
+          {
+            "turn": 1,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "ward",
+            "playerHpBefore": 120,
+            "playerHpAfter": 120,
+            "enemyHpBefore": 104,
+            "enemyHpAfter": 76,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 2,
+            "phase": "defend",
+            "action": "brace",
+            "opponentAction": "heavy",
+            "playerHpBefore": 120,
+            "playerHpAfter": 101,
+            "enemyHpBefore": 76,
+            "enemyHpAfter": 76,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 3,
+            "phase": "attack",
+            "action": "physical",
+            "opponentAction": "ward",
+            "playerHpBefore": 101,
+            "playerHpAfter": 101,
+            "enemyHpBefore": 76,
+            "enemyHpAfter": 56,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 4,
+            "phase": "defend",
+            "action": "ward",
+            "opponentAction": "physical",
+            "playerHpBefore": 101,
+            "playerHpAfter": 90,
+            "enemyHpBefore": 56,
+            "enemyHpAfter": 56,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 5,
+            "phase": "attack",
+            "action": "magic",
+            "opponentAction": "counter",
+            "playerHpBefore": 90,
+            "playerHpAfter": 90,
+            "enemyHpBefore": 56,
+            "enemyHpAfter": 22,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 6,
+            "phase": "defend",
+            "action": "brace",
+            "opponentAction": "physical",
+            "playerHpBefore": 90,
+            "playerHpAfter": 85,
+            "enemyHpBefore": 22,
+            "enemyHpAfter": 22,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 7,
+            "phase": "attack",
+            "action": "physical",
+            "opponentAction": "brace",
+            "playerHpBefore": 85,
+            "playerHpAfter": 85,
+            "enemyHpBefore": 22,
+            "enemyHpAfter": 12,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 8,
+            "phase": "defend",
+            "action": "brace",
+            "opponentAction": "heavy",
+            "playerHpBefore": 85,
+            "playerHpAfter": 66,
+            "enemyHpBefore": 12,
+            "enemyHpAfter": 12,
+            "reflected": false,
+            "captured": false
+          },
+          {
+            "turn": 9,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "brace",
+            "playerHpBefore": 66,
+            "playerHpAfter": 66,
+            "enemyHpBefore": 12,
+            "enemyHpAfter": 0,
+            "reflected": false,
+            "captured": false
+          }
+        ]
+      }
+    }
+  },
+  "emptyEgg": {
+    "state": {
+      "schemaVersion": 10,
+      "rulesVersion": 7,
+      "sequence": 0,
+      "seed": 12345,
+      "rngState": 12345,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 0,
+      "energy": 0,
+      "fullness": 0,
+      "mood": 0,
+      "bond": 0,
+      "level": 0,
+      "maxLevel": 20,
+      "captures": 0,
+      "encounters": 0,
+      "phase": "egg",
+      "wildHp": 0,
+      "wildMaxHp": 0,
+      "wildLevel": 0,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": null,
+      "species": null,
+      "formId": 0,
+      "xp": 0,
+      "xpToNext": 0,
+      "stage": null,
+      "artId": null,
+      "combat": null,
+      "message": "Choose an egg to meet your Rookie partner.",
+      "activeCreatureId": 0,
+      "collectionCapacity": 8,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": false,
+        "starterId": null
+      },
+      "battleMode": "tactical",
+      "lastAutoBattle": null,
+      "wildSpecies": null,
+      "wildName": null,
+      "wildCombat": null,
+      "wildFormId": 0,
+      "wildRules": 0,
+      "wildGuard": null,
+      "nextMemberId": 1,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": []
+      },
+      "collection": [],
+      "evolution": {
+        "options": []
+      }
+    },
+    "trace": null
+  },
+  "zeroLegacy": {
+    "state": {
+      "schemaVersion": 10,
+      "rulesVersion": 7,
+      "sequence": 0,
+      "seed": 12345,
+      "rngState": 12345,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 100,
+      "energy": 80,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 0,
+      "level": 1,
+      "maxLevel": 20,
+      "captures": 0,
+      "encounters": 0,
+      "phase": "home",
+      "wildHp": 0,
+      "wildMaxHp": 0,
+      "wildLevel": 0,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Mote",
+      "species": "mote",
+      "formId": 1,
+      "xp": 0,
+      "xpToNext": 40,
+      "stage": null,
+      "artId": "mote",
+      "combat": {
+        "maxHp": 100,
+        "attack": 18,
+        "defense": 14,
+        "magic": 16,
+        "resistance": 16,
+        "type": "grove",
+        "skills": {
+          "physical": "Twig Tap",
+          "heavy": "Root Ram",
+          "magic": "Seed Spark"
+        }
+      },
+      "message": "Your adventure begins.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 8,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": null
+      },
+      "battleMode": "tactical",
+      "lastAutoBattle": null,
+      "wildSpecies": null,
+      "wildName": null,
+      "wildCombat": null,
+      "wildFormId": 0,
+      "wildRules": 0,
+      "wildGuard": null,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          1
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "mote",
+          "name": "Mote",
+          "hp": 100,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 1,
+          "capturedAtSequence": 0,
+          "formId": 1,
+          "xp": 0,
+          "xpToNext": 40,
+          "stage": null,
+          "artId": "mote",
+          "combat": {
+            "maxHp": 100,
+            "attack": 18,
+            "defense": 14,
+            "magic": 16,
+            "resistance": 16,
+            "type": "grove",
+            "skills": {
+              "physical": "Twig Tap",
+              "heavy": "Root Ram",
+              "magic": "Seed Spark"
+            }
+          }
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 2,
+            "name": "Glint",
+            "stage": null,
+            "artId": "glint",
+            "requiredLevel": 5,
+            "requiredBond": 20,
+            "previewLevel": 5,
+            "eligible": false,
+            "combat": {
+              "maxHp": 116,
+              "attack": 24,
+              "defense": 19,
+              "magic": 23,
+              "resistance": 22,
+              "type": "grove",
+              "skills": {
+                "physical": "Briar Swipe",
+                "heavy": "Timber Rush",
+                "magic": "Bloom Flash"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "trace": null
+  }
+}

@@ -1,0 +1,1670 @@
+{
+  "formatVersion": 1,
+  "rulesVersion": 10,
+  "catalogVersion": 6,
+  "authoring": "Prototype encounter frequency only; not official rarity, power, artwork quality or canonical status. All forms remain obtainable through the existing level/stage gate; rarity never changes capture odds, stats or evolution gates.",
+  "bucketWeights": {
+    "common": 70,
+    "uncommon": 25,
+    "rare": 5
+  },
+  "forms": [
+    {
+      "formId": 1,
+      "name": "Mote",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 2,
+      "name": "Glint",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 3,
+      "name": "Lumen",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 4,
+      "name": "Flicker",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 5,
+      "name": "Rill",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 6,
+      "name": "Brine",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 7,
+      "name": "Pelagia",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 8,
+      "name": "Cinder",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 9,
+      "name": "Scoria",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 10,
+      "name": "Pyrel",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 11,
+      "name": "Impmon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 12,
+      "name": "Wizardmon",
+      "combatTier": "Champion",
+      "rarity": "rare"
+    },
+    {
+      "formId": 13,
+      "name": "Baalmon",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 14,
+      "name": "Beelzemon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 15,
+      "name": "Devimon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 16,
+      "name": "Myotismon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 17,
+      "name": "VenomMyotismon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 18,
+      "name": "Agumon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 19,
+      "name": "Greymon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 20,
+      "name": "MetalGreymon (Vaccine)",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 21,
+      "name": "WarGreymon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 22,
+      "name": "Tyrannomon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 23,
+      "name": "MetalTyrannomon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 24,
+      "name": "RustTyrannomon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 25,
+      "name": "Gabumon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 26,
+      "name": "Garurumon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 27,
+      "name": "WereGarurumon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 28,
+      "name": "MetalGarurumon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 29,
+      "name": "Leomon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 30,
+      "name": "GrapLeomon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 31,
+      "name": "BanchoLeomon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 32,
+      "name": "Patamon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 33,
+      "name": "Angemon",
+      "combatTier": "Champion",
+      "rarity": "rare"
+    },
+    {
+      "formId": 34,
+      "name": "MagnaAngemon",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 35,
+      "name": "Seraphimon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 36,
+      "name": "Unimon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 37,
+      "name": "HippoGryphonmon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 38,
+      "name": "Gryphonmon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 39,
+      "name": "Tentomon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 40,
+      "name": "Kabuterimon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 41,
+      "name": "MegaKabuterimon (Red)",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 42,
+      "name": "HerculesKabuterimon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 43,
+      "name": "Kuwagamon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 44,
+      "name": "Okuwamon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 45,
+      "name": "GranKuwagamon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 46,
+      "name": "Palmon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 47,
+      "name": "Togemon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 48,
+      "name": "Lillymon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 49,
+      "name": "Rosemon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 50,
+      "name": "Woodmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 51,
+      "name": "Cherrymon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 52,
+      "name": "Puppetmon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 53,
+      "name": "Gomamon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 54,
+      "name": "Ikkakumon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 55,
+      "name": "Zudomon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 56,
+      "name": "Vikemon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 57,
+      "name": "Shellmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 58,
+      "name": "Whamon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 59,
+      "name": "Plesiomon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 60,
+      "name": "Renamon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 61,
+      "name": "Kyubimon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 62,
+      "name": "Taomon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 63,
+      "name": "Sakuyamon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 64,
+      "name": "Youkomon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 65,
+      "name": "Doumon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 66,
+      "name": "Kuzuhamon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 67,
+      "name": "Chibomon",
+      "combatTier": "Fresh",
+      "rarity": "common"
+    },
+    {
+      "formId": 68,
+      "name": "Kuramon",
+      "combatTier": "Fresh",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 69,
+      "name": "Poyomon",
+      "combatTier": "Fresh",
+      "rarity": "common"
+    },
+    {
+      "formId": 70,
+      "name": "Puttimon",
+      "combatTier": "Fresh",
+      "rarity": "rare"
+    },
+    {
+      "formId": 71,
+      "name": "Dorimon",
+      "combatTier": "In-Training",
+      "rarity": "rare"
+    },
+    {
+      "formId": 72,
+      "name": "Kapurimon",
+      "combatTier": "In-Training",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 73,
+      "name": "Koromon",
+      "combatTier": "In-Training",
+      "rarity": "common"
+    },
+    {
+      "formId": 74,
+      "name": "Pagumon",
+      "combatTier": "In-Training",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 75,
+      "name": "Tanemon",
+      "combatTier": "In-Training",
+      "rarity": "common"
+    },
+    {
+      "formId": 76,
+      "name": "Tokomon",
+      "combatTier": "In-Training",
+      "rarity": "common"
+    },
+    {
+      "formId": 77,
+      "name": "Tsunomon",
+      "combatTier": "In-Training",
+      "rarity": "common"
+    },
+    {
+      "formId": 78,
+      "name": "Armadillomon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 79,
+      "name": "Aruraumon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 80,
+      "name": "Betamon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 81,
+      "name": "Biyomon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 82,
+      "name": "BlackAgumon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 83,
+      "name": "Crabmon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 84,
+      "name": "DemiDevimon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 85,
+      "name": "Dorumon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 86,
+      "name": "DotAgumon",
+      "combatTier": "Rookie",
+      "rarity": "rare"
+    },
+    {
+      "formId": 87,
+      "name": "DotFalcomon",
+      "combatTier": "Rookie",
+      "rarity": "rare"
+    },
+    {
+      "formId": 88,
+      "name": "Dracmon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 89,
+      "name": "Falcomon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 90,
+      "name": "Floramon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 91,
+      "name": "Gaomon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 92,
+      "name": "Gizamon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 93,
+      "name": "Goburimon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 94,
+      "name": "Gotsumon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 95,
+      "name": "Guilmon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 96,
+      "name": "Hagurumon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 97,
+      "name": "Hawkmon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 98,
+      "name": "Kamemon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 99,
+      "name": "Keramon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 100,
+      "name": "Kotemon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 101,
+      "name": "Kudamon",
+      "combatTier": "Rookie",
+      "rarity": "rare"
+    },
+    {
+      "formId": 102,
+      "name": "Kumamon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 103,
+      "name": "Lalamon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 104,
+      "name": "Lopmon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 105,
+      "name": "Muchomon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 106,
+      "name": "Otamamon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 107,
+      "name": "PawnChessmon Black",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 108,
+      "name": "PawnChessmon White",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 109,
+      "name": "Penguinmon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 110,
+      "name": "Salamon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 111,
+      "name": "ShadowToyAgumon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 112,
+      "name": "SnowAgumon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 113,
+      "name": "Tapirmon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 114,
+      "name": "Terriermon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 115,
+      "name": "ToyAgumon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 116,
+      "name": "Tsukaimon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 117,
+      "name": "Veemon",
+      "combatTier": "Rookie",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 118,
+      "name": "Wormmon",
+      "combatTier": "Rookie",
+      "rarity": "common"
+    },
+    {
+      "formId": 119,
+      "name": "Airdramon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 120,
+      "name": "Akatorimon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 121,
+      "name": "Ankylomon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 122,
+      "name": "Apemon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 123,
+      "name": "Aquilamon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 124,
+      "name": "Bakemon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 125,
+      "name": "Birdramon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 126,
+      "name": "DarkLizardmon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 127,
+      "name": "DarkTyrannomon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 128,
+      "name": "Diatrymon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 129,
+      "name": "Dinohyumon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 130,
+      "name": "Dorugamon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 131,
+      "name": "ExVeemon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 132,
+      "name": "Flarerizamon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 133,
+      "name": "Gaogamon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 134,
+      "name": "Gargomon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 135,
+      "name": "Gatomon",
+      "combatTier": "Champion",
+      "rarity": "rare"
+    },
+    {
+      "formId": 136,
+      "name": "Gekomon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 137,
+      "name": "GeoGreymon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 138,
+      "name": "Grizzmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 139,
+      "name": "Growlmon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 140,
+      "name": "Guardromon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 141,
+      "name": "Gwappamon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 142,
+      "name": "Hookmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 143,
+      "name": "Icemon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 144,
+      "name": "Kiwimon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 145,
+      "name": "Kokatorimon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 146,
+      "name": "Kurisarimon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 147,
+      "name": "Minotarumon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 148,
+      "name": "Numemon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 149,
+      "name": "Ogremon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 150,
+      "name": "Peckmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 151,
+      "name": "PlatinumSukamon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 152,
+      "name": "Raremon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 153,
+      "name": "Reppamon",
+      "combatTier": "Champion",
+      "rarity": "rare"
+    },
+    {
+      "formId": 154,
+      "name": "Reptiledramon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 155,
+      "name": "Roachmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 156,
+      "name": "Sangloupmon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 157,
+      "name": "Seadramon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 158,
+      "name": "Seasarmon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 159,
+      "name": "Sorcerymon",
+      "combatTier": "Champion",
+      "rarity": "rare"
+    },
+    {
+      "formId": 160,
+      "name": "Starmon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 161,
+      "name": "Stingmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 162,
+      "name": "Sukamon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 163,
+      "name": "Sunflowmon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 164,
+      "name": "Vegiemon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 165,
+      "name": "Vilemon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 166,
+      "name": "Andromon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 167,
+      "name": "Angewomon",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 168,
+      "name": "Antylamon",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 169,
+      "name": "Arukenimon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 170,
+      "name": "BlackRapidmon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 171,
+      "name": "BlackWarGrowlmon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 172,
+      "name": "BlackWereGarurumon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 173,
+      "name": "Blossomon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 174,
+      "name": "Cyberdramon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 175,
+      "name": "Deramon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 176,
+      "name": "Digitamamon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 177,
+      "name": "Dinobeemon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 178,
+      "name": "Divermon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 179,
+      "name": "DoruGreymon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 180,
+      "name": "Dragomon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 181,
+      "name": "Etemon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 182,
+      "name": "Garbagemon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 183,
+      "name": "Garudamon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 184,
+      "name": "Gigadramon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 185,
+      "name": "Infermon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 186,
+      "name": "Kimeramon",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 187,
+      "name": "Kyukimon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 188,
+      "name": "LadyDevimon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 189,
+      "name": "Lilamon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 190,
+      "name": "Lucemon Chaos Mode",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 191,
+      "name": "MachGaogamon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 192,
+      "name": "Mamemon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 193,
+      "name": "Matadormon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 194,
+      "name": "Megadramon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 195,
+      "name": "MegaKabuterimon Blue",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 196,
+      "name": "MegaSeadramon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 197,
+      "name": "MetalMamemon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 198,
+      "name": "Meteormon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 199,
+      "name": "Monzaemon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 200,
+      "name": "Mummymon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 201,
+      "name": "Paildramon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 202,
+      "name": "Parrotmon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 203,
+      "name": "Piximon",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 204,
+      "name": "Rapidmon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 205,
+      "name": "RizeGreymon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 206,
+      "name": "ShogunGekomon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 207,
+      "name": "Silphymon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 208,
+      "name": "SkullGreymon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 209,
+      "name": "SuperStarmon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 210,
+      "name": "Triceramon",
+      "combatTier": "Ultimate",
+      "rarity": "common"
+    },
+    {
+      "formId": 211,
+      "name": "Tyilinmon",
+      "combatTier": "Ultimate",
+      "rarity": "rare"
+    },
+    {
+      "formId": 212,
+      "name": "WarGrowlmon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 213,
+      "name": "Yatagaramon",
+      "combatTier": "Ultimate",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 214,
+      "name": "Armagemon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 215,
+      "name": "Azulongmon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 216,
+      "name": "Babamon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 217,
+      "name": "Baihumon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 218,
+      "name": "Barbamon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 219,
+      "name": "Belphemon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 220,
+      "name": "BlackImperialdramon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 221,
+      "name": "BlackMegaGargomon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 222,
+      "name": "BlackWarGreymon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 223,
+      "name": "Cannondramon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 224,
+      "name": "ChaosGallantmon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 225,
+      "name": "Cherubimon Vaccine",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 226,
+      "name": "Cherubimon Virus",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 227,
+      "name": "Chronomon DM",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 228,
+      "name": "Chronomon Holy Mode",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 229,
+      "name": "Creepymon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 230,
+      "name": "Crossmon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 231,
+      "name": "Daemon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 232,
+      "name": "Darkdramon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 233,
+      "name": "Diaboromon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 234,
+      "name": "Dorugoramon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 235,
+      "name": "Ebonwumon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 236,
+      "name": "Gallantmon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 237,
+      "name": "Gallantmon Crimson Mode",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 238,
+      "name": "Ghoulmon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 239,
+      "name": "Ghoulmon Black",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 240,
+      "name": "GigaSeadramon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 241,
+      "name": "Granlocomon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 242,
+      "name": "GuardiAngemon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 243,
+      "name": "HiAndromon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 244,
+      "name": "Imperialdramon Dragon Mode",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 245,
+      "name": "Imperialdramon Fighter Mode",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 246,
+      "name": "Imperialdramon Paladin Mode",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 247,
+      "name": "Jijimon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 248,
+      "name": "Justimon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 249,
+      "name": "Kentaurosmon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 250,
+      "name": "Leviamon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 251,
+      "name": "Lilithmon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 252,
+      "name": "Machinedramon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 253,
+      "name": "MaloMyotismon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 254,
+      "name": "MarineAngemon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 255,
+      "name": "MegaGargomon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 256,
+      "name": "MetalEtemon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 257,
+      "name": "MetalSeadramon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 258,
+      "name": "Neptunemon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 259,
+      "name": "Omnimon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 260,
+      "name": "Parasimon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 261,
+      "name": "Phoenixmon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 262,
+      "name": "Piedmon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 263,
+      "name": "PrinceMamemon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 264,
+      "name": "SaberLeomon",
+      "combatTier": "Mega",
+      "rarity": "common"
+    },
+    {
+      "formId": 265,
+      "name": "Valkyrimon",
+      "combatTier": "Mega",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 266,
+      "name": "Varodurumon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 267,
+      "name": "Zhuqiaomon",
+      "combatTier": "Mega",
+      "rarity": "rare"
+    },
+    {
+      "formId": 268,
+      "name": "Flamedramon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 269,
+      "name": "Kenkimon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 270,
+      "name": "Kongoumon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 271,
+      "name": "Magnamon",
+      "combatTier": "Champion",
+      "rarity": "rare"
+    },
+    {
+      "formId": 272,
+      "name": "Ponchomon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 273,
+      "name": "Prairiemon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 274,
+      "name": "Seahomon",
+      "combatTier": "Champion",
+      "rarity": "common"
+    },
+    {
+      "formId": 275,
+      "name": "Shurimon",
+      "combatTier": "Champion",
+      "rarity": "uncommon"
+    },
+    {
+      "formId": 276,
+      "name": "Calumon",
+      "combatTier": "Rookie",
+      "rarity": "rare"
+    }
+  ],
+  "canonicalRarityClaim": false
+}

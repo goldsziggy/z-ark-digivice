@@ -1,0 +1,2690 @@
+{
+  "formatVersion": 1,
+  "status": "proposal-only-no-live-graph-edits",
+  "reviewedDate": "2026-10-06",
+  "scope": {
+    "sourceIndicesInclusive": [
+      178,
+      254
+    ],
+    "entries": 77,
+    "stages": [
+      "Mega",
+      "Armor",
+      "No Level"
+    ]
+  },
+  "architecture": {
+    "updatedParentDecision": "Multiple incoming evolution edges are permitted in a separate table; preserved Form.parent/children and lineage remain historical profile grouping.",
+    "preserveAllExistingEdges": true,
+    "preserveAll66Profiles": true,
+    "maximumOutgoingChoicesForTheseProposals": 2,
+    "acyclic": true,
+    "numericStatChanges": false,
+    "modeFusionItemMechanicsAdded": false,
+    "catalogOnlyMeaning": "Excluded from ordinary evolution edges for the stated reason; existing encounter/capture access is retained. This does not remove the form from gameplay."
+  },
+  "evidencePolicy": "Official profile facts, relationship inference, and authored unlock rules are distinguished. A species page is not a DS evolution chart. No claim of complete canonical routes.",
+  "proposedEdges": [
+    {
+      "fromFormId": 181,
+      "toFormId": 256,
+      "fromName": "Etemon",
+      "toName": "MetalEtemon",
+      "fromEntryKey": "etemon",
+      "toEntryKey": "metaletemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "proposed-for-approval",
+      "origin": "authored-family-route",
+      "reason": "Continue the Etemon family into its mechanized Mega. The profile supports the mechanization motif; choosing Etemon as the direct parent is our authored route.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=etemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Ultimate Etemon identity and performer concept.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=metaletemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "MetalEtemon rebuilt its damaged body into a mechanized form after gathering combat data.",
+          "relationshipSupport": "family-concept",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "canonicalClaim": false,
+      "conditions": "Ordinary level/bond edge proposed for this prototype only; no claim that these are DS evolution requirements.",
+      "preserveExistingEdges": true,
+      "requiresNumericProfileChange": false
+    },
+    {
+      "fromFormId": 192,
+      "toFormId": 263,
+      "fromName": "Mamemon",
+      "toName": "PrinceMamemon",
+      "fromEntryKey": "mamemon",
+      "toEntryKey": "princemamemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "proposed-for-approval",
+      "origin": "authored-family-route",
+      "reason": "Continue Mamemon into its royal Mega counterpart. The reference establishes Mamemon-family membership, not a unique predecessor or DS gate.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=mamemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Ultimate Mamemon identity.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=princemamemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "PrinceMamemon is described as a prince of the Mamemon world.",
+          "relationshipSupport": "family-concept",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "canonicalClaim": false,
+      "conditions": "Ordinary level/bond edge proposed for this prototype only; no claim that these are DS evolution requirements.",
+      "preserveExistingEdges": true,
+      "requiresNumericProfileChange": false
+    },
+    {
+      "fromFormId": 170,
+      "toFormId": 221,
+      "fromName": "BlackRapidmon",
+      "toName": "BlackMegaGargomon",
+      "fromEntryKey": "blackrapidmon",
+      "toEntryKey": "blackmegagargomon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "proposed-for-approval",
+      "origin": "authored-family-route",
+      "reason": "Parallel the existing Rapidmon-to-MegaGargomon family with the two separately listed black variants. This is a deliberate authored family inference, not a verified official direct evolution.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackrapidmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackRapidmon is a black Rapidmon variant associated with Black Digitron.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blacksaintgalgomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackSaintGargomon is described as a heavily armed type of MegaGargomon.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "canonicalClaim": false,
+      "conditions": "Ordinary level/bond edge proposed for this prototype only; no claim that these are DS evolution requirements.",
+      "preserveExistingEdges": true,
+      "requiresNumericProfileChange": false
+    },
+    {
+      "fromFormId": 171,
+      "toFormId": 224,
+      "fromName": "BlackWarGrowlmon",
+      "toName": "ChaosGallantmon",
+      "fromEntryKey": "blackwargrowlmon",
+      "toEntryKey": "chaosgallantmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "proposed-for-approval",
+      "origin": "authored-family-route",
+      "reason": "Offer the encountered BlackWarGrowlmon a dark-dragon-to-dark-knight continuation parallel to the existing red family. Do not invent an incoming Growlmon edge: official BlackGrowlmon is absent.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackmegalogrowmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackWarGrowlmon is an Ultimate Cyborg evolved from BlackGrowlmon; the latter is not in this roster.",
+          "relationshipSupport": "explicit-missing-predecessor",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chaosdukemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "ChaosGallantmon is the corrupted Virus-side counterpart of Gallantmon.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "canonicalClaim": false,
+      "conditions": "Ordinary level/bond edge proposed for this prototype only; no claim that these are DS evolution requirements.",
+      "preserveExistingEdges": true,
+      "requiresNumericProfileChange": false
+    },
+    {
+      "fromFormId": 187,
+      "toFormId": 242,
+      "fromName": "Kyukimon",
+      "toName": "GuardiAngemon",
+      "fromEntryKey": "kyukimon",
+      "toEntryKey": "guardiangemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "proposed-for-approval",
+      "origin": "authored-family-route",
+      "reason": "Continue the proposed Kotemon/Dinohyumon blade-fighter family from Kyukimon to GuardiAngemon. The references support the shared bladed-body concept only; this exact connection is our authored game choice.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kyukimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Kyukimon has a bladed body and wind-blade attacks.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=slashangemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "The mapped SlashAngemon uses arm blades, metal wings, and a cutting body.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "canonicalClaim": false,
+      "conditions": "Ordinary level/bond edge proposed for this prototype only; no claim that these are DS evolution requirements.",
+      "preserveExistingEdges": true,
+      "requiresNumericProfileChange": false
+    },
+    {
+      "fromFormId": 16,
+      "toFormId": 253,
+      "fromName": "Myotismon",
+      "toName": "MaloMyotismon",
+      "fromEntryKey": "myotismon",
+      "toEntryKey": "malomyotismon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "status": "proposed-for-approval",
+      "origin": "official-family-supported-authored-gate",
+      "reason": "Add MaloMyotismon as a second outgoing option while preserving Myotismon16\u2192VenomMyotismon17. The separate evolution-edge table permits this without mutating the preserved numeric profile or its historical parent/children fields.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belialvamdemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "The reference identifies MaloMyotismon as a final form of Myotismon and distinguishes it from VenomMyotismon.",
+          "relationshipSupport": "explicit-family-final-form",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "canonicalClaim": false,
+      "conditions": "Ordinary level/bond edge proposed for this prototype only; no claim that these are DS evolution requirements.",
+      "preserveExistingEdges": true,
+      "requiresNumericProfileChange": false
+    }
+  ],
+  "reviewCandidates": [
+    {
+      "fromFormId": 174,
+      "toFormId": 248,
+      "fromName": "Cyberdramon",
+      "toName": "Justimon",
+      "status": "identity-and-evolution-evidence-hold",
+      "reason": "Cyberdramon/Justimon is a recognizable candidate, but this slice has not verified a direct primary-source edge and the Justimon sheet arm/mode remains unresolved.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cyberdramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Cyberdramon identity only; no direct Justimon edge established by this record.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    },
+    {
+      "fromFormId": 213,
+      "toFormId": 266,
+      "fromName": "Yatagaramon",
+      "toName": "Varodurumon",
+      "status": "sheet-variant-and-relationship-hold",
+      "reason": "Do not attach an unresolved Yatagaramon sheet to Varodurumon merely because both are birds. The exact variant and direct relationship need stronger evidence.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=valdurmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Varodurumon is a six-winged Holy Bird; the reference does not name Yatagaramon as its predecessor.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    },
+    {
+      "fromFormId": 188,
+      "toFormId": 251,
+      "fromName": "LadyDevimon",
+      "toName": "Lilithmon",
+      "status": "optional-authored-route-review",
+      "reason": "LadyDevimon\u2192Lilithmon is a possible authored dark-angel continuation, not promoted to an approved edge here. The inspected Lilithmon reference instead describes an Ophanimon origin; Ophanimon is absent.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=lilithmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Lilithmon is thought to have once been Ophanimon.",
+          "relationshipSupport": "stated-origin-theory",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    },
+    {
+      "fromFormId": 194,
+      "toFormId": 252,
+      "fromName": "Megadramon",
+      "toName": "Machinedramon",
+      "status": "composite-origin-review",
+      "reason": "Megadramon is a plausible component-themed source, but the Machinedramon profile describes construction from multiple Cyborg parts rather than this unique parent. Do not turn a composite concept into an unqualified canonical edge.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=mugendramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Machinedramon combines parts from many Cyborg Digimon.",
+          "relationshipSupport": "composite-origin",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    },
+    {
+      "fromFormId": 184,
+      "toFormId": 252,
+      "fromName": "Gigadramon",
+      "toName": "Machinedramon",
+      "status": "composite-origin-review",
+      "reason": "Gigadramon is another plausible component-themed source; multiple incoming edges can now be represented, but source similarity alone is not enough to approve either route.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=mugendramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Machinedramon combines parts from many Cyborg Digimon.",
+          "relationshipSupport": "composite-origin",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    },
+    {
+      "fromFormId": 168,
+      "toFormId": 225,
+      "fromName": "Antylamon",
+      "toName": "Cherubimon Vaccine",
+      "status": "sheet-variant-hold",
+      "reason": "Antylamon Virus versus Deva/Data remains unresolved; do not assign the source sheet an exclusive Good Cherubimon parentage from its title alone.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Cherubimon Good identity; does not resolve the Antylamon sheet.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    },
+    {
+      "fromFormId": 168,
+      "toFormId": 226,
+      "fromName": "Antylamon",
+      "toName": "Cherubimon Virus",
+      "status": "sheet-variant-hold",
+      "reason": "Likewise do not assign the unresolved Antylamon sheet an exclusive Black Cherubimon route. A later authored branch must retain clear identity uncertainty.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon-vice",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Cherubimon Black identity; does not resolve the Antylamon sheet.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    },
+    {
+      "fromFormId": 29,
+      "toFormId": 264,
+      "fromName": "Leomon",
+      "toName": "SaberLeomon",
+      "status": "theory-and-stage-skip-exception",
+      "reason": "The official relation is explicitly a theory that SaberLeomon is a feral Leomon. A Champion\u2192Mega skip is not included by default, and the preserved Leomon route remains intact.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=saberleomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "The reference presents a feral-Leomon origin as a theory, not a settled evolution requirement.",
+          "relationshipSupport": "stated-origin-theory",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "ordinaryEdgeApproved": false,
+      "canonicalClaim": false
+    }
+  ],
+  "specialRelationships": [
+    {
+      "toFormId": 214,
+      "relatedFormIds": [
+        233
+      ],
+      "kind": "swarm-fusion",
+      "ordinaryEdge": false,
+      "reason": "Armageddemon originates from fusion of numerous immature Diaboromon copies; one ordinary Diaboromon level-up would erase that condition.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=armagemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Many immature Diaboromon copies fuse and mutate into Armageddemon.",
+          "relationshipSupport": "explicit-fusion-origin",
+          "checkedDate": "2026-10-06"
+        }
+      ]
+    },
+    {
+      "toFormId": 259,
+      "relatedFormIds": [
+        21,
+        28
+      ],
+      "kind": "two-participant-fusion",
+      "ordinaryEdge": false,
+      "reason": "WarGreymon plus MetalGarurumon fusion is explicit; preserve both old terminal profiles and defer fusion mechanics.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=omegamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Omnimon is formed by fusion of WarGreymon and MetalGarurumon.",
+          "relationshipSupport": "explicit-fusion-origin",
+          "checkedDate": "2026-10-06"
+        }
+      ]
+    },
+    {
+      "toFormId": 245,
+      "relatedFormIds": [
+        244
+      ],
+      "kind": "same-stage-mode-change",
+      "ordinaryEdge": false,
+      "reason": "Fighter Mode is a transformation of Dragon Mode, not an ordinary new growth tier.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Imperialdramon Dragon Mode transforms into Fighter Mode when it releases its power.",
+          "relationshipSupport": "explicit-mode-change",
+          "checkedDate": "2026-10-06"
+        }
+      ]
+    },
+    {
+      "toFormId": 246,
+      "relatedFormIds": [
+        245,
+        259
+      ],
+      "kind": "mode-plus-external-power",
+      "ordinaryEdge": false,
+      "reason": "Paladin Mode requires Fighter Mode plus Omnimon power; not a plain one-parent bond unlock.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonpaladinmode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Fighter Mode becomes Paladin Mode through Omnimon power.",
+          "relationshipSupport": "explicit-special-power",
+          "checkedDate": "2026-10-06"
+        }
+      ]
+    },
+    {
+      "toFormId": 237,
+      "relatedFormIds": [
+        236
+      ],
+      "kind": "temporary-power-mode",
+      "ordinaryEdge": false,
+      "reason": "Crimson Mode is a limited-duration powered form; no duration/mode subsystem is implied by an ordinary edge.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dukemoncrimsonmode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Crimson Mode is a hidden powered form that Gallantmon cannot maintain for long.",
+          "relationshipSupport": "explicit-mode-change",
+          "checkedDate": "2026-10-06"
+        }
+      ]
+    },
+    {
+      "toFormId": 227,
+      "relatedFormIds": [
+        228
+      ],
+      "kind": "same-stage-corrupted-mode",
+      "ordinaryEdge": false,
+      "reason": "Destroy Mode is a berserk Chronomon manifestation, not a rewarded level-up or care-failure outcome.",
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_destroy",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Destroy Mode is Chronomon after corruption causes it to lose control.",
+          "relationshipSupport": "explicit-mode-change",
+          "checkedDate": "2026-10-06"
+        }
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "sourceIndex": 178,
+      "formId": 214,
+      "entryKey": "armagemon",
+      "name": "Armagemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-special-fusion",
+      "reason": "Swarm-fusion origin needs a separate explicit mechanic; retain independent encounter access.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=armagemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Many immature Diaboromon copies fuse and mutate into Armageddemon.",
+          "relationshipSupport": "explicit-fusion-origin",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 179,
+      "formId": 215,
+      "entryKey": "azulongmon",
+      "name": "Azulongmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-sovereign",
+      "reason": "Sovereign identity is not an ordinary parent route. No reviewed in-roster Ultimate predecessor is established.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=qinglongmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 180,
+      "formId": 216,
+      "entryKey": "babamon",
+      "name": "Babamon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-elder",
+      "reason": "Do not convert an unrelated female or aged-looking form into Babamon merely for coverage; no direct predecessor established.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=babamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 181,
+      "formId": 217,
+      "entryKey": "baihumon",
+      "name": "Baihumon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-sovereign",
+      "reason": "Keep the sovereign as an independent late-game encounter until a specific supported predecessor is reviewed.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=baihumon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 182,
+      "formId": 31,
+      "entryKey": "bancholeomon",
+      "name": "BanchoLeomon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 30,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing GrapLeomon\u2192BanchoLeomon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=bancholeomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 183,
+      "formId": 218,
+      "entryKey": "barbamon",
+      "name": "Barbamon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-demon-lord",
+      "reason": "No reviewed in-roster predecessor established; do not attach a generic wizard solely because both wield a staff.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=barbamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 184,
+      "formId": 14,
+      "entryKey": "beelzemon",
+      "name": "Beelzemon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 13,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Baalmon\u2192Beelzemon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=beelzebumon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 185,
+      "formId": 219,
+      "entryKey": "belphemon",
+      "name": "Belphemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-identity-mode-hold",
+      "reason": "Sleep/Rage sheet identity is unresolved and the modes have different concepts; do not invent a predecessor or mode transition.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belphemonragemode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belphemonsleepmode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 186,
+      "formId": 220,
+      "entryKey": "blackimperialdramon",
+      "name": "BlackImperialdramon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-identity-mode-hold",
+      "reason": "The source title does not resolve the black Imperialdramon mode. No automatic connection to the ordinary Paildramon family.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramon_dragon_black",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode_vi",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 187,
+      "formId": 221,
+      "entryKey": "blackmegagargomon",
+      "name": "BlackMegaGargomon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "propose-ordinary-family-incoming",
+      "reason": "Parallel the existing Rapidmon-to-MegaGargomon family with the two separately listed black variants. This is a deliberate authored family inference, not a verified official direct evolution.",
+      "proposedIncomingEdgeIds": [
+        "170->221"
+      ],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackrapidmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackRapidmon is a black Rapidmon variant associated with Black Digitron.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blacksaintgalgomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackSaintGargomon is described as a heavily armed type of MegaGargomon.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 188,
+      "formId": 222,
+      "entryKey": "blackwargreymon",
+      "name": "BlackWarGreymon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-missing-reviewed-predecessor",
+      "reason": "The counterpart BlackMetalGreymon is not in this roster; do not relabel preserved MetalGreymon20 or force a SkullGreymon connection.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackwargreymon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 189,
+      "formId": 223,
+      "entryKey": "cannondramon",
+      "name": "Cannondramon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-artillery-form",
+      "reason": "Artillery/dinosaur resemblance alone does not establish a Triceramon or Megadramon evolution. Keep independent pending stronger route evidence.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cannondramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 190,
+      "formId": 224,
+      "entryKey": "chaosgallantmon",
+      "name": "ChaosGallantmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "propose-ordinary-family-incoming",
+      "reason": "Offer the encountered BlackWarGrowlmon a dark-dragon-to-dark-knight continuation parallel to the existing red family. Do not invent an incoming Growlmon edge: official BlackGrowlmon is absent.",
+      "proposedIncomingEdgeIds": [
+        "171->224"
+      ],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackmegalogrowmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackWarGrowlmon is an Ultimate Cyborg evolved from BlackGrowlmon; the latter is not in this roster.",
+          "relationshipSupport": "explicit-missing-predecessor",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chaosdukemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "ChaosGallantmon is the corrupted Virus-side counterpart of Gallantmon.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 191,
+      "formId": 225,
+      "entryKey": "cherubimon-vaccine",
+      "name": "Cherubimon Vaccine",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-identity-dependent-family-hold",
+      "reason": "Antylamon is a candidate incoming family, but its source variant is unresolved. No automatic angel/bunny substitution.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [
+        "168->225"
+      ],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 192,
+      "formId": 226,
+      "entryKey": "cherubimon-virus",
+      "name": "Cherubimon Virus",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-identity-dependent-family-hold",
+      "reason": "Keep separate from Good Cherubimon; candidate Antylamon route is held for identity review.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [
+        "168->226"
+      ],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon-vice",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 193,
+      "formId": 227,
+      "entryKey": "chronomon-dm",
+      "name": "Chronomon DM",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-special-mode",
+      "reason": "Berserk Chronomon manifestation; do not model corruption as a normal reward or missed-care punishment.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_destroy",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Destroy Mode is Chronomon after corruption causes it to lose control.",
+          "relationshipSupport": "explicit-mode-change",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 194,
+      "formId": 228,
+      "entryKey": "chronomon-holy-mode",
+      "name": "Chronomon Holy Mode",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-legendary",
+      "reason": "Time-system deity with no supported ordinary predecessor in this reviewed subset. Do not attach a bird solely by appearance.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_holy",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 195,
+      "formId": 229,
+      "entryKey": "creepymon",
+      "name": "Creepymon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-alias-sheet-independent",
+      "reason": "Creepymon and Daemon share an official canonical reference but remain distinct sheets; no evolution between aliases.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=demon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 196,
+      "formId": 230,
+      "entryKey": "crossmon",
+      "name": "Crossmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-bird-cyborg",
+      "reason": "A bird/cyborg theme does not establish a specific Deramon or Parrotmon predecessor; retain independent form.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=crossmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 197,
+      "formId": 231,
+      "entryKey": "daemon",
+      "name": "Daemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-alias-sheet-independent",
+      "reason": "Retain the Daemon sheet independently of Creepymon; a shared canonical identity is not a parent-child relation.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=demon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 198,
+      "formId": 232,
+      "entryKey": "darkdramon",
+      "name": "Darkdramon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-combat-machine",
+      "reason": "No specific in-roster predecessor verified. Do not attach a Cyborg merely by shared machinery or darkness.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=darkdramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 199,
+      "formId": 233,
+      "entryKey": "diaboromon",
+      "name": "Diaboromon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 185,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Infermon\u2192Diaboromon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=diablomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 200,
+      "formId": 234,
+      "entryKey": "dorugoramon",
+      "name": "Dorugoramon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 179,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing DoruGreymon\u2192Dorugoramon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dorugoramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 201,
+      "formId": 235,
+      "entryKey": "ebonwumon",
+      "name": "Ebonwumon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-sovereign",
+      "reason": "Sovereign turtle/tree identity is not evidence for evolving an arbitrary plant or armored Ultimate.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=xuanwumon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 202,
+      "formId": 236,
+      "entryKey": "gallantmon",
+      "name": "Gallantmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 212,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing WarGrowlmon\u2192Gallantmon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dukemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 203,
+      "formId": 237,
+      "entryKey": "gallantmon-crimson-mode",
+      "name": "Gallantmon Crimson Mode",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-special-mode",
+      "reason": "Temporary Gallantmon powered form; separate future mode semantics from ordinary evolution.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dukemoncrimsonmode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Crimson Mode is a hidden powered form that Gallantmon cannot maintain for long.",
+          "relationshipSupport": "explicit-mode-change",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 204,
+      "formId": 238,
+      "entryKey": "ghoulmon",
+      "name": "Ghoulmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-dark-form",
+      "reason": "Retain Ghoulmon as an independent reviewed identity; do not fabricate an angel or ghost predecessor.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=deathmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 205,
+      "formId": 239,
+      "entryKey": "ghoulmon-black",
+      "name": "Ghoulmon Black",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-variant-form-independent",
+      "reason": "Black Ghoulmon is a distinct form; no default same-stage transformation or fresh parent is established.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=deathmon-black",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 206,
+      "formId": 240,
+      "entryKey": "gigaseadramon",
+      "name": "GigaSeadramon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 196,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing MegaSeadramon\u2192GigaSeadramon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=gigaseadramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 207,
+      "formId": 45,
+      "entryKey": "grankuwagamon",
+      "name": "GranKuwagamon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 44,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Okuwamon\u2192GranKuwagamon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=grankuwagamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "coordinatedIncomingProposal": {
+        "owner": "mid",
+        "fromFormId": 177,
+        "policy": "Additional incoming edge may be approved in the separate table; preserve the historical parent and existing route. Consult mid proposal evidence."
+      }
+    },
+    {
+      "sourceIndex": 208,
+      "formId": 241,
+      "entryKey": "granlocomon",
+      "name": "Granlocomon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-missing-explicit-predecessor",
+      "reason": "The official profile explicitly names Locomon as predecessor; Locomon is absent from the255 sheet roster.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=grandlocomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "GroundLocomon evolves from Locomon, which is absent.",
+          "relationshipSupport": "explicit-missing-predecessor",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 209,
+      "formId": 242,
+      "entryKey": "guardiangemon",
+      "name": "GuardiAngemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "propose-ordinary-family-incoming",
+      "reason": "Continue the proposed Kotemon/Dinohyumon blade-fighter family from Kyukimon to GuardiAngemon. The references support the shared bladed-body concept only; this exact connection is our authored game choice.",
+      "proposedIncomingEdgeIds": [
+        "187->242"
+      ],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kyukimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Kyukimon has a bladed body and wind-blade attacks.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=slashangemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "The mapped SlashAngemon uses arm blades, metal wings, and a cutting body.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 210,
+      "formId": 42,
+      "entryKey": "herculeskabuterimon",
+      "name": "HerculesKabuterimon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 41,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing MegaKabuterimon (Red)\u2192HerculesKabuterimon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=heraklekabuterimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "coordinatedIncomingProposal": {
+        "owner": "mid",
+        "fromFormId": 195,
+        "policy": "Additional incoming edge may be approved in the separate table; preserve the historical parent and existing route. Consult mid proposal evidence."
+      }
+    },
+    {
+      "sourceIndex": 211,
+      "formId": 243,
+      "entryKey": "hiandromon",
+      "name": "HiAndromon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 166,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Andromon\u2192HiAndromon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=hiandromon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 212,
+      "formId": 244,
+      "entryKey": "imperialdramon-dragon-mode",
+      "name": "Imperialdramon Dragon Mode",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 201,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Paildramon\u2192Imperialdramon Dragon Mode and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramondragonmode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 213,
+      "formId": 245,
+      "entryKey": "imperialdramon-fighter-mode",
+      "name": "Imperialdramon Fighter Mode",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-special-mode",
+      "reason": "Same-stage Imperialdramon Dragon-to-Fighter transformation is outside this ordinary graph.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Imperialdramon Dragon Mode transforms into Fighter Mode when it releases its power.",
+          "relationshipSupport": "explicit-mode-change",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 214,
+      "formId": 246,
+      "entryKey": "imperialdramon-paladin-mode",
+      "name": "Imperialdramon Paladin Mode",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-special-power-mode",
+      "reason": "Requires Fighter Mode and Omnimon power in its reference; ordinary one-parent bond evolution would hide the special requirement.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonpaladinmode",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Fighter Mode becomes Paladin Mode through Omnimon power.",
+          "relationshipSupport": "explicit-special-power",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 215,
+      "formId": 247,
+      "entryKey": "jijimon",
+      "name": "Jijimon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-elder",
+      "reason": "No supported ordinary predecessor identified; age and wisdom do not justify an arbitrary Ultimate link.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=jijimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 216,
+      "formId": 248,
+      "entryKey": "justimon",
+      "name": "Justimon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-identity-and-route-hold",
+      "reason": "The listed Justimon mode/arm remains unresolved. Cyberdramon candidate is retained for review, not silently asserted.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [
+        "174->248"
+      ],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon_blitzarm",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon_criticalarm",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 217,
+      "formId": 249,
+      "entryKey": "kentaurosmon",
+      "name": "Kentaurosmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 211,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Tyilinmon\u2192Kentaurosmon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=sleipmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 218,
+      "formId": 66,
+      "entryKey": "kuzuhamon",
+      "name": "Kuzuhamon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 65,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Doumon\u2192Kuzuhamon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kuzuhamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 219,
+      "formId": 250,
+      "entryKey": "leviamon",
+      "name": "Leviamon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-demon-lord",
+      "reason": "Do not force Dragomon/Divermon into a crocodilian Demon Lord simply because all are aquatic.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=leviamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 220,
+      "formId": 251,
+      "entryKey": "lilithmon",
+      "name": "Lilithmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-optional-family-review",
+      "reason": "A LadyDevimon continuation is an optional authored proposal, while the official origin theory names absent Ophanimon; independent until explicitly chosen.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [
+        "188->251"
+      ],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=lilithmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 221,
+      "formId": 252,
+      "entryKey": "machinedramon",
+      "name": "Machinedramon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-composite-origin-hold",
+      "reason": "Combination of Cyborg parts is explicit, but no single Megadramon/Gigadramon route is approved without a deliberate composite simplification.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [
+        "194->252",
+        "184->252"
+      ],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=mugendramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 222,
+      "formId": 253,
+      "entryKey": "malomyotismon",
+      "name": "MaloMyotismon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "propose-ordinary-family-incoming",
+      "reason": "Add MaloMyotismon as a second outgoing option while preserving Myotismon16\u2192VenomMyotismon17. The separate evolution-edge table permits this without mutating the preserved numeric profile or its historical parent/children fields.",
+      "proposedIncomingEdgeIds": [
+        "16->253"
+      ],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belialvamdemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "The reference identifies MaloMyotismon as a final form of Myotismon and distinguishes it from VenomMyotismon.",
+          "relationshipSupport": "explicit-family-final-form",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 223,
+      "formId": 254,
+      "entryKey": "marineangemon",
+      "name": "MarineAngemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-miniature-holy-form",
+      "reason": "Small angelic/aquatic appearance does not establish Piximon, Whamon, or another specific incoming route.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=marinangemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 224,
+      "formId": 255,
+      "entryKey": "megagargomon",
+      "name": "MegaGargomon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 204,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Rapidmon\u2192MegaGargomon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=saintgalgomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 225,
+      "formId": 256,
+      "entryKey": "metaletemon",
+      "name": "MetalEtemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "propose-ordinary-family-incoming",
+      "reason": "Continue the Etemon family into its mechanized Mega. The profile supports the mechanization motif; choosing Etemon as the direct parent is our authored route.",
+      "proposedIncomingEdgeIds": [
+        "181->256"
+      ],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=etemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Ultimate Etemon identity and performer concept.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=metaletemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "MetalEtemon rebuilt its damaged body into a mechanized form after gathering combat data.",
+          "relationshipSupport": "family-concept",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 226,
+      "formId": 28,
+      "entryKey": "metalgarurumon",
+      "name": "MetalGarurumon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 27,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing WereGarurumon\u2192MetalGarurumon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=metalgarurumon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 227,
+      "formId": 257,
+      "entryKey": "metalseadramon",
+      "name": "MetalSeadramon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 196,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing MegaSeadramon\u2192MetalSeadramon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=metalseadramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 228,
+      "formId": 258,
+      "entryKey": "neptunemon",
+      "name": "Neptunemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-divine-aquatic",
+      "reason": "No reviewed predecessor is established; do not assign Divermon solely because both carry a pointed weapon.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=neptunemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 229,
+      "formId": 259,
+      "entryKey": "omnimon",
+      "name": "Omnimon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-special-fusion",
+      "reason": "WarGreymon/MetalGarurumon fusion must not be disguised as a normal single-parent evolution.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=omegamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Omnimon is formed by fusion of WarGreymon and MetalGarurumon.",
+          "relationshipSupport": "explicit-fusion-origin",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 230,
+      "formId": 260,
+      "entryKey": "parasimon",
+      "name": "Parasimon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-parasite",
+      "reason": "Parasite/arthropod theme alone does not establish an Arukenimon or insect family edge.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=parasimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 231,
+      "formId": 261,
+      "entryKey": "phoenixmon",
+      "name": "Phoenixmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 183,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Garudamon\u2192Phoenixmon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=hououmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 232,
+      "formId": 262,
+      "entryKey": "piedmon",
+      "name": "Piedmon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-magus",
+      "reason": "No reviewed in-roster predecessor. Do not join a magician solely by theatrical appearance.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=piemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 233,
+      "formId": 59,
+      "entryKey": "plesiomon",
+      "name": "Plesiomon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 58,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Whamon\u2192Plesiomon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=plesiomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 234,
+      "formId": 263,
+      "entryKey": "princemamemon",
+      "name": "PrinceMamemon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "propose-ordinary-family-incoming",
+      "reason": "Continue Mamemon into its royal Mega counterpart. The reference establishes Mamemon-family membership, not a unique predecessor or DS gate.",
+      "proposedIncomingEdgeIds": [
+        "192->263"
+      ],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=mamemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Ultimate Mamemon identity.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=princemamemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "PrinceMamemon is described as a prince of the Mamemon world.",
+          "relationshipSupport": "family-concept",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 235,
+      "formId": 52,
+      "entryKey": "puppetmon",
+      "name": "Puppetmon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 51,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Cherrymon\u2192Puppetmon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=pinochimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 236,
+      "formId": 49,
+      "entryKey": "rosemon",
+      "name": "Rosemon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 48,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Lillymon\u2192Rosemon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=rosemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "coordinatedIncomingProposal": {
+        "owner": "mid",
+        "fromFormId": 189,
+        "policy": "Additional incoming edge may be approved in the separate table; preserve the historical parent and existing route. Consult mid proposal evidence."
+      }
+    },
+    {
+      "sourceIndex": 237,
+      "formId": 264,
+      "entryKey": "saberleomon",
+      "name": "SaberLeomon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-theory-and-stage-skip-hold",
+      "reason": "Official feral-Leomon relation is a theory; direct Champion-to-Mega skip is not proposed as ordinary progression.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [
+        "29->264"
+      ],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=saberleomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 238,
+      "formId": 63,
+      "entryKey": "sakuyamon",
+      "name": "Sakuyamon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 62,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Taomon\u2192Sakuyamon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=sakuyamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 239,
+      "formId": 35,
+      "entryKey": "seraphimon",
+      "name": "Seraphimon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 34,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing MagnaAngemon\u2192Seraphimon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=seraphimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 240,
+      "formId": 265,
+      "entryKey": "valkyrimon",
+      "name": "Valkyrimon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 207,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Silphymon\u2192Valkyrimon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=valkyrimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 241,
+      "formId": 266,
+      "entryKey": "varodurumon",
+      "name": "Varodurumon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-identity-dependent-family-hold",
+      "reason": "Yatagaramon candidate requires variant and relationship review; holy-bird similarity alone is not enough.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [
+        "213->266"
+      ],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=valdurmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 242,
+      "formId": 17,
+      "entryKey": "venommyotismon",
+      "name": "VenomMyotismon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 16,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Myotismon\u2192VenomMyotismon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=venomvamdemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 243,
+      "formId": 56,
+      "entryKey": "vikemon",
+      "name": "Vikemon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 55,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing Zudomon\u2192Vikemon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=vikemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 244,
+      "formId": 21,
+      "entryKey": "wargreymon",
+      "name": "WarGreymon",
+      "sourceStage": "Mega",
+      "preservedProfile": true,
+      "currentParentId": 20,
+      "currentChildren": [],
+      "disposition": "preserve-existing-connected-terminal",
+      "reason": "Keep existing MetalGreymon (Vaccine)\u2192WarGreymon and all historical profile data. A terminal Mega needs no fabricated outgoing step.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=wargreymon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 245,
+      "formId": 267,
+      "entryKey": "zhuqiaomon",
+      "name": "Zhuqiaomon",
+      "sourceStage": "Mega",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-independent-sovereign",
+      "reason": "Retain sovereign bird independently; a fire/bird motif alone does not establish a Garudamon second route.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=zhuqiaomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Verified identity/stage or explicit variant candidate only; this source is not being claimed as proof of an unlisted evolution edge.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    },
+    {
+      "sourceIndex": 246,
+      "formId": 268,
+      "entryKey": "flamedramon",
+      "name": "Flamedramon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Courage. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=fladramon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Courage.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Courage",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 247,
+      "formId": 269,
+      "entryKey": "kenkimon",
+      "name": "Kenkimon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Friendship. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kenkimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Friendship.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Friendship",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 248,
+      "formId": 270,
+      "entryKey": "kongoumon",
+      "name": "Kongoumon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Miracles. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kongoumon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Miracles.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Miracles",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 249,
+      "formId": 271,
+      "entryKey": "magnamon",
+      "name": "Magnamon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Miracles. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=magnamon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Miracles.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Miracles",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 250,
+      "formId": 272,
+      "entryKey": "ponchomon",
+      "name": "Ponchomon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Sincerity. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=ponchomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Sincerity.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Sincerity",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 251,
+      "formId": 273,
+      "entryKey": "prairiemon",
+      "name": "Prairiemon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Kindness. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=prairiemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Kindness.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Kindness",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 252,
+      "formId": 274,
+      "entryKey": "seahomon",
+      "name": "Seahomon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Light. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=seahomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Light.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Light",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 253,
+      "formId": 275,
+      "entryKey": "shurimon",
+      "name": "Shurimon",
+      "sourceStage": "Armor",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-armor-item-exception",
+      "reason": "The reference specifies the Digi-Egg of Sincerity. Item/Armor semantics are not present; keep encounter access and do not replace that requirement silently with bond.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=shurimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Armor Digivolution uses the Digi-Egg of Sincerity.",
+          "relationshipSupport": "explicit-item-requirement",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false,
+      "specialRequirement": {
+        "kind": "Digi-Egg",
+        "name": "Sincerity",
+        "implemented": false
+      }
+    },
+    {
+      "sourceIndex": 254,
+      "formId": 276,
+      "entryKey": "calumon",
+      "name": "Calumon",
+      "sourceStage": "No Level",
+      "preservedProfile": false,
+      "currentParentId": 0,
+      "currentChildren": [],
+      "disposition": "catalog-only-explicit-no-evolution",
+      "reason": "Official Calumon does not Digivolve; keep the friendly prototype companion available without inventing a personal evolution path.",
+      "proposedIncomingEdgeIds": [],
+      "reviewCandidateEdgeIds": [],
+      "evidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=culumon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Calumon is explicitly described as not Digivolving.",
+          "relationshipSupport": "explicit-no-evolution",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "retainEncounterObtainability": true,
+      "canonicalEvolutionClaim": false
+    }
+  ],
+  "coordination": {
+    "earlyOwner": "hardware_research: Baby/Rookie/Champion proposals; Veemon/Hawkmon/Armadillomon spare slots remain unspent by this file.",
+    "midOwner": "web_simulator: docs/research/world-ds-evolution-proposals-ultimate.json owns Ultimate parents and incoming links to preserved Mega forms, including195->42,177->45,189->49. Merge by edge pair; do not duplicate proposals.",
+    "armorDecision": "Keep all8 as explicit item-mechanic exceptions, per parent guidance.",
+    "oldParentDecision": "Myotismon16\u2192Malo253 included as proposed second choice; retain16\u219217 and do not edit historical Form fields."
+  },
+  "validation": {
+    "entryCoverage": 77,
+    "defaultNewEdges": 6,
+    "defaultEdgesPreserveExisting": true,
+    "defaultMergedGraphAcyclic": true,
+    "defaultMaximumChildren": 2,
+    "allDefaultEdgesIncreaseAnchorLevel": true,
+    "statsOrLiveDataEdited": false
+  },
+  "inputSha256": {
+    "data/world-ds-catalog.json": "e8204ee6d8ce8bbe9de2c24e9a0ed7e275b0ef498fce1c3721fc97b43c633f10",
+    "data/world-ds-runtime.json": "e0037a31b4adcfa0999cffd8230116b66d875097710421c7d3b6d4d290510a51",
+    "data/world-ds-evolutions.json": "32fcc22d57bd0b4827d2893dbd452f3f3f10ff696a4d2e342306520f70a646b8"
+  }
+}

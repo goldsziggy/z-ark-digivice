@@ -1,0 +1,62 @@
+.power-page { min-width:280px; background:radial-gradient(ellipse at 50% 22%,#e8eddd,transparent 55%),var(--paper); }
+#power-demo { max-width:740px; margin:auto; padding:26px 28px 20px; }
+.power-intro { text-align:center; }
+.power-home { display:block; width:fit-content; margin:0 0 34px; font-size:12px; color:var(--green); text-decoration:none; }
+.power-intro h1 { font-size:clamp(29px,5vw,43px); font-weight:600; }
+.power-lede { margin:0; color:#61715f; font-size:15px; line-height:1.6; }
+.simulation-badge { width:fit-content; max-width:100%; margin:16px auto 0; padding:8px 12px; border:1px solid #ccd6c0; border-radius:6px; color:#53634e; background:#f8f9ef; font-size:11px; line-height:1.5; }
+.power-device { text-align:center; margin:26px auto; }
+.power-bezel { width:min(100%,380px); margin:0 auto 24px; padding:11px; border-radius:50%; background:linear-gradient(135deg,#dfe9cf,#aabd96); border:1px solid #99ad85; box-shadow:inset 0 2px 2px #fffdf0,0 5px 0 #899d74,0 18px 35px -22px #283c20; }
+.power-bezel .screen-surface { border:3px solid #314838; }
+#power-screen { background:radial-gradient(ellipse at 25% 15%,#2a5750,#152e35 76%); }
+#power-screen .screen-heading { top:16%; left:17%; width:66%; }
+#power-screen .screen-heading>span { order:0; padding:0; background:transparent; color:#adcbba; font:2.6cqw var(--mono); letter-spacing:.15em; margin:0 0 2cqw; }
+#power-screen .screen-heading h2 { order:1; padding:0; background:transparent; color:#edf7e3; font-size:5.9cqw; line-height:1.17; }
+#power-screen .screen-content { top:61%; left:17%; width:66%; }
+#power-screen .screen-detail { background:transparent; padding:0; font-size:3.9cqw; line-height:1.43; color:#cfe0cd; }
+#power-screen .screen-footer { top:83%; left:20%; width:60%; background:transparent; padding:0; }
+#power-screen .screen-footer>span { font:2.5cqw/1.4 var(--mono); color:#adcbba; }
+.power-center { position:absolute; top:31%; left:20%; width:60%; height:28%; display:grid; place-items:center; color:#ddedc2; pointer-events:none; }
+#power-symbol { font:20cqw Arial,sans-serif; line-height:1; }
+#power-countdown { font:600 26cqw/1 var(--mono); color:#f5c47c; letter-spacing:-.04em; }
+.power-ring { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; transform:rotate(-90deg); }
+.power-ring circle { fill:none; stroke-width:.65; }
+.power-ring-track { stroke:#b4cfb126; }
+#power-ring-fill { stroke:#eab66d; stroke-width:1.5; stroke-linecap:round; stroke-dasharray:276.4602; stroke-dashoffset:276.4602; opacity:0; }
+#power-demo[data-phase=holding] #power-ring-fill { opacity:1; }
+#power-demo[data-phase=holding] #power-screen { background:radial-gradient(ellipse at 30% 20%,#445a42,#182e32 72%); }
+#power-demo[data-phase=failed] #power-screen { background:radial-gradient(ellipse at 30% 20%,#604439,#302c2f 72%); }
+#power-demo[data-phase=failed] .power-center { color:#f2b295; }
+#power-demo[data-phase=off] #power-screen { background:#17201f; color:#a2aea5; }
+#power-demo[data-phase=off] .power-center { color:#54645a; }
+#power-demo[data-phase=standby] #power-screen { background:radial-gradient(ellipse at 30% 20%,#304551,#1b2936 72%); }
+#power-button { display:inline-flex; align-items:center; justify-content:center; gap:12px; min-width:142px; min-height:57px; padding:12px 26px; border:1px solid #476448; border-radius:32px; background:#34583f; color:#f4f4de; font:bold 15px var(--mono); letter-spacing:.08em; box-shadow:0 4px 0 #203e2a,0 9px 16px -12px #172d1c; touch-action:none; user-select:none; -webkit-user-select:none; }
+#power-button>span { font:25px/1 Arial,sans-serif; }
+#power-button[aria-pressed=true] { transform:translateY(3px); box-shadow:0 1px 0 #203e2a; background:#223e2d; }
+.power-key-hint { font-size:11px; color:#61715f; line-height:1.85; margin:15px 0 12px; }
+.power-key-hint kbd { font:10px var(--mono); border:1px solid #c3ccba; border-radius:3px; padding:2px 5px; background:#fffdf1; }
+.power-status { min-height:58px; max-width:480px; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:13px; line-height:1.55; color:#40553e; }
+.power-scenarios { padding:22px; border:1px solid #d2dbc7; border-radius:13px; background:#fffef5; }
+.power-scenario-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:19px; }
+.power-scenario-heading h2 { margin:0; font-size:17px; font-weight:600; letter-spacing:-.35px; }
+.power-scenario-heading button,.power-boot-controls button { min-height:36px; border:1px solid #bdcbb2; border-radius:6px; background:#f4f7ec; color:#34553e; padding:8px 11px; font-size:11px; }
+.power-scenario-options { display:grid; grid-template-columns:1.2fr 1fr; gap:20px; align-items:end; }
+.power-scenario-options>label:first-child { font-size:11px; color:#5e7057; }
+#power-source { display:block; width:100%; border:1px solid #c6d1ba; border-radius:5px; padding:10px 7px; color:#334d39; background:#fffef8; font-size:12px; margin-top:7px; }
+.power-checkbox { display:flex; align-items:center; gap:7px; min-height:38px; font-size:12px; }
+.power-checkbox input { width:17px; height:17px; margin:0; accent-color:#34583f; }
+.power-boot-controls { border-top:1px solid #e0e5d4; margin-top:20px; padding-top:16px; display:flex; align-items:center; gap:14px; }
+.power-boot-controls button { flex:none; }
+.power-boot-controls p { font-size:11px; line-height:1.5; color:#66765e; margin:0; }
+.power-simulation-detail { font-size:11px; line-height:1.65; color:#66765e; margin:17px 0 0; }
+.power-footnote { padding:20px 12px 4px; font-size:11px; line-height:1.65; color:#697462; text-align:center; }
+@media(max-width:480px) {
+  #power-demo { padding:19px 18px 16px; }
+  .power-home { margin-bottom:26px; }
+  .power-lede { font-size:13px; }
+  .power-device { margin-top:23px; }
+  .power-scenarios { padding:17px; }
+  .power-scenario-options { grid-template-columns:1fr; gap:8px; }
+  .power-boot-controls { align-items:flex-start; flex-direction:column; gap:9px; }
+  .power-status { font-size:12px; min-height:66px; }
+}

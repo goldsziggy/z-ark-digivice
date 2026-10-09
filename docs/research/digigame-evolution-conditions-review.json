@@ -1,0 +1,1735 @@
+{
+  "formatVersion": 1,
+  "reviewer": "cohort_b_visual independent assistant static evolution audit",
+  "reviewedAt": "2026-10-07",
+  "upstreamCommit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+  "upstreamCheckoutExecuted": false,
+  "method": "Read-only git show/rev-parse and Python standard-library JSON parsing/local graph analysis. No upstream imports, scripts, dependencies, checkout, network, or application execution.",
+  "scope": "Source behavior at the pinned commit, not canonical franchise truth. Metadata only; no core/gameplay edits.",
+  "sourceBlobs": [
+    {
+      "path": "src/digimon/DigimonDatabase.gd",
+      "gitBlobSha1": "d1ae3da097087a6606508d44746981cb27ef77f7",
+      "sha256": "8137e81650c6d02ce111918744883c52108e858610819a231ff274a5f244ab76",
+      "lines": 215
+    },
+    {
+      "path": "src/digimon/DigimonEvolutionService.gd",
+      "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99",
+      "sha256": "7b9593edcaa87d71e9612448740f16cf36917d79fda98308b4f24b4d2011f89d",
+      "lines": 290
+    },
+    {
+      "path": "src/digimon/EvolutionRequirementEvaluator.gd",
+      "gitBlobSha1": "be4eecef17e5f85ac06cff41ba05f8b7f248d841",
+      "sha256": "a5453cb9d1ab052dceff7393dc013ce9e30d7d51c3257b112e1b1dd44241639f",
+      "lines": 127
+    },
+    {
+      "path": "src/digimon/EvolutionGraphService.gd",
+      "gitBlobSha1": "9813cb48ec4539a3a44db2981899446c07b0f396",
+      "sha256": "d3fc50584b7f10c5ce1733152fa1dc4e2d1fcba6f7f1a59473fdf5145aa2a6cc",
+      "lines": 173
+    },
+    {
+      "path": "src/digimon/FusionCatalog.gd",
+      "gitBlobSha1": "6aaa1f1ce049ad17fc203ce970757a4b52d5f7e9",
+      "sha256": "7f41ca08f73e15c03153440029aec790f724797dfe80aafbfbd865acf09a569f",
+      "lines": 131
+    },
+    {
+      "path": "src/digimon/FusionService.gd",
+      "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4",
+      "sha256": "8e40ef187af34ab69b304dd0b6d3cc5f49669d90df3debf204616acf7782b211",
+      "lines": 318
+    },
+    {
+      "path": "src/digimon/FusionProgressService.gd",
+      "gitBlobSha1": "0ab035b3039d74551faf4ffded1fd21d88186c7e",
+      "sha256": "0164acb12d2bab2b8e891414a195346beacf26c514391e368f9186c2642251dd",
+      "lines": 52
+    },
+    {
+      "path": "src/digimon/DigimonProgressionService.gd",
+      "gitBlobSha1": "0fd9cd516eb28680c907fce0bcff117a0d07782d",
+      "sha256": "a1a3ab3ef251c8783626f3241b6c488d0d9f3701739afd2d1a31609f71280ff7",
+      "lines": 171
+    },
+    {
+      "path": "src/ui/EvolutionConstellation.gd",
+      "gitBlobSha1": "63d7d66cd583e86628d352bc6cd91d8614320b9b",
+      "sha256": "2f15c65bef6f270804412f5e97ae2d2c1296a2cafbbdcad1dad9c2f96b07d13c",
+      "lines": 562
+    },
+    {
+      "path": "database/base-digimon-list.json",
+      "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+      "sha256": "1d61f6fc03f62213f1078784ba675d6524b64e10ac946edf63bd97b391f3544f",
+      "lines": 11496
+    },
+    {
+      "path": "database/fusions.json",
+      "gitBlobSha1": "facf6c31b33cc26911c01e0b9efddcdec4feeaa9",
+      "sha256": "f9a7691cf2c8918a42bc5835ddf5361924dfdb848bbeb601908ac29dc8388d18",
+      "lines": 212
+    }
+  ],
+  "measuredBase": {
+    "species": 409,
+    "explicitEvolutionRouteObjects": 0,
+    "forwardEdges": 366,
+    "degenerationReferences": 366,
+    "unresolvedForwardTargets": 0,
+    "sameRankForwardEdges": 0,
+    "descendingForwardEdges": 0,
+    "directedForwardCycles": 0,
+    "maxOutgoing": 4,
+    "moreThanTwoOutgoingSources": 22,
+    "requirementsByType": {
+      "level": 395
+    },
+    "forwardSourceRowsAboveLevel20": 77,
+    "forwardEdgesAboveLevel20": 98,
+    "ordinaryForwardEdgesTouchingFusion": 0
+  },
+  "findings": [
+    {
+      "id": "forward-authority",
+      "fact": "All409 base rows lack explicit evolutions/degenerations route objects. Database normalization therefore derives forward routes only from each source row digiEvolutionSeedList and copies that same source row evolutionRequirements to EVERY forward target. Legacy degeneration routes receive empty requirements.",
+      "candidateConstraint": "Import the forward source list, preserve source-owned conditions, and do not use target-row level or reverse degeneration as equivalent authority.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/DigimonDatabase.gd",
+          "lineStart": 149,
+          "lineEnd": 187,
+          "gitBlobSha1": "d1ae3da097087a6606508d44746981cb27ef77f7"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 105,
+          "lineEnd": 119,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 173,
+          "lineEnd": 181,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        }
+      ]
+    },
+    {
+      "id": "display-graph-not-executable-authority",
+      "fact": "EvolutionGraphService adds forward routes and reversed degeneration links, then deduplicates by an undirected seed-pair key. Shortest-path neighbors include both directions. It is a navigation/display projection rather than a legal forward-route table.",
+      "candidateConstraint": "Never scrape displayed adjacency or shortest paths as evolutions; route_direction and transition execution still check separate forward and degeneration arrays.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/EvolutionGraphService.gd",
+          "lineStart": 36,
+          "lineEnd": 50,
+          "gitBlobSha1": "9813cb48ec4539a3a44db2981899446c07b0f396"
+        },
+        {
+          "path": "src/digimon/EvolutionGraphService.gd",
+          "lineStart": 88,
+          "lineEnd": 97,
+          "gitBlobSha1": "9813cb48ec4539a3a44db2981899446c07b0f396"
+        },
+        {
+          "path": "src/digimon/EvolutionGraphService.gd",
+          "lineStart": 128,
+          "lineEnd": 155,
+          "gitBlobSha1": "9813cb48ec4539a3a44db2981899446c07b0f396"
+        },
+        {
+          "path": "src/digimon/EvolutionGraphService.gd",
+          "lineStart": 172,
+          "lineEnd": 173,
+          "gitBlobSha1": "9813cb48ec4539a3a44db2981899446c07b0f396"
+        }
+      ]
+    },
+    {
+      "id": "concrete-asymmetry",
+      "fact": "The sole mismatch between forward links and reversed degeneration links is Guilmon\u2192Growlmon versus Gigimon\u2192Growlmon. Growlmon explicitly lists Gigimon as its degeneration target, while Guilmon explicitly lists Growlmon for forward evolution.",
+      "candidateConstraint": "Preserve the source discrepancy as evidence; a display-derived Gigimon\u2192Growlmon candidate must not be mislabeled an authoritative forward route.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 261,
+          "lineEnd": 286,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 1080,
+          "lineEnd": 1109,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 2902,
+          "lineEnd": 2930,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "src/digimon/EvolutionGraphService.gd",
+          "lineStart": 44,
+          "lineEnd": 48,
+          "gitBlobSha1": "9813cb48ec4539a3a44db2981899446c07b0f396"
+        }
+      ]
+    },
+    {
+      "id": "levels-not-care-portable",
+      "fact": "The current base has395 requirement dictionaries, all level thresholds. Among source rows with forward targets,77 rows representing98 edges require level>20; the values above20 are25,33,and35\u201345. Evolution resets level to1 and experience to0.",
+      "candidateConstraint": "Do not clamp or copy these gates into the level20 care model silently. Any level/bond adaptation is a newly authored prototype rule and needs explicit mapping, separate from route-source evidence.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/EvolutionRequirementEvaluator.gd",
+          "lineStart": 46,
+          "lineEnd": 48,
+          "gitBlobSha1": "be4eecef17e5f85ac06cff41ba05f8b7f248d841"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 197,
+          "lineEnd": 219,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 5883,
+          "lineEnd": 5911,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 6849,
+          "lineEnd": 6878,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        }
+      ]
+    },
+    {
+      "id": "branch-and-dag-shape",
+      "fact": "The pinned forward graph has366 references, all resolved, no duplicates, no same-rank or descending edges, and no directed cycles.22 source rows have more than2 outgoing choices (19 have3,3 have4).",
+      "candidateConstraint": "Current topology needs no cycle repair, but direct full import violates our max2 branch bound. Choosing two children loses source branches; raising the bound is a separate core/UI change. Never manufacture a cycle issue from degeneration loops.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/DigimonDatabase.gd",
+          "lineStart": 175,
+          "lineEnd": 188,
+          "gitBlobSha1": "d1ae3da097087a6606508d44746981cb27ef77f7"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 84,
+          "lineEnd": 114,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 373,
+          "lineEnd": 401,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 2696,
+          "lineEnd": 2726,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        }
+      ]
+    },
+    {
+      "id": "armor-name-not-an-item-rule",
+      "fact": "The current base has no item, armor, mode, quest, flag, or other nonlevel evolution requirements. ExVeemon has ordinary level20 routes to Magnamon and Flamedramon, whose rows are labeled Ultimate; their own level36/35 gates do not govern entry from ExVeemon.",
+      "candidateConstraint": "This is DigiGame source behavior, not a franchise canon rule. Do not infer Digimental/armor item gates from familiar names, or transfer those source ranks into stable local identity/stage metadata.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 3479,
+          "lineEnd": 3507,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 8495,
+          "lineEnd": 8520,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 8468,
+          "lineEnd": 8493,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "src/digimon/DigimonDatabase.gd",
+          "lineStart": 159,
+          "lineEnd": 187,
+          "gitBlobSha1": "d1ae3da097087a6606508d44746981cb27ef77f7"
+        }
+      ]
+    },
+    {
+      "id": "fusion-is-separate",
+      "fact": "There are12 Fusion-ranked rows, all reconstructable=false, with no ordinary incoming/outgoing forward links and no base degeneration links. FusionCatalog loads separate database/fusions.json definitions, validates at least2 Digimon material instances, known seeds, Fusion result rank, and nonreconstructability.",
+      "candidateConstraint": "Represent these as multi-input fusion recipes only if a fusion system is intentionally implemented; an ordinary single-parent edge discards joint-material and unlock restrictions.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/FusionCatalog.gd",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "gitBlobSha1": "6aaa1f1ce049ad17fc203ce970757a4b52d5f7e9"
+        },
+        {
+          "path": "src/digimon/FusionCatalog.gd",
+          "lineStart": 73,
+          "lineEnd": 94,
+          "gitBlobSha1": "6aaa1f1ce049ad17fc203ce970757a4b52d5f7e9"
+        },
+        {
+          "path": "src/digimon/FusionCatalog.gd",
+          "lineStart": 97,
+          "lineEnd": 130,
+          "gitBlobSha1": "6aaa1f1ce049ad17fc203ce970757a4b52d5f7e9"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 112,
+          "lineEnd": 119,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 129,
+          "lineEnd": 130,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        }
+      ]
+    },
+    {
+      "id": "fusion-runtime-restrictions",
+      "fact": "FusionService requires100 collected fusion data, distinct qualifying individual instances, material minimum levels, no hospitalization/fainting/equipment, and required item inventory if specified. It passes material IDs and item costs to commit_fusion; result starts level1. All12 current recipes use Digimon materials only, minimum levels30\u201370.",
+      "candidateConstraint": "Every current fusion level is above the local20 cap. Preserve quantity and simultaneous-material conditions. Armageddemon consumes3 Kuramon instances; it is not a Kuramon single-creature evolution.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/FusionService.gd",
+          "lineStart": 21,
+          "lineEnd": 37,
+          "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4"
+        },
+        {
+          "path": "src/digimon/FusionService.gd",
+          "lineStart": 78,
+          "lineEnd": 107,
+          "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4"
+        },
+        {
+          "path": "src/digimon/FusionService.gd",
+          "lineStart": 119,
+          "lineEnd": 146,
+          "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4"
+        },
+        {
+          "path": "src/digimon/FusionService.gd",
+          "lineStart": 158,
+          "lineEnd": 175,
+          "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4"
+        },
+        {
+          "path": "src/digimon/FusionService.gd",
+          "lineStart": 193,
+          "lineEnd": 214,
+          "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4"
+        },
+        {
+          "path": "src/digimon/FusionService.gd",
+          "lineStart": 226,
+          "lineEnd": 244,
+          "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4"
+        },
+        {
+          "path": "database/fusions.json",
+          "lineStart": 146,
+          "lineEnd": 155,
+          "gitBlobSha1": "facf6c31b33cc26911c01e0b9efddcdec4feeaa9"
+        }
+      ]
+    },
+    {
+      "id": "mode-restrictions-source-specific",
+      "fact": "Imperialdramon Dragon Mode, Fighter Mode, Paladin Mode and Dragon Mode Black are separate Fusion results with empty ordinary route lists. Dragon and Fighter modes are separate ExVeemon+Stingmon recipes at45/55, not a Dragon\u2192Fighter edge; Paladin uses Fighter Mode+Omnimon at70. Several other named burst/crimson modes are isolated ordinary rows.",
+      "candidateConstraint": "Do not infer mode-transition edges from names or neighboring ranks. Retain exact mode identity and recipe semantics; isolated rows are not evidence of a missing graph edge.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 9579,
+          "lineEnd": 9598,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 9600,
+          "lineEnd": 9619,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/base-digimon-list.json",
+          "lineStart": 9833,
+          "lineEnd": 9856,
+          "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+        },
+        {
+          "path": "database/fusions.json",
+          "lineStart": 128,
+          "lineEnd": 145,
+          "gitBlobSha1": "facf6c31b33cc26911c01e0b9efddcdec4feeaa9"
+        },
+        {
+          "path": "database/fusions.json",
+          "lineStart": 158,
+          "lineEnd": 210,
+          "gitBlobSha1": "facf6c31b33cc26911c01e0b9efddcdec4feeaa9"
+        }
+      ]
+    },
+    {
+      "id": "fusion-degeneration-is-instance-origin",
+      "fact": "Fusion forms cannot use normal forward evolution. They can degenerate to materialSeeds recorded on the individual fusion_origin even with no base route. Available degeneration rows are added as unlocked with no requirements, gain zero potential, and clear fusion_origin after changing form.",
+      "candidateConstraint": "Do not turn recorded fusion ancestry into unconditional catalog-wide edges. The code changes the existing instance into one selected material species; this audited path does not recreate all sacrificed materials.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 114,
+          "lineEnd": 119,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 149,
+          "lineEnd": 170,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 197,
+          "lineEnd": 219,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 272,
+          "lineEnd": 290,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/FusionService.gd",
+          "lineStart": 193,
+          "lineEnd": 202,
+          "gitBlobSha1": "edc5130961a326b33b5e74cb446c8b146b7134f4"
+        }
+      ]
+    },
+    {
+      "id": "malformed-conditions-default-open",
+      "fact": "Runtime route normalization changes non-array requirements to[]. Requirement evaluator skips non-dictionary entries; a non-array or empty list produces no evaluations and all_met returns true. Empty or none type explicitly succeeds. Unknown nonempty types produce supported=false,is_met=false.",
+      "candidateConstraint": "An importer should validate expected requirement shapes and quarantine unknown/malformed data instead of inheriting these defaults. These are latent evaluator semantics; current base rows contain valid level dictionaries only.",
+      "scope": "latent behavior; not exercised by current level-only base rows",
+      "evidence": [
+        {
+          "path": "src/digimon/DigimonDatabase.gd",
+          "lineStart": 191,
+          "lineEnd": 205,
+          "gitBlobSha1": "d1ae3da097087a6606508d44746981cb27ef77f7"
+        },
+        {
+          "path": "src/digimon/EvolutionRequirementEvaluator.gd",
+          "lineStart": 12,
+          "lineEnd": 27,
+          "gitBlobSha1": "be4eecef17e5f85ac06cff41ba05f8b7f248d841"
+        },
+        {
+          "path": "src/digimon/EvolutionRequirementEvaluator.gd",
+          "lineStart": 30,
+          "lineEnd": 45,
+          "gitBlobSha1": "be4eecef17e5f85ac06cff41ba05f8b7f248d841"
+        },
+        {
+          "path": "src/digimon/EvolutionRequirementEvaluator.gd",
+          "lineStart": 98,
+          "lineEnd": 104,
+          "gitBlobSha1": "be4eecef17e5f85ac06cff41ba05f8b7f248d841"
+        }
+      ]
+    },
+    {
+      "id": "context-and-condition-limits",
+      "fact": "Supported evaluator kinds include level,potential/abi,stat/direct stats,item,link,battles_won,species_defeated,quest,flag,time,party_condition. Most context values default to0/false/locked/empty inventory; link defaults to instance.link. Item amount defaults to1; quest state defaults completed; flag defaults required true; party_condition always requires true; time is integer>=threshold. No arbitrary comparison operators or nested OR groups are interpreted.",
+      "candidateConstraint": "Do not treat unrecognized annotations as enforced gameplay conditions. Item checks test possession; the audited evolution apply path itself has no item-consumption transaction. Standard UI and progression callers pass default empty context, so future context-driven requirements need caller wiring.",
+      "scope": "evaluator capability/defaults; current base uses only level",
+      "evidence": [
+        {
+          "path": "src/digimon/EvolutionRequirementEvaluator.gd",
+          "lineStart": 46,
+          "lineEnd": 104,
+          "gitBlobSha1": "be4eecef17e5f85ac06cff41ba05f8b7f248d841"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 191,
+          "lineEnd": 226,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonProgressionService.gd",
+          "lineStart": 105,
+          "lineEnd": 114,
+          "gitBlobSha1": "0fd9cd516eb28680c907fce0bcff117a0d07782d"
+        },
+        {
+          "path": "src/ui/EvolutionConstellation.gd",
+          "lineStart": 294,
+          "lineEnd": 304,
+          "gitBlobSha1": "63d7d66cd583e86628d352bc6cd91d8614320b9b"
+        }
+      ]
+    },
+    {
+      "id": "preview-does-not-authorize",
+      "fact": "build_transition_preview checks source/target existence and route topology but does not evaluate requirements. Debug force transitions bypass requirements while retaining topology. get_available_evolutions includes both locked and unlocked routes, distinguished by unlocked.",
+      "candidateConstraint": "Do not interpret a preview, available-list membership, or a debug result as normal gameplay eligibility.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 33,
+          "lineEnd": 55,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 91,
+          "lineEnd": 102,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 122,
+          "lineEnd": 148,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        }
+      ]
+    },
+    {
+      "id": "topology-rules-not-validated-upstream",
+      "fact": "Database load validates required base fields, IDs and duplicate names, while transition lookup checks a matching route and source Fusion restriction. It does not impose a graph-wide branch limit, DAG check, or stage-order condition.",
+      "candidateConstraint": "The current strict rank-increasing DAG is an observed property of this commit, not an upstream invariant. Future data updates require fresh branch/cycle/rank/identity validation.",
+      "scope": "observed pinned source",
+      "evidence": [
+        {
+          "path": "src/digimon/DigimonDatabase.gd",
+          "lineStart": 44,
+          "lineEnd": 64,
+          "gitBlobSha1": "d1ae3da097087a6606508d44746981cb27ef77f7"
+        },
+        {
+          "path": "src/digimon/DigimonDatabase.gd",
+          "lineStart": 128,
+          "lineEnd": 172,
+          "gitBlobSha1": "d1ae3da097087a6606508d44746981cb27ef77f7"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 105,
+          "lineEnd": 119,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        },
+        {
+          "path": "src/digimon/DigimonEvolutionService.gd",
+          "lineStart": 173,
+          "lineEnd": 181,
+          "gitBlobSha1": "9a6762b5a944af615e6059319697083e47ab2f99"
+        }
+      ]
+    }
+  ],
+  "branchOverflowSources": [
+    {
+      "seed": "edc9812f-82a6-487f-9a4d-52b845643176",
+      "name": "Koromon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Guilmon",
+        "BlackAgumon",
+        "Agumon",
+        "Grass Agumon"
+      ],
+      "degenerationTargets": [
+        "Botamon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 84,
+        "lineEnd": 114,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "25acac95-1107-484a-8dfc-f4f8139bc164",
+      "name": "Dorimon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Armadillomon",
+        "Dorumon",
+        "Shamamon"
+      ],
+      "degenerationTargets": [
+        "Dodomon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 145,
+        "lineEnd": 174,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "4f2a5a34-f37e-4e2e-9429-5fa6a7b36c1b",
+      "name": "Puttimon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Salamon",
+        "Kudamon",
+        "PawnChessmon (White)"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 176,
+        "lineEnd": 203,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "794bdb0d-eb9b-450b-bbc6-bbee53bd163e",
+      "name": "Minomon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Tentomon",
+        "Kunemon",
+        "Wormmon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 232,
+        "lineEnd": 259,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "c32edbfb-fd41-40dc-95c3-ded5a6b89e99",
+      "name": "Poyomon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Gomamon",
+        "Crabmon",
+        "Kamemon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 6
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 344,
+        "lineEnd": 371,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "2c011b3c-727f-4f36-aeb7-18e94eb4801e",
+      "name": "Tokomon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Patamon",
+        "Candlemon",
+        "Falcomon",
+        "Hawkmon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 373,
+        "lineEnd": 401,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "ed20a627-e7f5-4ab1-bbfd-2a7c2df1d0b6",
+      "name": "Tanemon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Palmon",
+        "Aruraumon",
+        "Floramon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 6
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 403,
+        "lineEnd": 430,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "b18ad2e7-5a8b-43c3-990e-5f00ea8e3ae7",
+      "name": "Kapurimon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Hagurumon",
+        "PawnChessmon (Black)",
+        "Kotemon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 6
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 460,
+        "lineEnd": 487,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "df0ec13c-fc18-4a32-8536-0049016c9f10",
+      "name": "Gummymon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Terriermon",
+        "Tapirmon",
+        "Renamon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 564,
+        "lineEnd": 591,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "7dbd69e3-62f3-4433-a8de-12c8ae5c1ea6",
+      "name": "Budmon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Lalamon",
+        "Mushroomon",
+        "DoKunemon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 6
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 676,
+        "lineEnd": 703,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "96c23ff9-d6b4-43da-91e6-f0c9799c65d7",
+      "name": "Agumon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Greymon",
+        "Geo Greymon",
+        "Blue Greymon"
+      ],
+      "degenerationTargets": [
+        "Koromon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 759,
+        "lineEnd": 788,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "67307a7e-681f-4b3b-a71e-16baae4ea11f",
+      "name": "Betamon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Dolphmon",
+        "Gesomon",
+        "Octomon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 813,
+        "lineEnd": 840,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "55121c1b-5f45-4f28-ad8f-d1a5573c3101",
+      "name": "Goburimon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Ogremon",
+        "Nanimon",
+        "Minotarumon"
+      ],
+      "degenerationTargets": [
+        "Tsunomon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 842,
+        "lineEnd": 871,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "4e6904cc-d3c0-4363-b8a8-bebc1da167ab",
+      "name": "Kunemon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Flymon",
+        "Yanmamon",
+        "Sukamon"
+      ],
+      "degenerationTargets": [
+        "Minomon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 1022,
+        "lineEnd": 1051,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "1e4a6cd2-b5f2-40c9-abc1-e2d4f5b6a789",
+      "name": "Dorumon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Dorugamon",
+        "Drimogemon",
+        "Reptiledramon"
+      ],
+      "degenerationTargets": [
+        "Dorimon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 1201,
+        "lineEnd": 1230,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "7b8c9d0e-f1a2-4b3c-9d4e-5f6a7b8c9d0e",
+      "name": "Gotsumon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Icemon",
+        "Golemon",
+        "Tsuchidarumon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 1319,
+        "lineEnd": 1346,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "b61f8053-a7e7-4a30-80ab-64d494ba6c24",
+      "name": "Otamamon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Gekomon",
+        "Numemon",
+        "Geremon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 1348,
+        "lineEnd": 1375,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "ff9c95dd-3f18-418a-8a69-5ae3d038dec8",
+      "name": "Syakomon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Shellmon",
+        "Coelamon",
+        "KaratsukiNumemon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 1850,
+        "lineEnd": 1877,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "8bbb294e-b9dd-4ab9-8629-f46872e9cbd4",
+      "name": "DoKunemon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Kuwagamon",
+        "Dokugumon",
+        "Roachmon"
+      ],
+      "degenerationTargets": [
+        "Budmon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 2434,
+        "lineEnd": 2463,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "f3d8e2e9-316a-412b-91f9-678d1e6e9a56",
+      "name": "Gatomon",
+      "rank": "Champion",
+      "forwardTargets": [
+        "Angewomon",
+        "Lanksmon",
+        "Tylomon",
+        "Kabukimon"
+      ],
+      "degenerationTargets": [
+        "Salamon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 20
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 2696,
+        "lineEnd": 2726,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "d7b9c0e3-1a5f-4e6b-8c2d-9f0a3e5d7c6b",
+      "name": "Aquilamon",
+      "rank": "Champion",
+      "forwardTargets": [
+        "Shurimon",
+        "Toucanmon",
+        "Allomon"
+      ],
+      "degenerationTargets": [
+        "Hawkmon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 20
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 3741,
+        "lineEnd": 3770,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "952a2766-db94-4c37-9c25-efee8bfdc9a3",
+      "name": "Antylamon",
+      "rank": "Ultimate",
+      "forwardTargets": [
+        "Cherubimon (Good)",
+        "Cherubimon (Evil)",
+        "Minervamon"
+      ],
+      "degenerationTargets": [
+        "Wendigomon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 35
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 6849,
+        "lineEnd": 6878,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    }
+  ],
+  "selectedSourceRows": [
+    {
+      "seed": "60a9abac-e232-458d-a137-353e6ce15d03",
+      "name": "Gigimon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Guilmon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 261,
+        "lineEnd": 286,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "42e8ce3c-0f51-4238-866e-a195628b165c",
+      "name": "Guilmon",
+      "rank": "Rookie",
+      "forwardTargets": [
+        "Growlmon",
+        "Tyrannomon"
+      ],
+      "degenerationTargets": [
+        "Gigimon",
+        "Koromon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 10
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 1080,
+        "lineEnd": 1109,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "124e3f9c-0f48-402c-9f29-b92ff742a965",
+      "name": "Growlmon",
+      "rank": "Champion",
+      "forwardTargets": [
+        "War Growlmon",
+        "BlackWarGrowlmon"
+      ],
+      "degenerationTargets": [
+        "Gigimon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 20
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 2902,
+        "lineEnd": 2930,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "edc9812f-82a6-487f-9a4d-52b845643176",
+      "name": "Koromon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Guilmon",
+        "BlackAgumon",
+        "Agumon",
+        "Grass Agumon"
+      ],
+      "degenerationTargets": [
+        "Botamon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 84,
+        "lineEnd": 114,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "2c011b3c-727f-4f36-aeb7-18e94eb4801e",
+      "name": "Tokomon",
+      "rank": "In-Training",
+      "forwardTargets": [
+        "Patamon",
+        "Candlemon",
+        "Falcomon",
+        "Hawkmon"
+      ],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 5
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 373,
+        "lineEnd": 401,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "f3d8e2e9-316a-412b-91f9-678d1e6e9a56",
+      "name": "Gatomon",
+      "rank": "Champion",
+      "forwardTargets": [
+        "Angewomon",
+        "Lanksmon",
+        "Tylomon",
+        "Kabukimon"
+      ],
+      "degenerationTargets": [
+        "Salamon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 20
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 2696,
+        "lineEnd": 2726,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "a7d0f3e9-1c5b-4e6a-8c2b-9f3a5e0d7b6c",
+      "name": "ExVeemon",
+      "rank": "Champion",
+      "forwardTargets": [
+        "Magnamon",
+        "Flamedramon"
+      ],
+      "degenerationTargets": [
+        "Veemon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 20
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 3479,
+        "lineEnd": 3507,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "038b0f79-2341-4c3b-8c77-7984c3341ab1",
+      "name": "Magnamon",
+      "rank": "Ultimate",
+      "forwardTargets": [],
+      "degenerationTargets": [
+        "ExVeemon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 36
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 8495,
+        "lineEnd": 8520,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "49d6dd17-71b4-41ae-844c-2f18410a8d31",
+      "name": "Flamedramon",
+      "rank": "Ultimate",
+      "forwardTargets": [],
+      "degenerationTargets": [
+        "ExVeemon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 35
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 8468,
+        "lineEnd": 8493,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "d7b9c0e3-1a5f-4e6b-8c2d-9f0a3e5d7c6b",
+      "name": "Aquilamon",
+      "rank": "Champion",
+      "forwardTargets": [
+        "Shurimon",
+        "Toucanmon",
+        "Allomon"
+      ],
+      "degenerationTargets": [
+        "Hawkmon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 20
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 3741,
+        "lineEnd": 3770,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "28228629-5abc-4fdb-b94d-360783b2ff2c",
+      "name": "Angewomon",
+      "rank": "Ultimate",
+      "forwardTargets": [
+        "Ophanimon",
+        "Holydramon"
+      ],
+      "degenerationTargets": [
+        "Gatomon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 35
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 5883,
+        "lineEnd": 5911,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "952a2766-db94-4c37-9c25-efee8bfdc9a3",
+      "name": "Antylamon",
+      "rank": "Ultimate",
+      "forwardTargets": [
+        "Cherubimon (Good)",
+        "Cherubimon (Evil)",
+        "Minervamon"
+      ],
+      "degenerationTargets": [
+        "Wendigomon"
+      ],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 35
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 6849,
+        "lineEnd": 6878,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "f9a2b8c3-4e5d-4f7b-9c1e-8d6f3a2b5c7e",
+      "name": "Imperialdramon (Dragon Mode)",
+      "rank": "Fusion",
+      "forwardTargets": [],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 9579,
+        "lineEnd": 9598,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "a1b3c5d7-6e8f-4a2b-9c4d-5e7f8a9b1c2d",
+      "name": "Imperialdramon (Fighter Mode)",
+      "rank": "Fusion",
+      "forwardTargets": [],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 9600,
+        "lineEnd": 9619,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "b2c4d6e8-7f9a-4b3c-8d5e-6f8a9b1c2d3e",
+      "name": "Imperialdramon (Paladin Mode)",
+      "rank": "Fusion",
+      "forwardTargets": [],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 9621,
+        "lineEnd": 9640,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    },
+    {
+      "seed": "e218ca43-f503-407a-beae-0e208594c4bf",
+      "name": "Gallantmon (Crimson Mode)",
+      "rank": "Mega",
+      "forwardTargets": [],
+      "degenerationTargets": [],
+      "sourceRowRequirements": [
+        {
+          "type": "level",
+          "value": 60
+        }
+      ],
+      "evidence": {
+        "path": "database/base-digimon-list.json",
+        "lineStart": 9833,
+        "lineEnd": 9856,
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d"
+      }
+    }
+  ],
+  "fusionRecipes": [
+    {
+      "id": "paildramon",
+      "resultName": "Paildramon",
+      "resultSeed": "36fad7a1-ec3c-4781-bc2b-db41f0d79e01",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "a7d0f3e9-1c5b-4e6a-8c2b-9f3a5e0d7b6c",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "ExVeemon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "f0c7e9b3-1a5d-4e6b-8c2b-9d3a5e0f7c6b",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "Stingmon"
+        }
+      ]
+    },
+    {
+      "id": "dinobeemon",
+      "resultName": "Dinobeemon",
+      "resultSeed": "9799592e-7012-4855-b1a8-2f5d1e27e196",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "a7d0f3e9-1c5b-4e6a-8c2b-9f3a5e0d7b6c",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "ExVeemon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "f0c7e9b3-1a5d-4e6b-8c2b-9d3a5e0f7c6b",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "Stingmon"
+        }
+      ]
+    },
+    {
+      "id": "silphymon",
+      "resultName": "Silphymon",
+      "resultSeed": "de7c5e6e-92fc-4f99-98b1-abe628acedd2",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "d7b9c0e3-1a5f-4e6b-8c2d-9f0a3e5d7c6b",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "Aquilamon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "f3d8e2e9-316a-412b-91f9-678d1e6e9a56",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "Gatomon"
+        }
+      ]
+    },
+    {
+      "id": "shakkoumon",
+      "resultName": "Shakkoumon",
+      "resultSeed": "528427d9-196e-4b85-9680-ccf401515ff7",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "a5d8e0b7-3c1f-4e9a-8b2d-6f0c3a5e7d1b",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "Angemon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "d6e3a9c0-2f5b-4e7a-8c1d-9f0a3e5d7b2c",
+          "amount": 1,
+          "minLevel": 30,
+          "name": "Ankylomon"
+        }
+      ]
+    },
+    {
+      "id": "omnimon",
+      "resultName": "Omnimon",
+      "resultSeed": "49d973b4-549f-45ff-9c41-e43dcc8b43f6",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "df67cc96-4a69-4f26-88d6-2c98ccaecfe6",
+          "amount": 1,
+          "minLevel": 55,
+          "name": "War Greymon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "d9f9c182-731b-4f21-8e2f-167b2d663e34",
+          "amount": 1,
+          "minLevel": 55,
+          "name": "Metal Garurumon"
+        }
+      ]
+    },
+    {
+      "id": "millenniummon",
+      "resultName": "Millenniummon",
+      "resultSeed": "42528387-e8e5-4a69-adaa-7089aeb620a1",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "8c0f5a17-16a5-409a-bac1-1c63aeaa611a",
+          "amount": 1,
+          "minLevel": 50,
+          "name": "Kimeramon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "f1b3b3b4-1b3b-4b3b-8b3b-3b3b3b3b3b3b",
+          "amount": 1,
+          "minLevel": 50,
+          "name": "Machinedramon"
+        }
+      ]
+    },
+    {
+      "id": "chaosmon",
+      "resultName": "Chaosmon",
+      "resultSeed": "4e9ee336-86e1-43aa-bb62-93a10f82a0f6",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "600cfcc7-2b9e-4be1-b0f7-81cf1ef9a70c",
+          "amount": 1,
+          "minLevel": 60,
+          "name": "Bantyo Leomon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "5c59bdf1-0288-4a39-bfbc-3d513a6dfe4c",
+          "amount": 1,
+          "minLevel": 60,
+          "name": "Darkdramon"
+        }
+      ]
+    },
+    {
+      "id": "imperialdramon_paladin_mode",
+      "resultName": "Imperialdramon (Paladin Mode)",
+      "resultSeed": "b2c4d6e8-7f9a-4b3c-8d5e-6f8a9b1c2d3e",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "a1b3c5d7-6e8f-4a2b-9c4d-5e7f8a9b1c2d",
+          "amount": 1,
+          "minLevel": 70,
+          "name": "Imperialdramon (Fighter Mode)"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "49d973b4-549f-45ff-9c41-e43dcc8b43f6",
+          "amount": 1,
+          "minLevel": 70,
+          "name": "Omnimon"
+        }
+      ]
+    },
+    {
+      "id": "armageddemon",
+      "resultName": "Armageddemon",
+      "resultSeed": "86d24d95-9244-48cd-94e0-be4e74f9ddf1",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "658aaf6d-9296-4011-8989-cbfbc2970d35",
+          "amount": 3,
+          "minLevel": 40,
+          "name": "Kuramon"
+        }
+      ]
+    },
+    {
+      "id": "imperialdramon_dragon_mode",
+      "resultName": "Imperialdramon (Dragon Mode)",
+      "resultSeed": "f9a2b8c3-4e5d-4f7b-9c1e-8d6f3a2b5c7e",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "a7d0f3e9-1c5b-4e6a-8c2b-9f3a5e0d7b6c",
+          "amount": 1,
+          "minLevel": 45,
+          "name": "ExVeemon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "f0c7e9b3-1a5d-4e6b-8c2b-9d3a5e0f7c6b",
+          "amount": 1,
+          "minLevel": 45,
+          "name": "Stingmon"
+        }
+      ]
+    },
+    {
+      "id": "imperialdramon_fighter_mode",
+      "resultName": "Imperialdramon (Fighter Mode)",
+      "resultSeed": "a1b3c5d7-6e8f-4a2b-9c4d-5e7f8a9b1c2d",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "a7d0f3e9-1c5b-4e6a-8c2b-9f3a5e0d7b6c",
+          "amount": 1,
+          "minLevel": 55,
+          "name": "ExVeemon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "f0c7e9b3-1a5d-4e6b-8c2b-9d3a5e0f7c6b",
+          "amount": 1,
+          "minLevel": 55,
+          "name": "Stingmon"
+        }
+      ]
+    },
+    {
+      "id": "imperialdramon_dragon_mode_black",
+      "resultName": "Imperialdramon (Dragon Mode) (Black)",
+      "resultSeed": "e40a8d93-221c-4bd5-8bec-e574d0c1b087",
+      "materials": [
+        {
+          "type": "digimon",
+          "speciesSeed": "a7d0f3e9-1c5b-4e6a-8c2b-9f3a5e0d7b6c",
+          "amount": 1,
+          "minLevel": 55,
+          "name": "ExVeemon"
+        },
+        {
+          "type": "digimon",
+          "speciesSeed": "f0c7e9b3-1a5d-4e6b-8c2b-9d3a5e0f7c6b",
+          "amount": 1,
+          "minLevel": 55,
+          "name": "Stingmon"
+        }
+      ]
+    }
+  ],
+  "localConstraintsObserved": [
+    {
+      "path": "core/forms.hpp",
+      "lineStart": 15,
+      "lineEnd": 15,
+      "sha256": "7dd136930745cc20afb233fc1d9ccf3357d45c0bd48aa7648f8e8af432c1bf42"
+    },
+    {
+      "path": "core/forms.cpp",
+      "lineStart": 240,
+      "lineEnd": 246,
+      "sha256": "525a2a454160da8c8b6e3ce8bd5da49e3e51564620fda2ddf951702ddaa0f66a"
+    },
+    {
+      "path": "core/forms.cpp",
+      "lineStart": 258,
+      "lineEnd": 264,
+      "sha256": "525a2a454160da8c8b6e3ce8bd5da49e3e51564620fda2ddf951702ddaa0f66a"
+    },
+    {
+      "path": "scripts/generate-world-ds-profiles.py",
+      "lineStart": 70,
+      "lineEnd": 81,
+      "sha256": "315b2c8ef0cc5976f0738f2981567cb15951b81b2274f46b1f8bae0e31960240"
+    },
+    {
+      "path": "scripts/generate-world-ds-profiles.py",
+      "lineStart": 90,
+      "lineEnd": 101,
+      "sha256": "315b2c8ef0cc5976f0738f2981567cb15951b81b2274f46b1f8bae0e31960240"
+    }
+  ],
+  "candidatePolicyNotes": [
+    "Only forward source-list entries are candidates for normal evolution; degeneration, display projections and fusion recipes stay separate.",
+    "Preserve all22 branch overflows as unresolved review decisions unless core/UI branching is deliberately generalized; do not truncate silently.",
+    "Retain upstream requirement text and source rank separately from any authored care-level/bond conversion and local stable form identities.",
+    "Do not synthesize armor, item or mode routes or canonical-stage conclusions absent from the authoritative runtime source structures.",
+    "Preserve existing gameplay routes and IDs unless an explicitly reviewed replacement is intended; graph union requires rerunning local DAG/max2/target-entry-level checks."
+  ]
+}

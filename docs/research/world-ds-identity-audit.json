@@ -1,0 +1,5044 @@
+{
+  "formatVersion": 1,
+  "checkedDate": "2026-10-06",
+  "baselineCommit": "a352335",
+  "scope": "Identity audit of 255 named source-sheet entries. No artwork, runtime/profile/ID edits, or canonical species count is produced.",
+  "countPolicy": "A sheet entry, an official reference entity, a visual variant, an authored form ID, and an available art pack are different identities. Never deduplicate by stripping Black, Dot, mode, color, punctuation or romanization.",
+  "counts": {
+    "sourceEntries": 255,
+    "distinctEntryKeys": 255,
+    "distinctListedNames": 255,
+    "assignedDistinctFormIds": 255,
+    "allRuntimeForms": 276,
+    "resolvedNamedSheetIds": 133,
+    "unresolvedNamedSheetIds": 122,
+    "duplicateResolvedSheetIds": 0,
+    "primaryReferenceUrlsBeforeVisualOverlay": 246,
+    "referenceUrlsAfterMetalGreymonOverlay": 247,
+    "selectedReferenceRowsAfterVisualOverlay": 250,
+    "verifiedReferenceUrlsIncludingAlternativesAndExcludedCollision": 262,
+    "sharedReferenceGroups": 3,
+    "upstreamQualifiedRows": 20,
+    "resolvedByExistingLocalReview": 1,
+    "additionalVariantReviewRows": 0,
+    "currentQualifiedIdentityRows": 19,
+    "sheetVisualReviews": 3,
+    "namedSheetsWithoutLocalVisualReview": 252,
+    "deduplicatedCanonicalSpecies": null
+  },
+  "upstreamQualifiedCounts": {
+    "early": 14,
+    "late": 6
+  },
+  "mappingAuditStatusCounts": {
+    "alias-candidate-needs-game-confirmation": 1,
+    "base-species-reference-only": 2,
+    "local-visual-review-selects-candidate": 1,
+    "observed-name-match": 105,
+    "official-candidates-verified-sheet-variant-unresolved": 5,
+    "official-reference-verified": 129,
+    "official-romanized-name-match": 1,
+    "romanization-or-localization-name-review": 9,
+    "variant-needs-review": 2
+  },
+  "sharedReferenceGroups": [
+    {
+      "canonicalEntityKey": "agumon",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+      "sourceEntryKeys": [
+        "agumon",
+        "dotagumon"
+      ],
+      "names": [
+        "Agumon",
+        "DotAgumon"
+      ],
+      "formIds": [
+        18,
+        86
+      ],
+      "relationship": "base-reference-and-Dot-variant",
+      "mergeSourceEntries": false,
+      "qualification": "DotAgumon uses Agumon base-species metadata only. This is not evidence of a separate official Dot species, nor permission to substitute its sheet with Agumon pixels."
+    },
+    {
+      "canonicalEntityKey": "falcomon",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+      "sourceEntryKeys": [
+        "dotfalcomon",
+        "falcomon"
+      ],
+      "names": [
+        "DotFalcomon",
+        "Falcomon"
+      ],
+      "formIds": [
+        87,
+        89
+      ],
+      "relationship": "base-reference-and-unresolved-era-Dot-variant",
+      "mergeSourceEntries": false,
+      "qualification": "Falcomon and DotFalcomon currently reuse the base Falcomon reference. Both retain visual identity; base versus 2006 version needs source comparison."
+    },
+    {
+      "canonicalEntityKey": "demon",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=demon",
+      "sourceEntryKeys": [
+        "creepymon",
+        "daemon"
+      ],
+      "names": [
+        "Creepymon",
+        "Daemon"
+      ],
+      "formIds": [
+        229,
+        231
+      ],
+      "relationship": "shared-canonical-reference",
+      "mergeSourceEntries": false,
+      "qualification": "The official page is headed Creepymon with the DEMON banner. Both source names are bound to this reference in the verified enrichment. Their source sheets and authored game profiles stay distinct; identical artwork or sprite variant is not established."
+    }
+  ],
+  "qualifiedVariantFamilies": [
+    {
+      "label": "Agumon appearances",
+      "sourceEntryKeys": [
+        "agumon",
+        "blackagumon",
+        "snowagumon",
+        "dotagumon"
+      ],
+      "names": [
+        "Agumon",
+        "BlackAgumon",
+        "SnowAgumon",
+        "DotAgumon"
+      ],
+      "references": [
+        {
+          "name": "Agumon",
+          "stage": "Rookie",
+          "entityKey": "agumon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "agumon"
+        },
+        {
+          "name": "Agumon (Black)",
+          "stage": "Rookie",
+          "entityKey": "agumon-black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+          "attribute": "Virus",
+          "sourceEntryKey": "blackagumon"
+        },
+        {
+          "name": "SnowAgumon",
+          "stage": "Rookie",
+          "entityKey": "yukiagumon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=yukiagumon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "snowagumon"
+        },
+        {
+          "name": "Agumon",
+          "stage": "Rookie",
+          "entityKey": "agumon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "dotagumon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Base, black and snow have separate official references; Dot is base-reference-only."
+    },
+    {
+      "label": "Falcomon appearances",
+      "sourceEntryKeys": [
+        "falcomon",
+        "dotfalcomon"
+      ],
+      "names": [
+        "Falcomon",
+        "DotFalcomon"
+      ],
+      "references": [
+        {
+          "name": "Falcomon",
+          "stage": "Rookie",
+          "entityKey": "falcomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "falcomon"
+        },
+        {
+          "name": "Falcomon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "falcomon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon-2006",
+          "sourceEntryKey": "falcomon"
+        },
+        {
+          "name": "Falcomon",
+          "stage": "Rookie",
+          "entityKey": "falcomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "dotfalcomon"
+        },
+        {
+          "name": "Falcomon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "falcomon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon-2006",
+          "sourceEntryKey": "dotfalcomon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Source-era identity remains unresolved for both; two official era references exist."
+    },
+    {
+      "label": "ToyAgumon colors",
+      "sourceEntryKeys": [
+        "toyagumon",
+        "shadowtoyagumon"
+      ],
+      "names": [
+        "ToyAgumon",
+        "ShadowToyAgumon"
+      ],
+      "references": [
+        {
+          "name": "ToyAgumon",
+          "stage": "Rookie",
+          "entityKey": "toyagumon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "toyagumon"
+        },
+        {
+          "name": "ToyAgumon (Black)",
+          "stage": "Rookie",
+          "entityKey": "toyagumon_black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon_black",
+          "attribute": "Virus",
+          "sourceEntryKey": "shadowtoyagumon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Distinct official ToyAgumon and ToyAgumon (Black) references; Shadow is the source name."
+    },
+    {
+      "label": "PawnChessmon colors",
+      "sourceEntryKeys": [
+        "pawnchessmon-black",
+        "pawnchessmon-white"
+      ],
+      "names": [
+        "PawnChessmon Black",
+        "PawnChessmon White"
+      ],
+      "references": [
+        {
+          "name": "PawnChessmon (Black)",
+          "stage": "Rookie",
+          "entityKey": "paunchessmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon",
+          "attribute": "Virus",
+          "sourceEntryKey": "pawnchessmon-black"
+        },
+        {
+          "name": "PawnChessmon (White)",
+          "stage": "Rookie",
+          "entityKey": "paunchessmon-white",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon-white",
+          "attribute": "Virus",
+          "sourceEntryKey": "pawnchessmon-white"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate official Black and White references; punctuation differs from source labels."
+    },
+    {
+      "label": "Tyrannomon counterparts",
+      "sourceEntryKeys": [
+        "tyrannomon",
+        "darktyrannomon"
+      ],
+      "names": [
+        "Tyrannomon",
+        "DarkTyrannomon"
+      ],
+      "references": [
+        {
+          "name": "Tyrannomon",
+          "stage": "Champion",
+          "entityKey": "tyranomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=tyranomon",
+          "attribute": "Data",
+          "sourceEntryKey": "tyrannomon"
+        },
+        {
+          "name": "DarkTyrannomon",
+          "stage": "Champion",
+          "entityKey": "darktyranomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon",
+          "attribute": "Virus",
+          "sourceEntryKey": "darktyrannomon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate official references; not a duplicate-name pair."
+    },
+    {
+      "label": "Rapidmon counterparts",
+      "sourceEntryKeys": [
+        "rapidmon",
+        "blackrapidmon"
+      ],
+      "names": [
+        "Rapidmon",
+        "BlackRapidmon"
+      ],
+      "references": [
+        {
+          "name": "Rapidmon",
+          "stage": "Ultimate",
+          "entityKey": "rapidmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=rapidmon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "rapidmon"
+        },
+        {
+          "name": "BlackRapidmon",
+          "stage": "Ultimate",
+          "entityKey": "blackrapidmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackrapidmon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "blackrapidmon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate Ultimate references. Do not substitute the separate Armor Rapidmon variant, which is not named here."
+    },
+    {
+      "label": "WarGrowlmon colors",
+      "sourceEntryKeys": [
+        "wargrowlmon",
+        "blackwargrowlmon"
+      ],
+      "names": [
+        "WarGrowlmon",
+        "BlackWarGrowlmon"
+      ],
+      "references": [
+        {
+          "name": "WarGrowlmon",
+          "stage": "Ultimate",
+          "entityKey": "megalogrowmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=megalogrowmon",
+          "attribute": "Virus",
+          "sourceEntryKey": "wargrowlmon"
+        },
+        {
+          "name": "BlackWarGrowlmon",
+          "stage": "Ultimate",
+          "entityKey": "blackmegalogrowmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackmegalogrowmon",
+          "attribute": "Virus",
+          "sourceEntryKey": "blackwargrowlmon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate official references."
+    },
+    {
+      "label": "WereGarurumon colors",
+      "sourceEntryKeys": [
+        "weregarurumon",
+        "blackweregarurumon"
+      ],
+      "names": [
+        "WereGarurumon",
+        "BlackWereGarurumon"
+      ],
+      "references": [
+        {
+          "name": "WereGarurumon",
+          "stage": "Ultimate",
+          "entityKey": "weregarrumon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=weregarrumon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "weregarurumon"
+        },
+        {
+          "name": "WereGarurumon (Black)",
+          "stage": "Ultimate",
+          "entityKey": "weregarurumon_black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=weregarurumon_black",
+          "attribute": "Virus",
+          "sourceEntryKey": "blackweregarurumon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate official references."
+    },
+    {
+      "label": "MegaKabuterimon colors",
+      "sourceEntryKeys": [
+        "megakabuterimon-blue",
+        "megakabuterimon-red"
+      ],
+      "names": [
+        "MegaKabuterimon Blue",
+        "MegaKabuterimon Red"
+      ],
+      "references": [
+        {
+          "name": "MegaKabuterimon (Blue)",
+          "stage": "Ultimate",
+          "entityKey": "atlurkabuterimon-blue",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue",
+          "attribute": "Data",
+          "sourceEntryKey": "megakabuterimon-blue"
+        },
+        {
+          "name": "MegaKabuterimon (Red)",
+          "stage": "Ultimate",
+          "entityKey": "atlurkabuterimon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "megakabuterimon-red"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate Blue and Red official references."
+    },
+    {
+      "label": "WarGreymon colors",
+      "sourceEntryKeys": [
+        "wargreymon",
+        "blackwargreymon"
+      ],
+      "names": [
+        "WarGreymon",
+        "BlackWarGreymon"
+      ],
+      "references": [
+        {
+          "name": "WarGreymon",
+          "stage": "Mega",
+          "entityKey": "wargreymon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=wargreymon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "wargreymon"
+        },
+        {
+          "name": "BlackWarGreymon",
+          "stage": "Mega",
+          "entityKey": "blackwargreymon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackwargreymon",
+          "attribute": "Virus",
+          "sourceEntryKey": "blackwargreymon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate official references."
+    },
+    {
+      "label": "MegaGargomon counterparts",
+      "sourceEntryKeys": [
+        "megagargomon",
+        "blackmegagargomon"
+      ],
+      "names": [
+        "MegaGargomon",
+        "BlackMegaGargomon"
+      ],
+      "references": [
+        {
+          "name": "MegaGargomon",
+          "stage": "Mega",
+          "entityKey": "saintgalgomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=saintgalgomon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "megagargomon"
+        },
+        {
+          "name": "BlackSaintGargomon",
+          "stage": "Mega",
+          "entityKey": "blacksaintgalgomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blacksaintgalgomon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "blackmegagargomon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "The black official reference uses the English name BlackSaintGargomon; it is not the base reference."
+    },
+    {
+      "label": "Cherubimon variants",
+      "sourceEntryKeys": [
+        "cherubimon-vaccine",
+        "cherubimon-virus"
+      ],
+      "names": [
+        "Cherubimon Vaccine",
+        "Cherubimon Virus"
+      ],
+      "references": [
+        {
+          "name": "Cherubimon (Good)",
+          "stage": "Mega",
+          "entityKey": "cherubimon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "cherubimon-vaccine"
+        },
+        {
+          "name": "Cherubimon (Black)",
+          "stage": "Mega",
+          "entityKey": "cherubimon-vice",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon-vice",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "cherubimon-virus"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate Good and Black official references. Source Virus disagrees with the current official Black page attribute, Vaccine; preserve that discrepancy."
+    },
+    {
+      "label": "Chronomon modes",
+      "sourceEntryKeys": [
+        "chronomon-dm",
+        "chronomon-holy-mode"
+      ],
+      "names": [
+        "Chronomon DM",
+        "Chronomon Holy Mode"
+      ],
+      "references": [
+        {
+          "name": "Chronomon: Destroy Mode",
+          "stage": "Mega",
+          "entityKey": "chronomon_destroy",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_destroy",
+          "attribute": "Virus",
+          "sourceEntryKey": "chronomon-dm"
+        },
+        {
+          "name": "Chronomon: Holy Mode",
+          "stage": "Mega",
+          "entityKey": "chronomon_holy",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_holy",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "chronomon-holy-mode"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate Destroy Mode and Holy Mode official references."
+    },
+    {
+      "label": "Ghoulmon colors",
+      "sourceEntryKeys": [
+        "ghoulmon",
+        "ghoulmon-black"
+      ],
+      "names": [
+        "Ghoulmon",
+        "Ghoulmon Black"
+      ],
+      "references": [
+        {
+          "name": "Ghoulmon",
+          "stage": "Mega",
+          "entityKey": "deathmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=deathmon",
+          "attribute": "Data",
+          "sourceEntryKey": "ghoulmon"
+        },
+        {
+          "name": "Ghoulmon (Black)",
+          "stage": "Mega",
+          "entityKey": "deathmon-black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=deathmon-black",
+          "attribute": "Data",
+          "sourceEntryKey": "ghoulmon-black"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Separate base and Black official references."
+    },
+    {
+      "label": "Imperialdramon modes",
+      "sourceEntryKeys": [
+        "imperialdramon-dragon-mode",
+        "imperialdramon-fighter-mode",
+        "imperialdramon-paladin-mode",
+        "blackimperialdramon"
+      ],
+      "names": [
+        "Imperialdramon Dragon Mode",
+        "Imperialdramon Fighter Mode",
+        "Imperialdramon Paladin Mode",
+        "BlackImperialdramon"
+      ],
+      "references": [
+        {
+          "name": "Imperialdramon: Dragon Mode",
+          "stage": "Mega",
+          "entityKey": "imperialdramondragonmode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramondragonmode",
+          "attribute": "Free",
+          "sourceEntryKey": "imperialdramon-dragon-mode"
+        },
+        {
+          "name": "Imperialdramon: Fighter Mode",
+          "stage": "Mega",
+          "entityKey": "imperialdramonfightermode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode",
+          "attribute": "Free",
+          "sourceEntryKey": "imperialdramon-fighter-mode"
+        },
+        {
+          "name": "Imperialdramon: Paladin Mode",
+          "stage": "Mega",
+          "entityKey": "imperialdramonpaladinmode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonpaladinmode",
+          "attribute": "Vaccine",
+          "sourceEntryKey": "imperialdramon-paladin-mode"
+        },
+        {
+          "name": "Imperialdramon: Dragon Mode (Black)",
+          "stage": "Mega",
+          "entityKey": "imperialdramon_dragon_black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramon_dragon_black",
+          "attribute": "Virus",
+          "sourceEntryKey": "blackimperialdramon"
+        },
+        {
+          "name": "Imperialdramon: Fighter Mode (Black)",
+          "stage": "Mega",
+          "entityKey": "imperialdramonfightermode_vi",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode_vi",
+          "attribute": "Virus",
+          "sourceEntryKey": "blackimperialdramon"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Dragon, Fighter and Paladin each have an official reference. Black source sheet still needs Dragon/Fighter mode review."
+    },
+    {
+      "label": "Gallantmon counterparts/mode",
+      "sourceEntryKeys": [
+        "gallantmon",
+        "chaosgallantmon",
+        "gallantmon-crimson-mode"
+      ],
+      "names": [
+        "Gallantmon",
+        "ChaosGallantmon",
+        "Gallantmon Crimson Mode"
+      ],
+      "references": [
+        {
+          "name": "Gallantmon",
+          "stage": "Mega",
+          "entityKey": "dukemon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dukemon",
+          "attribute": "Virus",
+          "sourceEntryKey": "gallantmon"
+        },
+        {
+          "name": "ChaosGallantmon",
+          "stage": "Mega",
+          "entityKey": "chaosdukemon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chaosdukemon",
+          "attribute": "Virus",
+          "sourceEntryKey": "chaosgallantmon"
+        },
+        {
+          "name": "Gallantmon: Crimson Mode",
+          "stage": "Mega",
+          "entityKey": "dukemoncrimsonmode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dukemoncrimsonmode",
+          "attribute": "Virus",
+          "sourceEntryKey": "gallantmon-crimson-mode"
+        }
+      ],
+      "mergeSourceEntries": false,
+      "qualification": "Three separate official references. A related label does not justify canonical or gameplay merging."
+    }
+  ],
+  "qualifiedIdentityRows": [
+    {
+      "entryKey": "blackagumon",
+      "listedName": "BlackAgumon",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "Agumon (Black)",
+          "stage": "Rookie",
+          "entityKey": "agumon-black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+          "attribute": "Virus"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "dotagumon",
+      "listedName": "DotAgumon",
+      "status": "base-species-reference-only",
+      "references": [
+        {
+          "name": "Agumon",
+          "stage": "Rookie",
+          "entityKey": "agumon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "Dot-prefixed source sheet remains a distinct visual variant. Reference below is base-species metadata, not evidence of a separate canonical Dot species or a verified sheet correspondence."
+      ]
+    },
+    {
+      "entryKey": "dotfalcomon",
+      "listedName": "DotFalcomon",
+      "status": "base-species-reference-only",
+      "references": [
+        {
+          "name": "Falcomon",
+          "stage": "Rookie",
+          "entityKey": "falcomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Falcomon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "falcomon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon-2006"
+        }
+      ],
+      "notes": [
+        "Dot-prefixed source sheet remains a distinct visual variant. Reference below is base-species metadata, not evidence of a separate canonical Dot species or a verified sheet correspondence.",
+        "Source-game visual variant requires artwork comparison; multiple official variants may share a base name. No artwork was retrieved."
+      ]
+    },
+    {
+      "entryKey": "falcomon",
+      "listedName": "Falcomon",
+      "status": "variant-needs-review",
+      "references": [
+        {
+          "name": "Falcomon",
+          "stage": "Rookie",
+          "entityKey": "falcomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Falcomon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "falcomon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon-2006"
+        }
+      ],
+      "notes": [
+        "Source-game visual variant requires artwork comparison; multiple official variants may share a base name. No artwork was retrieved."
+      ]
+    },
+    {
+      "entryKey": "kudamon",
+      "listedName": "Kudamon",
+      "status": "variant-needs-review",
+      "references": [
+        {
+          "name": "Kudamon",
+          "stage": "Rookie",
+          "entityKey": "kudamon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kudamon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Kudamon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "kudamon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kudamon-2006"
+        }
+      ],
+      "notes": [
+        "Source-game visual variant requires artwork comparison; multiple official variants may share a base name. No artwork was retrieved."
+      ]
+    },
+    {
+      "entryKey": "kumamon",
+      "listedName": "Kumamon",
+      "status": "alias-candidate-needs-game-confirmation",
+      "references": [
+        {
+          "name": "Bearmon",
+          "stage": "Rookie",
+          "entityKey": "bearmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=bearmon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "World DS Kumamon is mapped to the Bearmon candidate; do not confuse with the distinct Hybrid Kumamon. Official page verifies Bearmon metadata, not the historical game alias.",
+        "Source listed name differs from the observed official English heading; retained separately.",
+        "Bearmon is a historical-game-alias candidate. The separately verified official Hybrid Kumamon is a different named entity and is not selected."
+      ]
+    },
+    {
+      "entryKey": "pawnchessmon-black",
+      "listedName": "PawnChessmon Black",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "PawnChessmon (Black)",
+          "stage": "Rookie",
+          "entityKey": "paunchessmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon",
+          "attribute": "Virus"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "pawnchessmon-white",
+      "listedName": "PawnChessmon White",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "PawnChessmon (White)",
+          "stage": "Rookie",
+          "entityKey": "paunchessmon-white",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon-white",
+          "attribute": "Virus"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "penguinmon",
+      "listedName": "Penguinmon",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "Penmon",
+          "stage": "Rookie",
+          "entityKey": "penmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=penmon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "shadowtoyagumon",
+      "listedName": "ShadowToyAgumon",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "ToyAgumon (Black)",
+          "stage": "Rookie",
+          "entityKey": "toyagumon_black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon_black",
+          "attribute": "Virus"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "grizzmon",
+      "listedName": "Grizzmon",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "Grizzlymon",
+          "stage": "Champion",
+          "entityKey": "gryzmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "gwappamon",
+      "listedName": "Gwappamon",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "Gawappamon",
+          "stage": "Champion",
+          "entityKey": "gawappamon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=gawappamon",
+          "attribute": "Data"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "reptiledramon",
+      "listedName": "Reptiledramon",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "Raptordramon",
+          "stage": "Champion",
+          "entityKey": "raptordramon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=raptordramon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "sorcerymon",
+      "listedName": "Sorcerymon",
+      "status": "romanization-or-localization-name-review",
+      "references": [
+        {
+          "name": "Sorcermon",
+          "stage": "Champion",
+          "entityKey": "sorcerimon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=sorcerimon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "Source listed name differs from the observed official English heading; retained separately."
+      ]
+    },
+    {
+      "entryKey": "antylamon",
+      "listedName": "Antylamon",
+      "status": "official-candidates-verified-sheet-variant-unresolved",
+      "references": [
+        {
+          "name": "Antylamon",
+          "stage": "Ultimate",
+          "entityKey": "andiramon_2",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon_2",
+          "attribute": "Virus"
+        },
+        {
+          "name": "Antylamon (Deva)",
+          "stage": "Ultimate",
+          "entityKey": "andiramon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon",
+          "attribute": "Data"
+        }
+      ],
+      "notes": [
+        "Earlier metadata provisionally selected the unqualified Virus reference by source name; that was not a visual identification of the source sheet.",
+        "The unqualified Antylamon (Ultimate/Virus) and Antylamon (Deva) (Ultimate/Data) references remain separate candidates. The source title does not settle the variant; no sheet comparison has selected either candidate.",
+        "Candidate references retain their observed official facts. Deva species type and move labels were not recorded in this audit and remain null; neither candidate attribute is promoted to the unresolved source identity.",
+        "The audit originally found the missing variant-review flag. The upstream official metadata and assembled catalog now flag both candidates and leave the source identity unselected; no visual review has resolved it."
+      ]
+    },
+    {
+      "entryKey": "yatagaramon",
+      "listedName": "Yatagaramon",
+      "status": "official-candidates-verified-sheet-variant-unresolved",
+      "references": [
+        {
+          "name": "Crowmon",
+          "stage": "Ultimate",
+          "entityKey": "yatagaramon_axcel",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=yatagaramon_axcel",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Crowmon (2006 Anime Version)",
+          "stage": "Ultimate",
+          "entityKey": "yatagaramon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=yatagaramon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "Official English references distinguish Crowmon from Crowmon (2006 Anime Version). Source romanization alone does not resolve that version."
+      ]
+    },
+    {
+      "entryKey": "belphemon",
+      "listedName": "Belphemon",
+      "status": "official-candidates-verified-sheet-variant-unresolved",
+      "references": [
+        {
+          "name": "Belphemon: Rage Mode",
+          "stage": "Mega",
+          "entityKey": "belphemonragemode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belphemonragemode",
+          "attribute": "Virus"
+        },
+        {
+          "name": "Belphemon: Sleep Mode",
+          "stage": "Mega",
+          "entityKey": "belphemonsleepmode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belphemonsleepmode",
+          "attribute": "Virus"
+        }
+      ],
+      "notes": [
+        "The source name omits mode. Both Rage and Sleep Mode have official entries; do not choose a mode from the name alone."
+      ]
+    },
+    {
+      "entryKey": "blackimperialdramon",
+      "listedName": "BlackImperialdramon",
+      "status": "official-candidates-verified-sheet-variant-unresolved",
+      "references": [
+        {
+          "name": "Imperialdramon: Dragon Mode (Black)",
+          "stage": "Mega",
+          "entityKey": "imperialdramon_dragon_black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramon_dragon_black",
+          "attribute": "Virus"
+        },
+        {
+          "name": "Imperialdramon: Fighter Mode (Black)",
+          "stage": "Mega",
+          "entityKey": "imperialdramonfightermode_vi",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode_vi",
+          "attribute": "Virus"
+        }
+      ],
+      "notes": [
+        "The source name specifies black coloration but omits Dragon/Fighter Mode. Both black modes have official entries; sheet inspection is needed."
+      ]
+    },
+    {
+      "entryKey": "justimon",
+      "listedName": "Justimon",
+      "status": "official-candidates-verified-sheet-variant-unresolved",
+      "references": [
+        {
+          "name": "Justimon: Accel Arm",
+          "stage": "Mega",
+          "entityKey": "justimon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Justimon: Blitz Arm",
+          "stage": "Mega",
+          "entityKey": "justimon_blitzarm",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon_blitzarm",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Justimon: Critical Arm",
+          "stage": "Mega",
+          "entityKey": "justimon_criticalarm",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon_criticalarm",
+          "attribute": "Vaccine"
+        }
+      ],
+      "notes": [
+        "The source name omits arm mode. Accel, Blitz and Critical Arm each have an official entry; animations may also change the visible arm."
+      ]
+    }
+  ],
+  "observedNameDifferences": [
+    {
+      "entryKey": "blackagumon",
+      "listedName": "BlackAgumon",
+      "referenceName": "Agumon (Black)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "dotagumon",
+      "listedName": "DotAgumon",
+      "referenceName": "Agumon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+      "upstreamMappingStatus": "base-species-reference-only"
+    },
+    {
+      "entryKey": "dotfalcomon",
+      "listedName": "DotFalcomon",
+      "referenceName": "Falcomon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+      "upstreamMappingStatus": "base-species-reference-only"
+    },
+    {
+      "entryKey": "goburimon",
+      "listedName": "Goburimon",
+      "referenceName": "Goblimon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=goburimon",
+      "upstreamMappingStatus": "official-romanized-name-match"
+    },
+    {
+      "entryKey": "kumamon",
+      "listedName": "Kumamon",
+      "referenceName": "Bearmon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bearmon",
+      "upstreamMappingStatus": "alias-candidate-needs-game-confirmation"
+    },
+    {
+      "entryKey": "pawnchessmon-black",
+      "listedName": "PawnChessmon Black",
+      "referenceName": "PawnChessmon (Black)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "pawnchessmon-white",
+      "listedName": "PawnChessmon White",
+      "referenceName": "PawnChessmon (White)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon-white",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "penguinmon",
+      "listedName": "Penguinmon",
+      "referenceName": "Penmon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=penmon",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "shadowtoyagumon",
+      "listedName": "ShadowToyAgumon",
+      "referenceName": "ToyAgumon (Black)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon_black",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "grizzmon",
+      "listedName": "Grizzmon",
+      "referenceName": "Grizzlymon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "gwappamon",
+      "listedName": "Gwappamon",
+      "referenceName": "Gawappamon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gawappamon",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "reptiledramon",
+      "listedName": "Reptiledramon",
+      "referenceName": "Raptordramon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=raptordramon",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "sorcerymon",
+      "listedName": "Sorcerymon",
+      "referenceName": "Sorcermon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sorcerimon",
+      "upstreamMappingStatus": "romanization-or-localization-name-review"
+    },
+    {
+      "entryKey": "blackweregarurumon",
+      "listedName": "BlackWereGarurumon",
+      "referenceName": "WereGarurumon (Black)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=weregarurumon_black",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "lucemon-chaos-mode",
+      "listedName": "Lucemon Chaos Mode",
+      "referenceName": "Lucemon: Chaos Mode",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=rucemonfalldownmode",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "megakabuterimon-blue",
+      "listedName": "MegaKabuterimon Blue",
+      "referenceName": "MegaKabuterimon (Blue)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "megakabuterimon-red",
+      "listedName": "MegaKabuterimon Red",
+      "referenceName": "MegaKabuterimon (Red)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "tyilinmon",
+      "listedName": "Tyilinmon",
+      "referenceName": "Chirinmon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tyilinmon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "armagemon",
+      "listedName": "Armagemon",
+      "referenceName": "Armageddemon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=armagemon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "blackmegagargomon",
+      "listedName": "BlackMegaGargomon",
+      "referenceName": "BlackSaintGargomon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=blacksaintgalgomon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "cherubimon-vaccine",
+      "listedName": "Cherubimon Vaccine",
+      "referenceName": "Cherubimon (Good)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "cherubimon-virus",
+      "listedName": "Cherubimon Virus",
+      "referenceName": "Cherubimon (Black)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon-vice",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "chronomon-dm",
+      "listedName": "Chronomon DM",
+      "referenceName": "Chronomon: Destroy Mode",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_destroy",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "chronomon-holy-mode",
+      "listedName": "Chronomon Holy Mode",
+      "referenceName": "Chronomon: Holy Mode",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_holy",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "crossmon",
+      "listedName": "Crossmon",
+      "referenceName": "Eaglemon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=crossmon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "daemon",
+      "listedName": "Daemon",
+      "referenceName": "Creepymon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=demon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "gallantmon-crimson-mode",
+      "listedName": "Gallantmon Crimson Mode",
+      "referenceName": "Gallantmon: Crimson Mode",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dukemoncrimsonmode",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "ghoulmon-black",
+      "listedName": "Ghoulmon Black",
+      "referenceName": "Ghoulmon (Black)",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=deathmon-black",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "granlocomon",
+      "listedName": "Granlocomon",
+      "referenceName": "GroundLocomon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=grandlocomon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "guardiangemon",
+      "listedName": "GuardiAngemon",
+      "referenceName": "SlashAngemon",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=slashangemon",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "imperialdramon-dragon-mode",
+      "listedName": "Imperialdramon Dragon Mode",
+      "referenceName": "Imperialdramon: Dragon Mode",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramondragonmode",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "imperialdramon-fighter-mode",
+      "listedName": "Imperialdramon Fighter Mode",
+      "referenceName": "Imperialdramon: Fighter Mode",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode",
+      "upstreamMappingStatus": "official-reference-verified"
+    },
+    {
+      "entryKey": "imperialdramon-paladin-mode",
+      "listedName": "Imperialdramon Paladin Mode",
+      "referenceName": "Imperialdramon: Paladin Mode",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonpaladinmode",
+      "upstreamMappingStatus": "official-reference-verified"
+    }
+  ],
+  "stageLabelDifferences": [
+    {
+      "entryKey": "chibomon",
+      "sourceStage": "Fresh",
+      "referenceStage": "In-Training Ⅰ"
+    },
+    {
+      "entryKey": "kuramon",
+      "sourceStage": "Fresh",
+      "referenceStage": "In-Training Ⅰ"
+    },
+    {
+      "entryKey": "poyomon",
+      "sourceStage": "Fresh",
+      "referenceStage": "In-Training Ⅰ"
+    },
+    {
+      "entryKey": "puttimon",
+      "sourceStage": "Fresh",
+      "referenceStage": "In-Training Ⅰ"
+    },
+    {
+      "entryKey": "dorimon",
+      "sourceStage": "In-Training",
+      "referenceStage": "In-Training Ⅱ"
+    },
+    {
+      "entryKey": "kapurimon",
+      "sourceStage": "In-Training",
+      "referenceStage": "In-Training Ⅱ"
+    },
+    {
+      "entryKey": "koromon",
+      "sourceStage": "In-Training",
+      "referenceStage": "In-Training Ⅱ"
+    },
+    {
+      "entryKey": "pagumon",
+      "sourceStage": "In-Training",
+      "referenceStage": "In-Training Ⅱ"
+    },
+    {
+      "entryKey": "tanemon",
+      "sourceStage": "In-Training",
+      "referenceStage": "In-Training Ⅱ"
+    },
+    {
+      "entryKey": "tokomon",
+      "sourceStage": "In-Training",
+      "referenceStage": "In-Training Ⅱ"
+    },
+    {
+      "entryKey": "tsunomon",
+      "sourceStage": "In-Training",
+      "referenceStage": "In-Training Ⅱ"
+    },
+    {
+      "entryKey": "calumon",
+      "sourceStage": "No Level",
+      "referenceStage": "Unknown"
+    }
+  ],
+  "localReviewOverlays": [
+    {
+      "entryKey": "metalgreymon",
+      "selection": "MetalGreymon (Vaccine)",
+      "canonicalEntityKey": "metalgreymon-v",
+      "officialReferenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-v",
+      "evidenceFile": "data/world-ds-source-reviews.json",
+      "sourceSha256": "2f370926a0585787dfbae2b575509f8698a80539c8a68c87d3586b1d99a05665",
+      "scope": "Existing visual inspection selects the source appearance; the older metadata-only pass is preserved as historical evidence."
+    }
+  ],
+  "materialFindings": [
+    {
+      "id": "antylamon-unflagged-variant",
+      "entryKey": "antylamon",
+      "severity": "qualified identity gap, not a proven wrong sprite",
+      "officialReferences": [
+        {
+          "name": "Antylamon",
+          "stage": "Ultimate",
+          "entityKey": "andiramon_2",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon_2",
+          "attribute": "Virus"
+        },
+        {
+          "name": "Antylamon (Deva)",
+          "stage": "Ultimate",
+          "entityKey": "andiramon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon",
+          "attribute": "Data"
+        }
+      ],
+      "status": "upstream-metadata-correction-applied-variant-still-unresolved",
+      "historicalFinding": "The metadata notes an unreviewed Deva alternative but its sheetVariantReviewRequired is false. The audit raises the source-form ambiguity without choosing another form or changing game data.",
+      "detail": "Both official-late and the assembled catalog now set sheetVariantReviewRequired=true, retain Virus/Deva candidates, and leave canonical name, entity, URL, attribute and signature unselected. This corrects the flag; the source appearance still needs review."
+    },
+    {
+      "id": "metalgreymon-two-layer-status",
+      "entryKey": "metalgreymon",
+      "severity": "historical evidence overlay",
+      "detail": "The official-only pass retains an unresolved pair; the later source-review record chooses Vaccine, and the assembled binding already explains that choice. Do not count it as currently unresolved."
+    },
+    {
+      "id": "cherubimon-label-disagreement",
+      "entryKey": "cherubimon-virus",
+      "severity": "source-versus-current-reference discrepancy",
+      "detail": "Source name says Virus; verified official Black reference currently says Vaccine. Do not silently use the source suffix as authoritative attribute."
+    }
+  ],
+  "validation": {
+    "all255KeysMatchInventoryOfficialCatalogAndIds": true,
+    "catalogOfficialRowsExactExceptDocumentedMetalGreymonOverlay": true,
+    "catalogSourceRowsExact": true,
+    "catalogDisplayNamesPreserved": true,
+    "all255GameplayFormBindingsDistinct": true,
+    "knownSheetIdsUnique": true,
+    "sourceFilesUnmodified": true
+  },
+  "limits": [
+    "255 is the count of individually named sheets on the selected page, not a proven number of unique canonical species.",
+    "A verified official page does not by itself verify a historical game localization or the exact form drawn in a source sheet.",
+    "Shared URL groups are provenance collisions, not permission to merge artwork or stable gameplay IDs.",
+    "There is no defensible exact canonical-species total yet: Dot references, variant candidates and localized-name reviews prevent that claim.",
+    "133 resolved sheet IDs are unique; the other 122 IDs remain unavailable, so source-ID deduplication is incomplete.",
+    "Only Agumon, Greymon and MetalGreymon have local visual-review records; the remaining 252 named sheets were not inspected in this audit.",
+    "NPC Digimon is one uninspected grouped sheet outside the 255; its contents cannot be counted or deduplicated from its title.",
+    "Variant families are explanatory groupings of existing named entries, not canonical equivalence classes or evolution routes.",
+    "Fresh/In-Training naming and Calumon Unknown are retained separately from authored combat tiers. Armor does not become canonical Champion merely because the prototype balances it there.",
+    "No additional artwork was requested or downloaded; no blocked source-site retry, asset substitution, runtime edits or gameplay-ID merges occurred."
+  ],
+  "additionalOfficialChecks": [
+    {
+      "url": "https://digimon.net/reference_en/detail.php?directory_name=demon",
+      "observedFields": {
+        "banner": "DEMON",
+        "name": "Creepymon",
+        "stage": "Mega"
+      },
+      "method": "ordinary web open, text only"
+    },
+    {
+      "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon_2",
+      "observedFields": {
+        "name": "Antylamon",
+        "stage": "Ultimate",
+        "attribute": "Virus"
+      },
+      "method": "ordinary web open, text only"
+    },
+    {
+      "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon",
+      "observedFields": {
+        "name": "Antylamon (Deva)",
+        "stage": "Ultimate",
+        "attribute": "Data"
+      },
+      "method": "ordinary web open, text only"
+    }
+  ],
+  "entries": [
+    {
+      "entryKey": "chibomon",
+      "listedName": "Chibomon",
+      "formId": 67,
+      "sourceStage": "Fresh",
+      "referenceName": "Chibomon",
+      "referenceStage": "In-Training Ⅰ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chicomon",
+      "referenceEntityKey": "chicomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kuramon",
+      "listedName": "Kuramon",
+      "formId": 68,
+      "sourceStage": "Fresh",
+      "referenceName": "Kuramon",
+      "referenceStage": "In-Training Ⅰ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kuramon",
+      "referenceEntityKey": "kuramon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "poyomon",
+      "listedName": "Poyomon",
+      "formId": 69,
+      "sourceStage": "Fresh",
+      "referenceName": "Poyomon",
+      "referenceStage": "In-Training Ⅰ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=poyomon",
+      "referenceEntityKey": "poyomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "puttimon",
+      "listedName": "Puttimon",
+      "formId": 70,
+      "sourceStage": "Fresh",
+      "referenceName": "Puttimon",
+      "referenceStage": "In-Training Ⅰ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=puttimon",
+      "referenceEntityKey": "puttimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dorimon",
+      "listedName": "Dorimon",
+      "formId": 71,
+      "sourceStage": "In-Training",
+      "referenceName": "Dorimon",
+      "referenceStage": "In-Training Ⅱ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dorimon",
+      "referenceEntityKey": "dorimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kapurimon",
+      "listedName": "Kapurimon",
+      "formId": 72,
+      "sourceStage": "In-Training",
+      "referenceName": "Kapurimon",
+      "referenceStage": "In-Training Ⅱ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+      "referenceEntityKey": "capromon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "koromon",
+      "listedName": "Koromon",
+      "formId": 73,
+      "sourceStage": "In-Training",
+      "referenceName": "Koromon",
+      "referenceStage": "In-Training Ⅱ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+      "referenceEntityKey": "koromon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "pagumon",
+      "listedName": "Pagumon",
+      "formId": 74,
+      "sourceStage": "In-Training",
+      "referenceName": "Pagumon",
+      "referenceStage": "In-Training Ⅱ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=pagumon",
+      "referenceEntityKey": "pagumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tanemon",
+      "listedName": "Tanemon",
+      "formId": 75,
+      "sourceStage": "In-Training",
+      "referenceName": "Tanemon",
+      "referenceStage": "In-Training Ⅱ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+      "referenceEntityKey": "tanemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tokomon",
+      "listedName": "Tokomon",
+      "formId": 76,
+      "sourceStage": "In-Training",
+      "referenceName": "Tokomon",
+      "referenceStage": "In-Training Ⅱ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+      "referenceEntityKey": "tokomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tsunomon",
+      "listedName": "Tsunomon",
+      "formId": 77,
+      "sourceStage": "In-Training",
+      "referenceName": "Tsunomon",
+      "referenceStage": "In-Training Ⅱ",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tunomon",
+      "referenceEntityKey": "tunomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "agumon",
+      "listedName": "Agumon",
+      "formId": 18,
+      "sourceStage": "Rookie",
+      "referenceName": "Agumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+      "referenceEntityKey": "agumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": true
+    },
+    {
+      "entryKey": "armadillomon",
+      "listedName": "Armadillomon",
+      "formId": 78,
+      "sourceStage": "Rookie",
+      "referenceName": "Armadillomon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=armadimon",
+      "referenceEntityKey": "armadimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "aruraumon",
+      "listedName": "Aruraumon",
+      "formId": 79,
+      "sourceStage": "Rookie",
+      "referenceName": "Aruraumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=alraumon",
+      "referenceEntityKey": "alraumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "betamon",
+      "listedName": "Betamon",
+      "formId": 80,
+      "sourceStage": "Rookie",
+      "referenceName": "Betamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=betamon",
+      "referenceEntityKey": "betamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "biyomon",
+      "listedName": "Biyomon",
+      "formId": 81,
+      "sourceStage": "Rookie",
+      "referenceName": "Biyomon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=piyomon",
+      "referenceEntityKey": "piyomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "blackagumon",
+      "listedName": "BlackAgumon",
+      "formId": 82,
+      "sourceStage": "Rookie",
+      "referenceName": "Agumon (Black)",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+      "referenceEntityKey": "agumon-black",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Agumon (Black)",
+          "stage": "Rookie",
+          "entityKey": "agumon-black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+          "attribute": "Virus"
+        }
+      ]
+    },
+    {
+      "entryKey": "crabmon",
+      "listedName": "Crabmon",
+      "formId": 83,
+      "sourceStage": "Rookie",
+      "referenceName": "Crabmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ganimon",
+      "referenceEntityKey": "ganimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "demidevimon",
+      "listedName": "DemiDevimon",
+      "formId": 84,
+      "sourceStage": "Rookie",
+      "referenceName": "DemiDevimon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=picodevimon",
+      "referenceEntityKey": "picodevimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dorumon",
+      "listedName": "Dorumon",
+      "formId": 85,
+      "sourceStage": "Rookie",
+      "referenceName": "Dorumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dorumon",
+      "referenceEntityKey": "dorumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dotagumon",
+      "listedName": "DotAgumon",
+      "formId": 86,
+      "sourceStage": "Rookie",
+      "referenceName": "Agumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+      "referenceEntityKey": "agumon",
+      "mappingAuditStatus": "base-species-reference-only",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Agumon",
+          "stage": "Rookie",
+          "entityKey": "agumon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+          "attribute": "Vaccine"
+        }
+      ]
+    },
+    {
+      "entryKey": "dotfalcomon",
+      "listedName": "DotFalcomon",
+      "formId": 87,
+      "sourceStage": "Rookie",
+      "referenceName": "Falcomon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+      "referenceEntityKey": "falcomon",
+      "mappingAuditStatus": "base-species-reference-only",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Falcomon",
+          "stage": "Rookie",
+          "entityKey": "falcomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Falcomon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "falcomon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon-2006"
+        }
+      ]
+    },
+    {
+      "entryKey": "dracmon",
+      "listedName": "Dracmon",
+      "formId": 88,
+      "sourceStage": "Rookie",
+      "referenceName": "Dracmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dracumon",
+      "referenceEntityKey": "dracumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "falcomon",
+      "listedName": "Falcomon",
+      "formId": 89,
+      "sourceStage": "Rookie",
+      "referenceName": "Falcomon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+      "referenceEntityKey": "falcomon",
+      "mappingAuditStatus": "variant-needs-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Falcomon",
+          "stage": "Rookie",
+          "entityKey": "falcomon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Falcomon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "falcomon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=falcomon-2006"
+        }
+      ]
+    },
+    {
+      "entryKey": "floramon",
+      "listedName": "Floramon",
+      "formId": 90,
+      "sourceStage": "Rookie",
+      "referenceName": "Floramon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=floramon",
+      "referenceEntityKey": "floramon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gabumon",
+      "listedName": "Gabumon",
+      "formId": 25,
+      "sourceStage": "Rookie",
+      "referenceName": "Gabumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gabumon",
+      "referenceEntityKey": "gabumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gaomon",
+      "listedName": "Gaomon",
+      "formId": 91,
+      "sourceStage": "Rookie",
+      "referenceName": "Gaomon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gaomon",
+      "referenceEntityKey": "gaomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gizamon",
+      "listedName": "Gizamon",
+      "formId": 92,
+      "sourceStage": "Rookie",
+      "referenceName": "Gizamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gizamon",
+      "referenceEntityKey": "gizamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "goburimon",
+      "listedName": "Goburimon",
+      "formId": 93,
+      "sourceStage": "Rookie",
+      "referenceName": "Goblimon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=goburimon",
+      "referenceEntityKey": "goburimon",
+      "mappingAuditStatus": "official-romanized-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gomamon",
+      "listedName": "Gomamon",
+      "formId": 53,
+      "sourceStage": "Rookie",
+      "referenceName": "Gomamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gomamon",
+      "referenceEntityKey": "gomamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gotsumon",
+      "listedName": "Gotsumon",
+      "formId": 94,
+      "sourceStage": "Rookie",
+      "referenceName": "Gotsumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gottsumon",
+      "referenceEntityKey": "gottsumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "guilmon",
+      "listedName": "Guilmon",
+      "formId": 95,
+      "sourceStage": "Rookie",
+      "referenceName": "Guilmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=guilmon",
+      "referenceEntityKey": "guilmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "hagurumon",
+      "listedName": "Hagurumon",
+      "formId": 96,
+      "sourceStage": "Rookie",
+      "referenceName": "Hagurumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hagurumon",
+      "referenceEntityKey": "hagurumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "hawkmon",
+      "listedName": "Hawkmon",
+      "formId": 97,
+      "sourceStage": "Rookie",
+      "referenceName": "Hawkmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hawkmon",
+      "referenceEntityKey": "hawkmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "impmon",
+      "listedName": "Impmon",
+      "formId": 11,
+      "sourceStage": "Rookie",
+      "referenceName": "Impmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=impmon",
+      "referenceEntityKey": "impmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kamemon",
+      "listedName": "Kamemon",
+      "formId": 98,
+      "sourceStage": "Rookie",
+      "referenceName": "Kamemon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kamemon",
+      "referenceEntityKey": "kamemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "keramon",
+      "listedName": "Keramon",
+      "formId": 99,
+      "sourceStage": "Rookie",
+      "referenceName": "Keramon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=keramon",
+      "referenceEntityKey": "keramon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kotemon",
+      "listedName": "Kotemon",
+      "formId": 100,
+      "sourceStage": "Rookie",
+      "referenceName": "Kotemon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kotemon",
+      "referenceEntityKey": "kotemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kudamon",
+      "listedName": "Kudamon",
+      "formId": 101,
+      "sourceStage": "Rookie",
+      "referenceName": "Kudamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kudamon",
+      "referenceEntityKey": "kudamon",
+      "mappingAuditStatus": "variant-needs-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Kudamon",
+          "stage": "Rookie",
+          "entityKey": "kudamon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kudamon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Kudamon (2006 Anime Version)",
+          "stage": "Rookie",
+          "entityKey": "kudamon-2006",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kudamon-2006"
+        }
+      ]
+    },
+    {
+      "entryKey": "kumamon",
+      "listedName": "Kumamon",
+      "formId": 102,
+      "sourceStage": "Rookie",
+      "referenceName": "Bearmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bearmon",
+      "referenceEntityKey": "bearmon",
+      "mappingAuditStatus": "alias-candidate-needs-game-confirmation",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Bearmon",
+          "stage": "Rookie",
+          "entityKey": "bearmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=bearmon",
+          "attribute": "Vaccine"
+        }
+      ],
+      "auditNote": "Bearmon is a historical-game-alias candidate. The separately verified official Hybrid Kumamon is a different named entity and is not selected."
+    },
+    {
+      "entryKey": "lalamon",
+      "listedName": "Lalamon",
+      "formId": 103,
+      "sourceStage": "Rookie",
+      "referenceName": "Lalamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=lalamon",
+      "referenceEntityKey": "lalamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "lopmon",
+      "listedName": "Lopmon",
+      "formId": 104,
+      "sourceStage": "Rookie",
+      "referenceName": "Lopmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=lopmon",
+      "referenceEntityKey": "lopmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "muchomon",
+      "listedName": "Muchomon",
+      "formId": 105,
+      "sourceStage": "Rookie",
+      "referenceName": "Muchomon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=muchomon",
+      "referenceEntityKey": "muchomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "otamamon",
+      "listedName": "Otamamon",
+      "formId": 106,
+      "sourceStage": "Rookie",
+      "referenceName": "Otamamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=otamamon",
+      "referenceEntityKey": "otamamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "palmon",
+      "listedName": "Palmon",
+      "formId": 46,
+      "sourceStage": "Rookie",
+      "referenceName": "Palmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=palmon",
+      "referenceEntityKey": "palmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "patamon",
+      "listedName": "Patamon",
+      "formId": 32,
+      "sourceStage": "Rookie",
+      "referenceName": "Patamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=patamon",
+      "referenceEntityKey": "patamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "pawnchessmon-black",
+      "listedName": "PawnChessmon Black",
+      "formId": 107,
+      "sourceStage": "Rookie",
+      "referenceName": "PawnChessmon (Black)",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon",
+      "referenceEntityKey": "paunchessmon",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "PawnChessmon (Black)",
+          "stage": "Rookie",
+          "entityKey": "paunchessmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon",
+          "attribute": "Virus"
+        }
+      ]
+    },
+    {
+      "entryKey": "pawnchessmon-white",
+      "listedName": "PawnChessmon White",
+      "formId": 108,
+      "sourceStage": "Rookie",
+      "referenceName": "PawnChessmon (White)",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon-white",
+      "referenceEntityKey": "paunchessmon-white",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "PawnChessmon (White)",
+          "stage": "Rookie",
+          "entityKey": "paunchessmon-white",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=paunchessmon-white",
+          "attribute": "Virus"
+        }
+      ]
+    },
+    {
+      "entryKey": "penguinmon",
+      "listedName": "Penguinmon",
+      "formId": 109,
+      "sourceStage": "Rookie",
+      "referenceName": "Penmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=penmon",
+      "referenceEntityKey": "penmon",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Penmon",
+          "stage": "Rookie",
+          "entityKey": "penmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=penmon",
+          "attribute": "Vaccine"
+        }
+      ]
+    },
+    {
+      "entryKey": "renamon",
+      "listedName": "Renamon",
+      "formId": 60,
+      "sourceStage": "Rookie",
+      "referenceName": "Renamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=renamon",
+      "referenceEntityKey": "renamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "salamon",
+      "listedName": "Salamon",
+      "formId": 110,
+      "sourceStage": "Rookie",
+      "referenceName": "Salamon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=plotmon",
+      "referenceEntityKey": "plotmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "shadowtoyagumon",
+      "listedName": "ShadowToyAgumon",
+      "formId": 111,
+      "sourceStage": "Rookie",
+      "referenceName": "ToyAgumon (Black)",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon_black",
+      "referenceEntityKey": "toyagumon_black",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "ToyAgumon (Black)",
+          "stage": "Rookie",
+          "entityKey": "toyagumon_black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon_black",
+          "attribute": "Virus"
+        }
+      ]
+    },
+    {
+      "entryKey": "snowagumon",
+      "listedName": "SnowAgumon",
+      "formId": 112,
+      "sourceStage": "Rookie",
+      "referenceName": "SnowAgumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=yukiagumon",
+      "referenceEntityKey": "yukiagumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tapirmon",
+      "listedName": "Tapirmon",
+      "formId": 113,
+      "sourceStage": "Rookie",
+      "referenceName": "Tapirmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bakumon",
+      "referenceEntityKey": "bakumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tentomon",
+      "listedName": "Tentomon",
+      "formId": 39,
+      "sourceStage": "Rookie",
+      "referenceName": "Tentomon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tentomon",
+      "referenceEntityKey": "tentomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "terriermon",
+      "listedName": "Terriermon",
+      "formId": 114,
+      "sourceStage": "Rookie",
+      "referenceName": "Terriermon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=terriermon",
+      "referenceEntityKey": "terriermon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "toyagumon",
+      "listedName": "ToyAgumon",
+      "formId": 115,
+      "sourceStage": "Rookie",
+      "referenceName": "ToyAgumon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=toyagumon",
+      "referenceEntityKey": "toyagumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tsukaimon",
+      "listedName": "Tsukaimon",
+      "formId": 116,
+      "sourceStage": "Rookie",
+      "referenceName": "Tsukaimon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tukaimon",
+      "referenceEntityKey": "tukaimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "veemon",
+      "listedName": "Veemon",
+      "formId": 117,
+      "sourceStage": "Rookie",
+      "referenceName": "Veemon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=v-mon",
+      "referenceEntityKey": "v-mon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "wormmon",
+      "listedName": "Wormmon",
+      "formId": 118,
+      "sourceStage": "Rookie",
+      "referenceName": "Wormmon",
+      "referenceStage": "Rookie",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=wormmon",
+      "referenceEntityKey": "wormmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "airdramon",
+      "listedName": "Airdramon",
+      "formId": 119,
+      "sourceStage": "Champion",
+      "referenceName": "Airdramon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=airdramon",
+      "referenceEntityKey": "airdramon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "akatorimon",
+      "listedName": "Akatorimon",
+      "formId": 120,
+      "sourceStage": "Champion",
+      "referenceName": "Akatorimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=akatorimon",
+      "referenceEntityKey": "akatorimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "angemon",
+      "listedName": "Angemon",
+      "formId": 33,
+      "sourceStage": "Champion",
+      "referenceName": "Angemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=angemon",
+      "referenceEntityKey": "angemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ankylomon",
+      "listedName": "Ankylomon",
+      "formId": 121,
+      "sourceStage": "Champion",
+      "referenceName": "Ankylomon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ankylomon",
+      "referenceEntityKey": "ankylomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "apemon",
+      "listedName": "Apemon",
+      "formId": 122,
+      "sourceStage": "Champion",
+      "referenceName": "Apemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hanumon",
+      "referenceEntityKey": "hanumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "aquilamon",
+      "listedName": "Aquilamon",
+      "formId": 123,
+      "sourceStage": "Champion",
+      "referenceName": "Aquilamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=aquilamon",
+      "referenceEntityKey": "aquilamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "bakemon",
+      "listedName": "Bakemon",
+      "formId": 124,
+      "sourceStage": "Champion",
+      "referenceName": "Bakemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bakemon",
+      "referenceEntityKey": "bakemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "birdramon",
+      "listedName": "Birdramon",
+      "formId": 125,
+      "sourceStage": "Champion",
+      "referenceName": "Birdramon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=birdramon",
+      "referenceEntityKey": "birdramon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "darklizardmon",
+      "listedName": "DarkLizardmon",
+      "formId": 126,
+      "sourceStage": "Champion",
+      "referenceName": "DarkLizardmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=darklizamon",
+      "referenceEntityKey": "darklizamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "darktyrannomon",
+      "listedName": "DarkTyrannomon",
+      "formId": 127,
+      "sourceStage": "Champion",
+      "referenceName": "DarkTyrannomon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon",
+      "referenceEntityKey": "darktyranomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "devimon",
+      "listedName": "Devimon",
+      "formId": 15,
+      "sourceStage": "Champion",
+      "referenceName": "Devimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=devimon",
+      "referenceEntityKey": "devimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "diatrymon",
+      "listedName": "Diatrymon",
+      "formId": 128,
+      "sourceStage": "Champion",
+      "referenceName": "Diatrymon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=diatrymon",
+      "referenceEntityKey": "diatrymon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dinohyumon",
+      "listedName": "Dinohyumon",
+      "formId": 129,
+      "sourceStage": "Champion",
+      "referenceName": "Dinohyumon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dinohumon",
+      "referenceEntityKey": "dinohumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dorugamon",
+      "listedName": "Dorugamon",
+      "formId": 130,
+      "sourceStage": "Champion",
+      "referenceName": "Dorugamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dorugamon",
+      "referenceEntityKey": "dorugamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "exveemon",
+      "listedName": "ExVeemon",
+      "formId": 131,
+      "sourceStage": "Champion",
+      "referenceName": "ExVeemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=xv-mon",
+      "referenceEntityKey": "xv-mon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "flarerizamon",
+      "listedName": "Flarerizamon",
+      "formId": 132,
+      "sourceStage": "Champion",
+      "referenceName": "Flarerizamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=flarelizamon",
+      "referenceEntityKey": "flarelizamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gaogamon",
+      "listedName": "Gaogamon",
+      "formId": 133,
+      "sourceStage": "Champion",
+      "referenceName": "Gaogamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gaogamon",
+      "referenceEntityKey": "gaogamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gargomon",
+      "listedName": "Gargomon",
+      "formId": 134,
+      "sourceStage": "Champion",
+      "referenceName": "Gargomon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=galgomon",
+      "referenceEntityKey": "galgomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "garurumon",
+      "listedName": "Garurumon",
+      "formId": 26,
+      "sourceStage": "Champion",
+      "referenceName": "Garurumon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=garurumon",
+      "referenceEntityKey": "garurumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gatomon",
+      "listedName": "Gatomon",
+      "formId": 135,
+      "sourceStage": "Champion",
+      "referenceName": "Gatomon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tailmon",
+      "referenceEntityKey": "tailmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gekomon",
+      "listedName": "Gekomon",
+      "formId": 136,
+      "sourceStage": "Champion",
+      "referenceName": "Gekomon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gekomon",
+      "referenceEntityKey": "gekomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "geogreymon",
+      "listedName": "GeoGreymon",
+      "formId": 137,
+      "sourceStage": "Champion",
+      "referenceName": "GeoGreymon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=geogreymon",
+      "referenceEntityKey": "geogreymon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "greymon",
+      "listedName": "Greymon",
+      "formId": 19,
+      "sourceStage": "Champion",
+      "referenceName": "Greymon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=greymon-first",
+      "referenceEntityKey": "greymon-first",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": true
+    },
+    {
+      "entryKey": "grizzmon",
+      "listedName": "Grizzmon",
+      "formId": 138,
+      "sourceStage": "Champion",
+      "referenceName": "Grizzlymon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+      "referenceEntityKey": "gryzmon",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Grizzlymon",
+          "stage": "Champion",
+          "entityKey": "gryzmon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+          "attribute": "Vaccine"
+        }
+      ]
+    },
+    {
+      "entryKey": "growlmon",
+      "listedName": "Growlmon",
+      "formId": 139,
+      "sourceStage": "Champion",
+      "referenceName": "Growlmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=growmon",
+      "referenceEntityKey": "growmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "guardromon",
+      "listedName": "Guardromon",
+      "formId": 140,
+      "sourceStage": "Champion",
+      "referenceName": "Guardromon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=guardromon",
+      "referenceEntityKey": "guardromon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gwappamon",
+      "listedName": "Gwappamon",
+      "formId": 141,
+      "sourceStage": "Champion",
+      "referenceName": "Gawappamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gawappamon",
+      "referenceEntityKey": "gawappamon",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Gawappamon",
+          "stage": "Champion",
+          "entityKey": "gawappamon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=gawappamon",
+          "attribute": "Data"
+        }
+      ]
+    },
+    {
+      "entryKey": "hookmon",
+      "listedName": "Hookmon",
+      "formId": 142,
+      "sourceStage": "Champion",
+      "referenceName": "Hookmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hookmon",
+      "referenceEntityKey": "hookmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "icemon",
+      "listedName": "Icemon",
+      "formId": 143,
+      "sourceStage": "Champion",
+      "referenceName": "Icemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=icemon",
+      "referenceEntityKey": "icemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ikkakumon",
+      "listedName": "Ikkakumon",
+      "formId": 54,
+      "sourceStage": "Champion",
+      "referenceName": "Ikkakumon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ikkakumon",
+      "referenceEntityKey": "ikkakumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kabuterimon",
+      "listedName": "Kabuterimon",
+      "formId": 40,
+      "sourceStage": "Champion",
+      "referenceName": "Kabuterimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kabuterimon",
+      "referenceEntityKey": "kabuterimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kiwimon",
+      "listedName": "Kiwimon",
+      "formId": 144,
+      "sourceStage": "Champion",
+      "referenceName": "Kiwimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kiwimon",
+      "referenceEntityKey": "kiwimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kokatorimon",
+      "listedName": "Kokatorimon",
+      "formId": 145,
+      "sourceStage": "Champion",
+      "referenceName": "Kokatorimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cockatrimon",
+      "referenceEntityKey": "cockatrimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kurisarimon",
+      "listedName": "Kurisarimon",
+      "formId": 146,
+      "sourceStage": "Champion",
+      "referenceName": "Kurisarimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chrysalimon",
+      "referenceEntityKey": "chrysalimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kuwagamon",
+      "listedName": "Kuwagamon",
+      "formId": 43,
+      "sourceStage": "Champion",
+      "referenceName": "Kuwagamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kuwagamon",
+      "referenceEntityKey": "kuwagamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kyubimon",
+      "listedName": "Kyubimon",
+      "formId": 61,
+      "sourceStage": "Champion",
+      "referenceName": "Kyubimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kyubimon",
+      "referenceEntityKey": "kyubimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "leomon",
+      "listedName": "Leomon",
+      "formId": 29,
+      "sourceStage": "Champion",
+      "referenceName": "Leomon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=leomon",
+      "referenceEntityKey": "leomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "minotarumon",
+      "listedName": "Minotarumon",
+      "formId": 147,
+      "sourceStage": "Champion",
+      "referenceName": "Minotarumon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=minotaurmon",
+      "referenceEntityKey": "minotaurmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "numemon",
+      "listedName": "Numemon",
+      "formId": 148,
+      "sourceStage": "Champion",
+      "referenceName": "Numemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=numemon",
+      "referenceEntityKey": "numemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ogremon",
+      "listedName": "Ogremon",
+      "formId": 149,
+      "sourceStage": "Champion",
+      "referenceName": "Ogremon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=orgemon",
+      "referenceEntityKey": "orgemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "peckmon",
+      "listedName": "Peckmon",
+      "formId": 150,
+      "sourceStage": "Champion",
+      "referenceName": "Peckmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=peckmon",
+      "referenceEntityKey": "peckmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "platinumsukamon",
+      "listedName": "PlatinumSukamon",
+      "formId": 151,
+      "sourceStage": "Champion",
+      "referenceName": "PlatinumSukamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=platinasukamon",
+      "referenceEntityKey": "platinasukamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "raremon",
+      "listedName": "Raremon",
+      "formId": 152,
+      "sourceStage": "Champion",
+      "referenceName": "Raremon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=raremon",
+      "referenceEntityKey": "raremon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "reppamon",
+      "listedName": "Reppamon",
+      "formId": 153,
+      "sourceStage": "Champion",
+      "referenceName": "Reppamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=reppamon",
+      "referenceEntityKey": "reppamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "reptiledramon",
+      "listedName": "Reptiledramon",
+      "formId": 154,
+      "sourceStage": "Champion",
+      "referenceName": "Raptordramon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=raptordramon",
+      "referenceEntityKey": "raptordramon",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Raptordramon",
+          "stage": "Champion",
+          "entityKey": "raptordramon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=raptordramon",
+          "attribute": "Vaccine"
+        }
+      ]
+    },
+    {
+      "entryKey": "roachmon",
+      "listedName": "Roachmon",
+      "formId": 155,
+      "sourceStage": "Champion",
+      "referenceName": "Roachmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gokimon",
+      "referenceEntityKey": "gokimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "sangloupmon",
+      "listedName": "Sangloupmon",
+      "formId": 156,
+      "sourceStage": "Champion",
+      "referenceName": "Sangloupmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sangloupmon",
+      "referenceEntityKey": "sangloupmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "seadramon",
+      "listedName": "Seadramon",
+      "formId": 157,
+      "sourceStage": "Champion",
+      "referenceName": "Seadramon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=seadramon",
+      "referenceEntityKey": "seadramon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "seasarmon",
+      "listedName": "Seasarmon",
+      "formId": 158,
+      "sourceStage": "Champion",
+      "referenceName": "Seasarmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=siesamon",
+      "referenceEntityKey": "siesamon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "sorcerymon",
+      "listedName": "Sorcerymon",
+      "formId": 159,
+      "sourceStage": "Champion",
+      "referenceName": "Sorcermon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sorcerimon",
+      "referenceEntityKey": "sorcerimon",
+      "mappingAuditStatus": "romanization-or-localization-name-review",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Sorcermon",
+          "stage": "Champion",
+          "entityKey": "sorcerimon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=sorcerimon",
+          "attribute": "Vaccine"
+        }
+      ]
+    },
+    {
+      "entryKey": "starmon",
+      "listedName": "Starmon",
+      "formId": 160,
+      "sourceStage": "Champion",
+      "referenceName": "Starmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=starmon",
+      "referenceEntityKey": "starmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "stingmon",
+      "listedName": "Stingmon",
+      "formId": 161,
+      "sourceStage": "Champion",
+      "referenceName": "Stingmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=stingmon",
+      "referenceEntityKey": "stingmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "sukamon",
+      "listedName": "Sukamon",
+      "formId": 162,
+      "sourceStage": "Champion",
+      "referenceName": "Sukamon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=scumon",
+      "referenceEntityKey": "scumon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "sunflowmon",
+      "listedName": "Sunflowmon",
+      "formId": 163,
+      "sourceStage": "Champion",
+      "referenceName": "Sunflowmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sunflowmon",
+      "referenceEntityKey": "sunflowmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "togemon",
+      "listedName": "Togemon",
+      "formId": 47,
+      "sourceStage": "Champion",
+      "referenceName": "Togemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=togemon",
+      "referenceEntityKey": "togemon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tyrannomon",
+      "listedName": "Tyrannomon",
+      "formId": 22,
+      "sourceStage": "Champion",
+      "referenceName": "Tyrannomon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tyranomon",
+      "referenceEntityKey": "tyranomon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "unimon",
+      "listedName": "Unimon",
+      "formId": 36,
+      "sourceStage": "Champion",
+      "referenceName": "Unimon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=yunimon",
+      "referenceEntityKey": "yunimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "vegiemon",
+      "listedName": "Vegiemon",
+      "formId": 164,
+      "sourceStage": "Champion",
+      "referenceName": "Vegiemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=vegimon",
+      "referenceEntityKey": "vegimon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "vilemon",
+      "listedName": "Vilemon",
+      "formId": 165,
+      "sourceStage": "Champion",
+      "referenceName": "Vilemon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=evilmon",
+      "referenceEntityKey": "evilmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "wizardmon",
+      "listedName": "Wizardmon",
+      "formId": 12,
+      "sourceStage": "Champion",
+      "referenceName": "Wizardmon",
+      "referenceStage": "Champion",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=wizarmon",
+      "referenceEntityKey": "wizarmon",
+      "mappingAuditStatus": "observed-name-match",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "andromon",
+      "listedName": "Andromon",
+      "formId": 166,
+      "sourceStage": "Ultimate",
+      "referenceName": "Andromon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=andromon",
+      "referenceEntityKey": "andromon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "angewomon",
+      "listedName": "Angewomon",
+      "formId": 167,
+      "sourceStage": "Ultimate",
+      "referenceName": "Angewomon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=angewomon",
+      "referenceEntityKey": "angewomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "antylamon",
+      "listedName": "Antylamon",
+      "formId": 168,
+      "sourceStage": "Ultimate",
+      "referenceName": null,
+      "referenceStage": "Ultimate",
+      "referenceUrl": null,
+      "referenceEntityKey": null,
+      "mappingAuditStatus": "official-candidates-verified-sheet-variant-unresolved",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Antylamon",
+          "stage": "Ultimate",
+          "entityKey": "andiramon_2",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon_2",
+          "attribute": "Virus"
+        },
+        {
+          "name": "Antylamon (Deva)",
+          "stage": "Ultimate",
+          "entityKey": "andiramon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=andiramon",
+          "attribute": "Data"
+        }
+      ],
+      "auditNote": "The audit originally found the missing variant-review flag. The upstream official metadata and assembled catalog now flag both candidates and leave the source identity unselected; no visual review has resolved it."
+    },
+    {
+      "entryKey": "arukenimon",
+      "listedName": "Arukenimon",
+      "formId": 169,
+      "sourceStage": "Ultimate",
+      "referenceName": "Arukenimon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=archnemon",
+      "referenceEntityKey": "archnemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "blackrapidmon",
+      "listedName": "BlackRapidmon",
+      "formId": 170,
+      "sourceStage": "Ultimate",
+      "referenceName": "BlackRapidmon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=blackrapidmon",
+      "referenceEntityKey": "blackrapidmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "blackwargrowlmon",
+      "listedName": "BlackWarGrowlmon",
+      "formId": 171,
+      "sourceStage": "Ultimate",
+      "referenceName": "BlackWarGrowlmon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=blackmegalogrowmon",
+      "referenceEntityKey": "blackmegalogrowmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "blackweregarurumon",
+      "listedName": "BlackWereGarurumon",
+      "formId": 172,
+      "sourceStage": "Ultimate",
+      "referenceName": "WereGarurumon (Black)",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=weregarurumon_black",
+      "referenceEntityKey": "weregarurumon_black",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "blossomon",
+      "listedName": "Blossomon",
+      "formId": 173,
+      "sourceStage": "Ultimate",
+      "referenceName": "Blossomon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=blossomon",
+      "referenceEntityKey": "blossomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "cyberdramon",
+      "listedName": "Cyberdramon",
+      "formId": 174,
+      "sourceStage": "Ultimate",
+      "referenceName": "Cyberdramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cyberdramon",
+      "referenceEntityKey": "cyberdramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "deramon",
+      "listedName": "Deramon",
+      "formId": 175,
+      "sourceStage": "Ultimate",
+      "referenceName": "Deramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=delumon",
+      "referenceEntityKey": "delumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "digitamamon",
+      "listedName": "Digitamamon",
+      "formId": 176,
+      "sourceStage": "Ultimate",
+      "referenceName": "Digitamamon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=digitamamon",
+      "referenceEntityKey": "digitamamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dinobeemon",
+      "listedName": "Dinobeemon",
+      "formId": 177,
+      "sourceStage": "Ultimate",
+      "referenceName": "Dinobeemon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dinobeemon",
+      "referenceEntityKey": "dinobeemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "divermon",
+      "listedName": "Divermon",
+      "formId": 178,
+      "sourceStage": "Ultimate",
+      "referenceName": "Divermon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hangyomon",
+      "referenceEntityKey": "hangyomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dorugreymon",
+      "listedName": "DoruGreymon",
+      "formId": 179,
+      "sourceStage": "Ultimate",
+      "referenceName": "DoruGreymon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=doruguremon",
+      "referenceEntityKey": "doruguremon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dragomon",
+      "listedName": "Dragomon",
+      "formId": 180,
+      "sourceStage": "Ultimate",
+      "referenceName": "Dragomon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dagomon",
+      "referenceEntityKey": "dagomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "etemon",
+      "listedName": "Etemon",
+      "formId": 181,
+      "sourceStage": "Ultimate",
+      "referenceName": "Etemon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=etemon",
+      "referenceEntityKey": "etemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "garbagemon",
+      "listedName": "Garbagemon",
+      "formId": 182,
+      "sourceStage": "Ultimate",
+      "referenceName": "Garbagemon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gerbemon",
+      "referenceEntityKey": "gerbemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "garudamon",
+      "listedName": "Garudamon",
+      "formId": 183,
+      "sourceStage": "Ultimate",
+      "referenceName": "Garudamon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=garudamon",
+      "referenceEntityKey": "garudamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gigadramon",
+      "listedName": "Gigadramon",
+      "formId": 184,
+      "sourceStage": "Ultimate",
+      "referenceName": "Gigadramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gigadramon",
+      "referenceEntityKey": "gigadramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "infermon",
+      "listedName": "Infermon",
+      "formId": 185,
+      "sourceStage": "Ultimate",
+      "referenceName": "Infermon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=infermon",
+      "referenceEntityKey": "infermon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kimeramon",
+      "listedName": "Kimeramon",
+      "formId": 186,
+      "sourceStage": "Ultimate",
+      "referenceName": "Kimeramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chimairamon",
+      "referenceEntityKey": "chimairamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kyukimon",
+      "listedName": "Kyukimon",
+      "formId": 187,
+      "sourceStage": "Ultimate",
+      "referenceName": "Kyukimon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kyukimon",
+      "referenceEntityKey": "kyukimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ladydevimon",
+      "listedName": "LadyDevimon",
+      "formId": 188,
+      "sourceStage": "Ultimate",
+      "referenceName": "LadyDevimon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ladydevimon",
+      "referenceEntityKey": "ladydevimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "lilamon",
+      "listedName": "Lilamon",
+      "formId": 189,
+      "sourceStage": "Ultimate",
+      "referenceName": "Lilamon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=lilamon",
+      "referenceEntityKey": "lilamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "lillymon",
+      "listedName": "Lillymon",
+      "formId": 48,
+      "sourceStage": "Ultimate",
+      "referenceName": "Lillymon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=lilimon",
+      "referenceEntityKey": "lilimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "lucemon-chaos-mode",
+      "listedName": "Lucemon Chaos Mode",
+      "formId": 190,
+      "sourceStage": "Ultimate",
+      "referenceName": "Lucemon: Chaos Mode",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=rucemonfalldownmode",
+      "referenceEntityKey": "rucemonfalldownmode",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "machgaogamon",
+      "listedName": "MachGaogamon",
+      "formId": 191,
+      "sourceStage": "Ultimate",
+      "referenceName": "MachGaogamon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=machgaogamon",
+      "referenceEntityKey": "machgaogamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "magnaangemon",
+      "listedName": "MagnaAngemon",
+      "formId": 34,
+      "sourceStage": "Ultimate",
+      "referenceName": "MagnaAngemon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=holyangemon",
+      "referenceEntityKey": "holyangemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "mamemon",
+      "listedName": "Mamemon",
+      "formId": 192,
+      "sourceStage": "Ultimate",
+      "referenceName": "Mamemon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=mamemon",
+      "referenceEntityKey": "mamemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "matadormon",
+      "listedName": "Matadormon",
+      "formId": 193,
+      "sourceStage": "Ultimate",
+      "referenceName": "Matadormon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=matadrmon",
+      "referenceEntityKey": "matadrmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "megadramon",
+      "listedName": "Megadramon",
+      "formId": 194,
+      "sourceStage": "Ultimate",
+      "referenceName": "Megadramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=megadramon",
+      "referenceEntityKey": "megadramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "megakabuterimon-blue",
+      "listedName": "MegaKabuterimon Blue",
+      "formId": 195,
+      "sourceStage": "Ultimate",
+      "referenceName": "MegaKabuterimon (Blue)",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue",
+      "referenceEntityKey": "atlurkabuterimon-blue",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "megakabuterimon-red",
+      "listedName": "MegaKabuterimon Red",
+      "formId": 41,
+      "sourceStage": "Ultimate",
+      "referenceName": "MegaKabuterimon (Red)",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon",
+      "referenceEntityKey": "atlurkabuterimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "megaseadramon",
+      "listedName": "MegaSeadramon",
+      "formId": 196,
+      "sourceStage": "Ultimate",
+      "referenceName": "MegaSeadramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=megaseadramon",
+      "referenceEntityKey": "megaseadramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "metalgreymon",
+      "listedName": "MetalGreymon",
+      "formId": 20,
+      "sourceStage": "Ultimate",
+      "referenceName": "MetalGreymon (Vaccine)",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-v",
+      "referenceEntityKey": "metalgreymon-v",
+      "mappingAuditStatus": "local-visual-review-selects-candidate",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": true,
+      "candidateReferences": [
+        {
+          "name": "MetalGreymon (Vaccine)",
+          "stage": "Ultimate",
+          "entityKey": "metalgreymon-v",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-v",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "MetalGreymon (Virus)",
+          "stage": "Ultimate",
+          "entityKey": "metalgreymon-web",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-web",
+          "attribute": "Virus"
+        }
+      ],
+      "auditNote": "Orange armored dinosaur shown on local sheet48322 matches preserved Vaccine form20; source display name stays MetalGreymon."
+    },
+    {
+      "entryKey": "metalmamemon",
+      "listedName": "MetalMamemon",
+      "formId": 197,
+      "sourceStage": "Ultimate",
+      "referenceName": "MetalMamemon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalmamemon",
+      "referenceEntityKey": "metalmamemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "meteormon",
+      "listedName": "Meteormon",
+      "formId": 198,
+      "sourceStage": "Ultimate",
+      "referenceName": "Meteormon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=insekimon",
+      "referenceEntityKey": "insekimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "monzaemon",
+      "listedName": "Monzaemon",
+      "formId": 199,
+      "sourceStage": "Ultimate",
+      "referenceName": "Monzaemon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=monzaemon",
+      "referenceEntityKey": "monzaemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "mummymon",
+      "listedName": "Mummymon",
+      "formId": 200,
+      "sourceStage": "Ultimate",
+      "referenceName": "Mummymon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=mummymon",
+      "referenceEntityKey": "mummymon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "myotismon",
+      "listedName": "Myotismon",
+      "formId": 16,
+      "sourceStage": "Ultimate",
+      "referenceName": "Myotismon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=vamdemon",
+      "referenceEntityKey": "vamdemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "okuwamon",
+      "listedName": "Okuwamon",
+      "formId": 44,
+      "sourceStage": "Ultimate",
+      "referenceName": "Okuwamon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=okuwamon",
+      "referenceEntityKey": "okuwamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "paildramon",
+      "listedName": "Paildramon",
+      "formId": 201,
+      "sourceStage": "Ultimate",
+      "referenceName": "Paildramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=paildramon",
+      "referenceEntityKey": "paildramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "parrotmon",
+      "listedName": "Parrotmon",
+      "formId": 202,
+      "sourceStage": "Ultimate",
+      "referenceName": "Parrotmon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=parrotmon",
+      "referenceEntityKey": "parrotmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "piximon",
+      "listedName": "Piximon",
+      "formId": 203,
+      "sourceStage": "Ultimate",
+      "referenceName": "Piximon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=picklemon",
+      "referenceEntityKey": "picklemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "rapidmon",
+      "listedName": "Rapidmon",
+      "formId": 204,
+      "sourceStage": "Ultimate",
+      "referenceName": "Rapidmon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=rapidmon",
+      "referenceEntityKey": "rapidmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "rizegreymon",
+      "listedName": "RizeGreymon",
+      "formId": 205,
+      "sourceStage": "Ultimate",
+      "referenceName": "RizeGreymon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=rizegreymon",
+      "referenceEntityKey": "rizegreymon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "shogungekomon",
+      "listedName": "ShogunGekomon",
+      "formId": 206,
+      "sourceStage": "Ultimate",
+      "referenceName": "ShogunGekomon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tonosamagekomon",
+      "referenceEntityKey": "tonosamagekomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "silphymon",
+      "listedName": "Silphymon",
+      "formId": 207,
+      "sourceStage": "Ultimate",
+      "referenceName": "Silphymon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=silphymon",
+      "referenceEntityKey": "silphymon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "skullgreymon",
+      "listedName": "SkullGreymon",
+      "formId": 208,
+      "sourceStage": "Ultimate",
+      "referenceName": "SkullGreymon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=skullgreymon",
+      "referenceEntityKey": "skullgreymon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "superstarmon",
+      "listedName": "SuperStarmon",
+      "formId": 209,
+      "sourceStage": "Ultimate",
+      "referenceName": "SuperStarmon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=superstarmon",
+      "referenceEntityKey": "superstarmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "taomon",
+      "listedName": "Taomon",
+      "formId": 62,
+      "sourceStage": "Ultimate",
+      "referenceName": "Taomon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=taomon",
+      "referenceEntityKey": "taomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "triceramon",
+      "listedName": "Triceramon",
+      "formId": 210,
+      "sourceStage": "Ultimate",
+      "referenceName": "Triceramon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=triceramon",
+      "referenceEntityKey": "triceramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "tyilinmon",
+      "listedName": "Tyilinmon",
+      "formId": 211,
+      "sourceStage": "Ultimate",
+      "referenceName": "Chirinmon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=tyilinmon",
+      "referenceEntityKey": "tyilinmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "wargrowlmon",
+      "listedName": "WarGrowlmon",
+      "formId": 212,
+      "sourceStage": "Ultimate",
+      "referenceName": "WarGrowlmon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=megalogrowmon",
+      "referenceEntityKey": "megalogrowmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "weregarurumon",
+      "listedName": "WereGarurumon",
+      "formId": 27,
+      "sourceStage": "Ultimate",
+      "referenceName": "WereGarurumon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=weregarrumon",
+      "referenceEntityKey": "weregarrumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "whamon",
+      "listedName": "Whamon",
+      "formId": 58,
+      "sourceStage": "Ultimate",
+      "referenceName": "Whamon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=whamon",
+      "referenceEntityKey": "whamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "yatagaramon",
+      "listedName": "Yatagaramon",
+      "formId": 213,
+      "sourceStage": "Ultimate",
+      "referenceName": null,
+      "referenceStage": "Ultimate",
+      "referenceUrl": null,
+      "referenceEntityKey": null,
+      "mappingAuditStatus": "official-candidates-verified-sheet-variant-unresolved",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Crowmon",
+          "stage": "Ultimate",
+          "entityKey": "yatagaramon_axcel",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=yatagaramon_axcel",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Crowmon (2006 Anime Version)",
+          "stage": "Ultimate",
+          "entityKey": "yatagaramon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=yatagaramon",
+          "attribute": "Vaccine"
+        }
+      ]
+    },
+    {
+      "entryKey": "zudomon",
+      "listedName": "Zudomon",
+      "formId": 55,
+      "sourceStage": "Ultimate",
+      "referenceName": "Zudomon",
+      "referenceStage": "Ultimate",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=zudomon",
+      "referenceEntityKey": "zudomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "armagemon",
+      "listedName": "Armagemon",
+      "formId": 214,
+      "sourceStage": "Mega",
+      "referenceName": "Armageddemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=armagemon",
+      "referenceEntityKey": "armagemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "azulongmon",
+      "listedName": "Azulongmon",
+      "formId": 215,
+      "sourceStage": "Mega",
+      "referenceName": "Azulongmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=qinglongmon",
+      "referenceEntityKey": "qinglongmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "babamon",
+      "listedName": "Babamon",
+      "formId": 216,
+      "sourceStage": "Mega",
+      "referenceName": "Babamon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=babamon",
+      "referenceEntityKey": "babamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "baihumon",
+      "listedName": "Baihumon",
+      "formId": 217,
+      "sourceStage": "Mega",
+      "referenceName": "Baihumon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=baihumon",
+      "referenceEntityKey": "baihumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "bancholeomon",
+      "listedName": "BanchoLeomon",
+      "formId": 31,
+      "sourceStage": "Mega",
+      "referenceName": "BanchoLeomon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=bancholeomon",
+      "referenceEntityKey": "bancholeomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "barbamon",
+      "listedName": "Barbamon",
+      "formId": 218,
+      "sourceStage": "Mega",
+      "referenceName": "Barbamon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=barbamon",
+      "referenceEntityKey": "barbamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "beelzemon",
+      "listedName": "Beelzemon",
+      "formId": 14,
+      "sourceStage": "Mega",
+      "referenceName": "Beelzemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=beelzebumon",
+      "referenceEntityKey": "beelzebumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "belphemon",
+      "listedName": "Belphemon",
+      "formId": 219,
+      "sourceStage": "Mega",
+      "referenceName": null,
+      "referenceStage": "Mega",
+      "referenceUrl": null,
+      "referenceEntityKey": null,
+      "mappingAuditStatus": "official-candidates-verified-sheet-variant-unresolved",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Belphemon: Rage Mode",
+          "stage": "Mega",
+          "entityKey": "belphemonragemode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belphemonragemode",
+          "attribute": "Virus"
+        },
+        {
+          "name": "Belphemon: Sleep Mode",
+          "stage": "Mega",
+          "entityKey": "belphemonsleepmode",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belphemonsleepmode",
+          "attribute": "Virus"
+        }
+      ]
+    },
+    {
+      "entryKey": "blackimperialdramon",
+      "listedName": "BlackImperialdramon",
+      "formId": 220,
+      "sourceStage": "Mega",
+      "referenceName": null,
+      "referenceStage": "Mega",
+      "referenceUrl": null,
+      "referenceEntityKey": null,
+      "mappingAuditStatus": "official-candidates-verified-sheet-variant-unresolved",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Imperialdramon: Dragon Mode (Black)",
+          "stage": "Mega",
+          "entityKey": "imperialdramon_dragon_black",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramon_dragon_black",
+          "attribute": "Virus"
+        },
+        {
+          "name": "Imperialdramon: Fighter Mode (Black)",
+          "stage": "Mega",
+          "entityKey": "imperialdramonfightermode_vi",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode_vi",
+          "attribute": "Virus"
+        }
+      ]
+    },
+    {
+      "entryKey": "blackmegagargomon",
+      "listedName": "BlackMegaGargomon",
+      "formId": 221,
+      "sourceStage": "Mega",
+      "referenceName": "BlackSaintGargomon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=blacksaintgalgomon",
+      "referenceEntityKey": "blacksaintgalgomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "blackwargreymon",
+      "listedName": "BlackWarGreymon",
+      "formId": 222,
+      "sourceStage": "Mega",
+      "referenceName": "BlackWarGreymon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=blackwargreymon",
+      "referenceEntityKey": "blackwargreymon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "cannondramon",
+      "listedName": "Cannondramon",
+      "formId": 223,
+      "sourceStage": "Mega",
+      "referenceName": "Cannondramon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cannondramon",
+      "referenceEntityKey": "cannondramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "chaosgallantmon",
+      "listedName": "ChaosGallantmon",
+      "formId": 224,
+      "sourceStage": "Mega",
+      "referenceName": "ChaosGallantmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chaosdukemon",
+      "referenceEntityKey": "chaosdukemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "cherubimon-vaccine",
+      "listedName": "Cherubimon Vaccine",
+      "formId": 225,
+      "sourceStage": "Mega",
+      "referenceName": "Cherubimon (Good)",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon",
+      "referenceEntityKey": "cherubimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "cherubimon-virus",
+      "listedName": "Cherubimon Virus",
+      "formId": 226,
+      "sourceStage": "Mega",
+      "referenceName": "Cherubimon (Black)",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=cherubimon-vice",
+      "referenceEntityKey": "cherubimon-vice",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "chronomon-dm",
+      "listedName": "Chronomon DM",
+      "formId": 227,
+      "sourceStage": "Mega",
+      "referenceName": "Chronomon: Destroy Mode",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_destroy",
+      "referenceEntityKey": "chronomon_destroy",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "chronomon-holy-mode",
+      "listedName": "Chronomon Holy Mode",
+      "formId": 228,
+      "sourceStage": "Mega",
+      "referenceName": "Chronomon: Holy Mode",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=chronomon_holy",
+      "referenceEntityKey": "chronomon_holy",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "creepymon",
+      "listedName": "Creepymon",
+      "formId": 229,
+      "sourceStage": "Mega",
+      "referenceName": "Creepymon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=demon",
+      "referenceEntityKey": "demon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "crossmon",
+      "listedName": "Crossmon",
+      "formId": 230,
+      "sourceStage": "Mega",
+      "referenceName": "Eaglemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=crossmon",
+      "referenceEntityKey": "crossmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "daemon",
+      "listedName": "Daemon",
+      "formId": 231,
+      "sourceStage": "Mega",
+      "referenceName": "Creepymon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=demon",
+      "referenceEntityKey": "demon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "darkdramon",
+      "listedName": "Darkdramon",
+      "formId": 232,
+      "sourceStage": "Mega",
+      "referenceName": "Darkdramon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=darkdramon",
+      "referenceEntityKey": "darkdramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "diaboromon",
+      "listedName": "Diaboromon",
+      "formId": 233,
+      "sourceStage": "Mega",
+      "referenceName": "Diaboromon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=diablomon",
+      "referenceEntityKey": "diablomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "dorugoramon",
+      "listedName": "Dorugoramon",
+      "formId": 234,
+      "sourceStage": "Mega",
+      "referenceName": "Dorugoramon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dorugoramon",
+      "referenceEntityKey": "dorugoramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ebonwumon",
+      "listedName": "Ebonwumon",
+      "formId": 235,
+      "sourceStage": "Mega",
+      "referenceName": "Ebonwumon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=xuanwumon",
+      "referenceEntityKey": "xuanwumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gallantmon",
+      "listedName": "Gallantmon",
+      "formId": 236,
+      "sourceStage": "Mega",
+      "referenceName": "Gallantmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dukemon",
+      "referenceEntityKey": "dukemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gallantmon-crimson-mode",
+      "listedName": "Gallantmon Crimson Mode",
+      "formId": 237,
+      "sourceStage": "Mega",
+      "referenceName": "Gallantmon: Crimson Mode",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=dukemoncrimsonmode",
+      "referenceEntityKey": "dukemoncrimsonmode",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ghoulmon",
+      "listedName": "Ghoulmon",
+      "formId": 238,
+      "sourceStage": "Mega",
+      "referenceName": "Ghoulmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=deathmon",
+      "referenceEntityKey": "deathmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ghoulmon-black",
+      "listedName": "Ghoulmon Black",
+      "formId": 239,
+      "sourceStage": "Mega",
+      "referenceName": "Ghoulmon (Black)",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=deathmon-black",
+      "referenceEntityKey": "deathmon-black",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "gigaseadramon",
+      "listedName": "GigaSeadramon",
+      "formId": 240,
+      "sourceStage": "Mega",
+      "referenceName": "GigaSeadramon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gigaseadramon",
+      "referenceEntityKey": "gigaseadramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "grankuwagamon",
+      "listedName": "GranKuwagamon",
+      "formId": 45,
+      "sourceStage": "Mega",
+      "referenceName": "GranKuwagamon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=grankuwagamon",
+      "referenceEntityKey": "grankuwagamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "granlocomon",
+      "listedName": "Granlocomon",
+      "formId": 241,
+      "sourceStage": "Mega",
+      "referenceName": "GroundLocomon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=grandlocomon",
+      "referenceEntityKey": "grandlocomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "guardiangemon",
+      "listedName": "GuardiAngemon",
+      "formId": 242,
+      "sourceStage": "Mega",
+      "referenceName": "SlashAngemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=slashangemon",
+      "referenceEntityKey": "slashangemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "herculeskabuterimon",
+      "listedName": "HerculesKabuterimon",
+      "formId": 42,
+      "sourceStage": "Mega",
+      "referenceName": "HerculesKabuterimon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=heraklekabuterimon",
+      "referenceEntityKey": "heraklekabuterimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "hiandromon",
+      "listedName": "HiAndromon",
+      "formId": 243,
+      "sourceStage": "Mega",
+      "referenceName": "HiAndromon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hiandromon",
+      "referenceEntityKey": "hiandromon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "imperialdramon-dragon-mode",
+      "listedName": "Imperialdramon Dragon Mode",
+      "formId": 244,
+      "sourceStage": "Mega",
+      "referenceName": "Imperialdramon: Dragon Mode",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramondragonmode",
+      "referenceEntityKey": "imperialdramondragonmode",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "imperialdramon-fighter-mode",
+      "listedName": "Imperialdramon Fighter Mode",
+      "formId": 245,
+      "sourceStage": "Mega",
+      "referenceName": "Imperialdramon: Fighter Mode",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonfightermode",
+      "referenceEntityKey": "imperialdramonfightermode",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "imperialdramon-paladin-mode",
+      "listedName": "Imperialdramon Paladin Mode",
+      "formId": 246,
+      "sourceStage": "Mega",
+      "referenceName": "Imperialdramon: Paladin Mode",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=imperialdramonpaladinmode",
+      "referenceEntityKey": "imperialdramonpaladinmode",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "jijimon",
+      "listedName": "Jijimon",
+      "formId": 247,
+      "sourceStage": "Mega",
+      "referenceName": "Jijimon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=jijimon",
+      "referenceEntityKey": "jijimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "justimon",
+      "listedName": "Justimon",
+      "formId": 248,
+      "sourceStage": "Mega",
+      "referenceName": null,
+      "referenceStage": "Mega",
+      "referenceUrl": null,
+      "referenceEntityKey": null,
+      "mappingAuditStatus": "official-candidates-verified-sheet-variant-unresolved",
+      "needsIdentityReview": true,
+      "sheetVisuallyReviewed": false,
+      "candidateReferences": [
+        {
+          "name": "Justimon: Accel Arm",
+          "stage": "Mega",
+          "entityKey": "justimon",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Justimon: Blitz Arm",
+          "stage": "Mega",
+          "entityKey": "justimon_blitzarm",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon_blitzarm",
+          "attribute": "Vaccine"
+        },
+        {
+          "name": "Justimon: Critical Arm",
+          "stage": "Mega",
+          "entityKey": "justimon_criticalarm",
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=justimon_criticalarm",
+          "attribute": "Vaccine"
+        }
+      ]
+    },
+    {
+      "entryKey": "kentaurosmon",
+      "listedName": "Kentaurosmon",
+      "formId": 249,
+      "sourceStage": "Mega",
+      "referenceName": "Kentaurosmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sleipmon",
+      "referenceEntityKey": "sleipmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kuzuhamon",
+      "listedName": "Kuzuhamon",
+      "formId": 66,
+      "sourceStage": "Mega",
+      "referenceName": "Kuzuhamon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kuzuhamon",
+      "referenceEntityKey": "kuzuhamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "leviamon",
+      "listedName": "Leviamon",
+      "formId": 250,
+      "sourceStage": "Mega",
+      "referenceName": "Leviamon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=leviamon",
+      "referenceEntityKey": "leviamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "lilithmon",
+      "listedName": "Lilithmon",
+      "formId": 251,
+      "sourceStage": "Mega",
+      "referenceName": "Lilithmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=lilithmon",
+      "referenceEntityKey": "lilithmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "machinedramon",
+      "listedName": "Machinedramon",
+      "formId": 252,
+      "sourceStage": "Mega",
+      "referenceName": "Machinedramon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=mugendramon",
+      "referenceEntityKey": "mugendramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "malomyotismon",
+      "listedName": "MaloMyotismon",
+      "formId": 253,
+      "sourceStage": "Mega",
+      "referenceName": "MaloMyotismon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=belialvamdemon",
+      "referenceEntityKey": "belialvamdemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "marineangemon",
+      "listedName": "MarineAngemon",
+      "formId": 254,
+      "sourceStage": "Mega",
+      "referenceName": "MarineAngemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=marinangemon",
+      "referenceEntityKey": "marinangemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "megagargomon",
+      "listedName": "MegaGargomon",
+      "formId": 255,
+      "sourceStage": "Mega",
+      "referenceName": "MegaGargomon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=saintgalgomon",
+      "referenceEntityKey": "saintgalgomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "metaletemon",
+      "listedName": "MetalEtemon",
+      "formId": 256,
+      "sourceStage": "Mega",
+      "referenceName": "MetalEtemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metaletemon",
+      "referenceEntityKey": "metaletemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "metalgarurumon",
+      "listedName": "MetalGarurumon",
+      "formId": 28,
+      "sourceStage": "Mega",
+      "referenceName": "MetalGarurumon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalgarurumon",
+      "referenceEntityKey": "metalgarurumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "metalseadramon",
+      "listedName": "MetalSeadramon",
+      "formId": 257,
+      "sourceStage": "Mega",
+      "referenceName": "MetalSeadramon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalseadramon",
+      "referenceEntityKey": "metalseadramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "neptunemon",
+      "listedName": "Neptunemon",
+      "formId": 258,
+      "sourceStage": "Mega",
+      "referenceName": "Neptunemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=neptunemon",
+      "referenceEntityKey": "neptunemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "omnimon",
+      "listedName": "Omnimon",
+      "formId": 259,
+      "sourceStage": "Mega",
+      "referenceName": "Omnimon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=omegamon",
+      "referenceEntityKey": "omegamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "parasimon",
+      "listedName": "Parasimon",
+      "formId": 260,
+      "sourceStage": "Mega",
+      "referenceName": "Parasimon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=parasimon",
+      "referenceEntityKey": "parasimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "phoenixmon",
+      "listedName": "Phoenixmon",
+      "formId": 261,
+      "sourceStage": "Mega",
+      "referenceName": "Phoenixmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=hououmon",
+      "referenceEntityKey": "hououmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "piedmon",
+      "listedName": "Piedmon",
+      "formId": 262,
+      "sourceStage": "Mega",
+      "referenceName": "Piedmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=piemon",
+      "referenceEntityKey": "piemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "plesiomon",
+      "listedName": "Plesiomon",
+      "formId": 59,
+      "sourceStage": "Mega",
+      "referenceName": "Plesiomon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=plesiomon",
+      "referenceEntityKey": "plesiomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "princemamemon",
+      "listedName": "PrinceMamemon",
+      "formId": 263,
+      "sourceStage": "Mega",
+      "referenceName": "PrinceMamemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=princemamemon",
+      "referenceEntityKey": "princemamemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "puppetmon",
+      "listedName": "Puppetmon",
+      "formId": 52,
+      "sourceStage": "Mega",
+      "referenceName": "Puppetmon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=pinochimon",
+      "referenceEntityKey": "pinochimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "rosemon",
+      "listedName": "Rosemon",
+      "formId": 49,
+      "sourceStage": "Mega",
+      "referenceName": "Rosemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=rosemon",
+      "referenceEntityKey": "rosemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "saberleomon",
+      "listedName": "SaberLeomon",
+      "formId": 264,
+      "sourceStage": "Mega",
+      "referenceName": "SaberLeomon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=saberleomon",
+      "referenceEntityKey": "saberleomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "sakuyamon",
+      "listedName": "Sakuyamon",
+      "formId": 63,
+      "sourceStage": "Mega",
+      "referenceName": "Sakuyamon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=sakuyamon",
+      "referenceEntityKey": "sakuyamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "seraphimon",
+      "listedName": "Seraphimon",
+      "formId": 35,
+      "sourceStage": "Mega",
+      "referenceName": "Seraphimon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=seraphimon",
+      "referenceEntityKey": "seraphimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "valkyrimon",
+      "listedName": "Valkyrimon",
+      "formId": 265,
+      "sourceStage": "Mega",
+      "referenceName": "Valkyrimon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=valkyrimon",
+      "referenceEntityKey": "valkyrimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "varodurumon",
+      "listedName": "Varodurumon",
+      "formId": 266,
+      "sourceStage": "Mega",
+      "referenceName": "Varodurumon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=valdurmon",
+      "referenceEntityKey": "valdurmon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "venommyotismon",
+      "listedName": "VenomMyotismon",
+      "formId": 17,
+      "sourceStage": "Mega",
+      "referenceName": "VenomMyotismon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=venomvamdemon",
+      "referenceEntityKey": "venomvamdemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "vikemon",
+      "listedName": "Vikemon",
+      "formId": 56,
+      "sourceStage": "Mega",
+      "referenceName": "Vikemon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=vikemon",
+      "referenceEntityKey": "vikemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "wargreymon",
+      "listedName": "WarGreymon",
+      "formId": 21,
+      "sourceStage": "Mega",
+      "referenceName": "WarGreymon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=wargreymon",
+      "referenceEntityKey": "wargreymon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "zhuqiaomon",
+      "listedName": "Zhuqiaomon",
+      "formId": 267,
+      "sourceStage": "Mega",
+      "referenceName": "Zhuqiaomon",
+      "referenceStage": "Mega",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=zhuqiaomon",
+      "referenceEntityKey": "zhuqiaomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "flamedramon",
+      "listedName": "Flamedramon",
+      "formId": 268,
+      "sourceStage": "Armor",
+      "referenceName": "Flamedramon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=fladramon",
+      "referenceEntityKey": "fladramon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kenkimon",
+      "listedName": "Kenkimon",
+      "formId": 269,
+      "sourceStage": "Armor",
+      "referenceName": "Kenkimon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kenkimon",
+      "referenceEntityKey": "kenkimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "kongoumon",
+      "listedName": "Kongoumon",
+      "formId": 270,
+      "sourceStage": "Armor",
+      "referenceName": "Kongoumon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kongoumon",
+      "referenceEntityKey": "kongoumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "magnamon",
+      "listedName": "Magnamon",
+      "formId": 271,
+      "sourceStage": "Armor",
+      "referenceName": "Magnamon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=magnamon",
+      "referenceEntityKey": "magnamon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "ponchomon",
+      "listedName": "Ponchomon",
+      "formId": 272,
+      "sourceStage": "Armor",
+      "referenceName": "Ponchomon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ponchomon",
+      "referenceEntityKey": "ponchomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "prairiemon",
+      "listedName": "Prairiemon",
+      "formId": 273,
+      "sourceStage": "Armor",
+      "referenceName": "Prairiemon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=prairiemon",
+      "referenceEntityKey": "prairiemon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "seahomon",
+      "listedName": "Seahomon",
+      "formId": 274,
+      "sourceStage": "Armor",
+      "referenceName": "Seahomon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=seahomon",
+      "referenceEntityKey": "seahomon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "shurimon",
+      "listedName": "Shurimon",
+      "formId": 275,
+      "sourceStage": "Armor",
+      "referenceName": "Shurimon",
+      "referenceStage": "Armor",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=shurimon",
+      "referenceEntityKey": "shurimon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    },
+    {
+      "entryKey": "calumon",
+      "listedName": "Calumon",
+      "formId": 276,
+      "sourceStage": "No Level",
+      "referenceName": "Calumon",
+      "referenceStage": "Unknown",
+      "referenceUrl": "https://digimon.net/reference_en/detail.php?directory_name=culumon",
+      "referenceEntityKey": "culumon",
+      "mappingAuditStatus": "official-reference-verified",
+      "needsIdentityReview": false,
+      "sheetVisuallyReviewed": false
+    }
+  ],
+  "sourceHashes": {
+    "docs/research/world-ds-inventory.json": "6bbc86a4d71e2913454398a03a629ec2e0644f92b238f6d845f5650c34318358",
+    "docs/research/world-ds-official-early.json": "d018d99e52ba08a28f0ad4ace2a2aa539dc2a7477fc2f8335772f1f3a97a4712",
+    "docs/research/world-ds-official-late.json": "613e5999d32e7b3f381a8462fae1bdc22042f4c52201d3d7641b09794b575553",
+    "data/world-ds-source-reviews.json": "fab45fb7b1618900126c7bb9eacb9658b9ce8e4b0dc847ab56eba994c961981e",
+    "data/world-ds-catalog.json": "e8204ee6d8ce8bbe9de2c24e9a0ed7e275b0ef498fce1c3721fc97b43c633f10",
+    "data/world-ds-ids.json": "1787eddd5d88ec0e26c4465d14848df624c1a44d357daad5522ebf3733e9c336"
+  },
+  "revision": 2,
+  "appliedCorrections": [
+    {
+      "entryKey": "antylamon",
+      "finding": "Missing variant-review flag and provisional Virus identity",
+      "currentStatus": "Corrected in official-late and assembled catalog; source variant remains unresolved.",
+      "qualifiedCountUnchanged": 19,
+      "previousAdditionalAuditOnlyRows": 1,
+      "currentAdditionalAuditOnlyRows": 0
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "repository": "https://github.com/espressif/esp-idf",
+  "revision": "79e3454c68248bd7d881721c9b2e94561378a8ce",
+  "version": "v5.3.6",
+  "component": "components/esp_driver_i2c",
+  "filesBeforeProjectChanges": {
+    "CMakeLists.txt": "174e39aa06aee26c7f1980fb57aa52aea60ca394ee5acf11510b5c72d1755825",
+    "Kconfig": "094d981bb3577a7d7b054dfac334a36e3dd3a435f7b5faafdcb202ffc8c5456d",
+    "i2c_common.c": "2dd38bdf169e5580125ebde7a48ad5b66a9c91ee7ecf616c761dba8810303cff",
+    "i2c_master.c": "6c670dd920d9888239b31f809e1981eb38e78cfca08fd7e7bc632b6aa5989b54",
+    "i2c_private.h": "04f01273d5f808622fc58eeb3ba8e60213ae8ccee2c75cca553baff380ac59d6",
+    "i2c_slave.c": "aee3e571ca23fd14ab42ae4719e10f773599ca31049a59c59ab2e76d3706c3fe",
+    "include/driver/i2c_master.h": "a80d91cf7561ded20f43fc3a040f085037e29762ef1cf19ce01e21e3947716d5",
+    "include/driver/i2c_slave.h": "1f3467a7c675ac3129e12010af685ea669750577b57d49e0c87553a581ca8e2a",
+    "include/driver/i2c_types.h": "76afa4818a5fcdcb4f5964f9f1f937b4fe95f470a5da9adacd3b4f5e4da639e1",
+    "linker.lf": "d8826aada4458d0236bfab67caec76936a365c56fc1803f85b4d20f2b71183d9"
+  },
+  "filesAfterProjectChanges": {
+    "CMakeLists.txt": "174e39aa06aee26c7f1980fb57aa52aea60ca394ee5acf11510b5c72d1755825",
+    "Kconfig": "094d981bb3577a7d7b054dfac334a36e3dd3a435f7b5faafdcb202ffc8c5456d",
+    "i2c_common.c": "2dd38bdf169e5580125ebde7a48ad5b66a9c91ee7ecf616c761dba8810303cff",
+    "i2c_master.c": "839380639573f53dacf248873fe57f1d3eddfc1f5864bafd2d25263d43d1959c",
+    "i2c_private.h": "04f01273d5f808622fc58eeb3ba8e60213ae8ccee2c75cca553baff380ac59d6",
+    "i2c_slave.c": "aee3e571ca23fd14ab42ae4719e10f773599ca31049a59c59ab2e76d3706c3fe",
+    "include/driver/i2c_master.h": "a80d91cf7561ded20f43fc3a040f085037e29762ef1cf19ce01e21e3947716d5",
+    "include/driver/i2c_slave.h": "1f3467a7c675ac3129e12010af685ea669750577b57d49e0c87553a581ca8e2a",
+    "include/driver/i2c_types.h": "76afa4818a5fcdcb4f5964f9f1f937b4fe95f470a5da9adacd3b4f5e4da639e1",
+    "linker.lf": "d8826aada4458d0236bfab67caec76936a365c56fc1803f85b4d20f2b71183d9"
+  },
+  "licenseSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "backport": {
+    "commit": "2523fee9cd49ca59b90bdb475c50b5277c44c876",
+    "url": "https://github.com/espressif/esp-idf/commit/2523fee9cd49ca59b90bdb475c50b5277c44c876",
+    "committedAt": "2025-10-13T08:07:22Z",
+    "issue": "https://github.com/espressif/esp-idf/issues/17720",
+    "changedFunction": "s_i2c_send_commands",
+    "behavior": "NACK bus-busy loop uses caller ticks_to_wait; timeout sets I2C_STATUS_TIMEOUT and calls the existing hardware FSM reset before normal cleanup."
+  },
+  "projectChanges": [
+    "i2c_master.c: exact upstream bounded NACK loop plus modification notice"
+  ],
+  "excluded": [
+    "Upstream test_apps; this override contains every component build source/header/configuration file."
+  ],
+  "installedSdkModified": false
+}

@@ -1,0 +1,265 @@
+{
+  "formatVersion": 1,
+  "revision": "C14-P19",
+  "sourceHandoffSha256": "9ec2a48799fce0367a36172e83243ad0f088be0c24bd98b26d7c4f4bc654d296",
+  "payloadsIncluded": true,
+  "remoteUploaded": false,
+  "printer": {
+    "model": "Anycubic Kobra S1",
+    "material": "PLA",
+    "nozzleMm": 0.4
+  },
+  "physicalFitAndScrewGripVerified": false,
+  "scope": "Six real ZIP downloads, each with native 3MF and matching G-code; no raw intermediate copies or reslicing.",
+  "supersession": "All C13 white fronts and white plates are superseded; C13 common black/red plates remain unchanged and current.",
+  "packages": [
+    {
+      "name": "common-black-two-devices",
+      "path": "downloads/common-black-two-devices.zip",
+      "bytes": 7718381,
+      "sha256": "fd72d249489681c97264a75f1737c97539f3a1156612f16bced5ee0c884dcd15",
+      "variant": "both",
+      "parts": 8,
+      "devices": 2,
+      "estimatedPrintTime": "2h 58m 2s",
+      "estimatedGrams": 73.09,
+      "unchangedFromC13": true,
+      "rfWindowNote": "The white RF window is a separate part; choose a full-white plate if new windows are needed.",
+      "members": [
+        {
+          "kind": "native",
+          "name": "common-black-two-devices.3mf",
+          "bytes": 4097548,
+          "sha256": "907bedfb81ea223cc3b22813d376a30a6709d2983e7857584ab0d0a363c76df9"
+        },
+        {
+          "kind": "gcode",
+          "name": "common-black-two-devices.gcode",
+          "bytes": 14134688,
+          "sha256": "1be4a4b9737c2b8adeb85df12622b65318679ba9957a47391d64a3e138b3a8da"
+        },
+        {
+          "kind": "documentation",
+          "name": "README.md",
+          "bytes": 2103,
+          "sha256": "08e991438a0d07ee0081da18ba491da5d01c983b16a9e86e56c1730bd069461b"
+        },
+        {
+          "kind": "checksums",
+          "name": "SHA256SUMS.txt",
+          "bytes": 268,
+          "sha256": "2fa0a3e165d75fe5a90fc28ebfb36c0f84d0483716d62e4be6706bfc43025574"
+        }
+      ],
+      "zipCrcVerified": true,
+      "nativeEmbeddedGcodeMatchesExternal": true
+    },
+    {
+      "name": "common-red-two-devices",
+      "path": "downloads/common-red-two-devices.zip",
+      "bytes": 2035525,
+      "sha256": "8f067094f61efe33e5e1c1f6b6cebabdd7efbd5f45b15851107e6814a0377435",
+      "variant": "both",
+      "parts": 4,
+      "devices": 2,
+      "estimatedPrintTime": "42m43s",
+      "estimatedGrams": 15.89,
+      "unchangedFromC13": true,
+      "rfWindowNote": "The white RF window is a separate part; choose a full-white plate if new windows are needed.",
+      "members": [
+        {
+          "kind": "native",
+          "name": "common-red-two-devices.3mf",
+          "bytes": 1080243,
+          "sha256": "6afd84f2d4eb05dbb71e2aef1c82cd4548bdee1cd9a7a5170aee7a36e32f3975"
+        },
+        {
+          "kind": "gcode",
+          "name": "common-red-two-devices.gcode",
+          "bytes": 3843705,
+          "sha256": "47c4735e719f2f609bb267ddd8d8da4b81d276aa8fd573041d2ad9dcb73db76a"
+        },
+        {
+          "kind": "documentation",
+          "name": "README.md",
+          "bytes": 1988,
+          "sha256": "7f46c6add7612e1cc2a52a453a4b7ae61496f163ba8ee9d2dfcde49153f0f8c8"
+        },
+        {
+          "kind": "checksums",
+          "name": "SHA256SUMS.txt",
+          "bytes": 264,
+          "sha256": "e1c53389a14b3155f9820d5fe4c1bb7f6a2c617c7dec093023c6a5599d207036"
+        }
+      ],
+      "zipCrcVerified": true,
+      "nativeEmbeddedGcodeMatchesExternal": true
+    },
+    {
+      "name": "C14-P19-buttons-front-pair",
+      "path": "downloads/C14-P19-buttons-front-pair.zip",
+      "bytes": 9146427,
+      "sha256": "52ee0c56895f02dfd3a729e76875aebd3fe8d9dd1c61d5cf0ed666d020c87768",
+      "variant": "two-button",
+      "parts": 2,
+      "devices": 2,
+      "estimatedPrintTime": "2h 25m 52s",
+      "estimatedGrams": 54.61,
+      "unchangedFromC13": false,
+      "rfWindowNote": "Fronts only; requires two separate unchanged C13 RF windows.",
+      "members": [
+        {
+          "kind": "native",
+          "name": "C14-P19-buttons-front-pair.3mf",
+          "bytes": 4943120,
+          "sha256": "5ed12b615a93b4c57a8361864858fb987c9e2e361d6858dafe1a75387abc8845"
+        },
+        {
+          "kind": "gcode",
+          "name": "C14-P19-buttons-front-pair.gcode",
+          "bytes": 15867004,
+          "sha256": "5527b95491814ee086ed4b344d29c212008656a597fcd6e9176e21a1b2d3ce8e"
+        },
+        {
+          "kind": "documentation",
+          "name": "README.md",
+          "bytes": 1966,
+          "sha256": "ff4f548b91bd8aea31c430195cb9a55777c2edd601aa65af0c69876fd24dffc0"
+        },
+        {
+          "kind": "checksums",
+          "name": "SHA256SUMS.txt",
+          "bytes": 272,
+          "sha256": "94e326c3407dec1d7060dcbb5df3aba2b5405b2e9ab24d8d1b73d927d21289b3"
+        }
+      ],
+      "zipCrcVerified": true,
+      "nativeEmbeddedGcodeMatchesExternal": true
+    },
+    {
+      "name": "C14-P19-buttons-full-white",
+      "path": "downloads/C14-P19-buttons-full-white.zip",
+      "bytes": 9261221,
+      "sha256": "4aa472fa0f72cdd7c31ef2dfe22b566d2c4e0b06a59ca283af9a9e156e63f627",
+      "variant": "two-button",
+      "parts": 4,
+      "devices": 2,
+      "estimatedPrintTime": "2h 35m 58s",
+      "estimatedGrams": 58.7,
+      "unchangedFromC13": false,
+      "rfWindowNote": "Includes two unchanged RF windows.",
+      "members": [
+        {
+          "kind": "native",
+          "name": "C14-P19-buttons-full-white.3mf",
+          "bytes": 4968662,
+          "sha256": "38e01311f433cd667d5a1e69f6fc52bf5f4a5941caa20c3528ea2c13cfe50bbf"
+        },
+        {
+          "kind": "gcode",
+          "name": "C14-P19-buttons-full-white.gcode",
+          "bytes": 16261989,
+          "sha256": "73f86a252d6a4cef21d01c2dd09f4d3190444d9584a341f1d17a809b490d5e24"
+        },
+        {
+          "kind": "documentation",
+          "name": "README.md",
+          "bytes": 1939,
+          "sha256": "fe41ceba94eef8ac9732f2666c86640536de46e749bfcd6d340c13c31deb76a0"
+        },
+        {
+          "kind": "checksums",
+          "name": "SHA256SUMS.txt",
+          "bytes": 272,
+          "sha256": "207c7d8ba12b89db33e353035f25293afee2280ac13a486169977e5ba61f91ee"
+        }
+      ],
+      "zipCrcVerified": true,
+      "nativeEmbeddedGcodeMatchesExternal": true
+    },
+    {
+      "name": "C14-P19-touch-front-pair",
+      "path": "downloads/C14-P19-touch-front-pair.zip",
+      "bytes": 8931568,
+      "sha256": "2d88cf44b2ce38a9f900850ddae2c0015d953018aada4b86fe51a41d1af7419f",
+      "variant": "touch-only",
+      "parts": 2,
+      "devices": 2,
+      "estimatedPrintTime": "2h 25m 12s",
+      "estimatedGrams": 54.92,
+      "unchangedFromC13": false,
+      "rfWindowNote": "Fronts only; requires two separate unchanged C13 RF windows.",
+      "members": [
+        {
+          "kind": "native",
+          "name": "C14-P19-touch-front-pair.3mf",
+          "bytes": 4828662,
+          "sha256": "df509dcdf256356b2b36c25c5e0518c81332c9663748c21ab0e2002ba595b61a"
+        },
+        {
+          "kind": "gcode",
+          "name": "C14-P19-touch-front-pair.gcode",
+          "bytes": 15433803,
+          "sha256": "37b95573737b29d51164ff6d8717d32b79dfb2310a2906c10da98d07b135ee1a"
+        },
+        {
+          "kind": "documentation",
+          "name": "README.md",
+          "bytes": 1964,
+          "sha256": "dec8dee21c6e467808c65750088be8b50e429ced2656ba3c82d1a77da8de2a6e"
+        },
+        {
+          "kind": "checksums",
+          "name": "SHA256SUMS.txt",
+          "bytes": 268,
+          "sha256": "d63b10c23b90f64cc8bc60e38501b634e00551e11038ebd2f9e0790796f781af"
+        }
+      ],
+      "zipCrcVerified": true,
+      "nativeEmbeddedGcodeMatchesExternal": true
+    },
+    {
+      "name": "C14-P19-touch-full-white",
+      "path": "downloads/C14-P19-touch-full-white.zip",
+      "bytes": 9127058,
+      "sha256": "20b334bb5b1c7cd083a1afa39b91401785ec7f7fe7d138ba78a643f3ece794e4",
+      "variant": "touch-only",
+      "parts": 4,
+      "devices": 2,
+      "estimatedPrintTime": "2h 35m 18s",
+      "estimatedGrams": 59.01,
+      "unchangedFromC13": false,
+      "rfWindowNote": "Includes two unchanged RF windows.",
+      "members": [
+        {
+          "kind": "native",
+          "name": "C14-P19-touch-full-white.3mf",
+          "bytes": 4934394,
+          "sha256": "6d7c989d2af354f1ebf157d4e905b8deb4ca18b85992599fbc85bb2e82f50826"
+        },
+        {
+          "kind": "gcode",
+          "name": "C14-P19-touch-full-white.gcode",
+          "bytes": 15828703,
+          "sha256": "905a82ce8f5f89dd0264f32da18eb20775a3e339da7bb374c3e26b567d208f54"
+        },
+        {
+          "kind": "documentation",
+          "name": "README.md",
+          "bytes": 1938,
+          "sha256": "082f5721661195b1d8b01563b6756ef0b23ca00e196d592f22a87fb0686091d1"
+        },
+        {
+          "kind": "checksums",
+          "name": "SHA256SUMS.txt",
+          "bytes": 268,
+          "sha256": "4be84c9e2527865841e4b7b9434cc6e4a8c945b028871ff49d29bb201a6c1256"
+        }
+      ],
+      "zipCrcVerified": true,
+      "nativeEmbeddedGcodeMatchesExternal": true
+    }
+  ],
+  "totalPackageBytes": 46220180,
+  "rawPlateAndGcodeBytes": 106222521
+}

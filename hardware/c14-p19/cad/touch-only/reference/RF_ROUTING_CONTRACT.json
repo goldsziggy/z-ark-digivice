@@ -1,0 +1,8 @@
+{
+  "modeled_centerline_mm": 87.12925092583193,
+  "inherited_nominal_lead_mm": 100,
+  "service_planning_allowance_mm": 10.0,
+  "planning_minimum_usable_lead_mm": 97.12925092583193,
+  "baseline_nominal_sufficient": true,
+  "status": "STOCK100_NOMINAL_LENGTH_BUDGET; final physical lead routing, bend radius and termination geometry unverified."
+}

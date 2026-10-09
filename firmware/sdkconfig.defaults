@@ -1,0 +1,12 @@
+# 16 MiB ESP32-S3 profiles. GenericSerial is the safe default; no PSRAM required.
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384
+# Native ESP32-S3 USB Serial/JTAG console, leaving expansion UART free.
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+CONFIG_ESP_CONSOLE_SECONDARY_NONE=y
+# No display, flash-frequency, CPU-frequency, charging or sleep tuning here.
+
+# Validate HTTPS peers; a separately established valid wall clock is still required.
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y

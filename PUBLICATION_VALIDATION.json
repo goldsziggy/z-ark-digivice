@@ -1,0 +1,145 @@
+{
+  "recordedAt": "2026-10-09T12:50:48.077971+00:00",
+  "scope": "Local frozen-source publication validation; no remote or device actions",
+  "sourceCommit": "f74ee4c132b4b9bc6407d99bbc20b13af9dfd962",
+  "coreAndFirmwareFilesCompared": 373,
+  "coreAndFirmwareByteExactFrozenSource": true,
+  "activeDevelopmentTreeCopied": false,
+  "originalSourceEditedByPublication": false,
+  "espRecompiledForThisExport": false,
+  "hostCmakeTests": {
+    "passed": 21,
+    "failed": 0,
+    "excluded": [
+      "background-decode-test (private scenery omitted)"
+    ]
+  },
+  "nodePublicationTests": {
+    "passed": 278,
+    "failed": 0,
+    "command": "npm run test:publication (host and Node stages verified separately)",
+    "privateSceneFixtureSuitesExcluded": [
+      "assets-service.test.ts",
+      "asset-cache.test.mjs",
+      "background*.test.*"
+    ],
+    "sandboxNote": "Loopback HTTP test servers required a local sandbox escalation; no remote network or device access."
+  },
+  "usbSdInstallerHostTests": {
+    "passed": 30,
+    "failed": 0,
+    "hardwareOpens": 0
+  },
+  "displayOrientationSanitizers": {
+    "checks": 511648,
+    "passed": true,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ]
+  },
+  "additionalChecks": {
+    "productionDefaultBrowserPacks": 0,
+    "productionDefaultDevicePacks": 0,
+    "explicitFixtureBrowserPacks": 3,
+    "explicitFixtureDevicePacks": 10,
+    "advertisedFixtureBlobsVerified": 13,
+    "excludedScene404sPerMode": 16
+  },
+  "notClaimedAsPassed": {
+    "flashHelperTests": "One class skipped because the private pinned build/evidence is omitted; historical package validation was completed before publication.",
+    "touchPollHistoricalScript": "Script depends on unpublished old Git commit 1d5552e and cannot run from this fresh export; current native UI CTest and display orientation harness pass.",
+    "fullPrivateAssetSuites": "Not run; required private scenery is not distributed."
+  },
+  "privacyScan": {
+    "filesChecked": 785,
+    "findings": [],
+    "scope": "Raw payload scan for workstation paths, private Library IDs, common production-key markers and known project device identities; prior approved nested archive/privacy and visual guide audits retained."
+  },
+  "relativeMarkdownLinksChecked": 433,
+  "relativeMarkdownLinksBroken": [],
+  "cad": {
+    "revision": "C14-P19",
+    "editableInputs": 22,
+    "printStls": 11,
+    "assemblyPdfPages": 6,
+    "guidePngs": 6,
+    "copiedFilesVerified": 40,
+    "copiedFilesAdapted": 2,
+    "copiedFilesUnchanged": 38,
+    "sourceHandoffSha256": "9ec2a48799fce0367a36172e83243ad0f088be0c24bd98b26d7c4f4bc654d296",
+    "sourceCopyManifestSha256": "44d7599b9eb782c3d771f206d07f945cb6b4c8c00c1221f36da712dad93f4822",
+    "stagedFiles": 55,
+    "stagedBytes": 56436402,
+    "externalVendorInputsRequired": true,
+    "physicalFitVerified": false,
+    "physicalScrewGripVerified": false,
+    "cadRebuiltOrReslicedDuringExport": false,
+    "independentSourceReview": "PASS",
+    "plateAndGcodeFiles": 12,
+    "rawPlateAndGcodeBytes": 106222521,
+    "downloadableZipPackages": 6,
+    "downloadableZipBytes": 46220180,
+    "actualPlateAndGcodePayloadsIncluded": true,
+    "zipCrcAndMemberHashesVerified": true,
+    "embeddedGcodePairsMatch": 6,
+    "supersededC13WhitePayloadsPresent": false,
+    "hardwareFilesByteIdenticalToApprovedExport": 54,
+    "hardwareReadmeAvailabilityWordingUpdated": true
+  },
+  "verifiedFirmware": {
+    "sourceCommit": "f74ee4c132b4b9bc6407d99bbc20b13af9dfd962",
+    "images": {
+      "bootloader": {
+        "file": "bootloader/bootloader.bin",
+        "offset": 0,
+        "bytes": 21392,
+        "sha256": "3e2d70618d82d036333b9db42a6299d95bfc820f5c72adcc9aab1dd29e3474e9"
+      },
+      "partition-table": {
+        "file": "partition_table/partition-table.bin",
+        "offset": 32768,
+        "bytes": 3072,
+        "sha256": "703550d3bc9af51a7cf8c96f486ba5acb13f81d2301035b3eae0da4f793d33f1"
+      },
+      "otadata": {
+        "file": "ota_data_initial.bin",
+        "offset": 102400,
+        "bytes": 8192,
+        "sha256": "7d2c7ac4888bfd75cd5f56e8d61f69595121183afc81556c876732fd3782c62f"
+      },
+      "app": {
+        "file": "digivice.bin",
+        "offset": 131072,
+        "bytes": 1550512,
+        "sha256": "9e728539f57bd82f3d53e4cc749c8475e52e68b124d8901d1d9324cf692ae324"
+      }
+    },
+    "sdk": {
+      "version": "5.3.6",
+      "commit": "79e3454c68248bd7d881721c9b2e94561378a8ce"
+    },
+    "sdkconfigSha256": "6a6b94a479d196a2312c3deb20012e13f868025dc4a72a48b757e424bef34233",
+    "appBytes": 1550512,
+    "otaSlotBytes": 3145728,
+    "staticDiramBytes": 166847,
+    "linkerRemainingDiramBytes": 174913,
+    "mainStackBytes": 16384,
+    "measurementsFromPriorVerifiedBuild": true
+  },
+  "priorPhysicalCheckpoint": {
+    "installedUnits": 2,
+    "appHashVerified": true,
+    "freshSnapshotSchema": 17,
+    "rulesVersion": 13,
+    "freshSavesPersistedAcrossReboot": true,
+    "sdFilesVerifiedPerUnit": 261,
+    "sdPayloadsWritten": false,
+    "earlierUnit2UsbSilenceReproducedInBoundedCheck": false,
+    "currentPlaytestSaveStateNotRead": true,
+    "physicalTouchBattleWalkingAudioPowerRfAcceptance": "pending"
+  },
+  "remoteWritesByPreparation": 0,
+  "serialPortOpensDuringExport": 0,
+  "approval": "User approved private goldsziggy/z-ark-digivice destination and reviewed source/game/firmware/C14-P19 payload; publication is performed separately by root."
+}

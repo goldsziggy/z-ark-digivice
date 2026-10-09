@@ -1,0 +1,36 @@
+{
+  "formatVersion": 1,
+  "scope": "Local visual review metadata only; no copyrighted pixel data. Source pack remains ignored and unpublished.",
+  "entries": [
+    {
+      "entryKey": "agumon",
+      "formId": 18,
+      "reviewedDate": "2026-10-06",
+      "reviewMethod": "Visual inspection of the authorized local full sprite sheet and enlarged coordinate inspection image.",
+      "sourceSha256": "a3e23aac73c971158444bd24f87cf8da9925bc9c0721209c3458389b919fc5c0",
+      "result": "Exact source-sheet poses and declared idle fallbacks accepted for private per-form pack.",
+      "canonicalCandidateSelection": null,
+      "selectionReason": null
+    },
+    {
+      "entryKey": "greymon",
+      "formId": 19,
+      "reviewedDate": "2026-10-06",
+      "reviewMethod": "Visual inspection of the authorized local full sprite sheet and enlarged coordinate inspection image.",
+      "sourceSha256": "2b97f4124e646fec2191bcc1e347dde257202e21a8bef431d473fbd996f52cf4",
+      "result": "Exact source-sheet poses and declared idle fallbacks accepted for private per-form pack.",
+      "canonicalCandidateSelection": null,
+      "selectionReason": null
+    },
+    {
+      "entryKey": "metalgreymon",
+      "formId": 20,
+      "reviewedDate": "2026-10-06",
+      "reviewMethod": "Visual inspection of the authorized local full sprite sheet and enlarged coordinate inspection image.",
+      "sourceSha256": "2f370926a0585787dfbae2b575509f8698a80539c8a68c87d3586b1d99a05665",
+      "result": "Exact source-sheet poses and declared idle fallbacks accepted for private per-form pack.",
+      "canonicalCandidateSelection": "metalgreymon-v",
+      "selectionReason": "Orange armored dinosaur shown on local sheet48322 matches preserved Vaccine form20; source display name stays MetalGreymon."
+    }
+  ]
+}

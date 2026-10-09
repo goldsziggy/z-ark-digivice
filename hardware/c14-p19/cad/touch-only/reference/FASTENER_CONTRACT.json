@@ -1,0 +1,278 @@
+{
+  "status": "Purchased kit identity/head measurements pending; provisional profile uses photographed kit M2x4/x8/x16 lengths and maximum head bounds diameter4.0,height2.0mm. Printed pilot fit requires coupon. C14-P19 enlarges only white shell smooth pilots to 1.9 mm; physical screw grip validation remains pending.",
+  "profile": "Provisional photographed-kit length subsetM2x4/x8/x16; purchased kit identity not confirmed.",
+  "head_maximum_mm": {
+    "diameter": 4.0,
+    "height": 2.0
+  },
+  "through_clearance_diameter_mm": 2.4,
+  "printed_pilot_diameter_by_target_mm": {
+    "white_main_shell": 1.9,
+    "black_top_housing": 1.6
+  },
+  "white_pilot_groups": [
+    "A",
+    "C",
+    "D",
+    "E",
+    "F"
+  ],
+  "white_pilot_count": 15,
+  "pilot_coupon_diameters_mm": [
+    1.6,
+    1.7,
+    1.8,
+    1.9
+  ],
+  "length_counts_per_device": {
+    "16": 4,
+    "4": 3,
+    "8": 13
+  },
+  "total_fasteners_per_device": 20,
+  "nominal_minimum_battery_head_clearance_mm": 1.0,
+  "left_case_head_lateral_battery_clearance_mm": 1.1,
+  "bearing_geometry_mm": {
+    "case_head_seat_z": 4.4,
+    "case_counterbore_diameter": 4.6,
+    "case_boss_minimum_radial_wall": 0.7,
+    "bezel_collar_outer_diameter": 6.0,
+    "bezel_counterbore_diameter": 4.4,
+    "bezel_collar_radial_wall": 0.8,
+    "bezel_seat_offset_from_front": 3.5,
+    "bezel_collar_top_offset_from_front": 5.7,
+    "roof_counterbore_diameter": 4.4,
+    "roof_bearing_web": 1.2,
+    "roof_minimum_counterbore_edge_wall": 0.3
+  },
+  "joints": [
+    {
+      "name": "case_1",
+      "length_mm": 16,
+      "bearing_z": 4.4,
+      "tip_z": 20.4,
+      "nominal_engagement_mm": 6.4,
+      "modeled_tip_to_pilot_limit_mm": 4.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "case_2",
+      "length_mm": 16,
+      "bearing_z": 4.4,
+      "tip_z": 20.4,
+      "nominal_engagement_mm": 6.4,
+      "modeled_tip_to_pilot_limit_mm": 4.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "case_3",
+      "length_mm": 16,
+      "bearing_z": 4.4,
+      "tip_z": 20.4,
+      "nominal_engagement_mm": 6.4,
+      "modeled_tip_to_pilot_limit_mm": 4.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "case_4",
+      "length_mm": 16,
+      "bearing_z": 4.4,
+      "tip_z": 20.4,
+      "nominal_engagement_mm": 6.4,
+      "modeled_tip_to_pilot_limit_mm": 4.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "display_machine_1",
+      "length_mm": 4,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 22.400000000000002,
+      "nominal_engagement_mm": 1.6,
+      "modeled_tip_to_pilot_limit_mm": 1.9,
+      "target": "board_mounting_posts_REFERENCE",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "M2machineboardpost; actualblinddepthunverified"
+    },
+    {
+      "name": "display_machine_2",
+      "length_mm": 4,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 22.400000000000002,
+      "nominal_engagement_mm": 1.6,
+      "modeled_tip_to_pilot_limit_mm": 1.9,
+      "target": "board_mounting_posts_REFERENCE",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "M2machineboardpost; actualblinddepthunverified"
+    },
+    {
+      "name": "display_machine_3",
+      "length_mm": 4,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 22.400000000000002,
+      "nominal_engagement_mm": 1.6,
+      "modeled_tip_to_pilot_limit_mm": 1.9,
+      "target": "board_mounting_posts_REFERENCE",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "M2machineboardpost; actualblinddepthunverified"
+    },
+    {
+      "name": "carrier_1",
+      "length_mm": 8,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 26.400000000000002,
+      "nominal_engagement_mm": 5.6,
+      "modeled_tip_to_pilot_limit_mm": 1.3,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "carrier_2",
+      "length_mm": 8,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 26.400000000000002,
+      "nominal_engagement_mm": 5.6,
+      "modeled_tip_to_pilot_limit_mm": 1.3,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "carrier_3",
+      "length_mm": 8,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 26.400000000000002,
+      "nominal_engagement_mm": 5.6,
+      "modeled_tip_to_pilot_limit_mm": 1.3,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "bezel_1",
+      "length_mm": 8,
+      "bearing_z": 35.2,
+      "tip_z": 27.200000000000003,
+      "nominal_engagement_mm": 4.5,
+      "modeled_tip_to_pilot_limit_mm": 1.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "bezel_2",
+      "length_mm": 8,
+      "bearing_z": 35.2,
+      "tip_z": 27.200000000000003,
+      "nominal_engagement_mm": 4.5,
+      "modeled_tip_to_pilot_limit_mm": 1.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "bezel_3",
+      "length_mm": 8,
+      "bearing_z": 35.2,
+      "tip_z": 27.200000000000003,
+      "nominal_engagement_mm": 4.5,
+      "modeled_tip_to_pilot_limit_mm": 0.65,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Rear-open; unchanged4.5mmthread engagement and1.15mmnominaltip-toRFplugclearance; no blindfloor assumed.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "reader_1",
+      "length_mm": 8,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 26.400000000000002,
+      "nominal_engagement_mm": 6.0,
+      "modeled_tip_to_pilot_limit_mm": 1.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "reader_2",
+      "length_mm": 8,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 26.400000000000002,
+      "nominal_engagement_mm": 6.0,
+      "modeled_tip_to_pilot_limit_mm": 1.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "reader_3",
+      "length_mm": 8,
+      "bearing_z": 18.400000000000002,
+      "tip_z": 26.400000000000002,
+      "nominal_engagement_mm": 6.0,
+      "modeled_tip_to_pilot_limit_mm": 1.0,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "rail_1",
+      "length_mm": 8,
+      "bearing_z": 23.0,
+      "tip_z": 31.0,
+      "nominal_engagement_mm": 5.6,
+      "modeled_tip_to_pilot_limit_mm": 0.6,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "rail_2",
+      "length_mm": 8,
+      "bearing_z": 23.0,
+      "tip_z": 31.0,
+      "nominal_engagement_mm": 5.6,
+      "modeled_tip_to_pilot_limit_mm": 0.6,
+      "target": "front_shell_TOUCH_ONLY",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "roof_1",
+      "length_mm": 8,
+      "bearing_z": 34.3,
+      "tip_z": 26.299999999999997,
+      "nominal_engagement_mm": 4.2,
+      "modeled_tip_to_pilot_limit_mm": 2.8,
+      "target": "card_antenna_housing_TOP",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    },
+    {
+      "name": "roof_2",
+      "length_mm": 8,
+      "bearing_z": 34.3,
+      "tip_z": 26.299999999999997,
+      "nominal_engagement_mm": 4.2,
+      "modeled_tip_to_pilot_limit_mm": 2.8,
+      "target": "card_antenna_housing_TOP",
+      "pilot_exit": "Blindprintedpilot or metalpost; actualmetalpostblinddepth unverified.",
+      "thread_class": "printedplasticpilot; couponqualificationrequired"
+    }
+  ],
+  "limitations": [
+    "User-selected 1.9 mm smooth receiving pilots for white A/C/D/E/F joints only. No modeled threads, nuts or inserts. Actual screw grip, thread compatibility and printed dimensions remain unqualified; larger pilots reduce available grip.",
+    "Head dimensions are design maxima, not verified measurements of purchased screws.",
+    "M2diameter alone does not establish thread form, usable length, head fit or printed pilot fit.",
+    "Original metal-post nominal1.6mmengagement preserved; actual post blinddepth must be measured beforeassembly.",
+    "No nuts, inserts or washers are modeled for these M2joints. Gameplay panel switches are absent when gameplay_buttons=false.",
+    "Bezel prints rear annulus down, collars up;45degreeinner ramp preservesatleast0.6mmglassclearance and\u00d840view."
+  ]
+}

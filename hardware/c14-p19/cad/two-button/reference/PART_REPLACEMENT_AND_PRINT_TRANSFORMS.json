@@ -1,0 +1,88 @@
+{
+  "revision": "C14-P19",
+  "parts": [
+    {
+      "part": "back_shell_C10",
+      "print_stl": "stl/common/back_shell_C10.stl",
+      "sha256": "f58e072c40328cd22b1eb9664ea554ab3da3cb31febfeab899b65ab7cd27ccc7",
+      "baseline_sha256": "f58e072c40328cd22b1eb9664ea554ab3da3cb31febfeab899b65ab7cd27ccc7",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "front_shell_PANEL_SWITCHES",
+      "print_stl": "stl/panel_switches/front_shell_PANEL_SWITCHES.stl",
+      "sha256": "a9639d30bba73181e5bf8a0172239aec4dd3cb4aef35d62ee13323ce3e6aa534",
+      "baseline_sha256": "6b300f971a418991d59b78d152581cde287cd1d3fbc45f3ad5f2961e5cfec9dc",
+      "action": "REPRINT: white pilot revision",
+      "flip_x_from_assembly_for_print": true
+    },
+    {
+      "part": "screen_bezel_COMMON",
+      "print_stl": "stl/common/screen_bezel_COMMON.stl",
+      "sha256": "616ceed092b1ca8684b1de237bdc6c5c02029b0f9bb87d22a2c344c6ff3d5343",
+      "baseline_sha256": "616ceed092b1ca8684b1de237bdc6c5c02029b0f9bb87d22a2c344c6ff3d5343",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "display_carrier_COMMON",
+      "print_stl": "stl/common/display_carrier_COMMON.stl",
+      "sha256": "d1af1e83e10984e10189e15e74485a194506d7923868f4e74b26e5ab342f5440",
+      "baseline_sha256": "d1af1e83e10984e10189e15e74485a194506d7923868f4e74b26e5ab342f5440",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": true
+    },
+    {
+      "part": "nfc_reader_tray_C13",
+      "print_stl": "stl/common/nfc_reader_tray_C13.stl",
+      "sha256": "3c370374effe2176b38e0e3436b6870c4f9fc9ece0512be384eceb4416eb46e7",
+      "baseline_sha256": "3c370374effe2176b38e0e3436b6870c4f9fc9ece0512be384eceb4416eb46e7",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "card_antenna_housing_TOP",
+      "print_stl": "stl/common/card_antenna_housing_TOP.stl",
+      "sha256": "3c37360f02fe38b3a161e77172335d90125c4c02bc42e8fda69cf05b104fdb9c",
+      "baseline_sha256": "3c37360f02fe38b3a161e77172335d90125c4c02bc42e8fda69cf05b104fdb9c",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "card_RF_window_and_gap_TOP",
+      "print_stl": "stl/common/card_RF_window_and_gap_TOP.stl",
+      "sha256": "412f68f5176e8e33d759bbca9a4d7578f8731b9bf0f08d18d54bda925cca2733",
+      "baseline_sha256": "412f68f5176e8e33d759bbca9a4d7578f8731b9bf0f08d18d54bda925cca2733",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "card_channel_roof_TOP",
+      "print_stl": "stl/common/card_channel_roof_TOP.stl",
+      "sha256": "ab7b7efe96705ed1e435534e895a1f4c3503102b6a6f9c38389606b6e561ce4c",
+      "baseline_sha256": "ab7b7efe96705ed1e435534e895a1f4c3503102b6a6f9c38389606b6e561ce4c",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "battery_41x71_FIT_FRAME",
+      "print_stl": "stl/fit_first/battery_41x71_FIT_FRAME.stl",
+      "sha256": "d34c9d234976c0d60a6ea973434211c6e0aabea816c7474ffd44b58644298059",
+      "baseline_sha256": "d34c9d234976c0d60a6ea973434211c6e0aabea816c7474ffd44b58644298059",
+      "action": "optional unchanged gauge",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "screen_fit_ring_46p8",
+      "print_stl": "stl/fit_first/screen_fit_ring_46p8.stl",
+      "sha256": "7bb8ebe2b0f68d0361c60b558ebbf5989e57126c117ba16decc8daf619986d24",
+      "baseline_sha256": "7bb8ebe2b0f68d0361c60b558ebbf5989e57126c117ba16decc8daf619986d24",
+      "action": "optional unchanged gauge",
+      "flip_x_from_assembly_for_print": false
+    }
+  ],
+  "all_unchanged_nonfront_parts_byte_identical": true,
+  "print_transform": "If indicated, rotate X by 180 degrees, then center XY and place minimum Z on bed. Exported print meshes are already oriented.",
+  "actual_transform_vertex_error_mm": 1.9073486328125e-06
+}

@@ -1,0 +1,1460 @@
+{
+  "sourceCommit": "16feedd",
+  "construction": "Native validated frozen8 state fixtures; no user save or raw byte forging.",
+  "fixtures": [
+    {
+      "name": "home-lumen",
+      "state": {
+        "schemaVersion": 11,
+        "rulesVersion": 8,
+        "sequence": 2,
+        "seed": 12345,
+        "rngState": 12345,
+        "steps": 100,
+        "stepCredit": 0,
+        "hp": 17,
+        "energy": 80,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 200,
+        "level": 10,
+        "maxLevel": 20,
+        "captures": 1,
+        "encounters": 1,
+        "phase": "home",
+        "wildHp": 0,
+        "wildMaxHp": 0,
+        "wildLevel": 0,
+        "wildTurn": 0,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Lumen",
+        "species": "mote",
+        "formId": 3,
+        "xp": 1800,
+        "xpToNext": 400,
+        "stage": null,
+        "artId": "lumen",
+        "combat": {
+          "maxHp": 136,
+          "attack": 32,
+          "defense": 26,
+          "magic": 32,
+          "resistance": 30,
+          "type": "grove",
+          "skills": {
+            "physical": "Canopy Claw",
+            "heavy": "Ancient Crash",
+            "magic": "Solar Bloom"
+          }
+        },
+        "message": "Your adventure begins.",
+        "activeCreatureId": 2,
+        "collectionCapacity": 8,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": null
+        },
+        "battleMode": "tactical",
+        "lastAutoBattle": null,
+        "wildSpecies": null,
+        "wildName": null,
+        "wildCombat": null,
+        "wildFormId": 0,
+        "wildRules": 0,
+        "wildCaptureChance": 0,
+        "wildGuard": null,
+        "nextMemberId": 3,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            1,
+            3
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "mote",
+            "name": "Mote",
+            "hp": 100,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 0,
+            "level": 1,
+            "capturedAtSequence": 0,
+            "formId": 1,
+            "xp": 0,
+            "xpToNext": 40,
+            "stage": null,
+            "artId": "mote",
+            "combat": {
+              "maxHp": 100,
+              "attack": 18,
+              "defense": 14,
+              "magic": 16,
+              "resistance": 16,
+              "type": "grove",
+              "skills": {
+                "physical": "Twig Tap",
+                "heavy": "Root Ram",
+                "magic": "Seed Spark"
+              }
+            }
+          },
+          {
+            "id": 2,
+            "species": "mote",
+            "name": "Lumen",
+            "hp": 17,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 200,
+            "level": 10,
+            "capturedAtSequence": 1,
+            "formId": 3,
+            "xp": 1800,
+            "xpToNext": 400,
+            "stage": null,
+            "artId": "lumen",
+            "combat": {
+              "maxHp": 136,
+              "attack": 32,
+              "defense": 26,
+              "magic": 32,
+              "resistance": 30,
+              "type": "grove",
+              "skills": {
+                "physical": "Canopy Claw",
+                "heavy": "Ancient Crash",
+                "magic": "Solar Bloom"
+              }
+            }
+          }
+        ],
+        "evolution": {
+          "options": []
+        }
+      },
+      "snapshotBase64": "REdWUwsANAIIAAAAAgAAADkwAAA5MAAAZAAAAAAAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAEAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAodY3F",
+      "migrated": {
+        "state": {
+          "schemaVersion": 12,
+          "rulesVersion": 9,
+          "sequence": 2,
+          "seed": 12345,
+          "rngState": 12345,
+          "steps": 100,
+          "stepCredit": 0,
+          "hp": 21,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 10,
+          "maxLevel": 20,
+          "captures": 1,
+          "encounters": 1,
+          "phase": "home",
+          "wildHp": 0,
+          "wildMaxHp": 0,
+          "wildLevel": 0,
+          "wildTurn": 0,
+          "captureAttempts": 0,
+          "cardUsed": false,
+          "attackBoost": 0,
+          "shield": 0,
+          "creature": "Lumen",
+          "species": "mote",
+          "formId": 3,
+          "xp": 1800,
+          "xpToNext": 400,
+          "stage": null,
+          "artId": "lumen",
+          "combat": {
+            "maxHp": 164,
+            "attack": 42,
+            "defense": 36,
+            "magic": 46,
+            "resistance": 44,
+            "type": "grove",
+            "skills": {
+              "physical": "Canopy Claw",
+              "heavy": "Ancient Crash",
+              "magic": "Solar Bloom"
+            }
+          },
+          "message": "Your adventure begins.",
+          "activeCreatureId": 2,
+          "collectionCapacity": 8,
+          "legacyCaptures": 0,
+          "onboarding": {
+            "completed": true,
+            "starterId": null
+          },
+          "battleMode": "tactical",
+          "lastAutoBattle": null,
+          "wildSpecies": null,
+          "wildName": null,
+          "wildCombat": null,
+          "wildFormId": 0,
+          "wildRules": 0,
+          "wildCaptureChance": 0,
+          "wildGuard": null,
+          "nextMemberId": 3,
+          "journal": {
+            "capacity": 512,
+            "obtainedFormIds": [
+              1,
+              3
+            ]
+          },
+          "collection": [
+            {
+              "id": 1,
+              "species": "mote",
+              "name": "Mote",
+              "hp": 100,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 0,
+              "level": 1,
+              "capturedAtSequence": 0,
+              "formId": 1,
+              "xp": 0,
+              "xpToNext": 40,
+              "stage": null,
+              "artId": "mote",
+              "combat": {
+                "maxHp": 100,
+                "attack": 18,
+                "defense": 14,
+                "magic": 16,
+                "resistance": 16,
+                "type": "grove",
+                "skills": {
+                  "physical": "Twig Tap",
+                  "heavy": "Root Ram",
+                  "magic": "Seed Spark"
+                }
+              }
+            },
+            {
+              "id": 2,
+              "species": "mote",
+              "name": "Lumen",
+              "hp": 21,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 200,
+              "level": 10,
+              "capturedAtSequence": 1,
+              "formId": 3,
+              "xp": 1800,
+              "xpToNext": 400,
+              "stage": null,
+              "artId": "lumen",
+              "combat": {
+                "maxHp": 164,
+                "attack": 42,
+                "defense": 36,
+                "magic": 46,
+                "resistance": 44,
+                "type": "grove",
+                "skills": {
+                  "physical": "Canopy Claw",
+                  "heavy": "Ancient Crash",
+                  "magic": "Solar Bloom"
+                }
+              }
+            }
+          ],
+          "evolution": {
+            "options": []
+          }
+        },
+        "snapshotBase64": "REdWUwwANAIJAAAAAgAAADkwAAA5MAAAZAAAAAAAAAAVAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAEAAAAVAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADky1fx"
+      }
+    },
+    {
+      "name": "encounter-lumen",
+      "state": {
+        "schemaVersion": 11,
+        "rulesVersion": 8,
+        "sequence": 3,
+        "seed": 12345,
+        "rngState": 12345,
+        "steps": 200,
+        "stepCredit": 0,
+        "hp": 17,
+        "energy": 80,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 200,
+        "level": 10,
+        "maxLevel": 20,
+        "captures": 1,
+        "encounters": 2,
+        "phase": "encounter",
+        "wildHp": 142,
+        "wildMaxHp": 142,
+        "wildLevel": 10,
+        "wildTurn": 0,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Lumen",
+        "species": "mote",
+        "formId": 3,
+        "xp": 1800,
+        "xpToNext": 400,
+        "stage": null,
+        "artId": "lumen",
+        "combat": {
+          "maxHp": 136,
+          "attack": 32,
+          "defense": 26,
+          "magic": 32,
+          "resistance": 30,
+          "type": "grove",
+          "skills": {
+            "physical": "Canopy Claw",
+            "heavy": "Ancient Crash",
+            "magic": "Solar Bloom"
+          }
+        },
+        "message": "A wild Pelagia appeared!",
+        "activeCreatureId": 2,
+        "collectionCapacity": 8,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": null
+        },
+        "battleMode": "tactical",
+        "lastAutoBattle": null,
+        "wildSpecies": "rill",
+        "wildName": "Pelagia",
+        "wildCombat": {
+          "maxHp": 142,
+          "attack": 28,
+          "defense": 31,
+          "magic": 40,
+          "resistance": 36,
+          "type": "tide",
+          "skills": {
+            "physical": "Trident Sweep",
+            "heavy": "Maelstrom Ram",
+            "magic": "Abyssal Wave"
+          }
+        },
+        "wildFormId": 7,
+        "wildRules": 8,
+        "wildCaptureChance": 0,
+        "wildGuard": "ward",
+        "nextMemberId": 3,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            1,
+            3
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "mote",
+            "name": "Mote",
+            "hp": 100,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 0,
+            "level": 1,
+            "capturedAtSequence": 0,
+            "formId": 1,
+            "xp": 0,
+            "xpToNext": 40,
+            "stage": null,
+            "artId": "mote",
+            "combat": {
+              "maxHp": 100,
+              "attack": 18,
+              "defense": 14,
+              "magic": 16,
+              "resistance": 16,
+              "type": "grove",
+              "skills": {
+                "physical": "Twig Tap",
+                "heavy": "Root Ram",
+                "magic": "Seed Spark"
+              }
+            }
+          },
+          {
+            "id": 2,
+            "species": "mote",
+            "name": "Lumen",
+            "hp": 17,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 200,
+            "level": 10,
+            "capturedAtSequence": 1,
+            "formId": 3,
+            "xp": 1800,
+            "xpToNext": 400,
+            "stage": null,
+            "artId": "lumen",
+            "combat": {
+              "maxHp": 136,
+              "attack": 32,
+              "defense": 26,
+              "magic": 32,
+              "resistance": 30,
+              "type": "grove",
+              "skills": {
+                "physical": "Canopy Claw",
+                "heavy": "Ancient Crash",
+                "magic": "Solar Bloom"
+              }
+            }
+          }
+        ],
+        "evolution": {
+          "options": []
+        }
+      },
+      "snapshotBase64": "REdWUwsANAIIAAAAAwAAADkwAAA5MAAAyAAAAAAAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAgAAAI4AAACOAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAIAAAACAAAAAwAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAEAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAcAAAAIAAAAAwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD6chrn",
+      "migrated": {
+        "state": {
+          "schemaVersion": 12,
+          "rulesVersion": 9,
+          "sequence": 3,
+          "seed": 12345,
+          "rngState": 12345,
+          "steps": 200,
+          "stepCredit": 0,
+          "hp": 17,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 10,
+          "maxLevel": 20,
+          "captures": 1,
+          "encounters": 2,
+          "phase": "encounter",
+          "wildHp": 142,
+          "wildMaxHp": 142,
+          "wildLevel": 10,
+          "wildTurn": 0,
+          "captureAttempts": 0,
+          "cardUsed": false,
+          "attackBoost": 0,
+          "shield": 0,
+          "creature": "Lumen",
+          "species": "mote",
+          "formId": 3,
+          "xp": 1800,
+          "xpToNext": 400,
+          "stage": null,
+          "artId": "lumen",
+          "combat": {
+            "maxHp": 136,
+            "attack": 32,
+            "defense": 26,
+            "magic": 32,
+            "resistance": 30,
+            "type": "grove",
+            "skills": {
+              "physical": "Canopy Claw",
+              "heavy": "Ancient Crash",
+              "magic": "Solar Bloom"
+            }
+          },
+          "message": "A wild Pelagia appeared!",
+          "activeCreatureId": 2,
+          "collectionCapacity": 8,
+          "legacyCaptures": 0,
+          "onboarding": {
+            "completed": true,
+            "starterId": null
+          },
+          "battleMode": "tactical",
+          "lastAutoBattle": null,
+          "wildSpecies": "rill",
+          "wildName": "Pelagia",
+          "wildCombat": {
+            "maxHp": 142,
+            "attack": 28,
+            "defense": 31,
+            "magic": 40,
+            "resistance": 36,
+            "type": "tide",
+            "skills": {
+              "physical": "Trident Sweep",
+              "heavy": "Maelstrom Ram",
+              "magic": "Abyssal Wave"
+            }
+          },
+          "wildFormId": 7,
+          "wildRules": 8,
+          "wildCaptureChance": 0,
+          "wildGuard": "ward",
+          "nextMemberId": 3,
+          "journal": {
+            "capacity": 512,
+            "obtainedFormIds": [
+              1,
+              3
+            ]
+          },
+          "collection": [
+            {
+              "id": 1,
+              "species": "mote",
+              "name": "Mote",
+              "hp": 100,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 0,
+              "level": 1,
+              "capturedAtSequence": 0,
+              "formId": 1,
+              "xp": 0,
+              "xpToNext": 40,
+              "stage": null,
+              "artId": "mote",
+              "combat": {
+                "maxHp": 100,
+                "attack": 18,
+                "defense": 14,
+                "magic": 16,
+                "resistance": 16,
+                "type": "grove",
+                "skills": {
+                  "physical": "Twig Tap",
+                  "heavy": "Root Ram",
+                  "magic": "Seed Spark"
+                }
+              }
+            },
+            {
+              "id": 2,
+              "species": "mote",
+              "name": "Lumen",
+              "hp": 17,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 200,
+              "level": 10,
+              "capturedAtSequence": 1,
+              "formId": 3,
+              "xp": 1800,
+              "xpToNext": 400,
+              "stage": null,
+              "artId": "lumen",
+              "combat": {
+                "maxHp": 136,
+                "attack": 32,
+                "defense": 26,
+                "magic": 32,
+                "resistance": 30,
+                "type": "grove",
+                "skills": {
+                  "physical": "Canopy Claw",
+                  "heavy": "Ancient Crash",
+                  "magic": "Solar Bloom"
+                }
+              }
+            }
+          ],
+          "evolution": {
+            "options": []
+          }
+        },
+        "snapshotBase64": "REdWUwwANAIJAAAAAwAAADkwAAA5MAAAyAAAAAAAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAgAAAI4AAACOAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAIAAAACAAAAAwAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAEAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAcAAAAIAAAAAwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABjnqOh"
+      },
+      "continuation": "attack 0\nattack 0\n",
+      "terminal": {
+        "state": {
+          "schemaVersion": 12,
+          "rulesVersion": 9,
+          "sequence": 5,
+          "seed": 12345,
+          "rngState": 12345,
+          "steps": 200,
+          "stepCredit": 0,
+          "hp": 17,
+          "energy": 76,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 10,
+          "maxLevel": 20,
+          "captures": 1,
+          "encounters": 2,
+          "phase": "home",
+          "wildHp": 0,
+          "wildMaxHp": 0,
+          "wildLevel": 0,
+          "wildTurn": 0,
+          "captureAttempts": 0,
+          "cardUsed": false,
+          "attackBoost": 0,
+          "shield": 0,
+          "creature": "Lumen",
+          "species": "mote",
+          "formId": 3,
+          "xp": 1800,
+          "xpToNext": 400,
+          "stage": null,
+          "artId": "lumen",
+          "combat": {
+            "maxHp": 164,
+            "attack": 42,
+            "defense": 36,
+            "magic": 46,
+            "resistance": 44,
+            "type": "grove",
+            "skills": {
+              "physical": "Canopy Claw",
+              "heavy": "Ancient Crash",
+              "magic": "Solar Bloom"
+            }
+          },
+          "message": "A gentle retreat. Rest whenever you are ready.",
+          "activeCreatureId": 2,
+          "collectionCapacity": 8,
+          "legacyCaptures": 0,
+          "onboarding": {
+            "completed": true,
+            "starterId": null
+          },
+          "battleMode": "tactical",
+          "lastAutoBattle": null,
+          "wildSpecies": null,
+          "wildName": null,
+          "wildCombat": null,
+          "wildFormId": 0,
+          "wildRules": 0,
+          "wildCaptureChance": 0,
+          "wildGuard": null,
+          "nextMemberId": 3,
+          "journal": {
+            "capacity": 512,
+            "obtainedFormIds": [
+              1,
+              3
+            ]
+          },
+          "collection": [
+            {
+              "id": 1,
+              "species": "mote",
+              "name": "Mote",
+              "hp": 100,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 0,
+              "level": 1,
+              "capturedAtSequence": 0,
+              "formId": 1,
+              "xp": 0,
+              "xpToNext": 40,
+              "stage": null,
+              "artId": "mote",
+              "combat": {
+                "maxHp": 100,
+                "attack": 18,
+                "defense": 14,
+                "magic": 16,
+                "resistance": 16,
+                "type": "grove",
+                "skills": {
+                  "physical": "Twig Tap",
+                  "heavy": "Root Ram",
+                  "magic": "Seed Spark"
+                }
+              }
+            },
+            {
+              "id": 2,
+              "species": "mote",
+              "name": "Lumen",
+              "hp": 17,
+              "energy": 76,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 200,
+              "level": 10,
+              "capturedAtSequence": 1,
+              "formId": 3,
+              "xp": 1800,
+              "xpToNext": 400,
+              "stage": null,
+              "artId": "lumen",
+              "combat": {
+                "maxHp": 164,
+                "attack": 42,
+                "defense": 36,
+                "magic": 46,
+                "resistance": 44,
+                "type": "grove",
+                "skills": {
+                  "physical": "Canopy Claw",
+                  "heavy": "Ancient Crash",
+                  "magic": "Solar Bloom"
+                }
+              }
+            }
+          ],
+          "evolution": {
+            "options": []
+          }
+        },
+        "snapshotBase64": "REdWUwwANAIJAAAABQAAADkwAAA5MAAAyAAAAAAAAAARAAAATAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAIAAAACAAAAAAAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAEAAAARAAAATAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsOfOh"
+      }
+    },
+    {
+      "name": "home-pelagia",
+      "state": {
+        "schemaVersion": 11,
+        "rulesVersion": 8,
+        "sequence": 2,
+        "seed": 12345,
+        "rngState": 12345,
+        "steps": 100,
+        "stepCredit": 0,
+        "hp": 17,
+        "energy": 80,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 200,
+        "level": 10,
+        "maxLevel": 20,
+        "captures": 1,
+        "encounters": 1,
+        "phase": "home",
+        "wildHp": 0,
+        "wildMaxHp": 0,
+        "wildLevel": 0,
+        "wildTurn": 0,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Pelagia",
+        "species": "rill",
+        "formId": 7,
+        "xp": 1800,
+        "xpToNext": 400,
+        "stage": null,
+        "artId": "pelagia",
+        "combat": {
+          "maxHp": 142,
+          "attack": 28,
+          "defense": 31,
+          "magic": 40,
+          "resistance": 36,
+          "type": "tide",
+          "skills": {
+            "physical": "Trident Sweep",
+            "heavy": "Maelstrom Ram",
+            "magic": "Abyssal Wave"
+          }
+        },
+        "message": "Your adventure begins.",
+        "activeCreatureId": 2,
+        "collectionCapacity": 8,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": null
+        },
+        "battleMode": "tactical",
+        "lastAutoBattle": null,
+        "wildSpecies": null,
+        "wildName": null,
+        "wildCombat": null,
+        "wildFormId": 0,
+        "wildRules": 0,
+        "wildCaptureChance": 0,
+        "wildGuard": null,
+        "nextMemberId": 3,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            1,
+            7
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "mote",
+            "name": "Mote",
+            "hp": 100,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 0,
+            "level": 1,
+            "capturedAtSequence": 0,
+            "formId": 1,
+            "xp": 0,
+            "xpToNext": 40,
+            "stage": null,
+            "artId": "mote",
+            "combat": {
+              "maxHp": 100,
+              "attack": 18,
+              "defense": 14,
+              "magic": 16,
+              "resistance": 16,
+              "type": "grove",
+              "skills": {
+                "physical": "Twig Tap",
+                "heavy": "Root Ram",
+                "magic": "Seed Spark"
+              }
+            }
+          },
+          {
+            "id": 2,
+            "species": "rill",
+            "name": "Pelagia",
+            "hp": 17,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 200,
+            "level": 10,
+            "capturedAtSequence": 1,
+            "formId": 7,
+            "xp": 1800,
+            "xpToNext": 400,
+            "stage": null,
+            "artId": "pelagia",
+            "combat": {
+              "maxHp": 142,
+              "attack": 28,
+              "defense": 31,
+              "magic": 40,
+              "resistance": 36,
+              "type": "tide",
+              "skills": {
+                "physical": "Trident Sweep",
+                "heavy": "Maelstrom Ram",
+                "magic": "Abyssal Wave"
+              }
+            }
+          }
+        ],
+        "evolution": {
+          "options": []
+        }
+      },
+      "snapshotBase64": "REdWUwsANAIIAAAAAgAAADkwAAA5MAAAZAAAAAAAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAMAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABdUOYh",
+      "migrated": {
+        "state": {
+          "schemaVersion": 12,
+          "rulesVersion": 9,
+          "sequence": 2,
+          "seed": 12345,
+          "rngState": 12345,
+          "steps": 100,
+          "stepCredit": 0,
+          "hp": 21,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 10,
+          "maxLevel": 20,
+          "captures": 1,
+          "encounters": 1,
+          "phase": "home",
+          "wildHp": 0,
+          "wildMaxHp": 0,
+          "wildLevel": 0,
+          "wildTurn": 0,
+          "captureAttempts": 0,
+          "cardUsed": false,
+          "attackBoost": 0,
+          "shield": 0,
+          "creature": "Pelagia",
+          "species": "rill",
+          "formId": 7,
+          "xp": 1800,
+          "xpToNext": 400,
+          "stage": null,
+          "artId": "pelagia",
+          "combat": {
+            "maxHp": 168,
+            "attack": 38,
+            "defense": 38,
+            "magic": 50,
+            "resistance": 46,
+            "type": "tide",
+            "skills": {
+              "physical": "Trident Sweep",
+              "heavy": "Maelstrom Ram",
+              "magic": "Abyssal Wave"
+            }
+          },
+          "message": "Your adventure begins.",
+          "activeCreatureId": 2,
+          "collectionCapacity": 8,
+          "legacyCaptures": 0,
+          "onboarding": {
+            "completed": true,
+            "starterId": null
+          },
+          "battleMode": "tactical",
+          "lastAutoBattle": null,
+          "wildSpecies": null,
+          "wildName": null,
+          "wildCombat": null,
+          "wildFormId": 0,
+          "wildRules": 0,
+          "wildCaptureChance": 0,
+          "wildGuard": null,
+          "nextMemberId": 3,
+          "journal": {
+            "capacity": 512,
+            "obtainedFormIds": [
+              1,
+              7
+            ]
+          },
+          "collection": [
+            {
+              "id": 1,
+              "species": "mote",
+              "name": "Mote",
+              "hp": 100,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 0,
+              "level": 1,
+              "capturedAtSequence": 0,
+              "formId": 1,
+              "xp": 0,
+              "xpToNext": 40,
+              "stage": null,
+              "artId": "mote",
+              "combat": {
+                "maxHp": 100,
+                "attack": 18,
+                "defense": 14,
+                "magic": 16,
+                "resistance": 16,
+                "type": "grove",
+                "skills": {
+                  "physical": "Twig Tap",
+                  "heavy": "Root Ram",
+                  "magic": "Seed Spark"
+                }
+              }
+            },
+            {
+              "id": 2,
+              "species": "rill",
+              "name": "Pelagia",
+              "hp": 21,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 200,
+              "level": 10,
+              "capturedAtSequence": 1,
+              "formId": 7,
+              "xp": 1800,
+              "xpToNext": 400,
+              "stage": null,
+              "artId": "pelagia",
+              "combat": {
+                "maxHp": 168,
+                "attack": 38,
+                "defense": 38,
+                "magic": 50,
+                "resistance": 46,
+                "type": "tide",
+                "skills": {
+                  "physical": "Trident Sweep",
+                  "heavy": "Maelstrom Ram",
+                  "magic": "Abyssal Wave"
+                }
+              }
+            }
+          ],
+          "evolution": {
+            "options": []
+          }
+        },
+        "snapshotBase64": "REdWUwwANAIJAAAAAgAAADkwAAA5MAAAZAAAAAAAAAAVAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAMAAAAVAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR7jwV"
+      }
+    },
+    {
+      "name": "encounter-pelagia",
+      "state": {
+        "schemaVersion": 11,
+        "rulesVersion": 8,
+        "sequence": 3,
+        "seed": 12345,
+        "rngState": 12345,
+        "steps": 200,
+        "stepCredit": 0,
+        "hp": 17,
+        "energy": 80,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 200,
+        "level": 10,
+        "maxLevel": 20,
+        "captures": 1,
+        "encounters": 2,
+        "phase": "encounter",
+        "wildHp": 136,
+        "wildMaxHp": 136,
+        "wildLevel": 10,
+        "wildTurn": 0,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Pelagia",
+        "species": "rill",
+        "formId": 7,
+        "xp": 1800,
+        "xpToNext": 400,
+        "stage": null,
+        "artId": "pelagia",
+        "combat": {
+          "maxHp": 142,
+          "attack": 28,
+          "defense": 31,
+          "magic": 40,
+          "resistance": 36,
+          "type": "tide",
+          "skills": {
+            "physical": "Trident Sweep",
+            "heavy": "Maelstrom Ram",
+            "magic": "Abyssal Wave"
+          }
+        },
+        "message": "A wild Lumen appeared!",
+        "activeCreatureId": 2,
+        "collectionCapacity": 8,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": null
+        },
+        "battleMode": "tactical",
+        "lastAutoBattle": null,
+        "wildSpecies": "mote",
+        "wildName": "Lumen",
+        "wildCombat": {
+          "maxHp": 136,
+          "attack": 32,
+          "defense": 26,
+          "magic": 32,
+          "resistance": 30,
+          "type": "grove",
+          "skills": {
+            "physical": "Canopy Claw",
+            "heavy": "Ancient Crash",
+            "magic": "Solar Bloom"
+          }
+        },
+        "wildFormId": 3,
+        "wildRules": 8,
+        "wildCaptureChance": 0,
+        "wildGuard": "ward",
+        "nextMemberId": 3,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            1,
+            7
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "mote",
+            "name": "Mote",
+            "hp": 100,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 0,
+            "level": 1,
+            "capturedAtSequence": 0,
+            "formId": 1,
+            "xp": 0,
+            "xpToNext": 40,
+            "stage": null,
+            "artId": "mote",
+            "combat": {
+              "maxHp": 100,
+              "attack": 18,
+              "defense": 14,
+              "magic": 16,
+              "resistance": 16,
+              "type": "grove",
+              "skills": {
+                "physical": "Twig Tap",
+                "heavy": "Root Ram",
+                "magic": "Seed Spark"
+              }
+            }
+          },
+          {
+            "id": 2,
+            "species": "rill",
+            "name": "Pelagia",
+            "hp": 17,
+            "energy": 80,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 200,
+            "level": 10,
+            "capturedAtSequence": 1,
+            "formId": 7,
+            "xp": 1800,
+            "xpToNext": 400,
+            "stage": null,
+            "artId": "pelagia",
+            "combat": {
+              "maxHp": 142,
+              "attack": 28,
+              "defense": 31,
+              "magic": 40,
+              "resistance": 36,
+              "type": "tide",
+              "skills": {
+                "physical": "Trident Sweep",
+                "heavy": "Maelstrom Ram",
+                "magic": "Abyssal Wave"
+              }
+            }
+          }
+        ],
+        "evolution": {
+          "options": []
+        }
+      },
+      "snapshotBase64": "REdWUwsANAIIAAAAAwAAADkwAAA5MAAAyAAAAAAAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAgAAAIgAAACIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAIAAAACAAAAAQAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAMAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAMAAAAIAAAAAwAAAEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5+1n",
+      "migrated": {
+        "state": {
+          "schemaVersion": 12,
+          "rulesVersion": 9,
+          "sequence": 3,
+          "seed": 12345,
+          "rngState": 12345,
+          "steps": 200,
+          "stepCredit": 0,
+          "hp": 17,
+          "energy": 80,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 10,
+          "maxLevel": 20,
+          "captures": 1,
+          "encounters": 2,
+          "phase": "encounter",
+          "wildHp": 136,
+          "wildMaxHp": 136,
+          "wildLevel": 10,
+          "wildTurn": 0,
+          "captureAttempts": 0,
+          "cardUsed": false,
+          "attackBoost": 0,
+          "shield": 0,
+          "creature": "Pelagia",
+          "species": "rill",
+          "formId": 7,
+          "xp": 1800,
+          "xpToNext": 400,
+          "stage": null,
+          "artId": "pelagia",
+          "combat": {
+            "maxHp": 142,
+            "attack": 28,
+            "defense": 31,
+            "magic": 40,
+            "resistance": 36,
+            "type": "tide",
+            "skills": {
+              "physical": "Trident Sweep",
+              "heavy": "Maelstrom Ram",
+              "magic": "Abyssal Wave"
+            }
+          },
+          "message": "A wild Lumen appeared!",
+          "activeCreatureId": 2,
+          "collectionCapacity": 8,
+          "legacyCaptures": 0,
+          "onboarding": {
+            "completed": true,
+            "starterId": null
+          },
+          "battleMode": "tactical",
+          "lastAutoBattle": null,
+          "wildSpecies": "mote",
+          "wildName": "Lumen",
+          "wildCombat": {
+            "maxHp": 136,
+            "attack": 32,
+            "defense": 26,
+            "magic": 32,
+            "resistance": 30,
+            "type": "grove",
+            "skills": {
+              "physical": "Canopy Claw",
+              "heavy": "Ancient Crash",
+              "magic": "Solar Bloom"
+            }
+          },
+          "wildFormId": 3,
+          "wildRules": 8,
+          "wildCaptureChance": 0,
+          "wildGuard": "ward",
+          "nextMemberId": 3,
+          "journal": {
+            "capacity": 512,
+            "obtainedFormIds": [
+              1,
+              7
+            ]
+          },
+          "collection": [
+            {
+              "id": 1,
+              "species": "mote",
+              "name": "Mote",
+              "hp": 100,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 0,
+              "level": 1,
+              "capturedAtSequence": 0,
+              "formId": 1,
+              "xp": 0,
+              "xpToNext": 40,
+              "stage": null,
+              "artId": "mote",
+              "combat": {
+                "maxHp": 100,
+                "attack": 18,
+                "defense": 14,
+                "magic": 16,
+                "resistance": 16,
+                "type": "grove",
+                "skills": {
+                  "physical": "Twig Tap",
+                  "heavy": "Root Ram",
+                  "magic": "Seed Spark"
+                }
+              }
+            },
+            {
+              "id": 2,
+              "species": "rill",
+              "name": "Pelagia",
+              "hp": 17,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 200,
+              "level": 10,
+              "capturedAtSequence": 1,
+              "formId": 7,
+              "xp": 1800,
+              "xpToNext": 400,
+              "stage": null,
+              "artId": "pelagia",
+              "combat": {
+                "maxHp": 142,
+                "attack": 28,
+                "defense": 31,
+                "magic": 40,
+                "resistance": 36,
+                "type": "tide",
+                "skills": {
+                  "physical": "Trident Sweep",
+                  "heavy": "Maelstrom Ram",
+                  "magic": "Abyssal Wave"
+                }
+              }
+            }
+          ],
+          "evolution": {
+            "options": []
+          }
+        },
+        "snapshotBase64": "REdWUwwANAIJAAAAAwAAADkwAAA5MAAAyAAAAAAAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAAAgAAAIgAAACIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAIAAAACAAAAAQAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAMAAAARAAAAUAAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAMAAAAIAAAAAwAAAEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACBC1Qh"
+      },
+      "continuation": "attack 0\nattack 0\nattack 0\n",
+      "terminal": {
+        "state": {
+          "schemaVersion": 12,
+          "rulesVersion": 9,
+          "sequence": 6,
+          "seed": 12345,
+          "rngState": 12345,
+          "steps": 200,
+          "stepCredit": 0,
+          "hp": 18,
+          "energy": 74,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 10,
+          "maxLevel": 20,
+          "captures": 1,
+          "encounters": 2,
+          "phase": "home",
+          "wildHp": 0,
+          "wildMaxHp": 0,
+          "wildLevel": 0,
+          "wildTurn": 0,
+          "captureAttempts": 0,
+          "cardUsed": false,
+          "attackBoost": 0,
+          "shield": 0,
+          "creature": "Pelagia",
+          "species": "rill",
+          "formId": 7,
+          "xp": 1800,
+          "xpToNext": 400,
+          "stage": null,
+          "artId": "pelagia",
+          "combat": {
+            "maxHp": 168,
+            "attack": 38,
+            "defense": 38,
+            "magic": 50,
+            "resistance": 46,
+            "type": "tide",
+            "skills": {
+              "physical": "Trident Sweep",
+              "heavy": "Maelstrom Ram",
+              "magic": "Abyssal Wave"
+            }
+          },
+          "message": "A gentle retreat. Rest whenever you are ready.",
+          "activeCreatureId": 2,
+          "collectionCapacity": 8,
+          "legacyCaptures": 0,
+          "onboarding": {
+            "completed": true,
+            "starterId": null
+          },
+          "battleMode": "tactical",
+          "lastAutoBattle": null,
+          "wildSpecies": null,
+          "wildName": null,
+          "wildCombat": null,
+          "wildFormId": 0,
+          "wildRules": 0,
+          "wildCaptureChance": 0,
+          "wildGuard": null,
+          "nextMemberId": 3,
+          "journal": {
+            "capacity": 512,
+            "obtainedFormIds": [
+              1,
+              7
+            ]
+          },
+          "collection": [
+            {
+              "id": 1,
+              "species": "mote",
+              "name": "Mote",
+              "hp": 100,
+              "energy": 80,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 0,
+              "level": 1,
+              "capturedAtSequence": 0,
+              "formId": 1,
+              "xp": 0,
+              "xpToNext": 40,
+              "stage": null,
+              "artId": "mote",
+              "combat": {
+                "maxHp": 100,
+                "attack": 18,
+                "defense": 14,
+                "magic": 16,
+                "resistance": 16,
+                "type": "grove",
+                "skills": {
+                  "physical": "Twig Tap",
+                  "heavy": "Root Ram",
+                  "magic": "Seed Spark"
+                }
+              }
+            },
+            {
+              "id": 2,
+              "species": "rill",
+              "name": "Pelagia",
+              "hp": 18,
+              "energy": 74,
+              "fullness": 70,
+              "mood": 80,
+              "bond": 200,
+              "level": 10,
+              "capturedAtSequence": 1,
+              "formId": 7,
+              "xp": 1800,
+              "xpToNext": 400,
+              "stage": null,
+              "artId": "pelagia",
+              "combat": {
+                "maxHp": 168,
+                "attack": 38,
+                "defense": 38,
+                "magic": 50,
+                "resistance": 46,
+                "type": "tide",
+                "skills": {
+                  "physical": "Trident Sweep",
+                  "heavy": "Maelstrom Ram",
+                  "magic": "Abyssal Wave"
+                }
+              }
+            }
+          ],
+          "evolution": {
+            "options": []
+          }
+        },
+        "snapshotBase64": "REdWUwwANAIJAAAABgAAADkwAAA5MAAAyAAAAAAAAAASAAAASgAAAEYAAABQAAAAyAAAAAoAAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAIAAAACAAAAAAAAAAEAAAABAAAAZAAAAFAAAABGAAAAUAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAgAAAAMAAAASAAAASgAAAEYAAABQAAAAyAAAAAoAAAABAAAACAcAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzBKGa"
+      }
+    }
+  ]
+}

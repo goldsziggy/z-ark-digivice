@@ -1,0 +1,11 @@
+{
+  "revision": "C14-P19",
+  "variant": "buttons",
+  "baseline": "digivice-c13-stock-rf",
+  "approval": "Sentinel_0a44a0815c848191a6f7d9410ef226f3; 2026-10-09 09:32 UTC",
+  "baseline_build_sha256": "cbfd834f395f973e283f15b80ec0eae532492b8f9655e2e357e4112e2febacb3",
+  "baseline_parameters_sha256": "7f1056e55c222d247693b42328c92628949599c05f62f5bdea79666b7e8530bb",
+  "baseline_manifest_sha256": "ca90d8f402490d27042786a582af44d27be10cd3351749b81c44c6ca7e18b7c3",
+  "change": "Only the white shell A/C/D/E/F pilot diameter; 1.6 -> 1.9 mm. Original operation order preserved.",
+  "physical_fit": "NOT VERIFIED"
+}

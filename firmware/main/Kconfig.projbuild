@@ -1,0 +1,109 @@
+menu "Digivice board bring-up"
+choice DIGIVICE_BOARD
+    prompt "Board profile"
+    default DIGIVICE_BOARD_GENERIC_SERIAL
+    help
+        GenericSerial is the safe default and configures no board GPIOs.
+        Select an exact verified board before enabling any peripheral.
+config DIGIVICE_BOARD_GENERIC_SERIAL
+    bool "GenericSerial (no board GPIOs)"
+config DIGIVICE_BOARD_WAVESHARE_146
+    bool "Waveshare ESP32-S3-Touch-LCD-1.46 standard glass, SKU29565"
+    help
+        Asserts verified GPIO7 high early to sustain battery power. Native USB
+        command/save reboot operation is verified; peripheral acceptance is
+        recorded separately. Never formats storage or changes charging control.
+config DIGIVICE_BOARD_HELTEC_UNVERIFIED
+    bool "Heltec WiFi LoRa 32 V4 (revision unverified; no board GPIOs)"
+endchoice
+config DIGIVICE_DISPLAY_TOUCH
+    bool "Enable physical SPD2010 display, touch and game screens"
+    depends on DIGIVICE_BOARD_WAVESHARE_146
+    default n
+    help
+        Exact SKU29565 QSPI panel and shared-bus touch. The game uses an
+        explicitly allocated PSRAM framebuffer and one internal DMA stripe.
+        Missing framebuffer/display leaves USB and saves available.
+config DIGIVICE_AUDIO_MOTION
+    bool "Enable physical speaker cues, raw motion and walking detector"
+    depends on DIGIVICE_DISPLAY_TOUCH
+    default n
+    help
+        PCM5101 I2S output and QMI8658 raw acceleration/gyro on the existing
+        shared bus. An independent sampler feeds a software cadence detector,
+        durable lifetime usage and eligible walking encounters. Optional tilt
+        is cosmetic. Real walking accuracy still requires bench acceptance;
+        no built-in hardware step-counter register is assumed.
+        No microphone or background streaming.
+choice DIGIVICE_DISPLAY_ORIENTATION
+    prompt "Display and touch orientation"
+    depends on DIGIVICE_DISPLAY_TOUCH
+    default DIGIVICE_DISPLAY_ORIENTATION_NATIVE
+    help
+        Rotate pixels in software and apply the matching inverse transform to
+        touch. Uses the existing framebuffer and DMA stripe; no panel axis-swap
+        command. Keep Native until the mounted case direction is confirmed.
+config DIGIVICE_DISPLAY_ORIENTATION_NATIVE
+    bool "Native (no rotation)"
+config DIGIVICE_DISPLAY_ORIENTATION_CW90
+    bool "Clockwise 90 degrees from native"
+config DIGIVICE_DISPLAY_ORIENTATION_CCW90
+    bool "Counterclockwise 90 degrees from native"
+endchoice
+config DIGIVICE_SD_ASSETS
+    bool "Use microSD as the primary downloaded-asset cache"
+    depends on DIGIVICE_BOARD_WAVESHARE_146
+    default y
+    help
+        Mount the existing FAT card using verified one-bit SDMMC wiring and
+        one bounded cache file. Never formats a card or repairs a foreign,
+        incomplete or corrupt cache automatically. Missing/unwritable cards
+        keep the compiled artwork fallback; no internal-flash cache switch.
+config DIGIVICE_QMI_PEDOMETER
+    bool "Enable legacy read-only QMI8658 counter experiment"
+    depends on DIGIVICE_BOARD_WAVESHARE_146
+    default n
+    help
+        Creates the board-owned shared I2C bus on SCL10/SDA11. The QMI adapter
+        only reads identity/configuration/counter registers. It never enables
+        or calibrates the sensor. Physical steps require a verified revision,
+        externally verified sensor configuration and later accuracy testing.
+        Leave disabled for the raw-sample software walking detector above.
+config DIGIVICE_PRIVATE_SD_ART
+    bool "Allow manually supplied private exact-form DVA artwork"
+    depends on DIGIVICE_SD_ASSETS
+    default n
+    help
+        Explicit local-use option. Reads one fixed8.3 DSFnnnnn.DVA file for
+        the selected form, validates DVA dimensions/CRC and decodes one32px
+        frame at a time. These files are unsigned user-selected content;
+        provenance stays in the accompanying host export. Does not download
+        private art, scan the roster, or enable a physical LCD renderer.
+config DIGIVICE_QMI_EXPECTED_REVISION
+    int "Bench-verified QMI revision register value (0 = unverified)"
+    depends on DIGIVICE_QMI_PEDOMETER
+    range 0 255
+    default 0
+    help
+        Do not guess a revision from the family WHO_AM_I value. Zero keeps
+        physical counter readings disabled until the actual part is verified.
+endmenu
+
+menu "Digivice network development"
+config DIGIVICE_ALLOW_PRIVATE_HTTP
+    bool "Allow explicitly provisioned private IPv4 HTTP service origins"
+    default n
+    help
+        Development only. Runtime configuration must additionally opt in.
+        Only literal RFC1918 IPv4 addresses are accepted; no public HTTP,
+        DNS exception, redirects or insecure HTTPS certificate fallback.
+        WPA2 Wi-Fi credentials in NVS are not encrypted by this prototype.
+config DIGIVICE_DEVELOPMENT_ASSETS
+    bool "Accept the public development asset signing key"
+    default n
+    help
+        Development fixtures only. The RFC6979 example signing key is public
+        and provides no production authenticity. Enable only for local tests.
+        Production signed assets need a private publisher key and a distinct
+        firmware trust pin; do not ship this option as a production trust root.
+endmenu

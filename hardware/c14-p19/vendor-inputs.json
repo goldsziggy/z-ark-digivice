@@ -1,0 +1,89 @@
+{
+  "formatVersion": 1,
+  "status": "required external inputs; redistribution terms unresolved",
+  "official_resources_url": "https://docs.waveshare.com/ESP32-S3-Touch-LCD-1.46/Resources-And-Documents",
+  "official_archive_url": "https://files.waveshare.com/wiki/ESP32-S3-Touch-LCD-1.46/ESP32-S3-Touch-LCD-1.46_Structural%20Diagram-With%20Cover.rar",
+  "variants": [
+    "cad/two-button",
+    "cad/touch-only"
+  ],
+  "meshes": [
+    {
+      "filename": "battery_connector_REFERENCE.stl",
+      "bytes": 55684,
+      "sha256": "396cad678a7d269787fa2c5e7db620637715bc29d8cb1868c37563f94ab59a2b",
+      "required_relative_path": "reference/official_meshes/battery_connector_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "header_REFERENCE.stl",
+      "bytes": 108684,
+      "sha256": "a4c52782f232b2e3d1c1660cdf49532aa1bc65f5e05a4d50381fdcb57656516f",
+      "required_relative_path": "reference/official_meshes/header_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "microphone_REFERENCE.stl",
+      "bytes": 684,
+      "sha256": "9b930495cc2c148e1d20a04eb83ed4a3a56473cf37b7979590349fe184314959",
+      "required_relative_path": "reference/official_meshes/microphone_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "mounting_posts_REFERENCE.stl",
+      "bytes": 1031184,
+      "sha256": "1dd2a93791c45699bc5a417a0be48ab1e16cb2723a4cc790605ad41a66c6aef1",
+      "required_relative_path": "reference/official_meshes/mounting_posts_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "pcb_REFERENCE.stl",
+      "bytes": 199284,
+      "sha256": "63233e5154e46100bab9800ef6de6da3e19c5bf5067b0b8546400e0bc3a3deb1",
+      "required_relative_path": "reference/official_meshes/pcb_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "rtc_connector_REFERENCE.stl",
+      "bytes": 25084,
+      "sha256": "c988375e477f783fb50aff2eb2413345e07b3b7714948687c6f7f13598899857",
+      "required_relative_path": "reference/official_meshes/rtc_connector_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "screen_and_glass_REFERENCE.stl",
+      "bytes": 315484,
+      "sha256": "26df434f18b52231dd4ee6098871a0f61830572b6e1840e2f4d4ec8f87ea25f5",
+      "required_relative_path": "reference/official_meshes/screen_and_glass_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "side_switches_REFERENCE.stl",
+      "bytes": 250084,
+      "sha256": "6a9b0d1e83d172dd65f6b5a588d59f0adc596ac3cf29650567a02768bcc47a6a",
+      "required_relative_path": "reference/official_meshes/side_switches_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "spacer_REFERENCE.stl",
+      "bytes": 97384,
+      "sha256": "f701e28eeeb880835a53136e606a8fa76b29e7b6bab366e1b426883d3fa56493",
+      "required_relative_path": "reference/official_meshes/spacer_REFERENCE.stl",
+      "included": false
+    },
+    {
+      "filename": "speaker_REFERENCE.stl",
+      "bytes": 191184,
+      "sha256": "cefdecd38a0d86f2cda6266a30f83e090a648d5e66f5d3a7842ea5e2ceaca568",
+      "required_relative_path": "reference/official_meshes/speaker_REFERENCE.stl",
+      "included": false
+    }
+  ],
+  "manual": {
+    "included": false,
+    "required_for_build": false,
+    "url": "https://www.elechouse.com/wp-content/uploads/2024/07/Elechouse-Pn5321-Mini-Product-Manual-V1.pdf",
+    "bytes": 2193017,
+    "sha256": "453db3732d70136e3571d4ef07a442c6786990096fdeb6f8f22b48f4166f8b1d"
+  }
+}

@@ -1,0 +1,326 @@
+#include "battle_presentation.hpp"
+#include "combat.hpp"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <limits>
+#include <initializer_list>
+
+using namespace digivice;
+namespace bp=digivice::battlepresentation;
+unsigned checks=0;
+#define CHECK(x) do { ++checks; if(!(x)) {std::fprintf(stderr,"FAIL %s:%d %s\n",__FILE__,__LINE__,#x); std::exit(1);} } while(false)
+
+autobattle::Trace fixture() {
+    autobattle::Trace t;
+    t.playerFormId=1;t.playerSpecies=1;t.playerLevel=1;
+    t.enemyFormId=4;t.enemySpecies=2;t.enemyLevel=1;
+    t.startSequence=10;t.endSequence=11;t.count=2;t.outcome=autobattle::Outcome::Won;
+    auto& a=t.steps[0];a.action=autobattle::Move::Physical;a.opponentAction=autobattle::Move::Magic;
+    a.playerHpBefore=100;a.playerHpAfter=91;a.enemyHpBefore=88;a.enemyHpAfter=78;
+    auto& b=t.steps[1];b.action=autobattle::Move::Magic;
+    b.playerHpBefore=b.playerHpAfter=91;b.enemyHpBefore=78;b.enemyHpAfter=0;
+    return t;
+}
+void drain(bp::Sequencer& player,std::uint64_t now) {
+    unsigned actors=0;
+    for(unsigned i=0;player.locked() && i<2000;++i) {
+        now+=100;const auto& v=player.poll(now);
+        CHECK(v.playerHp<=v.playerMaxHp && v.enemyHp<=v.enemyMaxHp);
+        CHECK(v.progressPermille<=1000);
+        const auto cue=player.consumeCue();
+        CHECK(player.consumeCue()==bp::Cue::None);
+        if(cue==bp::Cue::Attack || cue==bp::Cue::Magic)++actors;
+    }
+    CHECK(!player.locked());CHECK(actors<=96);
+    player.poll(now+100000);CHECK(player.consumeCue()==bp::Cue::None);
+}
+State encounter(std::uint32_t seed,std::uint32_t starter=2) {
+    State s=newDevice(seed);CHECK(apply(s,Action::Hatch,starter)==Error::None);
+    CHECK(apply(s,Action::Explore,1000)==Error::None);CHECK(s.phase==digivice::Phase::Encounter);return s;
+}
+struct CaptureFixture { State before,after; Action action; std::uint32_t value; };
+CaptureFixture captureFixture(CaptureResult wanted,unsigned attempt,bool walkingSeeded=true) {
+    for(unsigned seed=1;seed<=1024;++seed) {
+        auto before=walkingSeeded ? encounter(seed) : newDevice(seed);
+        if(!walkingSeeded) {
+            CHECK(apply(before,Action::Hatch,2)==Error::None); CHECK(apply(before,Action::Walk,100)==Error::None);
+            before.wildRules=kRulesVersion; // Synthetic native foe before the walking RNG's first seed.
+        }
+        before.wildHp=before.wildMaxHp/2;
+        before.captureAttempts=attempt-1;
+        auto after=before;
+        const auto action=wanted==CaptureResult::Miss?Action::Flick:Action::Capture;
+        CHECK(isValid(before)); CHECK(apply(after,action,0)==Error::None);
+        if(after.lastCapture.result==wanted) return {before,after,action,0};
+    }
+    CHECK(false); return {};
+}
+void captureChecks() {
+    bp::Sequencer player;
+    for(const auto result:{CaptureResult::Miss,CaptureResult::Escaped,CaptureResult::Captured}) for(unsigned attempt=1;attempt<=3;++attempt) {
+        const auto f=captureFixture(result,attempt); const bool miss=result==CaptureResult::Miss, caught=result==CaptureResult::Captured;
+        Snapshot beforeBytes,afterBytes;
+        CHECK(encodeSnapshot(f.before,beforeBytes) && encodeSnapshot(f.after,afterBytes));
+        CHECK(player.startTactical(f.before,f.after,f.action,f.value,0));
+        CHECK(player.view().capturePresentation && player.view().captureAttempt==attempt && player.view().captureRemaining==3-attempt);
+        CHECK(player.view().captureChance==0 && !player.view().captureMiss && !player.view().captureCaught);
+        CHECK(player.consumeCue()==bp::Cue::CaptureThrow && player.consumeCue()==bp::Cue::None);
+        CHECK(!player.startSavedCapture(f.after,1)); // Input remains locked.
+        player.poll(499);CHECK(player.locked() && player.view().captureElapsedMs==499 && player.view().captureChance==0);
+        player.poll(500);CHECK(player.locked() && player.view().captureElapsedMs==500);
+        CHECK(player.view().captureChance==f.after.lastCapture.chance && player.view().captureMiss==miss && !player.view().captureCaught);
+        CHECK(player.view().playerHp==f.before.hp && player.view().enemyHp==f.before.wildHp);
+        CHECK(player.consumeCue()==(miss?bp::Cue::CaptureFail:bp::Cue::None));
+        const auto end=miss?2100u:3900u;
+        if(!miss) {
+            player.poll(2299);CHECK(player.locked() && !player.view().captureCaught && player.consumeCue()==bp::Cue::None);
+            player.poll(2300);CHECK(player.locked() && player.view().captureCaught==caught && player.view().captured==caught);
+            CHECK(player.consumeCue()==(caught?bp::Cue::CaptureSuccess:bp::Cue::CaptureFail));
+        }
+        player.poll(end-1);CHECK(player.locked());player.poll(end);CHECK(!player.locked());
+        CHECK(player.view().captureElapsedMs==end && player.view().progressPermille==1000 && player.consumeCue()==bp::Cue::None);
+        CHECK(player.view().playerHp==f.before.hp && player.view().enemyHp==f.before.wildHp);
+        if(attempt==3 && !caught) {
+            CHECK(f.after.phase==digivice::Phase::Home && f.after.message==Message::CaptureEnded);
+            CHECK(f.after.hp==f.before.hp && player.view().outcome==autobattle::Outcome::Retreated);
+        }
+        // A reboot can replay the latest committed result, without inventing
+        // terminal target HP, changing any byte or requesting a new game event.
+        CHECK(player.startSavedCapture(f.after,0)); CHECK(player.view().captureAttempt==attempt);
+        CHECK(player.view().enemyHp==(f.after.phase==digivice::Phase::Encounter?f.after.wildHp:0));
+        player.consumeCue(); drain(player,0);
+        CHECK(player.view().captureCaught==caught && player.view().captureMiss==miss);
+        Snapshot beforeAgain,afterAgain;
+        CHECK(encodeSnapshot(f.before,beforeAgain) && encodeSnapshot(f.after,afterAgain));
+        CHECK(!std::memcmp(beforeBytes.bytes,beforeAgain.bytes,sizeof(beforeBytes.bytes)) && !std::memcmp(afterBytes.bytes,afterAgain.bytes,sizeof(afterBytes.bytes)));
+    }
+    const auto caught=captureFixture(CaptureResult::Captured,1);
+    CHECK(player.startSavedCapture(caught.after,0));player.consumeCue();
+    player.poll(100000);CHECK(player.locked() && player.view().captureElapsedMs==500 && !player.view().captureCaught);
+    CHECK(player.consumeCue()==bp::Cue::None);
+    player.poll(100001);CHECK(player.view().captureElapsedMs==501);
+    player.poll(123);CHECK(player.view().captureElapsedMs==501 && player.consumeCue()==bp::Cue::None);
+    player.poll(101799);CHECK(!player.view().captureCaught);
+    player.poll(101800);CHECK(player.view().captureCaught && player.view().captureElapsedMs==2300);
+    CHECK(player.consumeCue()==bp::Cue::CaptureSuccess && player.consumeCue()==bp::Cue::None);
+    player.poll(103399);CHECK(player.locked());player.poll(103400);CHECK(!player.locked());
+    CHECK(player.startSavedCapture(caught.after,0));player.consumeCue();player.poll(500);player.poll(800);
+    player.pause(true,800);CHECK(player.view().paused && player.locked());
+    player.poll(99999);CHECK(player.view().captureElapsedMs==800 && player.consumeCue()==bp::Cue::None);
+    player.pause(false,100000);player.poll(100000);CHECK(player.view().captureElapsedMs==800);
+    player.poll(101499);CHECK(!player.view().captureCaught);player.poll(101500);CHECK(player.view().captureCaught);
+    CHECK(player.consumeCue()==bp::Cue::CaptureSuccess);player.poll(103099);CHECK(player.locked());player.poll(103100);CHECK(!player.locked());
+    const auto miss=captureFixture(CaptureResult::Miss,3);
+    CHECK(player.startSavedCapture(miss.after,0));player.consumeCue();
+    player.poll(100000);CHECK(player.view().captureMiss && player.view().captureElapsedMs==500);
+    CHECK(player.consumeCue()==bp::Cue::CaptureFail);player.poll(101599);CHECK(player.locked());player.poll(101600);CHECK(!player.locked());
+    CHECK(player.startSavedCapture(caught.after,0));player.cancel();CHECK(!player.locked() && !player.view().capturePresentation);
+    player.poll(100000);CHECK(player.consumeCue()==bp::Cue::None);
+    // Background walking can checkpoint mid-reveal without making a saved
+    // capture stale. A meaningful later action still invalidates its replay.
+    for(const auto result:{CaptureResult::Miss,CaptureResult::Escaped,CaptureResult::Captured}) for(bool seeded:{false,true}) {
+        auto background=captureFixture(result,1,seeded).after;
+        const auto foreground=background.foregroundSequence;
+        if(!seeded) CHECK(apply(background,Action::EncounterSeed,1234)==Error::None);
+        CHECK(apply(background,Action::AccrueSteps,64)==Error::None);
+        CHECK(background.sequence>foreground && background.foregroundSequence==foreground);
+        Snapshot bytes;State reboot;
+        CHECK(encodeSnapshot(background,bytes) && decodeSnapshot(bytes.bytes,kSnapshotSize,reboot)==SnapshotStatus::Ok);
+        CHECK(player.startSavedCapture(reboot,0)); CHECK(player.view().captureAttempt==1); player.cancel();
+        CHECK(apply(reboot,Action::Walk,1)==Error::None);
+        CHECK(!player.startSavedCapture(reboot,0));
+    }
+    auto stale=caught.after;CHECK(apply(stale,Action::Feed)==Error::None);CHECK(!player.startSavedCapture(stale,0));
+    auto invalid=caught.after;invalid.lastCapture.sequence=0;CHECK(!player.startSavedCapture(invalid,0));
+    invalid=caught.after;invalid.lastCapture.sequence++;CHECK(!player.startSavedCapture(invalid,0));
+    invalid=caught.after;invalid.lastCapture.attempt=4;CHECK(!player.startSavedCapture(invalid,0));
+    invalid=caught.after;invalid.lastCapture.targetFormId=11;CHECK(!player.startSavedCapture(invalid,0));
+    invalid=caught.after;invalid.lastCapture.targetLevel=2;CHECK(!player.startSavedCapture(invalid,0));
+    invalid=miss.after;invalid.lastCapture.chance=50;CHECK(!player.startSavedCapture(invalid,0));
+    CHECK(!player.startSavedCapture(newDevice(),0));
+    // Historical synthetic capture metadata stays intact, but never boots into
+    // a test-creature reveal. Pending-only cleanup preserves foreground identity.
+    auto historicalTest=miss.after;
+    historicalTest.lastCapture.targetFormId=4;
+    CHECK(isValid(historicalTest));
+    CHECK(!player.startSavedCapture(historicalTest,0));
+    CHECK(apply(historicalTest,Action::AccrueSteps,1000)==Error::None);
+    historicalTest.pendingEncounter={4,1,12};
+    CHECK(isValid(historicalTest));
+    const auto historicalRecord=historicalTest.lastCapture;
+    const auto historicalForeground=historicalTest.foregroundSequence;
+    CHECK(apply(historicalTest,Action::ResolveTestEncounter,0)==Error::None);
+    CHECK(historicalTest.foregroundSequence==historicalForeground &&
+          !std::memcmp(&historicalRecord,&historicalTest.lastCapture,sizeof(historicalRecord)));
+    CHECK(!player.startSavedCapture(historicalTest,0) && !player.locked());
+    // Actual Auto capture frames preserve per-throw metadata, HP and the saved
+    // third-failure endpoint; they cannot invent a retaliating opponent actor.
+    bool sawThird=false,sawCaught=false;
+    for(unsigned seed=1;seed<=1024 && (!sawThird || !sawCaught);++seed) {
+        auto state=encounter(seed);state.battleMode=BattleMode::Auto;autobattle::Trace trace;
+        CHECK(applyAuto(state,&trace)==Error::None && trace.combatRulesVersion==12);
+        for(std::size_t i=0;i<trace.count;++i) if(trace.steps[i].action==autobattle::Move::Capture) {
+            const auto& step=trace.steps[i];CHECK(step.opponentAction==autobattle::Move::None && step.playerHpBefore==step.playerHpAfter);
+            CHECK(step.captureAttempt>=1 && step.captureAttempt<=3 && step.captureChance>=10 && step.captureChance<=90);
+        }
+        sawCaught=sawCaught || trace.outcome==autobattle::Outcome::Captured;
+        if(state.message==Message::CaptureEnded) { sawThird=true;CHECK(trace.steps[trace.count-1].playerHpAfter>0); }
+        CHECK(player.startAuto(trace,0));player.consumeCue();drain(player,0);
+        auto bad=trace;bad.playerOffenseBonus=6;CHECK(!player.startAuto(bad,0));
+        for(std::size_t i=0;i<trace.count;++i) if(trace.steps[i].action==autobattle::Move::Capture) {
+            bad=trace;bad.steps[i].opponentAction=autobattle::Move::Physical;CHECK(!player.startAuto(bad,0));
+            bad=trace;bad.steps[i].captureResult=0;CHECK(!player.startAuto(bad,0));
+            bad=trace;bad.steps[i].captureAttempt=4;CHECK(!player.startAuto(bad,0));break;
+        }
+    }
+    CHECK(sawThird && sawCaught);
+    // Frozen carried-over policies keep zero capture metadata and their old
+    // actor/impact timeline. The new care/capture presentation cannot leak in.
+    for(unsigned rules=7;rules<=11;++rules) {
+        auto state=encounter(91);state.wildRules=rules;state.battleMode=BattleMode::Auto;
+        autobattle::Trace trace;CHECK(isValid(state) && applyAuto(state,&trace)==Error::None);
+        CHECK(trace.combatRulesVersion!=12 && !trace.playerOffenseBonus && !trace.playerProtectionBonus);
+        CHECK(state.lastCapture.result==CaptureResult::None);
+        for(std::size_t i=0;i<trace.count;++i) CHECK(!trace.steps[i].captureAttempt && !trace.steps[i].captureChance && !trace.steps[i].captureResult);
+        CHECK(player.startAuto(trace,0));player.consumeCue();
+        for(unsigned now=100;player.locked() && now<200000;now+=100) {
+            player.poll(now);CHECK(!player.view().capturePresentation);player.consumeCue();
+        }
+        CHECK(!player.locked());
+    }
+}
+int main() {
+    CHECK(sizeof(bp::Sequencer)<=2048);
+    auto t=fixture();const auto original=t;
+    bp::Sequencer player;
+    CHECK(player.startAuto(t,100));CHECK(player.locked());
+    CHECK(player.view().actor==bp::Actor::Player && player.view().enemyHp==88);
+    CHECK(!std::strcmp(player.view().moveName,combat::formProfile(1,1).physicalSkill));
+    CHECK(player.consumeCue()==bp::Cue::Attack);CHECK(player.consumeCue()==bp::Cue::None);
+    CHECK(!player.startAuto(t,101));
+    player.poll(449);CHECK(player.view().enemyHp==88 && !player.view().flash);
+    player.poll(450);CHECK(player.view().enemyHp==78 && player.view().playerHp==100 && player.view().flash);
+    CHECK(player.consumeCue()==bp::Cue::Hit);
+    player.poll(1300);CHECK(player.view().actor==bp::Actor::Opponent);
+    CHECK(!std::strcmp(player.view().moveName,combat::formProfile(4,1).magicSkill));
+    CHECK(player.consumeCue()==bp::Cue::Magic);
+    player.poll(1650);CHECK(player.view().playerHp==91);CHECK(player.consumeCue()==bp::Cue::Hit);
+    player.poll(2500);CHECK(player.view().actor==bp::Actor::Player && player.view().turn==2);
+    CHECK(player.consumeCue()==bp::Cue::Magic);
+    player.poll(2850);CHECK(player.view().enemyHp==0);CHECK(player.consumeCue()==bp::Cue::Hit);
+    player.poll(3700);CHECK(player.view().phase==bp::Phase::Summary && player.locked());
+    CHECK(player.consumeCue()==bp::Cue::Win);
+    player.poll(5299);CHECK(player.locked());player.poll(5300);CHECK(!player.locked());
+    CHECK(player.consumeCue()==bp::Cue::None);CHECK(!std::memcmp(&t,&original,sizeof(t)));
+
+    // A stalled display shows the current impact, then holds it for 850ms. It
+    // cannot emit an entire fight's effects at the next clock sample.
+    CHECK(player.startAuto(t,0));player.consumeCue();
+    player.poll(100000);CHECK(player.view().actor==bp::Actor::Player);
+    CHECK(player.consumeCue()==bp::Cue::Hit);CHECK(player.consumeCue()==bp::Cue::None);
+    player.poll(100001);CHECK(player.view().actor==bp::Actor::Player);
+    player.poll(100849);CHECK(player.view().actor==bp::Actor::Player);
+    player.poll(100850);CHECK(player.view().actor==bp::Actor::Opponent);
+    CHECK(player.consumeCue()==bp::Cue::Magic);
+    const auto frozen=player.view();player.poll(12);CHECK(player.view().playerHp==frozen.playerHp && player.view().phase==frozen.phase);
+    player.pause(true,100900);CHECK(player.view().paused && player.locked());
+    player.poll(999999);CHECK(player.view().playerHp==100 && player.consumeCue()==bp::Cue::None);
+    player.pause(false,1000000);CHECK(!player.view().paused);
+    player.poll(1000299);CHECK(player.view().playerHp==100);
+    player.poll(1000300);CHECK(player.view().playerHp==91);CHECK(player.consumeCue()==bp::Cue::Hit);
+    player.cancel();CHECK(!player.locked() && player.view().phase==bp::Phase::Idle);
+    player.poll(UINT64_MAX);CHECK(player.consumeCue()==bp::Cue::None);
+
+    // Invalid/dead-target traces do not replace a valid completed view.
+    auto bad=t;bad.count=49;CHECK(!player.startAuto(bad,0));
+    bad=t;bad.steps[1].enemyHpBefore=0;CHECK(!player.startAuto(bad,0));
+    bad=t;bad.steps[1].opponentAction=autobattle::Move::Magic;CHECK(!player.startAuto(bad,0));
+    bad=t;bad.steps[0].captured=true;CHECK(!player.startAuto(bad,0));
+    bad=t;bad.playerFormId=0;CHECK(!player.startAuto(bad,0));
+    bad=t;bad.endSequence=bad.startSequence;CHECK(!player.startAuto(bad,0));
+
+    // Counter is a distinct opponent effect, never player damage plus a second
+    // invented wild attack. A final capture similarly has no retaliation.
+    auto reflected=fixture();reflected.count=1;reflected.outcome=autobattle::Outcome::Retreated;
+    auto& r=reflected.steps[0];r.action=autobattle::Move::Heavy;r.guard=autobattle::Move::Counter;
+    r.opponentAction=autobattle::Move::Counter;r.reflected=true;r.enemyHpAfter=r.enemyHpBefore;r.playerHpAfter=0;
+    CHECK(player.startAuto(reflected,0));CHECK(player.view().damage==0);
+    player.consumeCue();player.poll(350);CHECK(player.consumeCue()==bp::Cue::None && player.view().enemyHp==88);
+    player.poll(1200);CHECK(player.view().move==autobattle::Move::Counter && player.view().damage==100);
+    player.consumeCue();player.poll(1550);CHECK(player.view().playerHp==0 && player.consumeCue()==bp::Cue::Hit);
+    player.poll(2400);CHECK(player.view().phase==bp::Phase::Summary && player.consumeCue()==bp::Cue::Retreat);
+    player.cancel();
+    auto captured=fixture();captured.count=1;captured.outcome=autobattle::Outcome::Captured;
+    auto& c=captured.steps[0];c.action=autobattle::Move::Capture;c.opponentAction=autobattle::Move::None;
+    c.playerHpAfter=c.playerHpBefore;c.enemyHpAfter=c.enemyHpBefore;c.captured=true;
+    CHECK(player.startAuto(captured,0));CHECK(player.consumeCue()==bp::Cue::CaptureThrow);
+    player.poll(350);CHECK(player.view().captured && player.consumeCue()==bp::Cue::CaptureSuccess);
+    player.poll(1200);CHECK(player.view().phase==bp::Phase::Summary && player.consumeCue()==bp::Cue::None);
+    player.cancel();
+
+    // Build real committed native outcomes. Presentation never changes either
+    // input snapshot, and every valid native trace can finish without more events.
+    for(unsigned starter=1;starter<=8;++starter) for(unsigned seed=1;seed<=8;++seed) {
+        State before=encounter(seed,starter);before.battleMode=BattleMode::Auto;
+        State after=before;autobattle::Trace actual;
+        CHECK(applyAuto(after,&actual)==Error::None);
+        Snapshot a,b;CHECK(encodeSnapshot(before,a) && encodeSnapshot(after,b));
+        CHECK(player.startAuto(actual,0));player.consumeCue();drain(player,0);
+        Snapshot aa,bb;CHECK(encodeSnapshot(before,aa) && encodeSnapshot(after,bb));
+        CHECK(!std::memcmp(a.bytes,aa.bytes,sizeof(a.bytes)) && !std::memcmp(b.bytes,bb.bytes,sizeof(b.bytes)));
+    }
+    for(auto action:{Action::Attack,Action::Magic,Action::Heavy}) {
+        auto before=encounter(42);auto after=before;
+        CHECK(apply(after,action)==Error::None);
+        CHECK(player.startTactical(before,after,action,0,0));
+        CHECK(player.view().damage==before.wildHp-after.wildHp);
+        player.consumeCue();drain(player,0);
+    }
+    // Real lethal response: display combat HP zero, not the saved 10% recovery;
+    // reconstruct the remaining wild HP with the existing combat resolver.
+    auto before=encounter(2);before.hp=before.collection[0].hp=1;
+    auto after=before;CHECK(isValid(before));CHECK(apply(after,Action::Attack)==Error::None);
+    CHECK(after.phase==digivice::Phase::Home && after.hp>0);
+    CHECK(player.startTactical(before,after,Action::Attack,0,0));
+    player.consumeCue();player.poll(350);CHECK(player.view().enemyHp>0 && player.view().enemyHp<before.wildHp);
+    player.consumeCue();player.poll(1200);player.consumeCue();player.poll(1550);CHECK(player.view().playerHp==0);
+    player.cancel();
+    // Frozen rules11 missed flick still consumes the historical response.
+    before=encounter(9);before.wildRules=11;before.wildHp=before.wildMaxHp/2;after=before;
+    CHECK(apply(after,Action::Flick,0)==Error::None);
+    CHECK(player.startTactical(before,after,Action::Flick,0,0));CHECK(player.view().aimMiss);
+    player.consumeCue();player.poll(350);CHECK(player.consumeCue()==bp::Cue::CaptureFail);
+    player.poll(1200);CHECK(player.view().actor==bp::Actor::Opponent);
+    player.cancel();
+    // A finishing hit followed by XP level-up displays the actual combat HP,
+    // not the larger care HP which was already durably awarded afterward.
+    before=encounter(17);before.wildHp=1;before.collection[0].xp=39;after=before;
+    CHECK(isValid(before));CHECK(apply(after,Action::Attack)==Error::None);
+    CHECK(after.phase==digivice::Phase::Home && after.message==Message::Trained && after.level==2);
+    CHECK(player.startTactical(before,after,Action::Attack,0,0));
+    player.consumeCue();player.poll(350);CHECK(player.view().playerHp==before.hp && player.view().enemyHp==0);
+    player.consumeCue();player.poll(1200);CHECK(player.view().phase==bp::Phase::Summary);
+    CHECK(player.consumeCue()==bp::Cue::Win);player.cancel();
+    // The real core's Heavy/Counter turn becomes precisely one reflected hit.
+    before=encounter(12);before.wildTurn=2;after=before;
+    CHECK(wildGuard(before)==combat::Defense::Counter);CHECK(apply(after,Action::Heavy)==Error::None);
+    CHECK(player.startTactical(before,after,Action::Heavy,0,0));
+    player.consumeCue();player.poll(350);CHECK(player.view().enemyHp==before.wildHp && !player.view().damage);
+    player.poll(1200);CHECK(player.view().move==autobattle::Move::Counter && player.view().reflected);
+    CHECK(player.view().damage==before.hp-after.hp);player.cancel();
+    CHECK(!player.startTactical(before,before,Action::Flick,0,0));
+    CHECK(!player.startTactical(before,after,Action::Feed,0,0));
+    // Terminal attack reconstruction uses the saved rules12 care bonus, while
+    // displaying combat HP rather than the already committed retreat healing.
+    before=encounter(2);before.hp=before.collection[0].hp=1;
+    before.fullness=before.collection[0].fullness=100;before.mood=before.collection[0].mood=100;before.bond=before.collection[0].bond=100;
+    const auto* member=activeMember(before);
+    const auto expected=combat::resolveCareForms(member->formId,member->level,before.wildFormId,before.wildLevel,combat::Move::Physical,wildGuard(before),memberCare(*member),{}).damage;
+    const auto oldDamage=combat::resolveForms(member->formId,member->level,before.wildFormId,before.wildLevel,combat::Move::Physical,wildGuard(before)).damage;
+    CHECK(expected>oldDamage);after=before;CHECK(apply(after,Action::Attack)==Error::None && after.message==Message::Retreated);
+    CHECK(player.startTactical(before,after,Action::Attack,0,0));CHECK(player.view().damage==expected);
+    player.consumeCue();player.poll(350);CHECK(player.view().enemyHp==before.wildHp-expected);player.cancel();
+    captureChecks();
+    std::printf("Battle presentation: %u checks passed; sequencer %zu bytes\n",checks,sizeof(bp::Sequencer));
+}

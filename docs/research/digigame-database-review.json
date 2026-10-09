@@ -1,0 +1,681 @@
+{
+  "formatVersion": 1,
+  "status": "read-only-metadata-proposal",
+  "checkedDate": "2026-10-07T01:11:54.346283+00:00",
+  "source": {
+    "repository": "https://github.com/EwertonMendes/DigiGame",
+    "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+    "checkout": false,
+    "upstreamCodeExecuted": false,
+    "dependenciesInstalled": false,
+    "method": "git show pinned JSON and source text; Python standard-library JSON parsing and arithmetic written for this inspection; no upstream imports, execution, hooks, builds or network downloads."
+  },
+  "inputs": {
+    "database/base-digimon-list.json": {
+      "bytes": 253568,
+      "sha256": "1d61f6fc03f62213f1078784ba675d6524b64e10ac946edf63bd97b391f3544f",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json"
+    },
+    "database/techniques.json": {
+      "bytes": 2056242,
+      "sha256": "9e0ef2b1384d015dad460292b330a2628781230f13dbd31b7452ee24450224e6",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/techniques.json"
+    },
+    "database/digimon-learnsets.json": {
+      "bytes": 182229,
+      "sha256": "a773d452f5be9a5cc9ac9aef4d6cb12701cc5ccf9a2a17fb6d273cfd1e9053bd",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/digimon-learnsets.json"
+    },
+    "database/technique-source-audit.json": {
+      "bytes": 1004325,
+      "sha256": "b0b9c0b45d707273d243982f3023b5be6e633df805c0f7f4ea34d627b5943251",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/technique-source-audit.json"
+    },
+    "database/digimon-int-source-audit.json": {
+      "bytes": 79343,
+      "sha256": "0640eb1af809dc5667805d66329224b58d4ccddea86bcf41f4d7cabf5918c6e0",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/digimon-int-source-audit.json"
+    },
+    "database/progression-balance.json": {
+      "bytes": 3640,
+      "sha256": "e5ef56faa28dce2e1884f8a831866ddf9f06c5f837d69d939288349591b14b94",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/progression-balance.json"
+    },
+    "database/battle-balance.json": {
+      "bytes": 565,
+      "sha256": "39c4ef72395f31c6b04361d19460c2943678e53e48a0d5f26fddbf87407dd434",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/battle-balance.json"
+    },
+    "database/technique-curation.json": {
+      "bytes": 4604,
+      "sha256": "a19c9257d8d8d73124fa59151bd4e151dba1749e6f42dbab32d13a1f840b5ad1",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/technique-curation.json"
+    },
+    "database/source-data/lost-evolution.json": {
+      "bytes": 97126,
+      "sha256": "27e5743eef20069fa21690ef1e978308a06d4ceb8f371614b9325f7758bd27cb",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/source-data/lost-evolution.json"
+    },
+    "database/technique-records.json": {
+      "bytes": 520541,
+      "sha256": "d813397fd41140cc5121b72d616f3c83ee955692e715d5ddf14b46363191a3c3",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/technique-records.json"
+    },
+    "tools/build_technique_catalog.mjs": {
+      "bytes": 28275,
+      "sha256": "03b66e759ab011c9366becc5e299de9fab7af501b01a9a5480c4a8f5dd7ecbea",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/build_technique_catalog.mjs"
+    },
+    "src/digimon/DigimonDatabase.gd": {
+      "bytes": 6610,
+      "sha256": "8137e81650c6d02ce111918744883c52108e858610819a231ff274a5f244ab76",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/src/digimon/DigimonDatabase.gd"
+    },
+    "tools/enrich_digimon_database.py": {
+      "bytes": 4719,
+      "sha256": "2707bc0bc2a79747c7974282fc015011d0b31d28f826d320e5a06894343b7469",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/enrich_digimon_database.py"
+    },
+    "tools/migrate_digimon_int.py": {
+      "bytes": 6003,
+      "sha256": "5860066c6ab9d3bb42f9c14e8ad9c6f5ddb815e88934e02fd5e00bd8ac7e2d77",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/migrate_digimon_int.py"
+    },
+    "docs/digimon-domain.md": {
+      "bytes": 5091,
+      "sha256": "c7ace69781ad85dad95c779e1b8e93c7705ea1c9aba40ec03cdf70bd188d8ed4",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/docs/digimon-domain.md"
+    },
+    "Plan.md": {
+      "bytes": 27108,
+      "sha256": "a7e47be058d21aed08ae5f4455cb7b90a618e3b3144f52db2d82011bb12c5048",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/Plan.md"
+    }
+  },
+  "currentBaseline": {
+    "sourceEntries": 255,
+    "nativeForms": 276,
+    "sourceEntrySkillSlots": 765,
+    "distinctAuthoredSourceSkillLabels": 765,
+    "rulesVersion": 6,
+    "catalogVersion": 2,
+    "catalogSha256": "0436473f475c48300b8fc973f4c726d2204852bca8916f34bcd6a6d4f73826fd",
+    "numericProfilesUnchanged": true,
+    "saveIdsUnchanged": true,
+    "activeArtworkUnchanged": true
+  },
+  "databaseSchema": {
+    "baseRows": 409,
+    "key": "seed UUID is species identity, not an individual save ID",
+    "fieldPresence": {
+      "MOV": 409,
+      "atk": 409,
+      "attribute": 409,
+      "bitFarmingRate": 409,
+      "def": 409,
+      "degenerateSeedList": 409,
+      "digiEvolutionSeedList": 409,
+      "element": 1,
+      "evolutionRequirements": 409,
+      "hp": 409,
+      "img": 409,
+      "int": 409,
+      "movementType": 409,
+      "mp": 409,
+      "name": 409,
+      "rank": 409,
+      "reconstructable": 12,
+      "seed": 409,
+      "species": 409,
+      "speed": 409
+    },
+    "rankCounts": {
+      "Champion": 111,
+      "Fresh": 3,
+      "Fusion": 12,
+      "In-Training": 24,
+      "Mega": 94,
+      "Rookie": 61,
+      "Ultimate": 104
+    },
+    "familyField": "species (Dark/Beast/Holy/Machine/Aquan/Dragon/Insect/Plant/Bird)",
+    "familyCounts": {
+      "Aquan": 50,
+      "Beast": 58,
+      "Bird": 33,
+      "Dark": 63,
+      "Dragon": 50,
+      "Holy": 55,
+      "Insect/Plant": 47,
+      "Machine": 53
+    },
+    "attributeCounts": {
+      "Data": 175,
+      "Vaccine": 121,
+      "Virus": 113
+    },
+    "elementPresent": 1,
+    "typeMappingWarning": "Upstream family/species, Virus/Vaccine/Data attribute, nine technique elements and our grove/tide/ember/neutral combat type are separate systems. Never overwrite one from another.",
+    "statRanges": {
+      "hp": {
+        "minimum": 55,
+        "maximum": 790
+      },
+      "mp": {
+        "minimum": 10,
+        "maximum": 2298
+      },
+      "atk": {
+        "minimum": 30,
+        "maximum": 255
+      },
+      "def": {
+        "minimum": 20,
+        "maximum": 188
+      },
+      "int": {
+        "minimum": 17,
+        "maximum": 300
+      },
+      "speed": {
+        "minimum": 14,
+        "maximum": 400
+      }
+    },
+    "distinctBaseStatTuples": 408,
+    "evolution": {
+      "forwardField": "digiEvolutionSeedList",
+      "reverseField": "degenerateSeedList",
+      "requirementField": "evolutionRequirements",
+      "forwardReferences": 366,
+      "allForwardTargetsResolve": true,
+      "forwardMaximum": 4,
+      "requirementTypes": {
+        "level": 395
+      },
+      "semantics": "Legacy normalization applies each source row requirement list to every outgoing edge. Do not reinterpret as target requirements; see separate evolution review.",
+      "normalizationSource": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/src/digimon/DigimonDatabase.gd#L161-L186"
+    }
+  },
+  "identityReview": {
+    "file": "docs/research/digigame-identity-candidates.json",
+    "sha256": "9f38db64a6ae03123d93b67c38d7de5ae760903ac6deea4fd61b13ef65e58652",
+    "counts": {
+      "sourceEntries": 255,
+      "nativeForms": 276,
+      "upstreamSpecies": 409,
+      "sourceMatchClasses": {
+        "excluded-base-only-visual-variant": 2,
+        "existing-official-name-candidate": 7,
+        "manual-localization-candidate": 10,
+        "no-upstream-database-candidate": 9,
+        "normalized-source-name": 227
+      },
+      "nativeOnlyForms": 21
+    },
+    "manualAliasesRequireApproval": [
+      "darktyrannomon",
+      "dinohyumon",
+      "vegiemon",
+      "bancholeomon",
+      "blackimperialdramon",
+      "cherubimon-virus",
+      "guardiangemon",
+      "kentaurosmon",
+      "neptunemon",
+      "plesiomon"
+    ],
+    "noDatabaseCandidates": [
+      "azulongmon",
+      "baihumon",
+      "barbamon",
+      "belphemon",
+      "chronomon-dm",
+      "ebonwumon",
+      "granlocomon",
+      "leviamon",
+      "zhuqiaomon"
+    ],
+    "excludedDotSubstitutions": [
+      "dotagumon",
+      "dotfalcomon"
+    ]
+  },
+  "techniques": {
+    "runtimeCount": 1573,
+    "recordCount": 1573,
+    "speciesLearnsets": 409,
+    "learnsetAssignments": 1200,
+    "availability": {
+      "ready": 1366,
+      "requires_digixros": 207
+    },
+    "categories": {
+      "control": 78,
+      "damage": 1393,
+      "healing": 39,
+      "mobility": 9,
+      "support": 54
+    },
+    "sourceAuditRows": 2260,
+    "sourceGameCounts": {
+      "dawn_dusk": 513,
+      "digimon_story_ds": 201,
+      "lost_evolution": 546,
+      "super_xros_wars": 1000
+    },
+    "sourceDecisions": {
+      "alias": 530,
+      "dummy_excluded": 54,
+      "mapped": 1466,
+      "requires_mechanic": 210
+    },
+    "unresolvedLearnsetReferences": [],
+    "maximumNameUtf8Bytes": 83,
+    "namesOverExisting32ByteBound": 9,
+    "authenticityFinding": "The catalogue aggregates secondary guides across four games, deduplicates/romanizes labels, infers elements/categories/shapes and converts powers into authored tactical bands. These are not 1,573 independently official-verified skills or authentic per-species signatures.",
+    "assignmentFinding": "Generator selects a deterministic UUID-hash offset among source Learned by matches, then falls back to the entire ready pool. Seven initial signatures have explicit overrides; one later ZekeGreymon curation replaces a contaminated signature. Parenthetical variants are removed during learned-name matching, so species-variant ownership can be broadened.",
+    "assignmentSource": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/build_technique_catalog.mjs#L253-L263",
+    "signatureSource": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/build_technique_catalog.mjs#L374-L398",
+    "mechanicsSource": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/build_technique_catalog.mjs#L188-L249",
+    "advertisementContamination": {
+      "count": 9,
+      "excludedTechniqueIds": [
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_10",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_3",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_4",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_5",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_6",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_7",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_8",
+        "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_9"
+      ],
+      "affectedSpecies": [
+        {
+          "species": "Pukamon",
+          "speciesSeed": "277edb81-7051-4a5e-8f5d-369e70cd18e5",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 1,
+              "acquisition": "signature"
+            }
+          ]
+        },
+        {
+          "species": "Calumon",
+          "speciesSeed": "2768be8f-6bb1-4626-a2e5-2e76c8275e38",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_8",
+              "level": 1,
+              "acquisition": "signature"
+            }
+          ]
+        },
+        {
+          "species": "Kokomon",
+          "speciesSeed": "1cc110d2-b626-49a5-918f-fda429e06760",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_7",
+              "level": 5,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Armadillomon",
+          "speciesSeed": "083241cc-fcf8-4101-a58d-09b0e6b375b6",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_6",
+              "level": 1,
+              "acquisition": "signature"
+            }
+          ]
+        },
+        {
+          "species": "DoKunemon",
+          "speciesSeed": "8bbb294e-b9dd-4ab9-8629-f46872e9cbd4",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 16,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Akatorimon",
+          "speciesSeed": "ae4c3d8f-0a9b-4950-8c3d-2b9f1f0871e5",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_7",
+              "level": 20,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Kogamon",
+          "speciesSeed": "f7b0c8e1-96a2-4e0f-b3c9-524d8f7a03e1",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_6",
+              "level": 20,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Nanimon",
+          "speciesSeed": "46c1f3e9-5a4d-4b7c-8e1f-cb7a0f9d2e3c",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_3",
+              "level": 10,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Dragomon",
+          "speciesSeed": "e8f4c6a1-3d2b-4e5f-9a8c-7b6d5e4f3a2c",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_10",
+              "level": 24,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Pipismon",
+          "speciesSeed": "11431f1e-5428-4cd4-a0de-559e4e7e0f64",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_7",
+              "level": 24,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Kabukimon",
+          "speciesSeed": "d9652444-162c-4443-8001-d29b9d23c57b",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_6",
+              "level": 12,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Cherrymon",
+          "speciesSeed": "52112c31-2f69-435d-bc56-69f4be1e508d",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 12,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Kuzuhamon",
+          "speciesSeed": "8f89a3d4-7b14-45dc-88ae-c5f0d44637d3",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 1,
+              "acquisition": "signature"
+            }
+          ]
+        },
+        {
+          "species": "VenomMyotismon",
+          "speciesSeed": "854269a7-33fa-47ca-94b7-a07e8c4da1bf",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 15,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Mega Gargomon",
+          "speciesSeed": "601ab91e-bae5-4177-bc6e-3974fd13ca2c",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_6",
+              "level": 30,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Preciomon",
+          "speciesSeed": "f6c16216-77a5-4b56-ae37-1f9e33b3abfd",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 15,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Black SaintGargomon",
+          "speciesSeed": "f5eee0ae-a180-46a7-a6bb-70d72f0e78a5",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 1,
+              "acquisition": "signature"
+            }
+          ]
+        },
+        {
+          "species": "Anubismon",
+          "speciesSeed": "03277ace-25c2-404f-b975-f71ac309c8b0",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_7",
+              "level": 30,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Chaos Gallantmon",
+          "speciesSeed": "859bce6e-ced6-4864-8a32-b4690e499b37",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_7",
+              "level": 15,
+              "acquisition": "level"
+            }
+          ]
+        },
+        {
+          "species": "Lotosmon",
+          "speciesSeed": "70dc0025-a6fd-4659-8a6d-77f8ce051054",
+          "assignments": [
+            {
+              "skill": "relevantdigital_cmd_push_function_rdsmartload_div_gpt_ad_auto_inline_2",
+              "level": 15,
+              "acquisition": "level"
+            }
+          ]
+        }
+      ],
+      "totalAffectedAssignments": 20,
+      "planContradiction": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/Plan.md#L118",
+      "decision": "Never import these labels, assignments or IDs; apparent executable text stays inert data in this review."
+    },
+    "officiallySupportedCandidates": {
+      "speciesWithAtLeastOneLabel": 113,
+      "totalLabels": 114,
+      "basis": "Exact normalized label intersection with previously verified official reference fields retained locally. URLs and original labels in identity entries; labels only, no canonical damage/class/effect claim.",
+      "newPrimaryPagesFetched": false
+    }
+  },
+  "balanceAssessment": {
+    "upstreamMaxLevel": 99,
+    "currentMaxLevel": 20,
+    "upstreamBaseStatsAreGrowthInputs": true,
+    "statGrowth": {
+      "hp": 0.025,
+      "mp": 0.02,
+      "atk": 0.02,
+      "def": 0.02,
+      "int": 0.02,
+      "speed": 0.02
+    },
+    "upstreamBattleBalance": {
+      "turnRecovery": {
+        "base": 55.0,
+        "movementPerPoint": 4.0,
+        "basicAttack": 30.0,
+        "defend": 15.0
+      },
+      "damage": {
+        "basicAttackPower": 28,
+        "criticalChance": 5.0,
+        "criticalMultiplier": 1.5,
+        "minimumDamage": 1
+      },
+      "typeChart": {
+        "advantage": 1.35,
+        "disadvantage": 0.75,
+        "neutral": 1.0
+      },
+      "elementChart": {
+        "advantage": 1.25,
+        "resisted": 0.8,
+        "neutral": 1.0
+      },
+      "defend": {
+        "damageMultiplier": 0.65
+      },
+      "targeting": {
+        "basicAttackRange": 1
+      },
+      "status": {
+        "defaultDuration": 3
+      }
+    },
+    "intAudit": {
+      "counts": {
+        "dawn_dusk": 385,
+        "estimated_rank_knn": 13,
+        "dawn_dusk_alias": 11
+      },
+      "primarySourceClaim": {
+        "game": "Digimon World Dawn/Dusk",
+        "field": "spirit",
+        "mapped_to": "int",
+        "repository": "clokken/digimon-dawn-dusk-data",
+        "commit": "07ad9940951a5b0de342523355cb65ba23bf64af",
+        "url": "https://raw.githubusercontent.com/clokken/digimon-dawn-dusk-data/07ad9940951a5b0de342523355cb65ba23bf64af/data/digimon.json"
+      },
+      "estimation": {
+        "method": "5-nearest neighbours within the same DigiGame rank, using z-score-normalized hp/mp/atk/def/speed and inverse-distance weighting",
+        "note": "Estimated values are starting balance values for species not represented by the pinned Dawn/Dusk dataset and can be tuned later."
+      },
+      "independentlyFetchedPinnedIntDataset": false
+    },
+    "otherFiveBaseStatsProvenance": "Present in canonical upstream JSON, but this review found no equivalent per-row primary provenance audit for hp/mp/atk/def/speed. Do not label all imported numbers official.",
+    "proposal": "Use stage-relative stat ranks/ratios as a design-review signal, keeping INT estimated/alias labels visible. Test any chosen role changes in our own level anchors/resolver; do not transfer level99 numbers or randomize species to manufacture unique profiles.",
+    "rankMedians": {
+      "Rookie": {
+        "hp": 112,
+        "mp": 119,
+        "atk": 77,
+        "def": 66,
+        "int": 60,
+        "speed": 60
+      },
+      "Mega": {
+        "hp": 320.0,
+        "mp": 342.0,
+        "atk": 173.0,
+        "def": 146.0,
+        "int": 144.0,
+        "speed": 131.0
+      },
+      "Ultimate": {
+        "hp": 222.0,
+        "mp": 239.5,
+        "atk": 131.0,
+        "def": 117.0,
+        "int": 104.0,
+        "speed": 106.5
+      },
+      "Fusion": {
+        "hp": 313.5,
+        "mp": 341.0,
+        "atk": 173.5,
+        "def": 138.0,
+        "int": 118.0,
+        "speed": 126.5
+      },
+      "Champion": {
+        "hp": 161,
+        "mp": 176,
+        "atk": 105,
+        "def": 93,
+        "int": 77,
+        "speed": 79
+      },
+      "Fresh": {
+        "hp": 56,
+        "mp": 57,
+        "atk": 32,
+        "def": 25,
+        "int": 23,
+        "speed": 15
+      },
+      "In-Training": {
+        "hp": 67.0,
+        "mp": 66.0,
+        "atk": 44.0,
+        "def": 33.0,
+        "int": 28.0,
+        "speed": 34.0
+      }
+    },
+    "noNumericChangeProposedWithoutIndividualReview": true
+  },
+  "recommendations": [
+    {
+      "priority": 1,
+      "action": "Use exact same-source-name candidates for separate per-image identity review; keep current form IDs and existing87 art blobs/versions unchanged."
+    },
+    {
+      "priority": 1,
+      "action": "Exclude Dot-to-base substitution, unresolved BlackImperialdramon mode, and all ad-code technique labels. Keep missing forms explicitly unavailable rather than relabeling another species."
+    },
+    {
+      "priority": 2,
+      "action": "Expose upstream family/attribute/rank and source-stat provenance as optional reference metadata, distinct from our authored combat type and official reference fields."
+    },
+    {
+      "priority": 2,
+      "action": "Consider individually approved official-supported skill label corrections while retaining existing three-slot damage semantics; do not promise copied statuses/healing absent from our resolver."
+    },
+    {
+      "priority": 3,
+      "action": "Use reviewed upstream source-specific Learned by records as further research leads only; generated signature assignment alone cannot support a replacement."
+    },
+    {
+      "priority": 3,
+      "action": "Review candidate graph edges through the separate evolution audit; preserve147 current edges and baby gates pending explicit implementation decision."
+    }
+  ],
+  "licensingBoundary": "No blanket data/code redistribution grant assumed; see docs/research/digigame-source-review.json. Local inspection does not relicense original game metadata or artwork."
+}

@@ -1,0 +1,433 @@
+{
+  "product": "Waveshare ESP32-S3-Touch-LCD-1.46",
+  "sku": "29565",
+  "selected_option": "standard protective cover glass",
+  "coordinate_system": "Official STEP: front-view X right, Y up, Z=0 at outer glass face; rear is negative Z. USB points toward -Y. Rear-view drawing X must be mirrored.",
+  "sources": {
+    "product": "https://www.waveshare.com/esp32-s3-touch-lcd-1.46b.htm",
+    "documentation": "https://docs.waveshare.com/ESP32-S3-Touch-LCD-1.46",
+    "resources": "https://docs.waveshare.com/ESP32-S3-Touch-LCD-1.46/Resources-And-Documents",
+    "official_cad_archive": "https://files.waveshare.com/wiki/ESP32-S3-Touch-LCD-1.46/ESP32-S3-Touch-LCD-1.46_Structural%20Diagram-With%20Cover.rar"
+  },
+  "source_sha256": {
+    "downloads/with-cover.rar": "67eaebbe308f02a73733bbe7f779b56c3ba641db6bc5ce5f05a102961c05df21",
+    "downloads/with-cover/ESP32-S3-Touch-LCD-1.46.pdf": "03e6595a7fad4cb7b05b51f68aa02f1889dd4aab47cca660560b1bd8dc0373a3",
+    "downloads/with-cover/ESP32-S3-Touch-LCD-1_46.stp": "5c7821afbeaf3c3877dc05be153abaddcfcea408f9bf02bdc11fb2ccb249de36"
+  },
+  "pdf_dimensioned": {
+    "lens_diameter_nominal_mm": 44.77,
+    "lens_diameter_tolerance_mm": 0.05,
+    "lens_diameter_max_mm": 44.82,
+    "lens_thickness_mm": 1.6,
+    "viewing_area_xy_mm": [
+      37.56,
+      38.77
+    ],
+    "viewing_area_tolerance_mm": 0.15,
+    "front_to_pcb_rear_mm": 7.4,
+    "front_to_mount_rear_mm": 10.9,
+    "mount_callout": "3*M2.00-H3.5"
+  },
+  "photo_reference_only": {
+    "active_area_diameter_mm": 36.96,
+    "header_inclusive_depth_mm": 12.3,
+    "depth_excluding_header_pins_mm": 11.0,
+    "qualifier": "Manually measured; reference only. Use larger STEP header envelope pending delivered-board measurement."
+  },
+  "step_all_bounds_mm": [
+    -22.385000100000003,
+    -23.11999999999853,
+    -12.95,
+    22.385000100000003,
+    22.385000100001474,
+    1e-07
+  ],
+  "step_components": [
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "H0146Y003T001-V1"
+      ],
+      "definition": "H0146Y003T001-V1",
+      "bounds": [
+        -22.385000100000003,
+        -23.11999999999853,
+        -4.7,
+        22.385000100000003,
+        22.385000100001474,
+        1e-07
+      ],
+      "size": [
+        44.770000200000005,
+        45.505000100000004,
+        4.7000001000000005
+      ],
+      "volume": 4880.688563678477
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "TYPE-C_16PIN-9X3X7_3"
+      ],
+      "definition": "TYPE-C_16PIN-9X3X7_3",
+      "bounds": [
+        -4.47000010001,
+        -23.000000000001172,
+        -10.640374168413473,
+        4.47000010001,
+        -15.400000000001997,
+        -6.578849616208
+      ],
+      "size": [
+        8.94000020002,
+        7.599999999999175,
+        4.061524552205473
+      ],
+      "volume": 104.8614425167266
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "ESP32-S3-LCD-1_46-PCBA-20240906",
+        "PCB",
+        "BOARD"
+      ],
+      "definition": "BOARD",
+      "bounds": [
+        -19.594669980000013,
+        -21.708734900000042,
+        -7.400000000000001,
+        19.594669980000454,
+        19.642485420000007,
+        -6.20156196
+      ],
+      "size": [
+        39.18933996000047,
+        41.35122032000005,
+        1.198438040000001
+      ],
+      "volume": 1416.2341170775655
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "SWITCH-TS24CA"
+      ],
+      "definition": "SWITCH-TS24CA",
+      "bounds": [
+        11.965376624786712,
+        7.428367268125162,
+        -9.2000001,
+        16.671598960783758,
+        12.396189377119505,
+        -7.0
+      ],
+      "size": [
+        4.706222335997046,
+        4.967822108994343,
+        2.2000001000000005
+      ],
+      "volume": 20.41460724290601
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "SWITCH-TS24CA"
+      ],
+      "definition": "SWITCH-TS24CA",
+      "bounds": [
+        12.374952646926712,
+        -12.682977595299505,
+        -9.2000001,
+        17.081174982923756,
+        -7.715155486305162,
+        -7.0
+      ],
+      "size": [
+        4.706222335997044,
+        4.967822108994343,
+        2.2000001000000005
+      ],
+      "volume": 20.414607242906005
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "SPK-12-10-2_8MM"
+      ],
+      "definition": "SPK-12-10-2_8MM",
+      "bounds": [
+        3.8491376231040006,
+        -5.0,
+        -10.100000099999999,
+        18.5,
+        5.0000001,
+        -6.9
+      ],
+      "size": [
+        14.650862376895999,
+        10.000000100000001,
+        3.2000000999999987
+      ],
+      "volume": 322.9062545275011
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "SMTSO-M2-3_5X2-3_5ET"
+      ],
+      "definition": "SMTSO-M2-3_5X2-3_5ET",
+      "bounds": [
+        10.25000648,
+        -16.70001842,
+        -10.9000001,
+        13.75000648,
+        -13.20001842,
+        -6.200000000000001
+      ],
+      "size": [
+        3.5,
+        3.5,
+        4.700000099999999
+      ],
+      "volume": 28.042402607529485
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "SMTSO-M2-3_5X2-3_5ET"
+      ],
+      "definition": "SMTSO-M2-3_5X2-3_5ET",
+      "bounds": [
+        -13.2935507,
+        -17.19729454,
+        -10.9000001,
+        -9.7935507,
+        -13.69729454,
+        -6.200000000000001
+      ],
+      "size": [
+        3.5,
+        3.5000000000000018,
+        4.700000099999999
+      ],
+      "volume": 28.042402607529475
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "SMTSO-M2-3_5X2-3_5ET"
+      ],
+      "definition": "SMTSO-M2-3_5X2-3_5ET",
+      "bounds": [
+        -1.75,
+        16.0,
+        -10.9000001,
+        1.75,
+        19.5,
+        -6.200000000000001
+      ],
+      "size": [
+        3.5,
+        3.5,
+        4.700000099999999
+      ],
+      "volume": 28.04240260752948
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "PITCH1MM-2PIN-SMT-HORIZONTAL"
+      ],
+      "definition": "PITCH1MM-2PIN-SMT-HORIZONTAL",
+      "bounds": [
+        -11.211449317985862,
+        -14.079208487005905,
+        -10.45,
+        -6.860519376227286,
+        -8.878504707581731,
+        -7.35468848415703
+      ],
+      "size": [
+        4.350929941758576,
+        5.200703779424174,
+        3.095311515842969
+      ],
+      "volume": 33.39601368432545
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "HP1_25MM-2P-SMT-HORIZONTAL"
+      ],
+      "definition": "HP1_25MM-2P-SMT-HORIZONTAL",
+      "bounds": [
+        3.6725983974000007,
+        12.000164607496199,
+        -10.8,
+        11.322654694917071,
+        17.2002556253216,
+        -7.399999999999901
+      ],
+      "size": [
+        7.650056297517071,
+        5.2000910178254,
+        3.4000000000001
+      ],
+      "volume": 48.15341020400719
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "1_27MM-2X10PIN"
+      ],
+      "definition": "1_27MM-2X10PIN",
+      "bounds": [
+        -17.02,
+        -6.1,
+        -12.95,
+        -11.52,
+        6.33,
+        -7.4
+      ],
+      "size": [
+        5.5,
+        12.43,
+        5.549999999999999
+      ],
+      "volume": 65.79992281724687
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-TOUCH-LCD-1_46-PCBA",
+        "MIC"
+      ],
+      "definition": "MIC",
+      "bounds": [
+        -16.55931551255,
+        -14.54474066316,
+        -8.6,
+        -11.84436384464,
+        -9.552438897133,
+        -7.4
+      ],
+      "size": [
+        4.71495166791,
+        4.992301766027001,
+        1.1999999999999993
+      ],
+      "volume": 14.399999999972318
+    },
+    {
+      "path": [
+        "ESP32-S3-TOUCH-LCD-1_46_ASM",
+        "ESP32-S3-1_46-PMMA"
+      ],
+      "definition": "ESP32-S3-1_46-PMMA",
+      "bounds": [
+        -17.98650908558,
+        -21.848200000014,
+        -6.2,
+        19.682040160765006,
+        19.680000000000003,
+        -3.399999999927685
+      ],
+      "size": [
+        37.66854924634501,
+        41.528200000014,
+        2.8000000000723153
+      ],
+      "volume": 1073.9680170816946
+    }
+  ],
+  "mounts": [
+    {
+      "front_view_xy_mm": [
+        12.00000648,
+        -14.95001842
+      ],
+      "post_rear_z_mm": -10.9000001,
+      "post_outer_diameter_mm": 3.5,
+      "thread": "M2",
+      "safe_screw_engagement": "Not qualified by CAD; verify on delivered board."
+    },
+    {
+      "front_view_xy_mm": [
+        -11.5435507,
+        -15.447294540000001
+      ],
+      "post_rear_z_mm": -10.9000001,
+      "post_outer_diameter_mm": 3.5,
+      "thread": "M2",
+      "safe_screw_engagement": "Not qualified by CAD; verify on delivered board."
+    },
+    {
+      "front_view_xy_mm": [
+        0.0,
+        17.75
+      ],
+      "post_rear_z_mm": -10.9000001,
+      "post_outer_diameter_mm": 3.5,
+      "thread": "M2",
+      "safe_screw_engagement": "Not qualified by CAD; verify on delivered board."
+    }
+  ],
+  "step_caveats": [
+    "A nongeometric assembly item ESP32-S3-TOUCH-LCD-1_46-PCB has a void box; actual BOARD solid was read successfully.",
+    "Header depth reaches 12.95 mm, greater than manual-photo 12.30 mm.",
+    "The display solid includes the bottom flex/tab, reaching Y=-23.12; lens alone is circular.",
+    "MIC is a plain package in the STEP; no validated acoustic hole location or acoustic duct is provided.",
+    "Nominal CAD and drawings do not certify delivered-board manufacturing tolerances, hardware thread depth, cable/plug envelopes, battery connector polarity or charger compatibility."
+  ],
+  "other_variants_not_interchangeable": [
+    {
+      "sku": "29564",
+      "model": "ESP32-S3-Touch-LCD-1.46B",
+      "cover": "none",
+      "photo_front_xy_mm": [
+        39.36,
+        41.53
+      ],
+      "photo_front_xy_tolerance_mm": 0.1,
+      "photo_depth_mm": 10.65
+    },
+    {
+      "sku": "33837",
+      "model": "ESP32-S3-Touch-LCD-1.46C",
+      "cover": "widened",
+      "photo_lens_diameter_mm": 49.0,
+      "photo_depth_mm": 13.2
+    }
+  ],
+  "status": "Mechanical source contract established for a provisional prototype; delivered board and mating cables still need measurement.",
+  "additional_group_bounds_mm": {
+    "R57": [
+      6.164868382187,
+      -13.309402914060003,
+      -9.431999888897,
+      9.441468382187,
+      -9.880402914060001,
+      -7.653999888896999
+    ],
+    "J6": [
+      -15.811163242087444,
+      8.120598971992889,
+      -8.650000000000015,
+      -12.321269524792553,
+      11.427510238947109,
+      -7.4
+    ]
+  }
+}

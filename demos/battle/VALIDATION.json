@@ -1,0 +1,59 @@
+{
+  "sharedCoreEventPrefixesVerifiedByRenderer": 4,
+  "sourceFramebuffer": "480x480 RGB565",
+  "presentationFps": 24,
+  "hardwareFpsMeasured": false,
+  "shellGeometry": "appearance concept only; not dimensionally verified",
+  "media": [
+    {
+      "file": "Digivice_Triangle_Battle.mp4",
+      "bytes": 413523,
+      "sha256": "74cd947a06b1b372c97e0fb4c540932ebf451b45069ca35f4fc17b77bd44edd9",
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 800,
+          "height": 1040,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "24/1",
+          "nb_frames": "384"
+        }
+      ],
+      "format": {
+        "duration": "16.000000"
+      }
+    },
+    {
+      "file": "Digivice_Battle_Screen.mp4",
+      "bytes": 333513,
+      "sha256": "0b2d209b0a6058f79d22fc769396cc518ee22198d6fb6564db87a6af19073c4e",
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 480,
+          "height": 480,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "24/1",
+          "nb_frames": "384"
+        }
+      ],
+      "format": {
+        "duration": "16.000000"
+      }
+    },
+    {
+      "file": "Digivice_Battle_Screen.gif",
+      "bytes": 1875678,
+      "width": 480,
+      "height": 480,
+      "frames": 192,
+      "durationMs": 16000,
+      "loop": 0,
+      "sha256": "2655beb784dac1cbcf1f53dcbf9457b08b0900d115a2f5d8741a171fd3dcd338"
+    }
+  ]
+}

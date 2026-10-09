@@ -1,0 +1,1081 @@
+{
+  "formatVersion": 1,
+  "labelSetVersion": 1,
+  "status": "integrated-rules8-catalog4",
+  "checkedDate": "2026-10-07",
+  "scope": "Thirty source-backed combat-name bindings across 26 stable native form IDs. Twenty-four labels change; six already match. Numeric profiles, action categories and effects stay unchanged. Historical rules retain the previous labels.",
+  "baseline": {
+    "careRulesVersion": 7,
+    "careSchemaVersion": 10,
+    "practiceRulesVersion": 4,
+    "catalogVersion": 3,
+    "runtimeSha256": "5332f1d02deb0f64b9e0540adf147d00c77ab415b0cf23e15c4999abe65bace0"
+  },
+  "mechanicsChanges": false,
+  "categoryInterpretation": {
+    "physical": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+    "heavy": "A committed charge, forceful piercing/crushing attack or weapon impact, adapted to the existing higher-cost Attack/Defense slot and Counter response. Heavy assignment is authored; source power adjectives do not set numeric damage.",
+    "magic": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes."
+  },
+  "labelBounds": {
+    "maxUtf8Bytes": 32,
+    "maxPerForm": 3,
+    "categories": [
+      "physical",
+      "heavy",
+      "magic"
+    ]
+  },
+  "sourcePolicy": {
+    "primary": "Official English Encyclopedia descriptions verify ownership and action semantics. Their prose and imagery are not imported; only short move names and authored paraphrases are retained.",
+    "secondary": {
+      "repository": "https://github.com/EwertonMendes/DigiGame",
+      "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+      "techniquesBlobSha256": "9e0ef2b1384d015dad460292b330a2628781230f13dbd31b7452ee24450224e6",
+      "upstreamCodeExecuted": false,
+      "namesOnlyCorroboration": true,
+      "rejectedAdvertisementTechniqueCount": 9
+    },
+    "fallback": "Unmapped slots keep their existing authored names. A supported name may repeat across species with separate provenance. No generic move is relabeled solely because it appears in an upstream learnset."
+  },
+  "bindings": [
+    {
+      "formId": 11,
+      "formName": "Impmon",
+      "category": "magic",
+      "name": "Night of Fire",
+      "previousName": "Night of Fire",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=impmon",
+        "officialName": "Impmon",
+        "moveName": "Night of Fire",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Attacks the opponent with dark flames."
+      },
+      "delivery": "elemental-flame",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 12,
+      "formName": "Wizardmon",
+      "category": "magic",
+      "name": "Thunder Cloud",
+      "previousName": "Hex Spark",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=wizarmon",
+        "officialName": "Wizardmon",
+        "moveName": "Thunder Cloud",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Calls storm clouds that strike the opponent with lightning."
+      },
+      "delivery": "electrical-energy",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "thunder_cloud"
+        ],
+        "storedMatchingAssignments": [
+          {
+            "skill": "thunder_cloud",
+            "evidenceClass": "stored-secondary-Lost-Evolution-learned-by-name-match",
+            "signatureClaimAccepted": false
+          }
+        ],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 14,
+      "formName": "Beelzemon",
+      "category": "physical",
+      "name": "Darkness Claw",
+      "previousName": "Claw Sweep",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=beelzebumon",
+        "officialName": "Beelzemon",
+        "moveName": "Darkness Claw",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Raises sharp claws and slashes the opponent."
+      },
+      "delivery": "contact-claw",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 15,
+      "formName": "Devimon",
+      "category": "physical",
+      "name": "Death Claw",
+      "previousName": "Wing Rake",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=devimon",
+        "officialName": "Devimon",
+        "moveName": "Death Claw",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Extends its arms to pierce the opponent."
+      },
+      "delivery": "contact-claw",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "death_claw"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 18,
+      "formName": "Agumon",
+      "category": "magic",
+      "name": "Pepper Breath",
+      "previousName": "Pepper Breath",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon",
+        "officialName": "Agumon",
+        "moveName": "Pepper Breath",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Spits flames toward an opponent."
+      },
+      "delivery": "elemental-flame",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "pepper_breath"
+        ],
+        "storedMatchingAssignments": [
+          {
+            "skill": "pepper_breath",
+            "evidenceClass": "upstream-assignment-only-not-species-verified",
+            "signatureClaimAccepted": false
+          }
+        ],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 19,
+      "formName": "Greymon",
+      "category": "magic",
+      "name": "Mega Flame",
+      "previousName": "Blazing Breath",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=greymon-first",
+        "officialName": "Greymon",
+        "moveName": "Mega Flame",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Breathes searing flames from its mouth."
+      },
+      "delivery": "elemental-flame",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "mega_flame"
+        ],
+        "storedMatchingAssignments": [
+          {
+            "skill": "mega_flame",
+            "evidenceClass": "stored-secondary-Lost-Evolution-learned-by-name-match",
+            "signatureClaimAccepted": false
+          }
+        ],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 20,
+      "formName": "MetalGreymon (Vaccine)",
+      "category": "physical",
+      "name": "Trident Arm",
+      "previousName": "Steel Claw",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-v",
+        "officialName": "MetalGreymon (Vaccine)",
+        "moveName": "Trident Arm",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Attacks using its reinforced metal arm."
+      },
+      "delivery": "contact-weapon",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 20,
+      "formName": "MetalGreymon (Vaccine)",
+      "category": "magic",
+      "name": "Giga Storm",
+      "previousName": "Missile Flare",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-v",
+        "officialName": "MetalGreymon (Vaccine)",
+        "moveName": "Giga Storm",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Fires a hot energy wave from ports in its torso."
+      },
+      "delivery": "energy-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 21,
+      "formName": "WarGreymon",
+      "category": "heavy",
+      "name": "Great Tornado",
+      "previousName": "Brave Rush",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=wargreymon",
+        "officialName": "WarGreymon",
+        "moveName": "Great Tornado",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Joins its arm weapons overhead and makes a fast spinning charge into the foe."
+      },
+      "delivery": "committed-body-charge",
+      "slotRationale": "A committed charge, forceful piercing/crushing attack or weapon impact, adapted to the existing higher-cost Attack/Defense slot and Counter response. Heavy assignment is authored; source power adjectives do not set numeric damage.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "great_tornado"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 21,
+      "formName": "WarGreymon",
+      "category": "magic",
+      "name": "Terra Force",
+      "previousName": "Terra Blaze",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=wargreymon",
+        "officialName": "WarGreymon",
+        "moveName": "Terra Force",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Concentrates atmospheric energy and releases an intense energy beam."
+      },
+      "delivery": "energy-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "terra_force"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 22,
+      "formName": "Tyrannomon",
+      "category": "magic",
+      "name": "Fire Breath",
+      "previousName": "Ember Roar",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tyranomon",
+        "officialName": "Tyrannomon",
+        "moveName": "Fire Breath",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Exhales red flames."
+      },
+      "delivery": "elemental-flame",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "fire_breath"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 26,
+      "formName": "Garurumon",
+      "category": "magic",
+      "name": "Fox Fire",
+      "previousName": "Frost Howl",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=garurumon",
+        "officialName": "Garurumon",
+        "moveName": "Fox Fire",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Breathes a sustained stream of blue flames."
+      },
+      "delivery": "elemental-flame",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 27,
+      "formName": "WereGarurumon",
+      "category": "physical",
+      "name": "Wolf Claw",
+      "previousName": "Wolf Kick",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=weregarrumon",
+        "officialName": "WereGarurumon",
+        "moveName": "Wolf Claw",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Cuts an opponent with sharp claws."
+      },
+      "delivery": "contact-claw",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "wolf_claw"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 32,
+      "formName": "Patamon",
+      "category": "physical",
+      "name": "Wing Slap",
+      "previousName": "Wing Slap",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=patamon",
+        "officialName": "Patamon",
+        "moveName": "Wing Slap",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Strikes its opponent with its large ears."
+      },
+      "delivery": "contact-strike",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 32,
+      "formName": "Patamon",
+      "category": "magic",
+      "name": "Air Shot",
+      "previousName": "Air Shot",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=patamon",
+        "officialName": "Patamon",
+        "moveName": "Air Shot",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Expels a powerful blast of air after drawing in a large breath."
+      },
+      "delivery": "special-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "air_shot"
+        ],
+        "storedMatchingAssignments": [
+          {
+            "skill": "air_shot",
+            "evidenceClass": "stored-secondary-Lost-Evolution-learned-by-name-match",
+            "signatureClaimAccepted": false
+          }
+        ],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 33,
+      "formName": "Angemon",
+      "category": "physical",
+      "name": "Heaven's Knuckle",
+      "previousName": "Staff Strike",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=angemon",
+        "officialName": "Angemon",
+        "moveName": "Heaven's Knuckle",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Hits its foe with shining golden fists."
+      },
+      "delivery": "contact-strike",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "heaven_s_knuckle"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 35,
+      "formName": "Seraphimon",
+      "category": "magic",
+      "name": "Strike of the Seven Stars",
+      "previousName": "Sevenfold Ray",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=seraphimon",
+        "officialName": "Seraphimon",
+        "moveName": "Strike of the Seven Stars",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Launches seven hot light orbs at the opponent."
+      },
+      "delivery": "energy-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 36,
+      "formName": "Unimon",
+      "category": "magic",
+      "name": "Holy Shot",
+      "previousName": "Sky Bolt",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=yunimon",
+        "officialName": "Unimon",
+        "moveName": "Holy Shot",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Fires an energy bomb from its mouth."
+      },
+      "delivery": "energy-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "holy_shot"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 39,
+      "formName": "Tentomon",
+      "category": "magic",
+      "name": "Super Shocker",
+      "previousName": "Super Shocker",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tentomon",
+        "officialName": "Tentomon",
+        "moveName": "Super Shocker",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Amplifies electricity from its wings and fires electrical bolts."
+      },
+      "delivery": "electrical-energy",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "super_shocker"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 41,
+      "formName": "MegaKabuterimon (Red)",
+      "category": "heavy",
+      "name": "Horn Buster",
+      "previousName": "Atlas Charge",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon",
+        "officialName": "MegaKabuterimon (Red)",
+        "moveName": "Horn Buster",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Impales the opponent with its large strengthened horn."
+      },
+      "delivery": "committed-piercing-weapon",
+      "slotRationale": "A committed charge, forceful piercing/crushing attack or weapon impact, adapted to the existing higher-cost Attack/Defense slot and Counter response. Heavy assignment is authored; source power adjectives do not set numeric damage.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "horn_buster"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 43,
+      "formName": "Kuwagamon",
+      "category": "heavy",
+      "name": "Scissor Claw",
+      "previousName": "Scissor Rush",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=kuwagamon",
+        "officialName": "Kuwagamon",
+        "moveName": "Scissor Claw",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Uses its powerful head pincers to cut through tough material."
+      },
+      "delivery": "committed-crushing-weapon",
+      "slotRationale": "A committed charge, forceful piercing/crushing attack or weapon impact, adapted to the existing higher-cost Attack/Defense slot and Counter response. Heavy assignment is authored; source power adjectives do not set numeric damage.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 44,
+      "formName": "Okuwamon",
+      "category": "heavy",
+      "name": "Double Scissor Claw",
+      "previousName": "Hollow Cleave",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=okuwamon",
+        "officialName": "Okuwamon",
+        "moveName": "Double Scissor Claw",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Its enhanced pincer attack can cut extremely hard material."
+      },
+      "delivery": "committed-crushing-weapon",
+      "slotRationale": "A committed charge, forceful piercing/crushing attack or weapon impact, adapted to the existing higher-cost Attack/Defense slot and Counter response. Heavy assignment is authored; source power adjectives do not set numeric damage.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 47,
+      "formName": "Togemon",
+      "category": "physical",
+      "name": "Needle Spray",
+      "previousName": "Cactus Jab",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=togemon",
+        "officialName": "Togemon",
+        "moveName": "Needle Spray",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Hardens the needles on its fists and delivers a series of punches."
+      },
+      "delivery": "contact-strike",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "needle_spray"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 48,
+      "formName": "Lillymon",
+      "category": "magic",
+      "name": "Flower Cannon",
+      "previousName": "Floral Ray",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=lilimon",
+        "officialName": "Lillymon",
+        "moveName": "Flower Cannon",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Forms a cannon from the flowers at its wrists and fires an energy bomb."
+      },
+      "delivery": "energy-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "flower_cannon"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 49,
+      "formName": "Rosemon",
+      "category": "physical",
+      "name": "Roses Rapier",
+      "previousName": "Rose Lash",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=rosemon",
+        "officialName": "Rosemon",
+        "moveName": "Roses Rapier",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Uses the sharp tip of its whip to finish an opponent."
+      },
+      "delivery": "contact-weapon",
+      "slotRationale": "Contact claw, limb or weapon damage. This is the existing Attack/Defense slot and Brace response; not an official damage-class claim.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [
+          "roses_rapier"
+        ],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 49,
+      "formName": "Rosemon",
+      "category": "magic",
+      "name": "Forbidden Temptation",
+      "previousName": "Crimson Bloom",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=rosemon",
+        "officialName": "Rosemon",
+        "moveName": "Forbidden Temptation",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Surrounds an opponent in rose blossoms that destroy its data."
+      },
+      "delivery": "supernatural-damage",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 55,
+      "formName": "Zudomon",
+      "category": "heavy",
+      "name": "Vulcan's Hammer",
+      "previousName": "Glacier Smash",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=zudomon",
+        "officialName": "Zudomon",
+        "moveName": "Vulcan's Hammer",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Brings its hammer down, producing a damaging shockwave and sparks."
+      },
+      "delivery": "committed-impact-weapon",
+      "slotRationale": "A committed charge, forceful piercing/crushing attack or weapon impact, adapted to the existing higher-cost Attack/Defense slot and Counter response. Heavy assignment is authored; source power adjectives do not set numeric damage.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 60,
+      "formName": "Renamon",
+      "category": "magic",
+      "name": "Diamond Storm",
+      "previousName": "Diamond Storm",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=renamon",
+        "officialName": "Renamon",
+        "moveName": "Diamond Storm",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Launches sharp wooden fragments at the foe."
+      },
+      "delivery": "special-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 61,
+      "formName": "Kyubimon",
+      "category": "magic",
+      "name": "Dragon Wheel",
+      "previousName": "Spirit Flame",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=kyubimon",
+        "officialName": "Kyubimon",
+        "moveName": "Dragon Wheel",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Creates a dragon of blue fire from its tails that burns the opponent."
+      },
+      "delivery": "elemental-flame",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    },
+    {
+      "formId": 62,
+      "formName": "Taomon",
+      "category": "magic",
+      "name": "Talisman of Light",
+      "previousName": "Radiant Script",
+      "decision": "integrated-current-runtime-label",
+      "identityMatch": "exact-native-form",
+      "officialCategoryClaim": false,
+      "source": {
+        "authority": "Digimon Encyclopedia",
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=taomon",
+        "officialName": "Taomon",
+        "moveName": "Talisman of Light",
+        "checkedDate": "2026-10-07",
+        "verification": "official-name-and-described-action-read",
+        "semanticSummary": "Draws a luminous sign while chanting and throws it to cause an explosion."
+      },
+      "delivery": "energy-projectile",
+      "slotRationale": "Elemental energy, supernatural damage or an explicitly described special projectile, adapted to the existing Magic/Resistance slot and Ward response. Ordinary gunfire and ammunition are held separately; no automatic element/type changes.",
+      "implementedEffectContract": "Damage only, with existing slot costs, stats, defense interaction and animation capability. No added status, healing, summons, instant-kill, elemental subtype or multi-hit simulation.",
+      "digigameCorroboration": {
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "techniqueIds": [],
+        "storedMatchingAssignments": [],
+        "assignmentPolicy": "Corroborative label occurrence only. Generated damageClass, power, element, effects and signature/learnset assignment never justify this binding."
+      }
+    }
+  ],
+  "held": [
+    {
+      "formId": 11,
+      "formName": "Impmon",
+      "name": "Summon",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=impmon",
+      "decision": "hold-no-new-binding",
+      "reason": "Elemental summoning is described; no direct damage attack is established."
+    },
+    {
+      "formId": 25,
+      "formName": "Gabumon",
+      "name": "Blue Blaster",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gabumon",
+      "decision": "hold-no-new-binding",
+      "reason": "The official page names the move but gives no attack mechanism. Existing label may remain; this review does not infer its slot from the name."
+    },
+    {
+      "formId": 46,
+      "formName": "Palmon",
+      "name": "Poison Ivy",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=palmon",
+      "decision": "hold-no-new-binding",
+      "reason": "Its defining binding, poison and paralysis behavior is absent from the damage-only core."
+    },
+    {
+      "formId": 53,
+      "formName": "Gomamon",
+      "name": "Marching Fishes",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=gomamon",
+      "decision": "hold-no-new-binding",
+      "reason": "A commanded fish squad attacks; summon/swarm behavior is not represented by a supported slot."
+    },
+    {
+      "formId": 60,
+      "formName": "Renamon",
+      "name": "Kohenkyo",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=renamon",
+      "decision": "hold-no-new-binding",
+      "reason": "Appearance copying is a transformation effect, not damage."
+    },
+    {
+      "formId": 14,
+      "formName": "Beelzemon",
+      "name": "Double Impact",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=beelzebumon",
+      "decision": "hold-no-new-binding",
+      "reason": "Twin shotgun fire is not magical energy; do not rename the Magic slot or silently add an ammunition class."
+    },
+    {
+      "formId": 20,
+      "formName": "MetalGreymon (Vaccine)",
+      "name": "Giga Destroyer",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalgreymon-v",
+      "decision": "hold-no-new-binding",
+      "reason": "Bionic missile fire needs an explicit physical-ranged classification decision, not a name-only Magic binding."
+    },
+    {
+      "formId": 28,
+      "formName": "MetalGarurumon",
+      "name": "Freezing Breath",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalgarurumon",
+      "decision": "hold-no-new-binding",
+      "reason": "The description emphasizes freezing and immediate vital-function suspension; no freeze/incapacitation behavior is implemented."
+    },
+    {
+      "formId": 28,
+      "formName": "MetalGarurumon",
+      "name": "Ice Wolf Claw",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=metalgarurumon",
+      "decision": "hold-no-new-binding",
+      "reason": "Despite its name, this is a simultaneous weapon barrage, not a contact claw attack."
+    },
+    {
+      "formId": 40,
+      "formName": "Kabuterimon",
+      "name": "Electro Shocker",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=kabuterimon",
+      "decision": "hold-no-new-binding",
+      "reason": "Official ownership is listed, but the page does not describe the attack mechanism."
+    },
+    {
+      "formId": 42,
+      "formName": "HerculesKabuterimon",
+      "name": "Giga Blaster",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=heraklekabuterimon",
+      "decision": "hold-no-new-binding",
+      "reason": "The page calls it an upgraded Electro Shocker without describing delivery; do not derive a category solely from the name."
+    },
+    {
+      "formId": 34,
+      "formName": "MagnaAngemon",
+      "name": "Heaven's Gate",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=holyangemon",
+      "decision": "hold-no-new-binding",
+      "reason": "Banishment through a portal is not ordinary damage and would promise an absent mechanic."
+    },
+    {
+      "formId": 35,
+      "formName": "Seraphimon",
+      "name": "Testament",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=seraphimon",
+      "decision": "hold-no-new-binding",
+      "reason": "Its defining cost is self-sacrifice; the current skill slot does not implement that cost."
+    },
+    {
+      "formId": 49,
+      "formName": "Rosemon",
+      "name": "Thorn Whip",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=rosemon",
+      "decision": "hold-no-new-binding",
+      "reason": "The official description makes charm/control a defining result, which current damage slots cannot represent."
+    },
+    {
+      "formId": 29,
+      "formName": "Leomon",
+      "name": "Fist of the Beast King",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=leomon",
+      "decision": "hold-no-new-binding",
+      "reason": "The page does not describe delivery; the title alone cannot establish contact versus ranged force."
+    },
+    {
+      "formId": 54,
+      "formName": "Ikkakumon",
+      "name": "Harpoon Torpedo",
+      "sourceUrl": "https://digimon.net/reference_en/detail.php?directory_name=ikkakumon",
+      "decision": "hold-no-new-binding",
+      "reason": "A fired regrowing horn is a physical projectile; hold until a deliberate ranged-physical slot policy exists."
+    }
+  ],
+  "integration": {
+    "recommendation": "Generate one constexpr formId/category override table for current native profiles and a matching host metadata projection. Keep immutable old profile strings for frozen care/practice engines; do not apply a browser-only overwrite to historic trace payloads.",
+    "native": "combat::formProfile supplies current Tactical, skill screen, roster and new Auto participant skill names. Epoch-scoped old practice profiles and frozen Auto traces retain their original labels.",
+    "browserAuto": "Replace generic autoStepText attack labels with the corresponding frozen trace.player.combat.skills for attack phase and trace.enemy.combat.skills for revealed opponent attacks during defend phase. Keep Physical/Heavy/Magic category visible and use token-only fallbacks for defenses/capture.",
+    "migration": "Any serialized combat-label change changes exact saved-response output even if damage is identical. Coordinate explicit care/practice label epoch and frozen replay before runtime activation.",
+    "requiredVerification": [
+      "Every curated ID/category/name matches this table in native JSON, current Tactical and current Auto.",
+      "Frozen pre-change care and practice ACKs/traces stay byte-identical.",
+      "Damage, RNG, reward, type chart and numeric stat anchors are identical for label-only changes; test balance changes separately.",
+      "Source-supported long labels fit the nominal1.46in browser geometry without hiding the action category."
+    ]
+  }
+}

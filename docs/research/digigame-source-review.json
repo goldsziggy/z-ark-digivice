@@ -1,0 +1,722 @@
+{
+  "formatVersion": 1,
+  "checkedAt": "2026-10-07",
+  "scope": "Read-only repository license, credit and source-provenance review. Public metadata only; no artwork, source-code copies, imports, executable evaluation or source checkout.",
+  "repository": {
+    "url": "https://github.com/EwertonMendes/DigiGame",
+    "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+    "tree": "ecf37afe03ecd3329fea1610903f2df79e0fc013",
+    "commitDate": "2026-09-29T01:11:46-03:00",
+    "authorName": "Ewerton Mendes",
+    "defaultBranchObserved": "master"
+  },
+  "method": {
+    "repositoryCommands": [
+      "git ls-tree",
+      "git show",
+      "git rev-parse",
+      "git grep"
+    ],
+    "sourceCodeExecuted": false,
+    "checkoutPerformed": false,
+    "filtersExecuted": false,
+    "installations": false,
+    "privateActiveIndexChanged": false,
+    "imagesDownloadedForThisReview": false,
+    "rawAssetExtractionPerformed": false,
+    "primaryWebPagesReadOnly": true,
+    "licenseSearchScope": "Tracked loose-file names and text headers/notices were searched; nested archive contents were not expanded."
+  },
+  "conclusions": {
+    "overall": "Mixed provenance repository; no blanket open-source or open-content license was found.",
+    "code": {
+      "status": "no-explicit-general-license-found",
+      "finding": "No top-level or nested LICENSE/COPYING license grant or recognizable code-license header was found for DigiGame application code, tools or shaders. README contains no license grant. Public availability is not evidence of an open-source reuse grant.",
+      "evidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/README.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/THIRD_PARTY_NOTICES.md"
+      ],
+      "interpretationSource": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
+    },
+    "data": {
+      "status": "no-explicit-general-data-license-found",
+      "finding": "Species tables, authored balance values, learnsets and source audits are readable JSON, but no blanket data license was found. Some values are traced to commercial-game data or secondary guides and some are explicitly estimates/authored assignments. Provenance does not itself grant redistribution rights.",
+      "evidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/digimon-learnsets.json",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/digimon-int-source-audit.json"
+      ],
+      "fullSchemaAndIdentityAuditOwner": "Separate DigiGame data audit; this report does not replace its counts or species mapping."
+    },
+    "digimonArt": {
+      "status": "explicitly-not-open-content",
+      "finding": "Character notice identifies commercial Digimon-game sprites as legacy fan/prototype assets and disclaims a free-content license. Some individual forms instead credit community DS-style authors or project-supplied artwork; these have no separate open reuse grant in the inspected metadata.",
+      "evidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/README.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/world/README.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/dodomon/field.json",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/pukamon/field.json",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/mochimon/field.json"
+      ],
+      "underlyingRights": "Digimon/game artwork rights remain with their relevant franchise/game rights holders; repository credit and a private-use intent do not transfer those rights."
+    },
+    "digimonAudio": {
+      "status": "explicitly-not-open-content",
+      "finding": "Four selected DS WAVs are attributed to The Sounds Resource archive400142 and expressly identified as non-CC0/non-open-source.",
+      "evidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/audio/digimon-world-ds/README.md"
+      ]
+    },
+    "otherProjectArt": {
+      "status": "no-explicit-open-license-found",
+      "finding": "Hospital/menu backgrounds are described as owner-supplied; Battle Operator icons are described as original DigiGame work; some Central City props are described as approved AI-generated artwork. None of those descriptions is an explicit general reuse license.",
+      "evidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/backgrounds/README.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/icons/battle_operator/README.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/world/tblack/city/README.md"
+      ]
+    },
+    "privatePrototypeHandling": "User authorization to inspect or use material locally is distinct from third-party copyright permission. Keep any separately authorized extraction in ignored private storage with pinned commit, original blob/source hashes, exact mapping and credited authors; do not describe the code/data/characters as freely licensed or bundle them into public releases on this evidence alone.",
+    "existingDigiviceAssets": "This review does not replace, rename or activate any existing private packs or native form IDs."
+  },
+  "explicitlyLicensedAssetFamilies": [
+    {
+      "family": "Kenney Fantasy UI Borders",
+      "paths": [
+        "assets/ui/kenney_fantasy_digi/"
+      ],
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/THIRD_PARTY_NOTICES.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/kenney_fantasy_digi/README.md"
+      ],
+      "primarySource": "https://kenney.nl/assets/fantasy-ui-borders",
+      "primaryStatus": "verified publisher page lists CC0",
+      "attributionRequired": false,
+      "note": "Original CC0 geometry and explicitly recorded DigiGame SVG reconstruction; scope does not extend to unrelated UI/code."
+    },
+    {
+      "family": "Kenney Isometric Landscape",
+      "paths": [
+        "assets/terrain/kenney/"
+      ],
+      "author": "Kenney Vleugels / Kenney",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/terrain/kenney/README.md"
+      ],
+      "primarySource": "https://kenney.nl/assets/isometric-tiles-landscape",
+      "primaryStatus": "verified publisher result lists CC0; author-uploaded OGA page also lists CC0",
+      "additionalPrimarySource": "https://opengameart.org/content/isometric-landscape",
+      "attributionRequired": false,
+      "note": "DigiGame pins ETdoFresh/kenney.nl mirror commit45df48c4d45f8716216b1a9e22df0b69cd9f5932 and three exact upstream filenames."
+    },
+    {
+      "family": "Kenney Particle Pack",
+      "paths": [
+        "assets/vfx/kenney/"
+      ],
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/vfx/kenney/README.md"
+      ],
+      "primarySource": "https://kenney.nl/assets/particle-pack",
+      "primaryStatus": "verified publisher page lists CC0",
+      "attributionRequired": false
+    },
+    {
+      "family": "Devil's Work.shop Isometric Blocks",
+      "paths": [
+        "assets/world/devilsworkshop/"
+      ],
+      "author": "Ajay Karat | Devil's Work.shop",
+      "license": "CC-BY-4.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/THIRD_PARTY_NOTICES.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/world/devilsworkshop/README.md"
+      ],
+      "primarySource": "https://devilsworkshop.itch.io/big-pixel-isometric-block-pack-free-2d-sprites",
+      "primaryStatus": "verified creator comments explicitly identify CC BY4.0 and required attribution",
+      "attributionRequired": true,
+      "requirements": "Retain creator attribution, license link and notice of modifications; avoid implying endorsement.",
+      "note": "Repository distinguishes50px mirroredv04 subset from project-supplied1024px collection; this review did not compare every binary against upstream."
+    },
+    {
+      "family": "32x32 Isometric Tileset Version0_1",
+      "paths": [
+        "assets/world/hawkbirdtree/"
+      ],
+      "author": "hawkbirdtree",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/world/hawkbirdtree/README.md"
+      ],
+      "primarySource": "https://opengameart.org/content/32x32-isometric-tileset-version-01",
+      "primaryStatus": "verified author page lists CC0",
+      "attributionRequired": false
+    },
+    {
+      "family": "Pixel Art Spells",
+      "paths": [
+        "vendor/vfx-source/",
+        "assets/vfx/library/atlas/"
+      ],
+      "author": "DevWizard",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/vendor/vfx-source/README.md"
+      ],
+      "primarySource": "https://opengameart.org/content/pixel-art-spells",
+      "primaryStatus": "verified author page lists CC0; credit appreciated but optional",
+      "attributionRequired": false
+    },
+    {
+      "family": "Pixel Magic Effects",
+      "paths": [
+        "vendor/vfx-source/",
+        "assets/vfx/library/atlas/"
+      ],
+      "author": "Foozle; commissioned from lordfitoi",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/vendor/vfx-source/README.md"
+      ],
+      "primarySource": "https://foozlecc.itch.io/pixel-magic-sprite-effects",
+      "primaryStatus": "verified publisher page explicitly lists CC0 and both credits",
+      "attributionRequired": false
+    },
+    {
+      "family": "PVFX Foundry",
+      "paths": [
+        "vendor/vfx-source/",
+        "assets/vfx/library/atlas/"
+      ],
+      "author": "nerijs",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/vendor/vfx-source/README.md"
+      ],
+      "primarySource": "https://nerijs.itch.io/pvfx-foundry",
+      "primaryStatus": "verified creator page grants CC0 for rendered sheets and bundled metadata/documentation",
+      "attributionRequired": false,
+      "note": "DigiGame pins0.7.0; current source page describes0.10. This review did not execute tools or unpack/rebuild the vendored archive."
+    },
+    {
+      "family": "Nature - Magic Effect",
+      "paths": [
+        "vendor/vfx-source/",
+        "assets/vfx/library/atlas/"
+      ],
+      "author": "Cethiel",
+      "license": "CC0-1.0",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/vendor/vfx-source/README.md"
+      ],
+      "primarySource": "https://opengameart.org/content/nature-magic-effect",
+      "primaryStatus": "verified author page lists CC0",
+      "attributionRequired": false
+    },
+    {
+      "family": "Rajdhani Regular and SemiBold fonts",
+      "paths": [
+        "assets/ui/fonts/"
+      ],
+      "author": "Indian Type Foundry",
+      "license": "OFL-1.1",
+      "repositoryEvidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/fonts/README.md",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/fonts/RAJDHANI-OFL.txt"
+      ],
+      "primaryStatus": "complete OFL1.1 notice is present in pinned repository",
+      "attributionRequired": "retain copyright and OFL notice when redistributing font software",
+      "note": "Applies to font files, not surrounding application code or artwork."
+    }
+  ],
+  "gitAttributes": {
+    "trackedAttributeFiles": [
+      ".gitattributes"
+    ],
+    "rootRules": [
+      "* text=auto eol=lf"
+    ],
+    "declaredFilters": [],
+    "trackedGitmodules": false,
+    "note": "No checkout was needed. These attribute observations are not a general security audit of repository code."
+  },
+  "sourceProvenance": {
+    "characterSourceFamilies": [
+      "With the Will sprite-thread archive and historical WtWSprites Photobucket members",
+      "The Spriters Resource DS references for separately reviewed legacy Agumon/Greymon/MetalGreymon paths",
+      "PixelDots and Wooded-Wolf community DS-style exceptions",
+      "Project-supplied individual character art",
+      "Portrait animation source WebP files from EwertonMendes/digimon-ng"
+    ],
+    "withTheWillThreadRecordedInSource": "https://withthewill.net/threads/the-new-digimon-world-dawn-dusk-lost-evo-sxw-sprite-topic-no-sprite-requests.10654/",
+    "creditsStatus": "Recorded archive/member/source hashes are useful provenance but do not establish complete original ripper credits. Named historical DS ripper strings RadSpyro/redblueyellow/Dazz/MightyJetters were not found in the inspected character metadata/build tools. Preserve already-audited credits from existing Digivice sources instead of replacing them with the repository author alone.",
+    "communityCredits": [
+      {
+        "name": "Dodomon",
+        "credit": "PixelDots",
+        "metadata": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/dodomon/field.json"
+      },
+      {
+        "name": "Pitchmon",
+        "credit": "PixelDots",
+        "metadata": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/pitchmon/field.json"
+      },
+      {
+        "name": "Pukamon",
+        "credit": "Wooded-Wolf",
+        "metadata": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/pukamon/field.json"
+      },
+      {
+        "name": "Flamon",
+        "credit": "Wooded-Wolf",
+        "metadata": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/flamon/field.json"
+      }
+    ],
+    "portraitExample": {
+      "name": "Airdramon",
+      "sourceUrl": "https://raw.githubusercontent.com/EwertonMendes/digimon-ng/master/public/assets/digimons/Airdramon.webp",
+      "metadata": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/airdramon/portrait_frames.json",
+      "frameSize": [
+        150,
+        150
+      ],
+      "frameCount": 4,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "note": "A concrete source URL/hash, not a licensing grant; presentation frames do not prove four distinct battle actions."
+    },
+    "dataIntSource": {
+      "repository": "clokken/digimon-dawn-dusk-data",
+      "commit": "07ad9940951a5b0de342523355cb65ba23bf64af",
+      "field": "spirit mapped to INT",
+      "reportedCounts": {
+        "direct": 385,
+        "alias": 11,
+        "estimatedRankKnn": 13
+      },
+      "note": "Counts read from pinned source audit; not all409 are directly sourced values."
+    }
+  },
+  "formatHints": {
+    "engine": "Godot4.7.x / GDScript / GL Compatibility according to AGENTS and project.godot; no engine was installed or run.",
+    "speciesTables": "base-digimon-list.json is a409-row list using UUID-like seed identities; learnsets separately bind speciesSeed. Do not replace current Digivice IDs or battle balance by filename/name alone.",
+    "movementContract": {
+      "directions": [
+        "down_left",
+        "down_right",
+        "up_left",
+        "up_right"
+      ],
+      "phases": [
+        "idle",
+        "step_a",
+        "step_b"
+      ],
+      "usualFrameCount": 12,
+      "metadata": [
+        "cell_width",
+        "cell_height",
+        "frame_count",
+        "frames_per_direction",
+        "frame_anchor",
+        "audited_source_frames",
+        "source_sha256",
+        "pose_alignment"
+      ],
+      "note": "Inspect actual field.png dimensions with field.json; do not assume a universal32px or64px cell. Walking poses are not separately authored attack/hurt/sleep/care/capture clips."
+    },
+    "registry": "ds-direction-registry schema4 pins82 species and a review-map hash; ds-additional-sources schema3 declares structural profiles and direction patterns for additional forms. Treat automated direction/phase/cleanup claims as source assertions until independently checked.",
+    "exampleCellSizes": {
+      "Agumon": [
+        66,
+        66
+      ],
+      "Airdramon": [
+        36,
+        41
+      ],
+      "Veemon": [
+        32,
+        36
+      ],
+      "Omnimon": [
+        36,
+        44
+      ],
+      "Pukamon": [
+        37,
+        69
+      ],
+      "Flamon": [
+        55,
+        110
+      ]
+    },
+    "readmeConflicts": [
+      {
+        "name": "Veemon",
+        "prose": "Character README describes a project-supplied spaced9-frame32px strip.",
+        "actualPinnedMetadata": "field.json declares12 frames in32×36 cells from audited WtW026_V-mon.png via registry schema4.",
+        "decision": "Actual pinned PNG/JSON must win after validation; README paragraph is stale."
+      },
+      {
+        "name": "Mochimon",
+        "prose": "Legacy builder contains a Wooded-Wolf community source entry.",
+        "actualPinnedMetadata": "field.json declares project_supplied_directional/authored_runtime_strip.",
+        "decision": "Do not transfer obsolete builder credit to the current asset without matching source bytes."
+      }
+    ]
+  },
+  "limitations": [
+    "No blanket legal permission is inferred for private or public derivative use.",
+    "Explicit upstream licenses were checked at pack level; every vendored binary was not re-downloaded and byte-compared.",
+    "No character sheet was visually reviewed in this license/provenance task.",
+    "No upstream materializer, Godot import, fetch script, dependency installation or checkout filter was run.",
+    "No native game rules, saves, roster IDs or existing asset-pack entries were changed."
+  ],
+  "evidence": [
+    {
+      "path": "README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/README.md",
+      "gitBlob": "c831f7dd37b640bf27fa1c216f391b3ea2d8cbd6",
+      "sha256": "01a595e7e56b89cc5d662726824796026798285634e54717d25eebd13d8def90",
+      "bytes": 1545
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/THIRD_PARTY_NOTICES.md",
+      "gitBlob": "578c7421db64755a7c414f8bb4fdce5b3920cd19",
+      "sha256": "7c3f8ee3dfbd4157cd8cef14c5d77151954389521c90bb66ed74f08aebee79b5",
+      "bytes": 1568
+    },
+    {
+      "path": ".gitattributes",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/.gitattributes",
+      "gitBlob": "8ad74f78d9c9b9b8f3d68772c6d5aa0cb3fe47e9",
+      "sha256": "21b01a606c9f85f18bb9230245f00ab104df7409cbb2fe9423f6751ca72ba754",
+      "bytes": 80
+    },
+    {
+      "path": "AGENTS.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/AGENTS.md",
+      "gitBlob": "ed1a6c586728243aa8e87e2fb2311cd9ad9613ae",
+      "sha256": "49c6fd7a02a7589456e073e589877f58569e171fbf0d4cacf585abdb88888daf",
+      "bytes": 5995
+    },
+    {
+      "path": "project.godot",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/project.godot",
+      "gitBlob": "b6d9a3f53c5f773ca8243dc83c5361efba147c89",
+      "sha256": "aa5c33a36f2b4f6ee80855d2cfa50c9c7772f2e745f78a930cc5e9e9bd5d3e42",
+      "bytes": 3246
+    },
+    {
+      "path": "assets/characters/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/README.md",
+      "gitBlob": "e76555a1af801e4677b36bbc8c06949787e7500d",
+      "sha256": "39ff1fe4f05e447cded46bb138198e21412fba7415856b00f360ccab58103860",
+      "bytes": 6611
+    },
+    {
+      "path": "assets/characters/world/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/world/README.md",
+      "gitBlob": "ed4932859294bffeef102b97b971fb8c89d02b4f",
+      "sha256": "40d9994e7ca628bfe23cb1c1ccdef35236e23c6985bd6d5af854d0ff673e606e",
+      "bytes": 1546
+    },
+    {
+      "path": "assets/audio/digimon-world-ds/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/audio/digimon-world-ds/README.md",
+      "gitBlob": "cb237a94ebc1fc013a0981c01c529c71c77ed015",
+      "sha256": "43a44a454e582a01f1c60aece5d65b8bb2cdeaa47e624c2877eb60c0ab4d75b3",
+      "bytes": 938
+    },
+    {
+      "path": "assets/terrain/kenney/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/terrain/kenney/README.md",
+      "gitBlob": "68fb02283edd6cad030bd2b757de8c128db4fd32",
+      "sha256": "34734af9859d59bd144a1412371d8ac0276530ac50cdc2aeadaedda9cff37e0c",
+      "bytes": 1206
+    },
+    {
+      "path": "assets/ui/backgrounds/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/backgrounds/README.md",
+      "gitBlob": "813f9df69c7be954cc93d872912604106733e05e",
+      "sha256": "aff56f3093eee1d264d432161aea7bf6b0d128ffe710299e3321f4c754a1fa6a",
+      "bytes": 387
+    },
+    {
+      "path": "assets/ui/fonts/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/fonts/README.md",
+      "gitBlob": "083f50a35b3c31d2e74ba5c39d1df73d1dc3368f",
+      "sha256": "a85b6b8160c9b232f577f4e922aa560f2a7ca103b236e380ddb35fb85e55d78d",
+      "bytes": 1481
+    },
+    {
+      "path": "assets/ui/fonts/RAJDHANI-OFL.txt",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/fonts/RAJDHANI-OFL.txt",
+      "gitBlob": "ba58e57081e01b262f8e24777d4681b47bb5323f",
+      "sha256": "4b89f30fb7ddcfc416cb1d9ca504b46d7db2befabebef9d5619b80cf9c36d113",
+      "bytes": 4371
+    },
+    {
+      "path": "assets/ui/icons/battle_operator/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/icons/battle_operator/README.md",
+      "gitBlob": "6e3dd7d44c944ebdd4b6508c6886afbd8bfc8e72",
+      "sha256": "12d93016eadc423bd7fbbc068874272efe2b6c1012e225c2faead2f40afb1b0e",
+      "bytes": 675
+    },
+    {
+      "path": "assets/ui/kenney_fantasy_digi/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/ui/kenney_fantasy_digi/README.md",
+      "gitBlob": "a64b1af5ccb4757f7822bde35087d65c4eee6e08",
+      "sha256": "2a43c2bf6fa8f96c3107b8d6f0819fac72d8b2e5dfe035046f915f015ba1490c",
+      "bytes": 1562
+    },
+    {
+      "path": "assets/vfx/kenney/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/vfx/kenney/README.md",
+      "gitBlob": "f4e6fe5f253ca4537bbed9232047273d8acae7d1",
+      "sha256": "1d274143620ca706252aa9d11c8ee6427ab1fe9b275f576caa6c21dbf9693905",
+      "bytes": 780
+    },
+    {
+      "path": "assets/world/central_city/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/world/central_city/README.md",
+      "gitBlob": "105907f664fdbc407b3895a488c564f760777100",
+      "sha256": "b69f2cff71fb9f4b3982216637029a4fdf9eab62f918965084a674ff1e2f851f",
+      "bytes": 880
+    },
+    {
+      "path": "assets/world/devilsworkshop/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/world/devilsworkshop/README.md",
+      "gitBlob": "1bcf9133e0e8323707f2277c8b3977b80d7abb6f",
+      "sha256": "1de6dd7b93ccd7c65505e44774e6b7a45c54f39e494f83943892adb45ee1254d",
+      "bytes": 7184
+    },
+    {
+      "path": "assets/world/hawkbirdtree/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/world/hawkbirdtree/README.md",
+      "gitBlob": "2797428a42c1aadffdb912acbcff8fea83bbbad4",
+      "sha256": "4079b394d80339ce3408c990796f11f2fee39877cb0853ec79a027c73dc555bf",
+      "bytes": 1369
+    },
+    {
+      "path": "assets/world/tblack/city/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/world/tblack/city/README.md",
+      "gitBlob": "9b27dcc8cbf60235a5d363f7ce731c97b1731592",
+      "sha256": "517b790a7ee60848f10c01fd4be6500bd9e69c8d175abb080b5c36146afd77f8",
+      "bytes": 8763
+    },
+    {
+      "path": "vendor/vfx-source/README.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/vendor/vfx-source/README.md",
+      "gitBlob": "d51217ca411dc3da24b1553da582989f4a6e6380",
+      "sha256": "db046d3e8e8dce659da4e021966bfaed2967e118ac95d2362b0a8660529e88c7",
+      "bytes": 1441
+    },
+    {
+      "path": "database/ds-direction-registry.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/ds-direction-registry.json",
+      "gitBlob": "c0e2d4f88a6640a351664895bc7d66670d9c9ca2",
+      "sha256": "0669a6261dc3c9e8f62793b954e172f195dd8c08845f6bcd20c7bc18af54bf1d",
+      "bytes": 266981
+    },
+    {
+      "path": "database/ds-direction-review-map.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/ds-direction-review-map.json",
+      "gitBlob": "9eb238d381d63ce84fb78fd946f5832605adf8de",
+      "sha256": "5f3ce652ee7079e85568b6fc0c5c75bdb55c95ead38b8e068d1a155adabac612",
+      "bytes": 5883
+    },
+    {
+      "path": "database/ds-additional-sources.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/ds-additional-sources.json",
+      "gitBlob": "66f3048fad90f91720103bf4d720b795b988b554",
+      "sha256": "04c95ca831ec5be47d07a7e85f7017edf80c44ef631ac530777e922b135bfbf8",
+      "bytes": 253001
+    },
+    {
+      "path": "database/base-digimon-list.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json",
+      "gitBlob": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+      "sha256": "1d61f6fc03f62213f1078784ba675d6524b64e10ac946edf63bd97b391f3544f",
+      "bytes": 253568
+    },
+    {
+      "path": "database/digimon-learnsets.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/digimon-learnsets.json",
+      "gitBlob": "9a40b693534f1e082a1a531d22109549e8f51a10",
+      "sha256": "a773d452f5be9a5cc9ac9aef4d6cb12701cc5ccf9a2a17fb6d273cfd1e9053bd",
+      "bytes": 182229
+    },
+    {
+      "path": "database/digimon-int-source-audit.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/digimon-int-source-audit.json",
+      "gitBlob": "ab902395bc6a6fa29ca5227f5d5340c0da59d6f8",
+      "sha256": "0640eb1af809dc5667805d66329224b58d4ccddea86bcf41f4d7cabf5918c6e0",
+      "bytes": 79343
+    },
+    {
+      "path": "database/source-data/digimon-story-ds.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/source-data/digimon-story-ds.json",
+      "gitBlob": "2523bda3bcef6d3fec00c9dcc4a382fbe0621e2b",
+      "sha256": "5894128f821159e7cca59c78066bf946b566ca7b626263dc4a0b25298dfd2952",
+      "bytes": 19892
+    },
+    {
+      "path": "tools/build_early_rank_ds_fields.py",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/build_early_rank_ds_fields.py",
+      "gitBlob": "c651fdd0e415596e47704932c6f60ec97f1acb40",
+      "sha256": "9ab5304629ec55447172d5a105608d198e3a35b963be790a40b709a5dfd12c20",
+      "bytes": 22235
+    },
+    {
+      "path": "tools/fetch_character_assets.py",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/tools/fetch_character_assets.py",
+      "gitBlob": "974ecaeed953d8c59b88c198fa78dfbed863242d",
+      "sha256": "20acc378ab8423a7c3b28bf186b7559c7e1a6bbdbbe3922d206eae79eaa66ed1",
+      "bytes": 10501
+    },
+    {
+      "path": "assets/characters/agumon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/agumon/field.json",
+      "gitBlob": "851e9cc9a6e20e2ba8bcb852313d68426df439a3",
+      "sha256": "d1ac1b6d164bd459958e0e4dd68933b10ff3354a93020b49b9c240c966d7e9fa",
+      "bytes": 501
+    },
+    {
+      "path": "assets/characters/airdramon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/airdramon/field.json",
+      "gitBlob": "da1e68cdff5f3d29d3997449a9e9cdabfab8bc73",
+      "sha256": "d38f2f4655ab7af03345d5f9f20e373414139ee318c4fee45d58786da38a3cb2",
+      "bytes": 3652
+    },
+    {
+      "path": "assets/characters/veemon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/veemon/field.json",
+      "gitBlob": "0d5b39a5dd6655b9d060d8facb0d496bf80eec5e",
+      "sha256": "a7a1d1726c8903f49bc62278abe65cfde9b9458405b0342fbafe9a232e255d9b",
+      "bytes": 4138
+    },
+    {
+      "path": "assets/characters/omnimon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/omnimon/field.json",
+      "gitBlob": "e31ffbb8f8e0a5b7a42b29303a932a67b3cc19b2",
+      "sha256": "4251911c2b686abbaaffc4e1a887d9cbf615b717be48c6447913af2b3c53855c",
+      "bytes": 3642
+    },
+    {
+      "path": "assets/characters/airdramon/portrait_frames.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/airdramon/portrait_frames.json",
+      "gitBlob": "77da4028b652e6f1b00a4783cb9ace2e7b7df199",
+      "sha256": "b833c6ab46856555b2d499544f1ece776c8093cd4042e7caaf89055374c5fda9",
+      "bytes": 368
+    },
+    {
+      "path": "assets/characters/dodomon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/dodomon/field.json",
+      "gitBlob": "69fd8a9d66d59a4632ca4a0a1f5dbd77cba70481",
+      "sha256": "1436cbcd425a5370fedfb8c619d2a79136f3776e6d5dc7ad3e5095cb23566fbc",
+      "bytes": 608
+    },
+    {
+      "path": "assets/characters/pitchmon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/pitchmon/field.json",
+      "gitBlob": "d16c7f642fa5714be1f0d90cb742c2cbb61c2326",
+      "sha256": "25bafd3e8952b5b42a18ce32519b9c83de4f291b54d42b04241f4b0a80a2360b",
+      "bytes": 609
+    },
+    {
+      "path": "assets/characters/mochimon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/mochimon/field.json",
+      "gitBlob": "b880c92c7f2b6bb5b63777a135924b80371b708f",
+      "sha256": "79bd57c2295df07336f5c32401bfc6ba1a7d37066c63e30ed98e8e3dd34d9793",
+      "bytes": 474
+    },
+    {
+      "path": "assets/characters/pukamon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/pukamon/field.json",
+      "gitBlob": "6e975d0291e26ca018cda75c9835a799f3b0294d",
+      "sha256": "45efd3f1da1a8a62d7a7b5f46c3bdc64bb92c60f3325a76a641138ef4a1e8d97",
+      "bytes": 642
+    },
+    {
+      "path": "assets/characters/flamon/field.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/assets/characters/flamon/field.json",
+      "gitBlob": "f59be8e3059c01e93fdf94ba991b9f268e211e62",
+      "sha256": "a9abdc23bed5c12c5472ae5fbb4f5052c070bcaa59cab1e120dd940ba7af04b9",
+      "bytes": 623
+    },
+    {
+      "path": "database/techniques.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/techniques.json",
+      "gitBlob": "a99a9c871b6c45a622f7c4a7e4f2488b2489df06",
+      "sha256": "9e0ef2b1384d015dad460292b330a2628781230f13dbd31b7452ee24450224e6",
+      "bytes": 2056242
+    },
+    {
+      "path": "database/technique-source-audit.json",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/technique-source-audit.json",
+      "gitBlob": "d962e0b83f2eb8a0359c5657a3ac7f5b0f7c9829",
+      "sha256": "b0b9c0b45d707273d243982f3023b5be6e633df805c0f7f4ea34d627b5943251",
+      "bytes": 1004325
+    },
+    {
+      "path": "Plan.md",
+      "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/Plan.md",
+      "gitBlob": "e87cb2ec78204279b20e65384e374bda86d959dd",
+      "sha256": "a7e47be058d21aed08ae5f4455cb7b90a618e3b3144f52db2d82011bb12c5048",
+      "bytes": 27108
+    }
+  ],
+  "dataQualityFindings": [
+    {
+      "status": "verified-contaminated-source-rows",
+      "finding": "Nine committed technique rows contain an advertisement-loader string in identity/name data; the source audit also contains nine. They are not valid technique names and must be excluded from any import.",
+      "marker": "relevantDigital.cmd.push",
+      "runtimeRows": 1573,
+      "runtimeAdRowCount": 9,
+      "runtimeZeroBasedIndices": [
+        557,
+        568,
+        578,
+        587,
+        598,
+        608,
+        618,
+        629,
+        639
+      ],
+      "sourceAuditRows": 2260,
+      "sourceAuditAdRowCount": 9,
+      "sourceAuditZeroBasedIndices": [
+        571,
+        585,
+        598,
+        611,
+        624,
+        637,
+        652,
+        666,
+        681
+      ],
+      "documentationConflict": "Plan.md line118 says dynamic advertisement rows must not be counted, but the committed data still includes them.",
+      "evidence": [
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/techniques.json",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/technique-source-audit.json",
+        "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/Plan.md#L118"
+      ],
+      "note": "Detected by parsing JSON as inert data only. Full learnset-impact and skill-authenticity analysis belongs to the separate data audit."
+    }
+  ]
+}

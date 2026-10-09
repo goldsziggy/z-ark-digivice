@@ -1,0 +1,162 @@
+{
+  "revision": "C14-P19",
+  "variant": "buttons",
+  "status": "NOMINAL_GEOMETRY_VERIFIED_PHYSICAL_SCREW_GRIP_PENDING",
+  "approval": "Sentinel_0a44a0815c848191a6f7d9410ef226f3; 2026-10-09 09:32 UTC",
+  "baseline": "digivice-c13-stock-rf",
+  "white_pilot_diameter_mm": 1.9,
+  "white_pilot_count": 15,
+  "white_pilot_ids": [
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "C1",
+    "C2",
+    "C3",
+    "D1",
+    "D2",
+    "D3",
+    "E1",
+    "E2",
+    "E3",
+    "F1",
+    "F2"
+  ],
+  "black_housing_pilot_diameter_mm": 1.6,
+  "clearance_diameter_mm": 2.4,
+  "thread_geometry": "Smooth pilot bores; no modeled threads, nuts or inserts.",
+  "axial_geometry": "Every screw axis, seat, shaft length and original pilot cutter Z interval is unchanged. All subsequent C13 booleans are retained.",
+  "A3_depth_note": "The retained PWR guard sets the centerline first obstruction at Z22.13552 mm, not the original nominal cut end Z24.4. Assembled M2x16 tip remains Z20.4. These are CAD observations, not drilling-depth instructions.",
+  "material_delta": {
+    "removed_mm3": 89.94093004224307,
+    "added_numerical_mm3": 2.7381230908218874e-05,
+    "removed_outside_authorized_annuli_numerical_mm3": 3.972571467307797e-06,
+    "comparison_tolerance_mm3": 0.001,
+    "all_nonfront_exports_byte_identical": true,
+    "same_front_bounds": true
+  },
+  "validation": {
+    "builder_check_count": 427,
+    "joint_check_count": 2924,
+    "both_variants_diameter_and_depth_check_count": 883,
+    "mesh_report": "validation/mesh_report.json",
+    "material_diff_report": "validation/C14_P19_MATERIAL_DELTA.json",
+    "joint_report": "validation/C14_P19_JOINT_AUDIT.json",
+    "joint_report_sha256": "25c92b6cec9fe04101e0e115f4fcc0d2fa26cec2540e84c733d8292d055ba93e",
+    "diameter_report": "validation/C14_P19_EXPORTED_PILOT_DIMENSIONS.json",
+    "diameter_report_sha256": "a2c5e74f2d0ef7fde7fb1f3cb2204a78a9e669a989a2fe196d0cb347da697da8"
+  },
+  "source_and_exports": {
+    "assembly_manifest_sha256": "6cf4cd7e40c98ad09e4585e1eb38a401d92b4b738f1282eb95ce4051a7179fb8",
+    "build_sha256": "8b0f7c72c3386225de3154565cb7c55776988019205c372dd613bbba4de8310c",
+    "parameters_sha256": "4146393d70b9a42824bc5f39699732350647a95c50f23f4f94e9bc046a6dc5b7",
+    "front_print_sha256": "a9639d30bba73181e5bf8a0172239aec4dd3cb4aef35d62ee13323ce3e6aa534",
+    "front_assembly_sha256": "9146a5e5a0f4cbb13d68ed8675267741ad53e071b3ff1ab1719c69e1feae05ea"
+  },
+  "print_parts": [
+    {
+      "part": "back_shell_C10",
+      "print_stl": "stl/common/back_shell_C10.stl",
+      "sha256": "f58e072c40328cd22b1eb9664ea554ab3da3cb31febfeab899b65ab7cd27ccc7",
+      "baseline_sha256": "f58e072c40328cd22b1eb9664ea554ab3da3cb31febfeab899b65ab7cd27ccc7",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "front_shell_PANEL_SWITCHES",
+      "print_stl": "stl/panel_switches/front_shell_PANEL_SWITCHES.stl",
+      "sha256": "a9639d30bba73181e5bf8a0172239aec4dd3cb4aef35d62ee13323ce3e6aa534",
+      "baseline_sha256": "6b300f971a418991d59b78d152581cde287cd1d3fbc45f3ad5f2961e5cfec9dc",
+      "action": "REPRINT: white pilot revision",
+      "flip_x_from_assembly_for_print": true
+    },
+    {
+      "part": "screen_bezel_COMMON",
+      "print_stl": "stl/common/screen_bezel_COMMON.stl",
+      "sha256": "616ceed092b1ca8684b1de237bdc6c5c02029b0f9bb87d22a2c344c6ff3d5343",
+      "baseline_sha256": "616ceed092b1ca8684b1de237bdc6c5c02029b0f9bb87d22a2c344c6ff3d5343",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "display_carrier_COMMON",
+      "print_stl": "stl/common/display_carrier_COMMON.stl",
+      "sha256": "d1af1e83e10984e10189e15e74485a194506d7923868f4e74b26e5ab342f5440",
+      "baseline_sha256": "d1af1e83e10984e10189e15e74485a194506d7923868f4e74b26e5ab342f5440",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": true
+    },
+    {
+      "part": "nfc_reader_tray_C13",
+      "print_stl": "stl/common/nfc_reader_tray_C13.stl",
+      "sha256": "3c370374effe2176b38e0e3436b6870c4f9fc9ece0512be384eceb4416eb46e7",
+      "baseline_sha256": "3c370374effe2176b38e0e3436b6870c4f9fc9ece0512be384eceb4416eb46e7",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "card_antenna_housing_TOP",
+      "print_stl": "stl/common/card_antenna_housing_TOP.stl",
+      "sha256": "3c37360f02fe38b3a161e77172335d90125c4c02bc42e8fda69cf05b104fdb9c",
+      "baseline_sha256": "3c37360f02fe38b3a161e77172335d90125c4c02bc42e8fda69cf05b104fdb9c",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "card_RF_window_and_gap_TOP",
+      "print_stl": "stl/common/card_RF_window_and_gap_TOP.stl",
+      "sha256": "412f68f5176e8e33d759bbca9a4d7578f8731b9bf0f08d18d54bda925cca2733",
+      "baseline_sha256": "412f68f5176e8e33d759bbca9a4d7578f8731b9bf0f08d18d54bda925cca2733",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "card_channel_roof_TOP",
+      "print_stl": "stl/common/card_channel_roof_TOP.stl",
+      "sha256": "ab7b7efe96705ed1e435534e895a1f4c3503102b6a6f9c38389606b6e561ce4c",
+      "baseline_sha256": "ab7b7efe96705ed1e435534e895a1f4c3503102b6a6f9c38389606b6e561ce4c",
+      "action": "REUSE: byte-identical to C13",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "battery_41x71_FIT_FRAME",
+      "print_stl": "stl/fit_first/battery_41x71_FIT_FRAME.stl",
+      "sha256": "d34c9d234976c0d60a6ea973434211c6e0aabea816c7474ffd44b58644298059",
+      "baseline_sha256": "d34c9d234976c0d60a6ea973434211c6e0aabea816c7474ffd44b58644298059",
+      "action": "optional unchanged gauge",
+      "flip_x_from_assembly_for_print": false
+    },
+    {
+      "part": "screen_fit_ring_46p8",
+      "print_stl": "stl/fit_first/screen_fit_ring_46p8.stl",
+      "sha256": "7bb8ebe2b0f68d0361c60b558ebbf5989e57126c117ba16decc8daf619986d24",
+      "baseline_sha256": "7bb8ebe2b0f68d0361c60b558ebbf5989e57126c117ba16decc8daf619986d24",
+      "action": "optional unchanged gauge",
+      "flip_x_from_assembly_for_print": false
+    }
+  ],
+  "physical_limits": [
+    "Actual screw thread form, pitch, dimensions, printed hole size and holding strength remain unverified.",
+    "Nominal radial overlap with a 2 mm screw major diameter falls from 0.20 to 0.05 mm; easier insertion is not proof of adequate grip.",
+    "No modeled threads, nuts or inserts were added.",
+    "No fit claim applies to the unmeasured actual battery, switch bodies, USB plug, NFC antenna/cables or loose display flex."
+  ],
+  "screw_counts_per_device": {
+    "first_build_no_NFC_tray": {
+      "M2x16": 4,
+      "M2x4": 3,
+      "M2x8": 10,
+      "total": 17
+    },
+    "with_optional_NFC_tray": {
+      "M2x16": 4,
+      "M2x4": 3,
+      "M2x8": 13,
+      "total": 20
+    }
+  },
+  "current_build": "Touch-only first build needs no external buttons, NFC, GPS or J9 harness. Onboard PWR and USB remain accessible.",
+  "legacy_names": "Unchanged parts retain C10/C13 basenames; this containing folder and contract identify the C14-P19 revision. No obsolete front STL is included.",
+  "official_reference_rights": "Required geometry is derived from official Waveshare SKU29565 standard-cover CAD, with sources and hashes in MECHANICAL_CONTRACT.json. Redistribution license remains unverified."
+}

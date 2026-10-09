@@ -1,0 +1,43 @@
+{
+  "repository": "https://github.com/espressif/esp-idf",
+  "revision": "79e3454c68248bd7d881721c9b2e94561378a8ce",
+  "version": "v5.3.6",
+  "component": "components/fatfs",
+  "fatfsVersion": "R0.15 patch2 with pinned Espressif fixes",
+  "filesBeforeProjectChanges": {
+    "src/00history.txt": "abfe51fe276cc1f5df984646d7248c3e1e4357bc0e76c9d998df8494122f3724",
+    "src/00readme.txt": "2dbbb8c647699ee10b27f30e9ef46b6ee821c231db97b5298a6cc8d1cc5c829c",
+    "src/diskio.c": "5b4273e37d96de7618a6d970b91f736f04722030fb5e31c375e6fc3db974ea4a",
+    "src/diskio.h": "60beaaca712a9d5126f41362fa68ce7f30e26e115b310a20d79e5639b6fcc3b5",
+    "src/ff.c": "197b6705c1395ee6bae0c1b1ad4a3a2ffaa50834ed112488e73b4a23c9317718",
+    "src/ff.h": "90d3efa38c24078651702dd5997ac022ddef127f336f25b9aac1eafcdbb660fc",
+    "src/ffconf.h": "190e72f1be65a522a3b10ee7a15ceab8d140343e76a6d5b366fcd500539eafda",
+    "src/ffsystem.c": "68e6d533645c81e053ffc9fa6c293a0aa3162d6439151404866931c64f423dd3",
+    "src/ffunicode.c": "f2e03e97fccd9d7b0614b48ee02b7e49fb21c5196d3ff77ba5d8e4558a064d5d",
+    "diskio/diskio.c": "09d15850894c7a845cb8000f241cabb6a07f95cc2efd12ede2e29ab584349c50",
+    "diskio/diskio_impl.h": "b14ddbcedfe06e0668f8040eaec993c5ea076d71dbd30aaf53cd8485c93036bf",
+    "diskio/diskio_rawflash.c": "b8c7f9ac84b1eb0cfb2195f0bbb17096d52b6cead64f498a0d82ba1ae90e3f87",
+    "diskio/diskio_rawflash.h": "5a8a44bf20e83a4e8db8a2d7cfe05d8ad847bad33523d7b9392b443e6b1dcf01",
+    "diskio/diskio_sdmmc.c": "262c549981883f3888b23b1d9e13b4f1af6c11a80e6ad7e43c9483937ad86295",
+    "diskio/diskio_sdmmc.h": "0cfdabcb8548dfb8e1f46ca6413e78a23b0f7cb3b676d6a97a659e8be10bdfd1",
+    "diskio/diskio_wl.c": "6f9466e5da84ee3f1d6d66db49896728cccb171536a2927ba5430879fce7fd28",
+    "diskio/diskio_wl.h": "1ccea0718ee9cfd0e045c11b03762b5376fb3b6502e2c97f69e4fda0ef409500",
+    "port/freertos/ffsystem.c": "17a29aa226ee74b0947eb5e5f471599e091a732d923a31800799fd6c85971c75",
+    "port/linux/ffsystem.c": "4cde69e6e02c4664a1640c11d4cdf8efae2c3a1948653ebbf3aa1c35f0019a0b",
+    "vfs/esp_vfs_fat.h": "e97cc946cd4662878370cbf275f86fd2522b98ff5b0e1a011c8832a06ee5f68e",
+    "vfs/vfs_fat.c": "2f97b58f8248d252c4a4c08f489de56f1844ad55b023eb5fa29c4f0dcb40f7dc",
+    "vfs/vfs_fat_internal.h": "4f9b2be65bfe0a7ce6ef12fbff9caceac487ba3e28aaf387c9c49dbc7f244769",
+    "vfs/vfs_fat_sdmmc.c": "e109d9b9af47945e6e4b6ebcd8c706800f8431bbd6b746b20babc5e061cbea38",
+    "vfs/vfs_fat_spiflash.c": "94a3960491b924e1ef871daf142842a06d1c73c2ec0c29c746a483a48547d258",
+    "CMakeLists.txt": "007c88dab43adaf0a23a83b898276ac4d046ba748dedbc4ac0f0048ab914a5e0",
+    "Kconfig": "b55cab6cc53c96d1bbe8c7a93da498ce29a8e342f33949cff0ae42afef703c6e",
+    "sbom.yml": "327978f07428ad3f3d65cf7ba3c43d7a8859b5941003735dd72cdc5840a4418a",
+    "project_include.cmake": "f437952f7d7e5fb6a19c09548037bcc670b9b6838b24f47066d209dd037ac0df"
+  },
+  "projectChanges": [
+    "Kconfig: opt-in exFAT with LFN dependency",
+    "src/ffconf.h: opt-in exFAT, explicit disabled label mapping needed by exFAT C expression; 32-bit LBA preserved; TRIM disabled",
+    "vfs/vfs_fat.c: reject sizes above INT32_MAX before stat/fstat narrowing"
+  ],
+  "hostGenerators": "project_include.cmake keeps upstream references to the pinned SDK FAT12/16 generators; no exFAT image generator is supplied"
+}

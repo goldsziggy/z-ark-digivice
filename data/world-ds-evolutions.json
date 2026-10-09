@@ -1,0 +1,3470 @@
+{
+  "formatVersion": 4,
+  "reviewedDate": "2026-10-07",
+  "policy": "Curated prototype routes, independent of frozen profile-family identities. All 163 released rules7 routes and gates remain. Nine further ordinary stage advances from the pinned DigiGame forward table close nine lower-stage leaves, producing 172 total routes. The source-authored family alternatives are deliberate prototype choices; their level/bond gates use our target profiles, not source game requirements. The graph stays acyclic with at most two outgoing choices. All 276 forms remain encounter/capture eligible by combat tier. No exclusive canonical path, exact World DS requirement, Armor conversion, mode change, or fusion mechanic is implied.",
+  "edges": [
+    {
+      "fromFormId": 16,
+      "toFormId": 253,
+      "fromEntryKey": "myotismon",
+      "toEntryKey": "malomyotismon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Add MaloMyotismon as a second outgoing option while preserving Myotismon16→VenomMyotismon17. The separate evolution-edge table permits this without mutating the preserved numeric profile or its historical parent/children fields.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-late.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=belialvamdemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "The reference identifies MaloMyotismon as a final form of Myotismon and distinguishes it from VenomMyotismon.",
+          "relationshipSupport": "explicit-family-final-form",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 19,
+      "toFormId": 208,
+      "fromEntryKey": "greymon",
+      "toEntryKey": "skullgreymon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Add the familiar SkullGreymon branch while preserving Greymon-to-MetalGreymon. The player chooses it normally; the prototype must not require neglect, death, or a care mistake.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://en.digimoncard.com/products/pack/ver14/special/",
+          "supports": "Official deck instructions explicitly progress Greymon into SkullGreymon."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=skullgreymon",
+          "supports": "Describes the Undead Ultimate; no prototype punishment mechanic is inferred."
+        }
+      ],
+      "flags": [
+        "adds-second-child-to-preserved-form",
+        "evidence-is-official-card-game-not-world-ds",
+        "no-care-punishment"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 40,
+      "toFormId": 195,
+      "fromEntryKey": "kabuterimon",
+      "toEntryKey": "megakabuterimon-blue",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Add the blue MegaKabuterimon branch while keeping the existing red branch. The blue profile explicitly states that it digivolved from Kabuterimon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue",
+          "supports": "Explicit Kabuterimon predecessor for the Blue variant."
+        }
+      ],
+      "flags": [
+        "adds-second-child-to-preserved-form",
+        "distinct-color-form-kept"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 67,
+      "toFormId": 117,
+      "fromEntryKey": "chibomon",
+      "toEntryKey": "veemon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Choose the available blue-dragon Rookie; DemiVeemon is absent, so this is an explicit stage shortcut.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=chicomon",
+        "claim": "The official Chibomon profile permits broad Dragon evolution. It does not specify this direct game edge.",
+        "status": "inferred",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=chicomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=v-mon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 68,
+      "toFormId": 99,
+      "fromEntryKey": "kuramon",
+      "toEntryKey": "keramon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the existing network-creature line through Keramon; missing Tsumemon is not replaced with an unrelated baby.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=kuramon",
+        "claim": "Official endpoint identities and their Unidentified network-creature classification support the theme, not a direct canonical edge.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=kuramon",
+          "https://digimon.net/reference_en/detail.php?directory_name=keramon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 69,
+      "toFormId": 76,
+      "fromEntryKey": "poyomon",
+      "toEntryKey": "tokomon",
+      "minimumLevel": 1,
+      "minimumBond": 10,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the recognizable small-spirit baby progression before the Patamon branch.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=poyomon",
+        "claim": "Official references establish the two training stages; this selected game route is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=poyomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=tokomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 70,
+      "toFormId": 110,
+      "fromEntryKey": "puttimon",
+      "toEntryKey": "salamon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Join the established Salamon/Gatomon route; Cupimon is absent, and no unavailable form is invented.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=puttimon",
+        "claim": "Official endpoint identities support an authored holy-companion route; no direct canonical shortcut is asserted.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=puttimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=plotmon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 71,
+      "toFormId": 85,
+      "fromEntryKey": "dorimon",
+      "toEntryKey": "dorumon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the recognizable Doru family into its existing dragon line.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=dorimon",
+        "claim": "Official pages establish Dorimon and Dorumon identities; the route is a curated prototype choice.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=dorimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=dorumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 72,
+      "toFormId": 96,
+      "fromEntryKey": "kapurimon",
+      "toEntryKey": "hagurumon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer the machine Rookie route already continued through Guardromon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+        "claim": "Official identities and metal-machine themes support this game choice; no exclusive canonical parent is asserted.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=hagurumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 72,
+      "toFormId": 100,
+      "fromEntryKey": "kapurimon",
+      "toEntryKey": "kotemon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer a second armored martial route to the sword-training Rookie.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+        "claim": "Official identities establish the endpoints; this two-choice game branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=capromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=kotemon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 73,
+      "toFormId": 18,
+      "fromEntryKey": "koromon",
+      "toEntryKey": "agumon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Append an incoming early-stage route to preserved Agumon; retain both existing Champion choices.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+        "claim": "Official Koromon and Agumon pages verify identities/stages; this selected game edge is not claimed as an exclusive canonical route.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=agumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 73,
+      "toFormId": 82,
+      "fromEntryKey": "koromon",
+      "toEntryKey": "blackagumon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer the separately represented black Rookie as a curated alternate, preserving its own source identity.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+        "claim": "Official Agumon (Black) is a separate reference. Its selection as a Koromon branch is authored, not a sprite alias merge.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=koromon",
+          "https://digimon.net/reference_en/detail.php?directory_name=agumon-black"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 74,
+      "toFormId": 84,
+      "fromEntryKey": "pagumon",
+      "toEntryKey": "demidevimon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Choose a dark small-creature route leading to the preserved Devimon branch.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=pagumon",
+        "claim": "Endpoint reference identities are verified; the game branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=pagumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=picodevimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 75,
+      "toFormId": 46,
+      "fromEntryKey": "tanemon",
+      "toEntryKey": "palmon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Append the familiar plant Rookie route without replacing Palmon outgoing branches.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+        "claim": "Official Tanemon is a Bulb and Palmon a Vegetation Rookie; exact route selection remains authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=palmon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 75,
+      "toFormId": 90,
+      "fromEntryKey": "tanemon",
+      "toEntryKey": "floramon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer a second plant Rookie that can continue into Kiwimon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+        "claim": "The endpoint plant classifications support the motif, not a canonical exclusivity claim.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tanemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=floramon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 76,
+      "toFormId": 32,
+      "fromEntryKey": "tokomon",
+      "toEntryKey": "patamon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Append the recognizable Patamon route while keeping the existing two Champion choices.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+        "claim": "Official training/Rookie identities are verified; this prototype selects the route.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=patamon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 76,
+      "toFormId": 116,
+      "fromEntryKey": "tokomon",
+      "toEntryKey": "tsukaimon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer the source-listed dark counterpart as an authored branch, distinct from Patamon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+        "claim": "Separate official endpoint identities; the light/dark branching choice is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tokomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=tukaimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 77,
+      "toFormId": 25,
+      "fromEntryKey": "tsunomon",
+      "toEntryKey": "gabumon",
+      "minimumLevel": 1,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Append the recognizable Gabumon family route while preserving its two Champion choices.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tunomon",
+        "claim": "The references identify Tsunomon and Gabumon; this selected graph edge remains an authored game choice.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tunomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=gabumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 78,
+      "toFormId": 121,
+      "fromEntryKey": "armadillomon",
+      "toEntryKey": "ankylomon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated armored-creature route limited to these two listed new forms."
+    },
+    {
+      "fromFormId": 79,
+      "toFormId": 164,
+      "fromEntryKey": "aruraumon",
+      "toEntryKey": "vegiemon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Give the separate plant Rookie a vegetation growth route; do not merge it with Palmon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=alraumon",
+        "claim": "Official endpoint classifications establish plant identities; the specific growth edge is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=alraumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=vegimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 80,
+      "toFormId": 157,
+      "fromEntryKey": "betamon",
+      "toEntryKey": "seadramon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 81,
+      "toFormId": 125,
+      "fromEntryKey": "biyomon",
+      "toEntryKey": "birdramon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated bird-to-firebird route for a readable progression theme."
+    },
+    {
+      "fromFormId": 82,
+      "toFormId": 127,
+      "fromEntryKey": "blackagumon",
+      "toEntryKey": "darktyrannomon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the separate black dinosaur Rookie into DarkTyrannomon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+        "claim": "Official pages identify the dark dinosaur endpoints; exact graph placement is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=agumon-black",
+          "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 84,
+      "toFormId": 15,
+      "fromEntryKey": "demidevimon",
+      "toEntryKey": "devimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Join the existing Devimon line as an additional incoming route; Impmon route remains unchanged.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=picodevimon",
+        "claim": "Official identities support the devil-family connection; this is not a claim of an exclusive canonical parent.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=picodevimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=devimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 85,
+      "toFormId": 130,
+      "fromEntryKey": "dorumon",
+      "toEntryKey": "dorugamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated Doru beast-dragon route, reviewed independently of source sheet order."
+    },
+    {
+      "fromFormId": 85,
+      "toFormId": 154,
+      "fromEntryKey": "dorumon",
+      "toEntryKey": "reptiledramon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer the recognizable alternate prototype-dragon branch; leave its missing Grademon continuation explicit.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=dorumon",
+        "claim": "The verified Raptordramon reference corresponds to the source Reptiledramon candidate; this graph branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=dorumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=raptordramon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 88,
+      "toFormId": 156,
+      "fromEntryKey": "dracmon",
+      "toEntryKey": "sangloupmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated nocturnal duelist route ending at an available listed Ultimate."
+    },
+    {
+      "fromFormId": 89,
+      "toFormId": 150,
+      "fromEntryKey": "falcomon",
+      "toEntryKey": "peckmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated bird route ending at an available listed Ultimate."
+    },
+    {
+      "fromFormId": 90,
+      "toFormId": 144,
+      "fromEntryKey": "floramon",
+      "toEntryKey": "kiwimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the plant Rookie into the plant-associated bird route proposed toward Deramon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=floramon",
+        "claim": "Official reference identities supply the endpoints; the particular Rookie-to-Champion route is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=floramon",
+          "https://digimon.net/reference_en/detail.php?directory_name=kiwimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 91,
+      "toFormId": 133,
+      "fromEntryKey": "gaomon",
+      "toEntryKey": "gaogamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated martial canine route ending at an available listed Ultimate."
+    },
+    {
+      "fromFormId": 92,
+      "toFormId": 152,
+      "fromEntryKey": "gizamon",
+      "toEntryKey": "raremon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A mutant-creature continuation that supplies the currently isolated Gizamon with an ordinary Champion route. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "a5d75ad2-b8ce-487d-9a15-f26d8b78fce9",
+        "sourceName": "Gizamon",
+        "sourceRank": "Rookie",
+        "jsonPointer": "/70/digiEvolutionSeedList/0",
+        "lineStart": 2023,
+        "lineEnd": 2050,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L2023-L2050",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "targetSeed": "e3a5c9b7-3d1f-4e6a-8c2b-9f0d5a3e7b6c",
+        "targetName": "Raremon",
+        "targetRank": "Champion"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 93,
+      "toFormId": 149,
+      "fromEntryKey": "goburimon",
+      "toEntryKey": "ogremon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the recognizable goblin/ogre family instead of a generic dark-route substitution.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=goburimon",
+        "claim": "Goblimon/GOBURIMON and Ogremon identities are verified; this game progression is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=goburimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=orgemon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 94,
+      "toFormId": 143,
+      "fromEntryKey": "gotsumon",
+      "toEntryKey": "icemon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Choose the officially suggested but uncertain Gotsumon/Icemon relationship as a playable branch.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=icemon",
+        "claim": "Icemon official profile explicitly leaves its origin uncertain between Gotsumon evolution and mutation; the game chooses an evolution edge.",
+        "status": "inferred",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=gottsumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=icemon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 94,
+      "toFormId": 198,
+      "fromEntryKey": "gotsumon",
+      "toEntryKey": "meteormon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer an optional delayed direct family route, unlocking at Ultimate requirements rather than as a free jump.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=insekimon",
+        "claim": "Meteormon official profile explicitly says its meteorite material manifests from Gotsumon ore data; this is family evidence, not a mandatory game evolution procedure.",
+        "status": "explicit",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=gottsumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=insekimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 95,
+      "toFormId": 139,
+      "fromEntryKey": "guilmon",
+      "toEntryKey": "growlmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated red-dragon-to-knight route for this game; no exclusive canonical-path claim."
+    },
+    {
+      "fromFormId": 96,
+      "toFormId": 140,
+      "fromEntryKey": "hagurumon",
+      "toEntryKey": "guardromon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 97,
+      "toFormId": 123,
+      "fromEntryKey": "hawkmon",
+      "toEntryKey": "aquilamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated aerial-warrior route; this prototype proposal does not require or claim franchise fusion mechanics."
+    },
+    {
+      "fromFormId": 98,
+      "toFormId": 141,
+      "fromEntryKey": "kamemon",
+      "toEntryKey": "gwappamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated aquatic route limited to these two listed new forms."
+    },
+    {
+      "fromFormId": 99,
+      "toFormId": 146,
+      "fromEntryKey": "keramon",
+      "toEntryKey": "kurisarimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated network-creature route with progressively stronger authored profiles."
+    },
+    {
+      "fromFormId": 100,
+      "toFormId": 129,
+      "fromEntryKey": "kotemon",
+      "toEntryKey": "dinohyumon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Start the sword-family route coordinated with Dinohyumon→Kyukimon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=kotemon",
+        "claim": "Official references establish the sword-bearing endpoints; the playable branch is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=kotemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=dinohumon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 101,
+      "toFormId": 153,
+      "fromEntryKey": "kudamon",
+      "toEntryKey": "reppamon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated guardian route using the inventory display names; official naming remains separate."
+    },
+    {
+      "fromFormId": 103,
+      "toFormId": 163,
+      "fromEntryKey": "lalamon",
+      "toEntryKey": "sunflowmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated flower route; no new edge overrides the existing Rosemon lineage."
+    },
+    {
+      "fromFormId": 105,
+      "toFormId": 120,
+      "fromEntryKey": "muchomon",
+      "toEntryKey": "akatorimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A bird-to-bird branch; retains the two upstream choices as two distinct current Champion profiles. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "9c64088a-5693-4583-ba0d-47b117d2ab79",
+        "sourceName": "Muchomon",
+        "sourceRank": "Rookie",
+        "jsonPointer": "/67/digiEvolutionSeedList/0",
+        "lineStart": 1935,
+        "lineEnd": 1964,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L1935-L1964",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "targetSeed": "ae4c3d8f-0a9b-4950-8c3d-2b9f1f0871e5",
+        "targetName": "Akatorimon",
+        "targetRank": "Champion"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 105,
+      "toFormId": 128,
+      "fromEntryKey": "muchomon",
+      "toEntryKey": "diatrymon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A second bird branch with a distinct dinosaur-bird profile; no mode conversion is implied. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "9c64088a-5693-4583-ba0d-47b117d2ab79",
+        "sourceName": "Muchomon",
+        "sourceRank": "Rookie",
+        "jsonPointer": "/67/digiEvolutionSeedList/1",
+        "lineStart": 1935,
+        "lineEnd": 1964,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L1935-L1964",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "targetSeed": "12bfe8d3-7c6e-4e0f-9a2b-f1d3c87b20f5",
+        "targetName": "Diatrymon",
+        "targetRank": "Champion"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 106,
+      "toFormId": 136,
+      "fromEntryKey": "otamamon",
+      "toEntryKey": "gekomon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the recognizable amphibian family and the coordinated ShogunGekomon continuation.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=otamamon",
+        "claim": "Official endpoint identities establish tadpole/amphibian forms; the route is a curated game choice.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=otamamon",
+          "https://digimon.net/reference_en/detail.php?directory_name=gekomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 109,
+      "toFormId": 144,
+      "fromEntryKey": "penguinmon",
+      "toEntryKey": "kiwimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A second bird-to-bird Champion branch; uses the existing Kiwimon identity without replacing Floramon’s existing route. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "2f06b76f-a29b-415c-86be-05cc8dbaef17",
+        "sourceName": "Penguinmon",
+        "sourceRank": "Rookie",
+        "jsonPointer": "/59/digiEvolutionSeedList/1",
+        "lineStart": 1701,
+        "lineEnd": 1730,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L1701-L1730",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "targetSeed": "a9d5e7b0-3f1a-4e6b-8c2d-9f0e3a5d7c6b",
+        "targetName": "Kiwimon",
+        "targetRank": "Champion"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 109,
+      "toFormId": 145,
+      "fromEntryKey": "penguinmon",
+      "toEntryKey": "kokatorimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A bird-to-bird Champion continuation for the currently isolated Penguinmon. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "2f06b76f-a29b-415c-86be-05cc8dbaef17",
+        "sourceName": "Penguinmon",
+        "sourceRank": "Rookie",
+        "jsonPointer": "/59/digiEvolutionSeedList/0",
+        "lineStart": 1701,
+        "lineEnd": 1730,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L1701-L1730",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ],
+        "targetSeed": "b5e9c2f0-3a1d-4e6b-8c7b-9f0d5a3e2d7c",
+        "targetName": "Kokatorimon",
+        "targetRank": "Champion"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 110,
+      "toFormId": 135,
+      "fromEntryKey": "salamon",
+      "toEntryKey": "gatomon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 112,
+      "toFormId": 157,
+      "fromEntryKey": "snowagumon",
+      "toEntryKey": "seadramon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored cold-reptile-to-aquatic-serpent path. It gives SnowAgumon a Champion continuation without adding absent species or changing its starting identity. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/65/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L1878-L1904",
+        "sourceSeed": "02e00ed9-be0c-4e24-9e6a-1bce6407ba67",
+        "sourceName": "SnowAgumon",
+        "sourceRank": "Rookie",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "a03b8672-59d7-4f2e-9b5d-b0e2a3e7f9b8",
+        "targetName": "Seadramon",
+        "targetRank": "Champion",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 1878,
+        "lineEnd": 1904,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 10
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 113,
+      "toFormId": 36,
+      "fromEntryKey": "tapirmon",
+      "toEntryKey": "unimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Append an available holy-beast route to preserved Unimon; Patamon incoming route remains unchanged.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=bakumon",
+        "claim": "Official identity references support this chosen holy-beast alternative; exact evolution is authored.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=bakumon",
+          "https://digimon.net/reference_en/detail.php?directory_name=yunimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 114,
+      "toFormId": 134,
+      "fromEntryKey": "terriermon",
+      "toEntryKey": "gargomon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated small-fighter-to-heavy-arsenal route."
+    },
+    {
+      "fromFormId": 116,
+      "toFormId": 15,
+      "fromEntryKey": "tsukaimon",
+      "toEntryKey": "devimon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Join the existing dark Champion branch without removing any prior incoming edge.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=tukaimon",
+        "claim": "The game chooses a dark-winged branch between separately verified identities.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=tukaimon",
+          "https://digimon.net/reference_en/detail.php?directory_name=devimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 117,
+      "toFormId": 131,
+      "fromEntryKey": "veemon",
+      "toEntryKey": "exveemon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated dragon route; this prototype proposal does not implement canonical fusion requirements."
+    },
+    {
+      "fromFormId": 118,
+      "toFormId": 161,
+      "fromEntryKey": "wormmon",
+      "toEntryKey": "stingmon",
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated insect route; no new edge overrides the existing GranKuwagamon lineage."
+    },
+    {
+      "fromFormId": 119,
+      "toFormId": 194,
+      "fromEntryKey": "airdramon",
+      "toEntryKey": "megadramon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A flying-dragon to cyborg-dragon continuation; joins the existing Megadramon profile without changing its stats or identity. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "b7569307-7fd2-4ebb-a05f-6b1b30410921",
+        "sourceName": "Airdramon",
+        "sourceRank": "Champion",
+        "jsonPointer": "/98/digiEvolutionSeedList/0",
+        "lineStart": 2843,
+        "lineEnd": 2871,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L2843-L2871",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "targetSeed": "40ed91a1-d2e3-47dc-8c18-64a55757e6b1",
+        "targetName": "Megadramon",
+        "targetRank": "Ultimate"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 120,
+      "toFormId": 202,
+      "fromEntryKey": "akatorimon",
+      "toEntryKey": "parrotmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A bird-to-bird Ultimate continuation that extends the proposed Muchomon branch. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "ae4c3d8f-0a9b-4950-8c3d-2b9f1f0871e5",
+        "sourceName": "Akatorimon",
+        "sourceRank": "Champion",
+        "jsonPointer": "/142/digiEvolutionSeedList/0",
+        "lineStart": 4115,
+        "lineEnd": 4143,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L4115-L4143",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "targetSeed": "1ec3c641-3763-4c9e-8834-26f7aaf3fd09",
+        "targetName": "Parrotmon",
+        "targetRank": "Ultimate"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 122,
+      "toFormId": 187,
+      "fromEntryKey": "apemon",
+      "toEntryKey": "kyukimon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored beast-to-bladed-beast alternative. It gives Apemon an Ultimate choice with an existing downstream Mega route; this is not a claim of exclusive or conventional franchise ancestry. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/92/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L2666-L2694",
+        "sourceSeed": "cd52bdf0-80a8-4b19-b738-ed6acf1f0b14",
+        "sourceName": "Apemon",
+        "sourceRank": "Champion",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "c67f1a0b-f889-438b-9cc0-885f9f711a26",
+        "targetName": "Kyukimon",
+        "targetRank": "Ultimate",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 2666,
+        "lineEnd": 2694,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 123,
+      "toFormId": 207,
+      "fromEntryKey": "aquilamon",
+      "toEntryKey": "silphymon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated aerial-warrior route; this prototype proposal does not require or claim franchise fusion mechanics."
+    },
+    {
+      "fromFormId": 125,
+      "toFormId": 183,
+      "fromEntryKey": "birdramon",
+      "toEntryKey": "garudamon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated bird-to-firebird route for a readable progression theme."
+    },
+    {
+      "fromFormId": 127,
+      "toFormId": 23,
+      "fromEntryKey": "darktyrannomon",
+      "toEntryKey": null,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Join existing MetalTyrannomon/RustTyrannomon rather than inventing an unavailable new endpoint.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon",
+        "claim": "Previously verified MetalTyrannomon name/stage and DarkTyrannomon identity support an authored family route.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=darktyranomon",
+          "https://digimon.net/reference_en/detail.php?directory_name=metaltyranomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 129,
+      "toFormId": 187,
+      "fromEntryKey": "dinohyumon",
+      "toEntryKey": "kyukimon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Carry the sword-focused Kotemon/Dinohyumon branch into a blade-bodied Ultimate. This is a curated combat-theme continuation, not a claim that the encyclopedia or World DS lists this exact gate.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=dinohumon",
+          "supports": "Dinohyumon is a sword- and arm-blade-equipped warrior."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kyukimon",
+          "supports": "Kyukimon is a fast, blade-covered beast with cutting attacks."
+        }
+      ],
+      "flags": [
+        "theme-support-only",
+        "outgoing-continuation-owned-by-late-review"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 130,
+      "toFormId": 179,
+      "fromEntryKey": "dorugamon",
+      "toEntryKey": "dorugreymon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated Doru beast-dragon route, reviewed independently of source sheet order."
+    },
+    {
+      "fromFormId": 131,
+      "toFormId": 201,
+      "fromEntryKey": "exveemon",
+      "toEntryKey": "paildramon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated dragon route; this prototype proposal does not implement canonical fusion requirements."
+    },
+    {
+      "fromFormId": 133,
+      "toFormId": 191,
+      "fromEntryKey": "gaogamon",
+      "toEntryKey": "machgaogamon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated martial canine route ending at an available listed Ultimate."
+    },
+    {
+      "fromFormId": 134,
+      "toFormId": 204,
+      "fromEntryKey": "gargomon",
+      "toEntryKey": "rapidmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated small-fighter-to-heavy-arsenal route."
+    },
+    {
+      "fromFormId": 135,
+      "toFormId": 167,
+      "fromEntryKey": "gatomon",
+      "toEntryKey": "angewomon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 136,
+      "toFormId": 206,
+      "fromEntryKey": "gekomon",
+      "toEntryKey": "shogungekomon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the musical amphibian family. The ShogunGekomon profile directly compares its voice and social bearing with Gekomon; it does not specify a game evolution requirement.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=tonosamagekomon",
+          "supports": "Names Gekomon while describing the more powerful musical Ultimate."
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 137,
+      "toFormId": 205,
+      "fromEntryKey": "geogreymon",
+      "toEntryKey": "rizegreymon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the GeoGreymon family into the listed RizeGreymon. The official card game explicitly names GeoGreymon as a digivolution source; prototype XP/bond gates remain our own.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?card_no=BT21-044&search=true",
+          "supports": "Official RizeGreymon card explicitly permits digivolution from GeoGreymon."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=rizegreymon",
+          "supports": "Confirms Ultimate Cyborg identity."
+        }
+      ],
+      "flags": [
+        "evidence-is-official-card-game-not-world-ds"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 138,
+      "toFormId": 30,
+      "fromEntryKey": "grizzmon",
+      "toEntryKey": null,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Join existing GrapLeomon/BanchoLeomon as a curated brawler continuation.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+        "claim": "Official Grizzlymon and GrapLeomon identity/stage facts are verified; this game route does not claim canonical exclusivity.",
+        "status": "authored",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=gryzmon",
+          "https://digimon.net/reference_en/detail.php?directory_name=grappuleomon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 139,
+      "toFormId": 212,
+      "fromEntryKey": "growlmon",
+      "toEntryKey": "wargrowlmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated red-dragon-to-knight route for this game; no exclusive canonical-path claim."
+    },
+    {
+      "fromFormId": 140,
+      "toFormId": 166,
+      "fromEntryKey": "guardromon",
+      "toEntryKey": "andromon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 143,
+      "toFormId": 198,
+      "fromEntryKey": "icemon",
+      "toEntryKey": "meteormon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Provide a sequential Champion-to-Ultimate ore-family continuation.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-early.json",
+      "relationshipEvidence": {
+        "url": "https://digimon.net/reference_en/detail.php?directory_name=insekimon",
+        "claim": "Meteormon explicitly references Gotsumon ore data; Icemon has an uncertain Gotsumon origin. Icemon→Meteormon itself is an authored bridge, not an explicit official edge.",
+        "status": "inferred",
+        "endpointReferences": [
+          "https://digimon.net/reference_en/detail.php?directory_name=icemon",
+          "https://digimon.net/reference_en/detail.php?directory_name=insekimon"
+        ],
+        "canonicalEdgeAsserted": false,
+        "exclusivityAsserted": false
+      },
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 144,
+      "toFormId": 175,
+      "fromEntryKey": "kiwimon",
+      "toEntryKey": "deramon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Join the two flightless plant-bird forms. Deramon's official profile explicitly compares its plant qualities and inability to fly with Kiwimon; the precise parent assignment is inferred.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=delumon",
+          "supports": "Explicit comparison to Kiwimon and Ultimate evolution, without an exclusive parent claim."
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 146,
+      "toFormId": 185,
+      "fromEntryKey": "kurisarimon",
+      "toEntryKey": "infermon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated network-creature route with progressively stronger authored profiles."
+    },
+    {
+      "fromFormId": 147,
+      "toFormId": 181,
+      "fromEntryKey": "minotarumon",
+      "toEntryKey": "etemon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored brawler-to-theatrical-brawler alternative. The family change is an intentional prototype flavor choice supported by the selected forward table, not a canonical requirement. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/144/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L4171-L4199",
+        "sourceSeed": "e3f9c4b1-8a2d-4d91-97c1-5378c5f78e0b",
+        "sourceName": "Minotarumon",
+        "sourceRank": "Champion",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "8f14e45f-ceea-41d4-9a3d-3e8d2e9f6b2c",
+        "targetName": "Etemon",
+        "targetRank": "Ultimate",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 4171,
+        "lineEnd": 4199,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 148,
+      "toFormId": 199,
+      "fromEntryKey": "numemon",
+      "toEntryKey": "monzaemon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the established Numemon-to-Monzaemon transformation as a positive, elective progression. Do not add care-punishment or costume inventory conditions.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?card_no=BT22-038&search=true",
+          "supports": "Official Monzaemon card explicitly names Numemon as its digivolution source."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=monzaemon",
+          "supports": "Confirms the mysterious Puppet identity, but does not identify the occupant."
+        }
+      ],
+      "flags": [
+        "evidence-is-official-card-game-not-world-ds",
+        "no-care-punishment"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 149,
+      "toFormId": 172,
+      "fromEntryKey": "ogremon",
+      "toEntryKey": "blackweregarurumon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored ferocious-brawler-to-dark-beast continuation. BlackWereGarurumon is the exact identified target; ordinary WereGarurumon is not substituted. The new Ultimate remains independently playable even though its further source destination is absent. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/104/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L3016-L3044",
+        "sourceSeed": "87a9e123-4f23-42b3-9d83-3c7e4382c3d5",
+        "sourceName": "Ogremon",
+        "sourceRank": "Champion",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "4aa02e4b-b20a-4faf-9269-0ba18a1e7d08",
+        "targetName": "Black Were Garurumon",
+        "targetRank": "Ultimate",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 3016,
+        "lineEnd": 3044,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 150,
+      "toFormId": 213,
+      "fromEntryKey": "peckmon",
+      "toEntryKey": "yatagaramon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated bird route ending at an available listed Ultimate."
+    },
+    {
+      "fromFormId": 153,
+      "toFormId": 211,
+      "fromEntryKey": "reppamon",
+      "toEntryKey": "tyilinmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated guardian route using the inventory display names; official naming remains separate."
+    },
+    {
+      "fromFormId": 156,
+      "toFormId": 193,
+      "fromEntryKey": "sangloupmon",
+      "toEntryKey": "matadormon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated nocturnal duelist route ending at an available listed Ultimate."
+    },
+    {
+      "fromFormId": 157,
+      "toFormId": 196,
+      "fromEntryKey": "seadramon",
+      "toEntryKey": "megaseadramon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 160,
+      "toFormId": 209,
+      "fromEntryKey": "starmon",
+      "toEntryKey": "superstarmon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "The official profile expressly calls SuperStarmon the Ultimate form of Starmon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=superstarmon",
+          "supports": "Explicit Starmon-to-Ultimate relationship."
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 161,
+      "toFormId": 177,
+      "fromEntryKey": "stingmon",
+      "toEntryKey": "dinobeemon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated insect route; no new edge overrides the existing GranKuwagamon lineage."
+    },
+    {
+      "fromFormId": 162,
+      "toFormId": 182,
+      "fromEntryKey": "sukamon",
+      "toEntryKey": "garbagemon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A waste-themed family continuation with an existing Ultimate target. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "c6e9a3b7-1f5d-4e8a-9c2b-0d3a5e7f9b6c",
+        "sourceName": "Sukamon",
+        "sourceRank": "Champion",
+        "jsonPointer": "/112/digiEvolutionSeedList/0",
+        "lineStart": 3245,
+        "lineEnd": 3274,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L3245-L3274",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "targetSeed": "8f22778f-d315-42f9-8eb9-83c63c8603ba",
+        "targetName": "Garbagemon",
+        "targetRank": "Ultimate"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 163,
+      "toFormId": 189,
+      "fromEntryKey": "sunflowmon",
+      "toEntryKey": "lilamon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated flower route; no new edge overrides the existing Rosemon lineage."
+    },
+    {
+      "fromFormId": 164,
+      "toFormId": 173,
+      "fromEntryKey": "vegiemon",
+      "toEntryKey": "blossomon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "An authored vegetation route from the tendril-bearing plant Champion to the flower-and-tentacle Ultimate. Official profiles establish the shared plant theme, not a direct evolution edge.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=vegimon",
+          "supports": "Champion Vegetation identity and vine-based body."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blossomon",
+          "supports": "Ultimate Vegetation identity, flowers and tentacles."
+        }
+      ],
+      "flags": [
+        "theme-support-only"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 165,
+      "toFormId": 188,
+      "fromEntryKey": "vilemon",
+      "toEntryKey": "ladydevimon",
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A demon-themed stage advance, followed by the separately proposed LadyDevimon route. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "e3c9f0b7-1a5d-4e6b-8c2d-9f0a3e5d7c6b",
+        "sourceName": "Vilemon",
+        "sourceRank": "Champion",
+        "jsonPointer": "/128/digiEvolutionSeedList/0",
+        "lineStart": 3711,
+        "lineEnd": 3739,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L3711-L3739",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 20
+          }
+        ],
+        "targetSeed": "a49fd2ae-e98d-4c4b-9c53-708e6f019af2",
+        "targetName": "LadyDevimon",
+        "targetRank": "Ultimate"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 166,
+      "toFormId": 243,
+      "fromEntryKey": "andromon",
+      "toEntryKey": "hiandromon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 170,
+      "toFormId": 221,
+      "fromEntryKey": "blackrapidmon",
+      "toEntryKey": "blackmegagargomon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Parallel the existing Rapidmon-to-MegaGargomon family with the two separately listed black variants. This is a deliberate authored family inference, not a verified official direct evolution.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-late.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackrapidmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackRapidmon is a black Rapidmon variant associated with Black Digitron.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blacksaintgalgomon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackSaintGargomon is described as a heavily armed type of MegaGargomon.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 171,
+      "toFormId": 224,
+      "fromEntryKey": "blackwargrowlmon",
+      "toEntryKey": "chaosgallantmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Offer the encountered BlackWarGrowlmon a dark-dragon-to-dark-knight continuation parallel to the existing red family. Do not invent an incoming Growlmon edge: official BlackGrowlmon is absent.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-late.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=blackmegalogrowmon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "BlackWarGrowlmon is an Ultimate Cyborg evolved from BlackGrowlmon; the latter is not in this roster.",
+          "relationshipSupport": "explicit-missing-predecessor",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=chaosdukemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "ChaosGallantmon is the corrupted Virus-side counterpart of Gallantmon.",
+          "relationshipSupport": "variant-family",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 174,
+      "toFormId": 248,
+      "fromEntryKey": "cyberdramon",
+      "toEntryKey": "justimon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A cybernetic fighter continuation. Exact upstream route is verified; no claim of universal franchise evolution canon. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "0fc5bcd7-7cbe-4aa7-8c60-1225d2b297d9",
+        "sourceName": "Cyberdramon",
+        "sourceRank": "Ultimate",
+        "jsonPointer": "/234/digiEvolutionSeedList/0",
+        "lineStart": 6747,
+        "lineEnd": 6775,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6747-L6775",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 42
+          }
+        ],
+        "targetSeed": "03598e86-91f9-4afa-ad89-6e4bc8511eac",
+        "targetName": "Justimon",
+        "targetRank": "Mega"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 175,
+      "toFormId": 261,
+      "fromEntryKey": "deramon",
+      "toEntryKey": "phoenixmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A bird-themed Ultimate-to-Mega continuation using the existing Phoenixmon profile. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "b5a7b775-04b8-436a-b17a-29f7307c682e",
+        "sourceName": "Deramon",
+        "sourceRank": "Ultimate",
+        "jsonPointer": "/255/digiEvolutionSeedList/0",
+        "lineStart": 7336,
+        "lineEnd": 7364,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L7336-L7364",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 40
+          }
+        ],
+        "targetSeed": "a3d9f7c2-5e8b-4f1d-9c3a-7b2e6d4f8a1c",
+        "targetName": "Phoenixmon",
+        "targetRank": "Mega"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 177,
+      "toFormId": 45,
+      "fromEntryKey": "dinobeemon",
+      "toEntryKey": "grankuwagamon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue Dinobeemon into GranKuwagamon while preserving Okuwamon's existing route. The official card explicitly names Dinobeemon; this does not assert World DS's original requirements.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?category=508204&search=true",
+          "supports": "BT16-046 GranKuwagamon ACE explicitly names Dinobeemon as a digivolution source."
+        }
+      ],
+      "flags": [
+        "preserve-existing-parent-44",
+        "multiple-incoming-required",
+        "evidence-is-official-card-game-not-world-ds",
+        "upstream-fusion-shortcut-already-authored"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 179,
+      "toFormId": 234,
+      "fromEntryKey": "dorugreymon",
+      "toEntryKey": "dorugoramon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated Doru beast-dragon route, reviewed independently of source sheet order."
+    },
+    {
+      "fromFormId": 180,
+      "toFormId": 258,
+      "fromEntryKey": "dragomon",
+      "toEntryKey": "neptunemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "The source explicitly advances Dragomon to Neptunmon. The reviewed Neptunmon/Neptunemon spelling binding removes the former unmatched-target blocker. This is one ordinary Ultimate-to-Mega option, with no skipped form or special mechanic. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/226/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6517-L6545",
+        "sourceSeed": "e8f4c6a1-3d2b-4e5f-9a8c-7b6d5e4f3a2c",
+        "sourceName": "Dragomon",
+        "sourceRank": "Ultimate",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "610af57b-d922-4d43-bb51-9c884875709e",
+        "targetName": "Neptunmon",
+        "targetRank": "Mega",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 6517,
+        "lineEnd": 6545,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 45
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates",
+        "reviewed-target-name-alias"
+      ],
+      "unimplementedConditions": [],
+      "sourceIdentityEvidence": {
+        "path": "docs/research/digigame-import-review.json",
+        "formId": 258,
+        "sourceName": "Neptunmon",
+        "currentName": "Neptunemon",
+        "officialReference": "https://digimon.net/reference_en/detail.php?directory_name=neptunemon",
+        "meaning": "Approved identity binding; the forward UUID link above separately proves the source route."
+      }
+    },
+    {
+      "fromFormId": 181,
+      "toFormId": 256,
+      "fromEntryKey": "etemon",
+      "toEntryKey": "metaletemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the Etemon family into its mechanized Mega. The profile supports the mechanization motif; choosing Etemon as the direct parent is our authored route.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-late.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=etemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Ultimate Etemon identity and performer concept.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=metaletemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "MetalEtemon rebuilt its damaged body into a mechanized form after gathering combat data.",
+          "relationshipSupport": "family-concept",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 183,
+      "toFormId": 261,
+      "fromEntryKey": "garudamon",
+      "toEntryKey": "phoenixmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated bird-to-firebird route for a readable progression theme."
+    },
+    {
+      "fromFormId": 185,
+      "toFormId": 233,
+      "fromEntryKey": "infermon",
+      "toEntryKey": "diaboromon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated network-creature route with progressively stronger authored profiles."
+    },
+    {
+      "fromFormId": 187,
+      "toFormId": 242,
+      "fromEntryKey": "kyukimon",
+      "toEntryKey": "guardiangemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the proposed Kotemon/Dinohyumon blade-fighter family from Kyukimon to GuardiAngemon. The references support the shared bladed-body concept only; this exact connection is our authored game choice.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-late.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=kyukimon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Kyukimon has a bladed body and wind-blade attacks.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=slashangemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "The mapped SlashAngemon uses arm blades, metal wings, and a cutting body.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 188,
+      "toFormId": 251,
+      "fromEntryKey": "ladydevimon",
+      "toEntryKey": "lilithmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A demon-themed Ultimate-to-Mega continuation. The upstream alternative Beelzemon branch is deliberately held. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "a49fd2ae-e98d-4c4b-9c53-708e6f019af2",
+        "sourceName": "LadyDevimon",
+        "sourceRank": "Ultimate",
+        "jsonPointer": "/229/digiEvolutionSeedList/0",
+        "lineStart": 6605,
+        "lineEnd": 6634,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6605-L6634",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 37
+          }
+        ],
+        "targetSeed": "c3d5e7f8-9a1b-4c2d-9e6f-7a8b9c1d2e3f",
+        "targetName": "Lilithmon",
+        "targetRank": "Mega"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 189,
+      "toFormId": 49,
+      "fromEntryKey": "lilamon",
+      "toEntryKey": "rosemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue the Lalamon/Sunflowmon/Lilamon family into the existing Rosemon while preserving Lillymon's existing route. Official ST24-11 explicitly names Lilamon.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://en.digimoncard.com/cardlist/?category=508124&search=true",
+          "supports": "Official Rosemon ST24-11 explicitly names Lilamon as a digivolution source."
+        }
+      ],
+      "flags": [
+        "preserve-existing-parent-48",
+        "multiple-incoming-required",
+        "evidence-is-official-card-game-not-world-ds"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 192,
+      "toFormId": 263,
+      "fromEntryKey": "mamemon",
+      "toEntryKey": "princemamemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Continue Mamemon into its royal Mega counterpart. The reference establishes Mamemon-family membership, not a unique predecessor or DS gate.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-late.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=mamemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "Ultimate Mamemon identity.",
+          "relationshipSupport": "identity-or-concept-only",
+          "checkedDate": "2026-10-06"
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=princemamemon",
+          "sourceKind": "official-primary-reference",
+          "claimKind": "observed-fact",
+          "supports": "PrinceMamemon is described as a prince of the Mamemon world.",
+          "relationshipSupport": "family-concept",
+          "checkedDate": "2026-10-06"
+        }
+      ],
+      "flags": [],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 193,
+      "toFormId": 262,
+      "fromEntryKey": "matadormon",
+      "toEntryKey": "piedmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored theatrical-dark-fighter-to-clown Mega path. This makes Matadormon progress to an existing final form while preserving its own stats and identity. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/269/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L7727-L7755",
+        "sourceSeed": "68de0bbe-a11d-4452-bdb6-f6b4478d06ad",
+        "sourceName": "Matadormon",
+        "sourceRank": "Ultimate",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "d1c5f6b8-2f3e-4e9b-8c2d-7a9e5f6d3b1a",
+        "targetName": "Piedmon",
+        "targetRank": "Mega",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 7727,
+        "lineEnd": 7755,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 43
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 194,
+      "toFormId": 232,
+      "fromEntryKey": "megadramon",
+      "toEntryKey": "darkdramon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A mechanical-dragon continuation; existing target profile is reused without new combat mechanics. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "40ed91a1-d2e3-47dc-8c18-64a55757e6b1",
+        "sourceName": "Megadramon",
+        "sourceRank": "Ultimate",
+        "jsonPointer": "/210/digiEvolutionSeedList/0",
+        "lineStart": 6057,
+        "lineEnd": 6085,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6057-L6085",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "targetSeed": "5c59bdf1-0288-4a39-bfbc-3d513a6dfe4c",
+        "targetName": "Darkdramon",
+        "targetRank": "Mega"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 195,
+      "toFormId": 42,
+      "fromEntryKey": "megakabuterimon-blue",
+      "toEntryKey": "herculeskabuterimon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Allow the blue MegaKabuterimon branch to reach the existing HerculesKabuterimon without removing the red branch. The official profile describes combined Kabuterimon/Kuwagamon data and a previous MegaKabuterimon state; it does not identify an exclusive color predecessor.",
+      "evidenceRecord": "docs/research/world-ds-evolution-proposals-ultimate.json",
+      "relationshipEvidence": [
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=heraklekabuterimon",
+          "supports": "Combined Kabuterimon/Kuwagamon data and prior MegaKabuterimon flight ability."
+        },
+        {
+          "url": "https://digimon.net/reference_en/detail.php?directory_name=atlurkabuterimon-blue",
+          "supports": "Blue is itself a Kabuterimon digivolution."
+        }
+      ],
+      "flags": [
+        "preserve-existing-parent-41",
+        "multiple-incoming-required",
+        "data-combination-shortcut"
+      ],
+      "unimplementedConditions": [
+        "No second companion, fusion consumption, or data-combination mechanic is implemented."
+      ]
+    },
+    {
+      "fromFormId": 196,
+      "toFormId": 240,
+      "fromEntryKey": "megaseadramon",
+      "toEntryKey": "gigaseadramon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 196,
+      "toFormId": 257,
+      "fromEntryKey": "megaseadramon",
+      "toEntryKey": "metalseadramon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Reviewed authored prototype route connecting the listed machine, angelic, or aquatic forms; no canonical exclusivity or fusion requirement is asserted."
+    },
+    {
+      "fromFormId": 197,
+      "toFormId": 263,
+      "fromEntryKey": "metalmamemon",
+      "toEntryKey": "princemamemon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A Mamemon-family Ultimate-to-Mega continuation; preserves Mamemon’s existing incoming route to PrinceMamemon. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "f697c01b-7394-41b3-a374-34a6a1ff27f6",
+        "sourceName": "MetalMamemon",
+        "sourceRank": "Ultimate",
+        "jsonPointer": "/218/digiEvolutionSeedList/0",
+        "lineStart": 6288,
+        "lineEnd": 6316,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6288-L6316",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 37
+          }
+        ],
+        "targetSeed": "5ae9417e-592a-446b-874e-cf46575efd9b",
+        "targetName": "PrinceMamemon",
+        "targetRank": "Mega"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 199,
+      "toFormId": 216,
+      "fromEntryKey": "monzaemon",
+      "toEntryKey": "babamon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored puppet-to-elder Mega alternative. This is a deliberate game flavor choice that closes Monzaemon’s leaf without a new species, fusion, or invented source condition. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/217/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6259-L6287",
+        "sourceSeed": "bcdefa01-2345-4678-9abc-def012345678",
+        "sourceName": "Monzaemon",
+        "sourceRank": "Ultimate",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "2cb8232c-c35f-4a7b-b3a5-fa7ed495e33b",
+        "targetName": "Babamon",
+        "targetRank": "Mega",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 6259,
+        "lineEnd": 6287,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 36
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 201,
+      "toFormId": 244,
+      "fromEntryKey": "paildramon",
+      "toEntryKey": "imperialdramon-dragon-mode",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated dragon route; this prototype proposal does not implement canonical fusion requirements."
+    },
+    {
+      "fromFormId": 202,
+      "toFormId": 230,
+      "fromEntryKey": "parrotmon",
+      "toEntryKey": "crossmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "The source explicitly advances Parrotmon to Eaglemon. The reviewed Eaglemon/Crossmon identity binding removes the former unmatched-target blocker. This is one ordinary Ultimate-to-Mega option, with no skipped form or special mechanic. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/243/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6995-L7023",
+        "sourceSeed": "1ec3c641-3763-4c9e-8834-26f7aaf3fd09",
+        "sourceName": "Parrotmon",
+        "sourceRank": "Ultimate",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "a6d2f9a9-f8e8-4bc4-b137-0db50a8fa500",
+        "targetName": "Eaglemon",
+        "targetRank": "Mega",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 6995,
+        "lineEnd": 7023,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates",
+        "reviewed-target-name-alias"
+      ],
+      "unimplementedConditions": [],
+      "sourceIdentityEvidence": {
+        "path": "docs/research/digigame-import-review.json",
+        "formId": 230,
+        "sourceName": "Eaglemon",
+        "currentName": "Crossmon",
+        "officialReference": "https://digimon.net/reference_en/detail.php?directory_name=crossmon",
+        "meaning": "Approved identity binding; the forward UUID link above separately proves the source route."
+      }
+    },
+    {
+      "fromFormId": 203,
+      "toFormId": 247,
+      "fromEntryKey": "piximon",
+      "toEntryKey": "jijimon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Use the explicit source route as an authored small-mystic-to-elder-mentor Mega path. The route gives Piximon a final-form option without claiming it is an exclusive canonical continuation. Uses the current target minimum level/bond; source-owned levels are recorded as evidence, not copied or proportionally converted. Local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-gameplay-evolutions.json",
+      "relationshipEvidence": {
+        "repository": "https://github.com/EwertonMendes/DigiGame",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "path": "database/base-digimon-list.json",
+        "jsonPointer": "/220/digiEvolutionSeedList/0",
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L6346-L6374",
+        "sourceSeed": "2645815a-a9a0-4e53-b0a9-28cbfc7d5e61",
+        "sourceName": "Piximon",
+        "sourceRank": "Ultimate",
+        "claim": "Observed explicit forward UUID link in this pinned game-authored database; not a canonical franchise requirement.",
+        "targetSeed": "2d8e7094-e209-49af-ac57-b24ca1a26415",
+        "targetName": "Jijimon",
+        "targetRank": "Mega",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "lineStart": 6346,
+        "lineEnd": 6374,
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ]
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 204,
+      "toFormId": 255,
+      "fromEntryKey": "rapidmon",
+      "toEntryKey": "megagargomon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated small-fighter-to-heavy-arsenal route."
+    },
+    {
+      "fromFormId": 207,
+      "toFormId": 265,
+      "fromEntryKey": "silphymon",
+      "toEntryKey": "valkyrimon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated aerial-warrior route; this prototype proposal does not require or claim franchise fusion mechanics."
+    },
+    {
+      "fromFormId": 208,
+      "toFormId": 252,
+      "fromEntryKey": "skullgreymon",
+      "toEntryKey": "machinedramon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A skeletal/cyborg-dinosaur to machine-dragon continuation supported by this upstream game’s forward table. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "66e5a6ea-93a5-47f8-91d9-8601857496f6",
+        "sourceName": "Skull Greymon",
+        "sourceRank": "Ultimate",
+        "jsonPointer": "/200/digiEvolutionSeedList/0",
+        "lineStart": 5764,
+        "lineEnd": 5793,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L5764-L5793",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 35
+          }
+        ],
+        "targetSeed": "f1b3b3b4-1b3b-4b3b-8b3b-3b3b3b3b3b3b",
+        "targetName": "Machinedramon",
+        "targetRank": "Mega"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 210,
+      "toFormId": 223,
+      "fromEntryKey": "triceramon",
+      "toEntryKey": "cannondramon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "digigame-reviewed-prototype-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "A dinosaur-themed Ultimate-to-Mega continuation using the current Cannondramon identity. Uses the current target minimum level/bond. This is not a copy, clamp, or proportional conversion of DigiGame’s source-owned level requirement; local XP/level continuity is retained.",
+      "evidenceRecord": "docs/research/digigame-evolution-review.json",
+      "relationshipEvidence": {
+        "path": "database/base-digimon-list.json",
+        "commit": "753ff677e127a1d33405102d677a7b733a5c8dd2",
+        "gitBlobSha1": "469113b7b4baaaea8d5931fd56b70cd8e7c49f7d",
+        "sourceSeed": "60205c40-0925-406f-93aa-511df01826bf",
+        "sourceName": "Triceramon",
+        "sourceRank": "Ultimate",
+        "jsonPointer": "/254/digiEvolutionSeedList/0",
+        "lineStart": 7307,
+        "lineEnd": 7335,
+        "url": "https://github.com/EwertonMendes/DigiGame/blob/753ff677e127a1d33405102d677a7b733a5c8dd2/database/base-digimon-list.json#L7307-L7335",
+        "rawSourceRequirements": [
+          {
+            "type": "level",
+            "value": 39
+          }
+        ],
+        "targetSeed": "8e081427-8054-4a05-bfa0-200d5f471a8b",
+        "targetName": "Cannondramon",
+        "targetRank": "Mega"
+      },
+      "flags": [
+        "upstream-game-route-not-canonical-claim",
+        "local-target-level-and-bond-gates"
+      ],
+      "unimplementedConditions": []
+    },
+    {
+      "fromFormId": 211,
+      "toFormId": 249,
+      "fromEntryKey": "tyilinmon",
+      "toEntryKey": "kentaurosmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated guardian route using the inventory display names; official naming remains separate."
+    },
+    {
+      "fromFormId": 212,
+      "toFormId": 236,
+      "fromEntryKey": "wargrowlmon",
+      "toEntryKey": "gallantmon",
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "authored-curated-route",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "Curated red-dragon-to-knight route for this game; no exclusive canonical-path claim."
+    }
+  ],
+  "dispositions": [
+    {
+      "formId": 3,
+      "status": "terminal",
+      "reason": "Lumen is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 4,
+      "status": "independent",
+      "reason": "Flicker is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 7,
+      "status": "terminal",
+      "reason": "Pelagia is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 10,
+      "status": "terminal",
+      "reason": "Pyrel is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 14,
+      "status": "terminal",
+      "reason": "Beelzemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 17,
+      "status": "terminal",
+      "reason": "VenomMyotismon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 21,
+      "status": "terminal",
+      "reason": "WarGreymon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 24,
+      "status": "terminal",
+      "reason": "RustTyrannomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 28,
+      "status": "terminal",
+      "reason": "MetalGarurumon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 31,
+      "status": "terminal",
+      "reason": "BanchoLeomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 35,
+      "status": "terminal",
+      "reason": "Seraphimon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 38,
+      "status": "terminal",
+      "reason": "Gryphonmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 42,
+      "status": "terminal",
+      "reason": "HerculesKabuterimon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 45,
+      "status": "terminal",
+      "reason": "GranKuwagamon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 49,
+      "status": "terminal",
+      "reason": "Rosemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 52,
+      "status": "terminal",
+      "reason": "Puppetmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 56,
+      "status": "terminal",
+      "reason": "Vikemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 59,
+      "status": "terminal",
+      "reason": "Plesiomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 63,
+      "status": "terminal",
+      "reason": "Sakuyamon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 66,
+      "status": "terminal",
+      "reason": "Kuzuhamon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 83,
+      "status": "independent",
+      "reason": "Coelamon is not in this roster, so Crabmon has no further evolution here."
+    },
+    {
+      "formId": 86,
+      "status": "independent",
+      "reason": "DotAgumon stays a distinct form. Converting it into ordinary Agumon is not an evolution option."
+    },
+    {
+      "formId": 87,
+      "status": "independent",
+      "reason": "DotFalcomon stays a distinct form. Converting it into ordinary Falcomon is not an evolution option."
+    },
+    {
+      "formId": 102,
+      "status": "independent",
+      "reason": "Kumamon has no evolution route in this prototype. It remains available through encounters."
+    },
+    {
+      "formId": 104,
+      "status": "independent",
+      "reason": "Turuiemon and Wendigomon are not in this roster. Lopmon has no direct shortcut to Antylamon."
+    },
+    {
+      "formId": 107,
+      "status": "independent",
+      "reason": "KnightChessmon Black is not in this roster. The black chess family has no further route here."
+    },
+    {
+      "formId": 108,
+      "status": "independent",
+      "reason": "KnightChessmon White is not in this roster. The white chess family has no further route here."
+    },
+    {
+      "formId": 111,
+      "status": "independent",
+      "reason": "ShadowToyAgumon stays a distinct form. Changing it into ordinary ToyAgumon is not an evolution option."
+    },
+    {
+      "formId": 115,
+      "status": "independent",
+      "reason": "Tankmon is not in this roster, so ToyAgumon has no further evolution here."
+    },
+    {
+      "formId": 121,
+      "status": "terminal",
+      "reason": "Shakkoumon is not in this roster, and fusion is not an evolution option here. Ankylomon remains playable."
+    },
+    {
+      "formId": 124,
+      "status": "independent",
+      "reason": "Phantomon is not in this roster, so Bakemon has no further evolution here."
+    },
+    {
+      "formId": 126,
+      "status": "independent",
+      "reason": "DarkLizardmon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 128,
+      "status": "terminal",
+      "reason": "Diatrymon has no further evolution here. Different Yatagaramon variants are not treated as interchangeable."
+    },
+    {
+      "formId": 132,
+      "status": "independent",
+      "reason": "Flarerizamon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 141,
+      "status": "terminal",
+      "reason": "Shawujinmon is not in this roster, so Gwappamon has no further evolution here."
+    },
+    {
+      "formId": 142,
+      "status": "independent",
+      "reason": "Assaultmon is not in this roster, so Hookmon has no further evolution here."
+    },
+    {
+      "formId": 145,
+      "status": "terminal",
+      "reason": "Kokatorimon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 151,
+      "status": "independent",
+      "reason": "PlatinumSukamon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 152,
+      "status": "terminal",
+      "reason": "Raremon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 154,
+      "status": "terminal",
+      "reason": "Grademon is not in this roster, so Reptiledramon has no further evolution here."
+    },
+    {
+      "formId": 155,
+      "status": "independent",
+      "reason": "Roachmon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 158,
+      "status": "independent",
+      "reason": "Seasarmon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 159,
+      "status": "independent",
+      "reason": "Wisemon is not in this roster, so Sorcerymon has no further evolution here."
+    },
+    {
+      "formId": 167,
+      "status": "terminal",
+      "reason": "Ophanimon and Magnadramon are not in this roster, so Angewomon has no further evolution here."
+    },
+    {
+      "formId": 168,
+      "status": "independent",
+      "reason": "Antylamon has no further evolution here. Its Virus and Deva variants are not treated as interchangeable."
+    },
+    {
+      "formId": 169,
+      "status": "independent",
+      "reason": "Arukenimon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 172,
+      "status": "terminal",
+      "reason": "BlackWereGarurumon ends this prototype route. Its source destination Gulfmon is not in this roster. Care, training and battles remain available."
+    },
+    {
+      "formId": 173,
+      "status": "terminal",
+      "reason": "Blossomon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 176,
+      "status": "independent",
+      "reason": "DevilTamamon is not in this roster, so Digitamamon has no further evolution here. This form is not an onboarding egg."
+    },
+    {
+      "formId": 178,
+      "status": "independent",
+      "reason": "Divermon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 182,
+      "status": "terminal",
+      "reason": "Garbagemon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 184,
+      "status": "independent",
+      "reason": "Gigadramon has no further evolution here. Combining machine forms is not an implemented evolution option."
+    },
+    {
+      "formId": 186,
+      "status": "independent",
+      "reason": "Kimeramon remains encounterable. Creating it by combining other Digimon is not an implemented evolution option."
+    },
+    {
+      "formId": 190,
+      "status": "independent",
+      "reason": "Lucemon and Lucemon Satan Mode are not in this roster. Chaos Mode has no further evolution here."
+    },
+    {
+      "formId": 191,
+      "status": "terminal",
+      "reason": "MirageGaogamon is not in this roster, so MachGaogamon has no further evolution here."
+    },
+    {
+      "formId": 198,
+      "status": "terminal",
+      "reason": "Meteormon ends the Gotsumon and Icemon routes in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 200,
+      "status": "independent",
+      "reason": "Mummymon has no further evolution in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 205,
+      "status": "terminal",
+      "reason": "ShineGreymon is not in this roster, so RizeGreymon has no further evolution here."
+    },
+    {
+      "formId": 206,
+      "status": "terminal",
+      "reason": "ShogunGekomon ends the Gekomon route in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 209,
+      "status": "terminal",
+      "reason": "SuperStarmon ends the Starmon route in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 213,
+      "status": "terminal",
+      "reason": "Yatagaramon has no further evolution here. Its different Crowmon variants are not treated as interchangeable."
+    },
+    {
+      "formId": 214,
+      "status": "independent",
+      "reason": "Armagemon remains encounterable. Its swarm-fusion origin is not an ordinary single-companion evolution."
+    },
+    {
+      "formId": 215,
+      "status": "independent",
+      "reason": "Azulongmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 216,
+      "status": "terminal",
+      "reason": "Babamon ends this prototype route. Care, training and battles remain available."
+    },
+    {
+      "formId": 217,
+      "status": "independent",
+      "reason": "Baihumon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 218,
+      "status": "independent",
+      "reason": "Barbamon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 219,
+      "status": "independent",
+      "reason": "Belphemon remains encounterable. Sleep/Rage mode conversion is not included in this prototype."
+    },
+    {
+      "formId": 220,
+      "status": "independent",
+      "reason": "BlackImperialdramon remains a separate encounterable form. Converting between its modes is not included."
+    },
+    {
+      "formId": 221,
+      "status": "terminal",
+      "reason": "BlackMegaGargomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 222,
+      "status": "independent",
+      "reason": "BlackWarGreymon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 223,
+      "status": "terminal",
+      "reason": "Cannondramon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 224,
+      "status": "terminal",
+      "reason": "ChaosGallantmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 225,
+      "status": "independent",
+      "reason": "Cherubimon Good stays separate from Black Cherubimon. Neither conversion nor a direct Antylamon route is included."
+    },
+    {
+      "formId": 226,
+      "status": "independent",
+      "reason": "Cherubimon Black stays separate from Good Cherubimon. Neither conversion nor a direct Antylamon route is included."
+    },
+    {
+      "formId": 227,
+      "status": "independent",
+      "reason": "Chronomon Destroy Mode remains encounterable. Berserk-mode conversion is not included or caused by missed care."
+    },
+    {
+      "formId": 228,
+      "status": "independent",
+      "reason": "Chronomon Holy Mode is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 229,
+      "status": "independent",
+      "reason": "Creepymon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 230,
+      "status": "terminal",
+      "reason": "Crossmon ends this prototype route. Care, training and battles remain available."
+    },
+    {
+      "formId": 231,
+      "status": "independent",
+      "reason": "Daemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 232,
+      "status": "terminal",
+      "reason": "Darkdramon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 233,
+      "status": "terminal",
+      "reason": "Diaboromon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 234,
+      "status": "terminal",
+      "reason": "Dorugoramon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 235,
+      "status": "independent",
+      "reason": "Ebonwumon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 236,
+      "status": "terminal",
+      "reason": "Gallantmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 237,
+      "status": "independent",
+      "reason": "Gallantmon Crimson Mode remains encounterable. Its temporary power-up is not an ordinary evolution option."
+    },
+    {
+      "formId": 238,
+      "status": "independent",
+      "reason": "Ghoulmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 239,
+      "status": "independent",
+      "reason": "Ghoulmon Black is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 240,
+      "status": "terminal",
+      "reason": "GigaSeadramon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 241,
+      "status": "independent",
+      "reason": "Granlocomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 242,
+      "status": "terminal",
+      "reason": "GuardiAngemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 243,
+      "status": "terminal",
+      "reason": "HiAndromon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 244,
+      "status": "terminal",
+      "reason": "Imperialdramon Dragon Mode is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 245,
+      "status": "independent",
+      "reason": "Imperialdramon Fighter Mode remains encounterable. Dragon-to-Fighter mode conversion is not included."
+    },
+    {
+      "formId": 246,
+      "status": "independent",
+      "reason": "Imperialdramon Paladin Mode remains encounterable. Its Fighter Mode and Omnimon power requirement is not modeled."
+    },
+    {
+      "formId": 247,
+      "status": "terminal",
+      "reason": "Jijimon ends this prototype route. Care, training and battles remain available."
+    },
+    {
+      "formId": 248,
+      "status": "terminal",
+      "reason": "Justimon is a final form in this prototype, reached from Cyberdramon. Arm-mode conversion remains unimplemented."
+    },
+    {
+      "formId": 249,
+      "status": "terminal",
+      "reason": "Kentaurosmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 250,
+      "status": "independent",
+      "reason": "Leviamon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 251,
+      "status": "terminal",
+      "reason": "Lilithmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 252,
+      "status": "terminal",
+      "reason": "Machinedramon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 253,
+      "status": "terminal",
+      "reason": "MaloMyotismon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 254,
+      "status": "independent",
+      "reason": "MarineAngemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 255,
+      "status": "terminal",
+      "reason": "MegaGargomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 256,
+      "status": "terminal",
+      "reason": "MetalEtemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 257,
+      "status": "terminal",
+      "reason": "MetalSeadramon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 258,
+      "status": "terminal",
+      "reason": "Neptunemon ends this prototype route. Care, training and battles remain available."
+    },
+    {
+      "formId": 259,
+      "status": "independent",
+      "reason": "Omnimon remains encounterable. Fusing WarGreymon and MetalGarurumon is not an implemented evolution option."
+    },
+    {
+      "formId": 260,
+      "status": "independent",
+      "reason": "Parasimon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 261,
+      "status": "terminal",
+      "reason": "Phoenixmon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 262,
+      "status": "terminal",
+      "reason": "Piedmon ends this prototype route. Care, training and battles remain available."
+    },
+    {
+      "formId": 263,
+      "status": "terminal",
+      "reason": "PrinceMamemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 264,
+      "status": "independent",
+      "reason": "SaberLeomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 265,
+      "status": "terminal",
+      "reason": "Valkyrimon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 266,
+      "status": "independent",
+      "reason": "Varodurumon remains encounterable. A direct route from the listed Yatagaramon form is not included."
+    },
+    {
+      "formId": 267,
+      "status": "independent",
+      "reason": "Zhuqiaomon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 268,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Courage. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 269,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Friendship. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 270,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Miracles. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 271,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Miracles. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 272,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Sincerity. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 273,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Kindness. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 274,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Light. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 275,
+      "status": "independent",
+      "reason": "This Armor route uses the Digi-Egg of Sincerity. Item-based evolution is not included; the form remains encounterable."
+    },
+    {
+      "formId": 276,
+      "status": "independent",
+      "reason": "Calumon has no evolution route. This friendly companion remains available through encounters."
+    }
+  ],
+  "heldProposals": [
+    {
+      "fromFormId": 102,
+      "toFormId": 138,
+      "reason": "Kumamon/Bearmon source identity needs confirmation."
+    },
+    {
+      "fromFormId": 204,
+      "toFormId": 170,
+      "reason": "Black Digitron variant conversion is not implemented; no bond-only conversion substituted."
+    }
+  ]
+}

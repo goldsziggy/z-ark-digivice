@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f3eb">
+  <title>Digivice · Power preview</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/power-demo.css">
+  <script src="/power-demo.js" type="module"></script>
+</head>
+<body class="power-page">
+  <main id="power-demo" data-phase="await-initial-release">
+    <header class="power-intro">
+      <a class="power-home" href="/">← Digivice Field Lab</a>
+      <p class="eyebrow">ONBOARD PWR · INTERACTION PREVIEW</p>
+      <h1>A deliberate goodnight.</h1>
+      <p class="power-lede">Hold for three seconds. Release early to keep playing.</p>
+      <p class="simulation-badge">Browser simulation — does not control hardware or write game saves.</p>
+    </header>
+
+    <section class="power-device" aria-label="Simulated round power display">
+      <div class="power-bezel">
+        <div class="screen-surface">
+          <div id="power-screen" class="device-ui"></div>
+          <svg class="power-ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="power-ring-track" cx="50" cy="50" r="44"/><circle id="power-ring-fill" cx="50" cy="50" r="44"/></svg>
+          <div class="power-center" aria-hidden="true"><span id="power-symbol">⏻</span><span id="power-countdown" hidden></span></div>
+        </div>
+      </div>
+      <button id="power-button" type="button" aria-label="Hold simulated onboard PWR for three seconds" aria-pressed="false"><span aria-hidden="true">⏻</span> PWR</button>
+      <p class="power-key-hint">Hold the button, <kbd>Space</kbd> or <kbd>P</kbd>.<br>A short tap cannot shut down.</p>
+      <p id="power-status" class="power-status" role="status" aria-live="polite" aria-atomic="true">Release PWR to arm shutdown.</p>
+    </section>
+
+    <section class="power-scenarios" aria-labelledby="scenario-heading">
+      <div class="power-scenario-heading"><h2 id="scenario-heading">Try the outcomes</h2><button id="reset-demo" type="button">Reset preview</button></div>
+      <div class="power-scenario-options">
+        <label for="power-source">Simulated power source<select id="power-source"><option value="battery">Battery only · power cuts</option><option value="usb">USB present · power remains</option></select></label>
+        <label class="power-checkbox"><input id="save-failure" type="checkbox"> Simulate a failed save</label>
+      </div>
+      <div class="power-boot-controls"><button id="boot-held" type="button">Try PWR held during boot</button><button id="release-boot" type="button" hidden>Release simulated PWR</button><p>A startup press must be released before a shutdown hold can begin.</p></div>
+      <p class="power-simulation-detail">This preview simulates pending work (650 ms) and a save (350 ms). The real firmware waits for verified storage results. If power remains after releasing the latch, firmware enters quiet standby without assuming USB was detected.</p>
+    </section>
+    <footer class="power-footnote">The physical LCD renderer is still to be integrated. This browser display previews the feedback; it does not demonstrate an on-device screen or measured sleep current.</footer>
+    <noscript><p class="power-status">Enable JavaScript to try this browser-only interaction preview.</p></noscript>
+  </main>
+</body>
+</html>
