@@ -31,7 +31,8 @@ void pacing(){
   const auto rng=s.encounterRng;step(s,Action::Explore,gap-1);CHECK(s.phase==Phase::Home&&s.encounterRng==rng&&encounterStepsRemaining(s)==1);
   auto crossing=s;restore(crossing);step(s,Action::Explore,1000);step(crossing,Action::Explore,1000);CHECK(same(s,crossing));
   CHECK(s.walkingEncounters==2&&s.encounters==2&&s.encounterProgress==0&&s.encounterRng!=rng&&s.stepCredit==0);
-  CHECK(s.wildFormId==selectWildForm(2,seed,activeMember(s)->formId,s.level));
+  CHECK(s.wildLevel+1>=s.level&&s.wildLevel<=s.level+1&&s.wildLevel>=1&&s.wildLevel<=kMaxLevel);
+  CHECK(s.wildFormId==selectWildForm(2,seed,activeMember(s)->formId,s.wildLevel));
   clearFight(s);CHECK(encounterStepsRemaining(s)>=80);step(s,Action::Explore,1);CHECK(s.phase==Phase::Home&&s.encounterProgress==2); // no burst/backlog
  }
  CHECK(smallest==80&&largest==140&&total>512*106&&total<512*114);

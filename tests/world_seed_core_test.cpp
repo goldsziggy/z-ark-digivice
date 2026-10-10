@@ -87,8 +87,12 @@ void futureSelection() {
             CHECK(same(seeded,replay)); roundtrip(seeded);
             const auto form=action==Action::AccrueSteps?seeded.pendingEncounter.formId:seeded.wildFormId;
             const auto old=action==Action::AccrueSteps?historical.pendingEncounter.formId:historical.wildFormId;
-            CHECK(form==selectWildForm(1,seed,activeMember(base)->formId,base.level));
-            CHECK(old==selectWildForm(1,base.seed,activeMember(base)->formId,base.level));
+            const auto seededLevel=action==Action::AccrueSteps?seeded.pendingEncounter.level:seeded.wildLevel;
+            const auto oldLevel=action==Action::AccrueSteps?historical.pendingEncounter.level:historical.wildLevel;
+            CHECK(seededLevel>=1&&seededLevel<=kMaxLevel&&oldLevel>=1&&oldLevel<=kMaxLevel);
+            CHECK(seededLevel+1>=base.level&&seededLevel<=base.level+1&&oldLevel+1>=base.level&&oldLevel<=base.level+1);
+            CHECK(form==selectWildForm(1,seed,activeMember(base)->formId,seededLevel));
+            CHECK(old==selectWildForm(1,base.seed,activeMember(base)->formId,oldLevel));
             CHECK(seeded.rngState==historical.rngState&&seeded.encounterRng==historical.encounterRng);
             CHECK(seeded.encounterTarget==historical.encounterTarget&&seeded.encounterProgress==historical.encounterProgress);
             different+=form!=old;

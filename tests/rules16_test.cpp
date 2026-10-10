@@ -209,9 +209,46 @@ void critsAndCare(){
     const auto fed=care.collection[0].xp;
     step(care,Action::Feed);CHECK(care.collection[0].xp==fed); // The same action does not grant XP again until a minute passes.
 }
+void encounterLevelBand(){
+    bool down=false, flat=false, up=false;
+    for(unsigned seed=1;seed<=256;++seed)for(unsigned encounter=1;encounter<=12;++encounter){
+        const auto mid=wildEncounterLevel(encounter,seed,9);
+        CHECK(mid>=8&&mid<=10);
+        if(mid==8)down=true; if(mid==9)flat=true; if(mid==10)up=true;
+        const auto floor=wildEncounterLevel(encounter,seed,1);
+        const auto cap=wildEncounterLevel(encounter,seed,50);
+        CHECK((floor==1||floor==2)&&(cap==49||cap==50));
+        CHECK(wildEncounterLevel(encounter,seed,1)==floor&&wildEncounterLevel(encounter,seed,50)==cap);
+    }
+    CHECK(down&&flat&&up);
+    bool sawFloor=false,sawAbove=false,sawCap=false,sawBelow=false;
+    for(unsigned seed=1;seed<=96&&!(sawFloor&&sawAbove&&sawCap&&sawBelow);++seed){
+        auto left=newDevice(seed), right=newDevice(seed^0x5a5a5a5au);
+        step(left,Action::Hatch,1); step(right,Action::Hatch,1);
+        step(left,Action::WorldSeed,seed); step(right,Action::WorldSeed,seed);
+        const auto leftRng=left.rngState, rightRng=right.rngState;
+        step(left,Action::Explore,1000); step(right,Action::Explore,1000);
+        CHECK(left.level==1&&right.level==1&&left.wildLevel==right.wildLevel&&left.wildLevel==wildEncounterLevel(1,seed,1));
+        CHECK((left.wildLevel==1||left.wildLevel==2)&&left.rngState==leftRng&&right.rngState==rightRng);
+        CHECK(combat::validFormProfile(left.wildFormId,left.wildLevel)&&combat::validFormProfile(right.wildFormId,right.wildLevel));
+        if(left.wildLevel==1)sawFloor=true; if(left.wildLevel==2)sawAbove=true;
+        auto queued=newDevice(seed); step(queued,Action::Hatch,1); step(queued,Action::WorldSeed,seed); step(queued,Action::AccrueSteps,1000);
+        CHECK(queued.pendingEncounter.level==left.wildLevel&&queued.pendingEncounter.formId==left.wildFormId);
+        auto high=newDevice(seed); step(high,Action::Hatch,1); step(high,Action::WorldSeed,seed);
+        high.level=high.collection[0].level=50; high.collection[0].xp=xpForLevel(50);
+        high.hp=high.collection[0].hp=combat::formProfile(high.collection[0].formId,50).stats.maxHp;
+        CHECK(isValid(high));
+        auto peer=high; step(high,Action::Explore,1000); step(peer,Action::Walk,100);
+        CHECK(high.level==50&&peer.level==50&&high.wildLevel==peer.wildLevel);
+        CHECK(high.wildLevel==49||high.wildLevel==50);
+        CHECK(high.wildLevel==wildEncounterLevel(1,seed,50)&&combat::validFormProfile(high.wildFormId,high.wildLevel));
+        if(high.wildLevel==49)sawBelow=true; if(high.wildLevel==50)sawCap=true;
+    }
+    CHECK(sawFloor&&sawAbove&&sawCap&&sawBelow);
+}
 }
 int main(){
-    levelsAndRoutes();migrationKeepsProgress();companionsAndBench();duplicatesAndAttempts();critsAndCare();
+    levelsAndRoutes();migrationKeepsProgress();companionsAndBench();duplicatesAndAttempts();critsAndCare();encounterLevelBand();
     std::printf("rules 16: %u checks, %u failures\n",checks,failures);
     return failures?1:0;
 }

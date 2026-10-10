@@ -141,6 +141,15 @@ std::uint32_t worldSelectionSeed(const State& state) { return state.worldSeed ? 
 std::uint32_t selectWildForm(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partnerFormId,std::uint32_t rivalLevel) {
     return encounters::selectProduction(encounter,seed,partnerFormId,rivalLevel);
 }
+std::uint32_t wildEncounterLevel(std::uint32_t encounter,std::uint32_t seed,std::uint32_t center) {
+    auto value=seed^(encounter*0x9e3779b9u);
+    value^=value>>16; value*=0x7feb352du; value^=value>>15; value*=0x846ca68bu; value^=value>>16;
+    const auto offset=static_cast<int>(value%3u)-1;
+    auto level=static_cast<long long>(center)+offset;
+    if(level<1) level=1;
+    if(level>static_cast<long long>(kMaxLevel)) level=kMaxLevel;
+    return static_cast<std::uint32_t>(level);
+}
 namespace {
 CreatureMember& active(State& state) { return *const_cast<CreatureMember*>(activeMember(state)); }
 void obtain(State& state,std::uint32_t id) { if(id>=1 && id<=kJournalCapacity) state.journal[(id-1)/32]|=1u<<((id-1)%32); }
@@ -884,9 +893,10 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if(!next.encounterTarget) drawEncounterTarget(next);
         const auto effort=value*static_cast<unsigned>(next.encounterRate);
         if(effort>=next.encounterTarget-next.encounterProgress) {
-            const auto form=selectWildForm(next.encounters+1,worldSelectionSeed(next),active(next).formId,next.level);
+            const auto level=wildEncounterLevel(next.encounters+1,worldSelectionSeed(next),next.level);
+            const auto form=selectWildForm(next.encounters+1,worldSelectionSeed(next),active(next).formId,level);
             if(!forms::find(form)) return Error::InvalidState;
-            next.pendingEncounter={form,next.level,kRulesVersion};
+            next.pendingEncounter={form,level,kRulesVersion};
             next.encounterProgress=0;
             drawEncounterTarget(next,true);
         } else next.encounterProgress+=effort;
@@ -913,7 +923,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
             ++next.walkingEncounters;
             ++next.encounters;
             next.phase=Phase::Encounter;
-            next.wildLevel=next.level; next.wildTurn=0; next.wildRules=kRulesVersion;
+            next.wildLevel=wildEncounterLevel(next.encounters,worldSelectionSeed(next),next.level); next.wildTurn=0; next.wildRules=kRulesVersion;
             next.wildFormId=selectWildForm(next.encounters,worldSelectionSeed(next),active(next).formId,next.wildLevel);
             const auto* foe=forms::find(next.wildFormId); if(!foe)return Error::InvalidState;
             next.wildSpecies=static_cast<Species>(foe->lineage);
@@ -933,7 +943,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
             next.stepCredit -= 100;
             ++next.encounters;
             next.phase = Phase::Encounter;
-            next.wildLevel=next.level; next.wildTurn=0; next.wildRules=kRulesVersion; // New events use the production roster/resolver.
+            next.wildLevel=wildEncounterLevel(next.encounters,worldSelectionSeed(next),next.level); next.wildTurn=0; next.wildRules=kRulesVersion; // New events use the production roster/resolver.
             next.wildFormId=selectWildForm(next.encounters,worldSelectionSeed(next),active(next).formId,next.wildLevel);
             const auto* foe=forms::find(next.wildFormId); if(!foe)return Error::InvalidState;
             next.wildSpecies=static_cast<Species>(foe->lineage);

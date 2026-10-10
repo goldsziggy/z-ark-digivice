@@ -45,7 +45,8 @@ void duringCurrentMatch(){
   const auto active=s;step(s,Action::EncounterSeed,seed+1000);CHECK(sameForeground(s,active));
   step(s,Action::AccrueSteps,1000);CHECK(sameForeground(s,active)&&s.phase==Phase::Encounter&&s.pendingEncounter.formId);
   const auto form=s.pendingEncounter.formId,level=s.pendingEncounter.level,target=s.encounterTarget,rng=s.encounterRng;
-  CHECK(form==selectWildForm(2,seed,activeMember(s)->formId,s.level));
+  CHECK(level+1>=s.level&&level<=s.level+1&&level>=1&&level<=kMaxLevel);
+  CHECK(form==selectWildForm(2,seed,activeMember(s)->formId,level));
   rejects(s,Action::PresentEncounter,0,Error::WrongPhase);restore(s);
   if(mode)step(s,Action::Auto);else clearFight(s);
   CHECK(s.pendingEncounter.formId==form&&s.pendingEncounter.level==level&&s.encounterTarget==target&&s.encounterRng==rng);

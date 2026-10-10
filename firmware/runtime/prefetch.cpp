@@ -42,7 +42,8 @@ Plan plan(const State& state, bool developmentTestAssets) {
     // Otherwise preview the next pool; this hint never advances gameplay.
     if (state.encounters < UINT32_MAX) {
         const auto next = state.pendingEncounter.formId ? state.pendingEncounter.formId :
-            selectWildForm(state.encounters + 1, worldSelectionSeed(state), member->formId, member->level);
+            selectWildForm(state.encounters + 1, worldSelectionSeed(state), member->formId,
+                wildEncounterLevel(state.encounters + 1, worldSelectionSeed(state), member->level));
         const auto* wild = forms::find(next);
         if (wild && wild->artId && (developmentTestAssets || forms::productionForm(wild->id))) sprite(output, wild->artId);
     }

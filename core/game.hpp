@@ -202,6 +202,11 @@ std::uint32_t worldSelectionSeed(const State& state);
 // Pure bounded pool selection; only explicit partner stage unlocks higher tiers.
 std::uint32_t selectWildForm(std::uint32_t encounter, std::uint32_t seed,
                              std::uint32_t partnerFormId, std::uint32_t rivalLevel);
+// Partner level is the center. The wild level is that center, one below, or one
+// above, then clamped to 1..kMaxLevel. Same encounter, seed, and center always
+// agree, including peers that share those inputs. Does not advance any RNG.
+std::uint32_t wildEncounterLevel(std::uint32_t encounter, std::uint32_t seed,
+                                 std::uint32_t center);
 // Number of ordinary Rest events needed for full HP/energy, or zero when
 // full, unavailable, invalid, or unable to complete before sequence exhaustion.
 // Bounded40, no mutation; current profile maximum requires at most12.

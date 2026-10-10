@@ -50,7 +50,7 @@ Rarity is the target's authored rarity. There is no invented player rarity. Inte
 | Rare, same level | 30% | 50% |
 | Rare, one level higher | 25% | 45% |
 
-The test table uses valid Mote and Puttimon profiles at levels 1 and 2. Current generated walking encounters still match the active partner's level, so the higher-level penalty currently applies only to imported/synthetic states or future encounter sources. This change does not introduce harder walking encounters or alter the rarity pool.
+The test table uses valid Mote and Puttimon profiles at levels 1 and 2. When this curve shipped, generated walking encounters matched the active partner's level, so the higher-level penalty applied only to imported or synthetic states. Rules 16 encounters are the partner's level, one below, or one above, so that penalty is now 0 or 5. The rarity pool is unchanged.
 
 Every valid committed throw consumes one of three attempts. An aim miss consumes no capture RNG and records `miss` with chance 0. An aimed throw makes exactly one authoritative RNG draw and records `escaped` or `captured` with the calculated chance. New-rules throws do not trigger enemy retaliation, cost energy or reduce either HP bar. On a third failure, the target leaves and the state returns Home with `CaptureEnded`; no XP or capture reward is granted. Ordinary battle actions before or between throws still use the existing battle rules. Old encounters retain their original retaliation and capture-limit behavior.
 
