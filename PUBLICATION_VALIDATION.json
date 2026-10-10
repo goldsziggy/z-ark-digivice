@@ -1,16 +1,16 @@
 {
-  "recordedAt": "2026-10-09T20:12:26.563531+00:00",
-  "scope": "Curated public export; no device access or remote writes by preparation",
-  "sourceCommit": "171cda7e698cf2915b50aa46bc766d8d1d0ee50d",
-  "publicBaseCommit": "3293352c81f92e22db7c750613d64f0ea5252c75",
-  "coreAndFirmwareFilesCompared": 428,
-  "coreAndFirmwareByteExactFrozenSource": true,
-  "activeDevelopmentTreeCopied": false,
-  "originalSourceEditedByPublication": false,
-  "espRecompiledForThisExport": false,
+  "recordedAt": "2026-10-10T05:15:00Z",
+  "scope": "Rules 16 public source, firmware package 53686e6, and the two-board application install",
+  "gameplayCommit": "5755ed9d2d3a67391a7dc111d9e768a74945bdac",
+  "firmwareSourceCommit": "53686e66708bf512729bf4fee8d61340747fcb92",
+  "publicBaseCommit": "f12027d96060d1538e93fe9d3cc03b3078d4214b",
+  "espRecompiledForThisExport": true,
+  "compilerWarnings": 0,
   "hostCmakeTests": {
-    "passed": 30,
+    "passed": 31,
     "failed": 0,
+    "command": "npm run test:publication",
+    "sourceCommit": "53686e66708bf512729bf4fee8d61340747fcb92",
     "excluded": [
       "background-decode-test (private scenery omitted)"
     ]
@@ -28,235 +28,37 @@
   "usbSdInstallerHostTests": {
     "passed": 30,
     "failed": 0,
-    "hardwareOpens": 0
+    "hardwareOpensDuringPublicationCommand": 0
   },
   "privacyScan": {
-    "filesChecked": 932,
-    "findings": [],
-    "scope": "Raw payload scan plus unchanged previously reviewed public CAD/showcase provenance; immutable core/source comparisons"
-  },
-  "relativeMarkdownLinksChecked": 501,
-  "relativeMarkdownLinksBroken": [],
-  "preservedPublicPaths": {
-    "hardwareFiles": 55,
-    "showcaseFiles": 35,
-    "allByteIdentical": true,
-    "updatedSourceNotes": [
-      "README.md",
-      "PUBLICATION.md"
-    ]
+    "repeatedForThisExport": false,
+    "note": "The earlier 171cda7 privacy and markdown-link scan was not repeated. This export adds the rules 16 source, docs, and firmware images only."
   },
   "verifiedFirmwareBuild": {
     "sdkVersion": "v5.3.6",
     "sdkCommit": "79e3454c68248bd7d881721c9b2e94561378a8ce",
-    "target": "esp32s3",
-    "profile": "waveshare",
-    "board": "Waveshare ESP32-S3-Touch-LCD-1.46 SKU29565",
-    "sourceCommit": "171cda7e698cf2915b50aa46bc766d8d1d0ee50d",
-    "sourceTreeClean": true,
-    "projectVersion": "171cda7",
-    "compilerWarnings": 0,
-    "installed": true,
-    "privateAssetsSavesOrCredentialsIncluded": false,
-    "images": {
-      "application": {
-        "file": "digivice.bin",
-        "bytes": 1601056,
-        "sha256": "f30f8c5b56730c924a79a7d3a6b8b62565c307ed177632e804be8f3657a2d3d0",
-        "buildLayoutOffset": "0x20000"
-      },
-      "bootloader": {
-        "file": "bootloader.bin",
-        "bytes": 21392,
-        "sha256": "e93da6a7beca0d181b5ecd79560841c1d71956a09fb94a3adf145c770de68dc1",
-        "buildLayoutOffset": "0x0"
-      },
-      "partitionTable": {
-        "file": "partition-table.bin",
-        "bytes": 3072,
-        "sha256": "703550d3bc9af51a7cf8c96f486ba5acb13f81d2301035b3eae0da4f793d33f1",
-        "buildLayoutOffset": "0x8000"
-      },
-      "otaInitial": {
-        "file": "ota_data_initial.bin",
-        "bytes": 8192,
-        "sha256": "7d2c7ac4888bfd75cd5f56e8d61f69595121183afc81556c876732fd3782c62f",
-        "buildLayoutOffset": "0x19000"
-      }
-    },
-    "sdkconfigSha256": "6d007a42374b28049f4731279b3471c10a51c10de70ec8080552fb79d5b80e92",
-    "partitionAndOtaMetadataMatchInstalled66": true,
-    "upgradeScope": "Reviewed exact-device application-only update at0x20000. Do not write bootloader, partition table, OTA metadata or erase data.",
-    "resources": {
-      "measuredBuild": {
-        "applicationBytes": 1601056,
-        "applicationDeltaFrom66Bytes": 2224,
-        "otaSlotBytes": 3145728,
-        "otaSlotFreeBytes": 1544672,
-        "staticDiramBytes": 208663,
-        "staticDiramDeltaFrom66Bytes": 200,
-        "staticDiramCapacityBytes": 341760,
-        "staticDiramUnassignedBytes": 133097,
-        "knownApplicationStackChainBytes": 26720,
-        "mainTaskStackBytes": 32768,
-        "stackRemainderBeforeUnmeasuredCallsBytes": 6048
-      },
-      "hostAbi": {
-        "stateBytes": 2936,
-        "snapshotBytes": 2964,
-        "partyCapacity": 3,
-        "collectionCapacity": 60,
-        "jsonBufferBytes": 65536,
-        "tradeJournalBytes": 6120,
-        "tradeRecordBytes": 6024,
-        "maximumTestedJsonBytes": 38500
-      },
-      "physicalValidation": "Two existing device profiles verified: exact own-save migration, settings/SD preservation and byte-identical checkpoint/reboot. No physical full60 collection/trade or new-control stress test.",
-      "limits": "Stack-chain calculation excludes SDK and indirect calls. NVS fit is synthetic. Physical checks cover existing profiles; full60 collection/trade stress remains untested."
-    },
-    "physicalValidation": {
-      "devicesVerified": 2,
-      "ownSaveMigrationExact": true,
-      "protectedBytesPreservedBeforeBoot": true,
-      "settingsPreserved": true,
-      "sdFilesVerifiedPerDevice": 261,
-      "sdPayloadWrites": 0,
-      "checkpointAndRebootByteIdentical": true,
-      "controlsAndFullCollectionPhysicalAcceptance": false
-    }
+    "sourceCommit": "53686e66708bf512729bf4fee8d61340747fcb92",
+    "projectVersion": "53686e6",
+    "applicationBytes": 1607872,
+    "applicationSha256": "bd3b6fba99e8ada62c4b51d1c5a606561c538cdc614b9998f8409e6440723b98",
+    "stateBytes": 3188,
+    "snapshotBytes": 3216,
+    "tradeJournalBytes": 6624,
+    "schemaVersion": 23,
+    "rulesVersion": 16,
+    "stackChainRemeasured": false,
+    "syntheticJsonMaximumRemeasured": false
   },
   "physicalInstallation": {
-    "status": "PASS_BOTH_INSTALLED_DATA_VERIFIED",
-    "source": "releases/firmware-171cda7/installation-summary.json",
-    "summary": {
-      "result": "PASS_BOTH_INSTALLED_DATA_VERIFIED",
-      "sourceCommit": "171cda7e698cf2915b50aa46bc766d8d1d0ee50d",
-      "firmware": "171cda7",
-      "applicationSha256": "f30f8c5b56730c924a79a7d3a6b8b62565c307ed177632e804be8f3657a2d3d0",
-      "applicationBytes": 1601056,
-      "completedUtc": "2026-10-09T20:11:21.257853+00:00",
-      "schemaVersion": 22,
-      "rulesVersion": 15,
-      "collectionCapacity": 60,
-      "partyCapacity": 3,
-      "snapshotBytes": 2964,
-      "readyToDisconnect": true,
-      "devices": {
-        "unit-1": {
-          "firmware": "171cda7",
-          "identityVerified": true,
-          "applicationChecksumVerified": true,
-          "protectedFlashByteIdenticalBeforeBoot": true,
-          "saveMigrationExact": true,
-          "threeCompanionSlotsInitiallyEmpty": true,
-          "settingsPreserved": true,
-          "assets": {
-            "verifiedFiles": 261,
-            "verifiedBytes": 4700573,
-            "payloadBytesWritten": 0,
-            "leaseReleased": true
-          },
-          "checkpointAndRebootByteIdentical": true,
-          "continuations": {
-            "initial-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            },
-            "sd-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            },
-            "checkpoint-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            },
-            "reboot-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            }
-          },
-          "memoryBeforeReboot": {
-            "internalFree": 114683,
-            "internalLargest": 31744,
-            "psramFree": 7651016,
-            "psramLargest": 7471104,
-            "mainStackMinimumFreeBytes": 22280
-          },
-          "memoryAfterReboot": {
-            "internalFree": 114787,
-            "internalLargest": 31744,
-            "psramFree": 7651016,
-            "psramLargest": 7471104,
-            "mainStackMinimumFreeBytes": 24280
-          },
-          "serialClosed": true
-        },
-        "unit-2": {
-          "firmware": "171cda7",
-          "identityVerified": true,
-          "applicationChecksumVerified": true,
-          "protectedFlashByteIdenticalBeforeBoot": true,
-          "saveMigrationExact": true,
-          "threeCompanionSlotsInitiallyEmpty": true,
-          "settingsPreserved": true,
-          "assets": {
-            "verifiedFiles": 261,
-            "verifiedBytes": 4700573,
-            "payloadBytesWritten": 0,
-            "leaseReleased": true
-          },
-          "checkpointAndRebootByteIdentical": true,
-          "continuations": {
-            "initial-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            },
-            "sd-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            },
-            "checkpoint-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            },
-            "reboot-continuation": {
-              "byteIdentical": true,
-              "eventCount": 0
-            }
-          },
-          "memoryBeforeReboot": {
-            "internalFree": 114615,
-            "internalLargest": 31744,
-            "psramFree": 7651016,
-            "psramLargest": 7471104,
-            "mainStackMinimumFreeBytes": 22280
-          },
-          "memoryAfterReboot": {
-            "internalFree": 114719,
-            "internalLargest": 31744,
-            "psramFree": 7651016,
-            "psramLargest": 7471104,
-            "mainStackMinimumFreeBytes": 24184
-          },
-          "serialClosed": true
-        }
-      },
-      "limitations": [
-        "Earlier false stationary step counts remain unresolved; motion detector unchanged.",
-        "Physical verification covers existing profiles and save/settings/SD/reboot integrity; full60 collection, companion control playtesting, long walking accuracy and nearby trade stress remain untested."
-      ],
-      "gameplayCommands": 0,
-      "preferenceWrites": 0,
-      "sdPayloadBytesWritten": 0,
-      "portsClosed": true
-    }
+    "status": "PASS_BOTH_APPLICATIONS_INSTALLED_NVS_RESTORED",
+    "source": "releases/firmware-53686e6/installation-summary.json",
+    "historical171cda7": "releases/firmware-171cda7/installation-summary.json"
   },
   "knownLimitations": [
     "False stationary steps remain unresolved; motion detector unchanged.",
-    "No full60-roster physical stress test.",
-    "Raw build images are not a release-specific installer; historical guarded installer rejects this manifest."
-  ],
-  "existingCiWorkflowConfigured": false,
-  "remoteWritesByPreparation": 0,
-  "serialPortOpensDuringExport": 0
+    "No full60-roster, companion-control, or Nearby trade physical stress test.",
+    "SD cards were not mounted. The on-flash assets partition was still the empty image before boot.",
+    "Browser demo WebAssembly is still the 171cda7 core.",
+    "Raw build images are not accepted by scripts/flash-device.py, which remains pinned to 6e058e1."
+  ]
 }

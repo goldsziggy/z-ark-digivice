@@ -1,0 +1,38 @@
+{
+  "result": "PASS_BOTH_APPLICATIONS_INSTALLED_NVS_RESTORED",
+  "sourceCommit": "53686e66708bf512729bf4fee8d61340747fcb92",
+  "firmware": "53686e6",
+  "applicationSha256": "bd3b6fba99e8ada62c4b51d1c5a606561c538cdc614b9998f8409e6440723b98",
+  "applicationBytes": 1607872,
+  "applicationOffset": "0x20000",
+  "schemaVersion": 23,
+  "rulesVersion": 16,
+  "snapshotBytes": 3216,
+  "bootloaderPartitionOrOtaWritten": false,
+  "chipErase": false,
+  "sdMountedOrWritten": false,
+  "assetsPartitionRemainedEmptyImageBeforeBoot": true,
+  "screenPhotographed": false,
+  "devices": {
+    "unit-1": {
+      "identityVerified": true,
+      "applicationReadbackMatches": true,
+      "nvsMatchedOwnBackupBeforeApplicationBoot": true,
+      "verificationBootMigratedSaveInRam": true,
+      "nvsRestoredToPreflashBackup": true
+    },
+    "unit-2": {
+      "identityVerified": true,
+      "applicationReadbackMatches": true,
+      "nvsMatchedOwnBackupBeforeApplicationBoot": true,
+      "verificationBootMigratedSaveInRam": true,
+      "nvsRestoredToPreflashBackup": true
+    }
+  },
+  "limitations": [
+    "Earlier false stationary step counts remain unresolved. The motion detector was not changed.",
+    "The verification boot migrated both saves in RAM. The board already in an encounter then checkpointed one Auto exchange, and the board at Home checkpointed one care minute. Both NVS partitions were restored to their own pre-flash backups after that, and both boards were reset onto this application. NVS was not read again after that final reset.",
+    "The on-flash assets partition was still the empty image before boot. Real artwork lives on the SD cards, which were not mounted or written.",
+    "No physical full-roster, companion-control, long-walk, or Nearby trade stress test was run. No screen photograph was taken."
+  ]
+}

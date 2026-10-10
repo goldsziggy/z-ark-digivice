@@ -1,4 +1,4 @@
-**Current source package:** `171cda7`, schema 22/rules 15. Read the [current package instructions](../releases/firmware-171cda7/README.md) and [publication validation](../PUBLICATION_VALIDATION.json). Retained checkpoints below are historical.
+**Current source package:** `53686e6`, schema 23/rules 16. Read the [current package instructions](../releases/firmware-53686e6/README.md) and [publication validation](../PUBLICATION_VALIDATION.json). The [171cda7 package](../releases/firmware-171cda7/README.md) and the retained checkpoints below are historical.
 
 # Install Digivice development firmware
 

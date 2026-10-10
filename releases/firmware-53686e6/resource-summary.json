@@ -1,0 +1,39 @@
+{
+  "sourceCommit": "53686e66708bf512729bf4fee8d61340747fcb92",
+  "scope": "Official ESP-IDF 5.3.6 Waveshare link measurements and host ABI sizes. No stack-chain recalculation and no physical full-roster stress claim.",
+  "hostMeasuredBytes": {
+    "state": 3188,
+    "snapshot": 3216,
+    "tradeRecordInMemory": 6536,
+    "tradeRecordWire": 6604,
+    "tradeJournalBlob": 6624,
+    "jsonCapacity": 65536,
+    "schemaVersion": 23,
+    "rulesVersion": 16,
+    "maxLevel": 50
+  },
+  "linkedTarget": {
+    "applicationBinBytes": 1607872,
+    "applicationSha256": "bd3b6fba99e8ada62c4b51d1c5a606561c538cdc614b9998f8409e6440723b98",
+    "applicationDeltaFrom171cda7Bytes": 6816,
+    "otaSlotBytes": 3145728,
+    "otaSlotFreeBytes": 1537856,
+    "diramUsedBytes": 213055,
+    "diramRemainingBytes": 128705,
+    "diramTotalBytes": 341760,
+    "diramDeltaFrom171cda7Bytes": 4392,
+    "bssBytes": 89528,
+    "compilerWarnings": 0,
+    "caveat": "Linker allocation remainder is not runtime heap availability."
+  },
+  "mainTaskStack": {
+    "configuredMainStackBytes": 32768,
+    "remeasured": false,
+    "caveat": "This build did not repeat the Xtensa -fstack-usage call-graph analysis. The 171cda7 chain of 26,720 bytes does not describe this image."
+  },
+  "stateJson": {
+    "remeasured": false,
+    "jsonBufferBytes": 65536,
+    "caveat": "The older 38,500-byte synthetic maximum was measured on schema 22 at level 15. It is not a rules 16 result."
+  }
+}
