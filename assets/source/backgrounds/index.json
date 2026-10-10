@@ -1,0 +1,185 @@
+{
+  "formatVersion": 1,
+  "title": "Original generated background art",
+  "verifiedAt": "2026-10-10",
+  "generationMode": "built-in image_gen",
+  "rights": {
+    "scope": "Original backgrounds generated for this Digivice project; publication approved by the project owner.",
+    "license": "No CC0 or third-party reuse license is asserted."
+  },
+  "totalMasterFiles": 11,
+  "totalMasterBytes": 29378686,
+  "sourceArchives": [
+    {
+      "name": "digivice-eight-battlefield-assets.zip",
+      "bytes": 27748173,
+      "sha256": "76d3dfab5344868eab07b0ac682fb1716c2b47222f464eb682d8719af9299fbb",
+      "generationRecord": {
+        "path": "battlefields/provenance.json",
+        "sha256": "2257c57bef90099b85d7a27275535b22bfe91aeadc536a0c889783a8e578024c"
+      }
+    },
+    {
+      "name": "digivice-vibrant-scenes-and-screens.zip",
+      "bytes": 11063849,
+      "sha256": "f999cb411a34d41fa65723426fd5b9ac2056c2c1a20cc9bd7d4a563262945a07",
+      "generationRecord": {
+        "path": "imagegen-prompts.json",
+        "sha256": "91abce5d9ab957607a6248a9426805f9a20e7de3e2a452f775765c8b7ad44b03"
+      }
+    }
+  ],
+  "backgrounds": [
+    {
+      "id": "01-meadow",
+      "name": "Sunlit meadow",
+      "collection": "battlefields",
+      "path": "battlefields/01-meadow-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2769322,
+      "sha256": "7e8032af44b61bdd8b6d26968c6dfd414285138f12f7214d70b8c1f21e572288",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/01-meadow-master.png"
+    },
+    {
+      "id": "02-forest",
+      "name": "Emerald forest",
+      "collection": "battlefields",
+      "path": "battlefields/02-forest-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 3156127,
+      "sha256": "d49d5a07d68b52dcf3af0cd4be509fb21686ffccc93e94510f19ba97bdff9317",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/02-forest-master.png"
+    },
+    {
+      "id": "03-beach",
+      "name": "Coral coast",
+      "collection": "battlefields",
+      "path": "battlefields/03-beach-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2462146,
+      "sha256": "a13ca9cff2ac702720e01a2c68c2266ad53df5e6939fac60141d252df78d4d6a",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/03-beach-master.png"
+    },
+    {
+      "id": "04-ruins",
+      "name": "Skyfall ruins",
+      "collection": "battlefields",
+      "path": "battlefields/04-ruins-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2631747,
+      "sha256": "a319717a1685ad6cf1da77db578a86b6098ada48a4b6276e3e0e3a15facbe6a9",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/04-ruins-master.png"
+    },
+    {
+      "id": "05-cavern",
+      "name": "Crystal grotto",
+      "collection": "battlefields",
+      "path": "battlefields/05-cavern-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2655870,
+      "sha256": "8113d32d6a846d7f6681498891dcff59c394ad890262c9dc1eb7c72f82cd579f",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/05-cavern-master.png"
+    },
+    {
+      "id": "06-snow",
+      "name": "Aurora pass",
+      "collection": "battlefields",
+      "path": "battlefields/06-snow-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2519441,
+      "sha256": "7570a6af079d5eea17894730940c00f99770745965d9ca8447254ed9a8aafe20",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/06-snow-master.png"
+    },
+    {
+      "id": "07-volcanic",
+      "name": "Ember caldera",
+      "collection": "battlefields",
+      "path": "battlefields/07-volcanic-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2292811,
+      "sha256": "e7f496be757723f844d45cb0b864fc673397a96cb980c6d6b209098ea430544e",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/07-volcanic-master.png"
+    },
+    {
+      "id": "08-digital",
+      "name": "Prism circuit",
+      "collection": "battlefields",
+      "path": "battlefields/08-digital-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2221863,
+      "sha256": "3604e9af329c67668534f691c3a63215fc02dbbb9a99ff7f3cdcccb409944ef1",
+      "sourceArchive": "digivice-eight-battlefield-assets.zip",
+      "sourceEntry": "battlefields/masters/08-digital-master.png"
+    },
+    {
+      "id": "battle",
+      "name": "Battle",
+      "collection": "vibrant-concepts",
+      "path": "vibrant/battle-generated-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2899720,
+      "sha256": "05659a4ab34b376fb515ec1c559c34da79a3372004224a3d92be587020cbc9ce",
+      "sourceArchive": "digivice-vibrant-scenes-and-screens.zip",
+      "sourceEntry": "backgrounds/battle-generated-master.png"
+    },
+    {
+      "id": "capture",
+      "name": "Capture",
+      "collection": "vibrant-concepts",
+      "path": "vibrant/capture-generated-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 2717916,
+      "sha256": "5277cd73b32f0bc4411cb82b6fa99b537f0489a9750b44a821457107355f2310",
+      "sourceArchive": "digivice-vibrant-scenes-and-screens.zip",
+      "sourceEntry": "backgrounds/capture-generated-master.png"
+    },
+    {
+      "id": "habitat",
+      "name": "Habitat",
+      "collection": "vibrant-concepts",
+      "path": "vibrant/habitat-generated-master.png",
+      "width": 1254,
+      "height": 1254,
+      "colorMode": "RGB",
+      "bytes": 3051723,
+      "sha256": "26b6550cb8ee41202d43c66a60e13eb929668c23e55106cc0adbe3e5be93aabe",
+      "sourceArchive": "digivice-vibrant-scenes-and-screens.zip",
+      "sourceEntry": "backgrounds/habitat-generated-master.png"
+    }
+  ],
+  "verification": {
+    "sourceBytesUnchanged": true,
+    "eightSceneArchiveMatchesRuntimeAttribution": true,
+    "eightSceneMasterAndSourceVariantHashesMatch": true,
+    "eightSceneRgb565PixelsMatch": true,
+    "eightBrowser480JpegHashesMatchRuntimeAttribution": true,
+    "eightDemo412JpegHashesMatchRuntimeAttribution": true
+  }
+}
