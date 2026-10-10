@@ -14,13 +14,13 @@ import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, readFileSync, re
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-type Event = { type: 'feed' | 'play' | 'rest' | 'walk' | 'card' | 'attack' | 'heavy' | 'magic' | 'capture' | 'flick' | 'ring-capture' | 'select' | 'hatch' | 'mode' | 'auto' | 'auto-fight' | 'auto-resume' | 'evolve' | 'release' | 'explore' | 'encounter-rate' | 'encounter-seed' | 'starter-offer-seed' | 'accrue-steps' | 'present-encounter' | 'resolve-test-encounter' | 'world-seed' | 'party-add' | 'party-remove'; value: number };
+type Event = { type: 'feed' | 'play' | 'rest' | 'walk' | 'card' | 'attack' | 'heavy' | 'magic' | 'capture' | 'flick' | 'ring-capture' | 'select' | 'hatch' | 'mode' | 'auto' | 'auto-fight' | 'auto-resume' | 'evolve' | 'release' | 'explore' | 'encounter-rate' | 'encounter-seed' | 'starter-offer-seed' | 'accrue-steps' | 'present-encounter' | 'resolve-test-encounter' | 'world-seed' | 'party-add' | 'party-remove' | 'toilet' | 'retreat' | 'care-minute' | 'evolve-member'; value: number };
 type State = Record<string, unknown> & { schemaVersion: number; rulesVersion: number; sequence: number };
 type Receipt = { batchId: string; bodyHash: string; revision: number; eventEnd: number };
 type LegacyHistory = { events: Event[]; receipts: Receipt[]; snapshotBase64: string };
 type OldDevice = { deviceId: string; tokenHash: string; seed: number; revision: number; events: Event[]; receipts: Receipt[] };
 type V2Device = OldDevice & { legacy: LegacyHistory | null };
-type HistoricalEvents = { rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14; events: Event[]; receipts: Receipt[] };
+type HistoricalEvents = { rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15; events: Event[]; receipts: Receipt[] };
 type Baseline = { histories: HistoricalEvents[]; snapshotBase64: string; autoTrace?: AutoTrace };
 type InitialMode = 'legacy' | 'onboarding';
 type V3Device = OldDevice & { legacy: Baseline | null };
@@ -45,8 +45,9 @@ type Schema18Store = { formatVersion: 15; gameSchemaVersion: 18; rulesVersion: 1
 type Schema19Store = { formatVersion: 15; gameSchemaVersion: 19; rulesVersion: 13; devices: Device[] };
 type Schema20Store = { formatVersion: 15; gameSchemaVersion: 20; rulesVersion: 13; devices: Device[] };
 type Schema21Store = { formatVersion: 16; gameSchemaVersion: 21; rulesVersion: 14; devices: Device[] };
-type Store = { formatVersion: 17; gameSchemaVersion: 22; rulesVersion: 15; devices: Device[] };
-type StoredData = OldStore | V2Store | V3Store | V4Store | V5Store | V6Store | V7Store | V8Store | V9Store | V10Store | V11Store | V12Store | V13Store | Schema15Store | Schema16Store | Schema17Store | Schema18Store | Schema19Store | Schema20Store | Schema21Store | Store;
+type Schema22Store = { formatVersion: 17; gameSchemaVersion: 22; rulesVersion: 15; devices: Device[] };
+type Store = { formatVersion: 18; gameSchemaVersion: 23; rulesVersion: 16; devices: Device[] };
+type StoredData = OldStore | V2Store | V3Store | V4Store | V5Store | V6Store | V7Store | V8Store | V9Store | V10Store | V11Store | V12Store | V13Store | Schema15Store | Schema16Store | Schema17Store | Schema18Store | Schema19Store | Schema20Store | Schema21Store | Schema22Store | Store;
 export type GarageReadAdapter = {
   list(): Promise<unknown>;
   fetchPack(id: string, version: number): Promise<{ bytes: Uint8Array; sha256: string; contentType: string }>;
@@ -69,7 +70,7 @@ const GARAGE_ORIGINAL_IDS = new Set(['starter-v2', 'tide-v1', 'ember-v1']);
 const GARAGE_PERSONAL_ID = /^personal-[a-z0-9][a-z0-9-]{0,38}$/;
 const GARAGE_MAX_PACK = 256 * 1024;
 const GARAGE_MAX_PROVENANCE = 64 * 1024;
-const EVENT_TYPES = new Set(['feed', 'play', 'rest', 'walk', 'card', 'attack', 'heavy', 'magic', 'capture', 'flick', 'ring-capture', 'select', 'hatch', 'mode', 'auto', 'auto-fight', 'auto-resume', 'evolve', 'release', 'explore', 'encounter-rate', 'encounter-seed', 'starter-offer-seed', 'accrue-steps', 'present-encounter', 'resolve-test-encounter', 'world-seed', 'party-add', 'party-remove']);
+const EVENT_TYPES = new Set(['feed', 'play', 'rest', 'walk', 'card', 'attack', 'heavy', 'magic', 'capture', 'flick', 'ring-capture', 'select', 'hatch', 'mode', 'auto', 'auto-fight', 'auto-resume', 'evolve', 'release', 'explore', 'encounter-rate', 'encounter-seed', 'starter-offer-seed', 'accrue-steps', 'present-encounter', 'resolve-test-encounter', 'world-seed', 'party-add', 'party-remove', 'toilet', 'retreat', 'care-minute', 'evolve-member']);
 const ASSETS = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/index.html', ['web/index.html', 'text/html; charset=utf-8']],
@@ -176,9 +177,16 @@ function keysExactly(value: Record<string, unknown>, keys: string[]): boolean {
   const actual = Object.keys(value).sort();
   return actual.length === keys.length && actual.every((key, index) => key === [...keys].sort()[index]);
 }
-function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 15): input is Event[] {
+function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 16): input is Event[] {
   return Array.isArray(input) && input.length <= maximum && input.every((event) => {
     if (!object(event) || !keysExactly(event, ['type', 'value']) || typeof event.type !== 'string' || !EVENT_TYPES.has(event.type) || !Number.isSafeInteger(event.value)) return false;
+    if (event.type === 'evolve-member') {
+      const memberId = Math.floor(Number(event.value) / 65536);
+      const formId = Number(event.value) % 65536;
+      return rulesVersion >= 16 && memberId >= 1 && memberId <= 0xfffe && formId >= 1 && formId <= 512 && memberId * 65536 + formId === Number(event.value);
+    }
+    if (event.type === 'care-minute') return rulesVersion >= 16 && Number(event.value) >= 1 && Number(event.value) <= 0xffffffff;
+    if (event.type === 'toilet' || event.type === 'retreat') return rulesVersion >= 16 && event.value === 0;
     if (event.type === 'party-add' || event.type === 'party-remove') return rulesVersion >= 15 && Number(event.value) >= 1 && Number(event.value) <= 0xfffffffe;
     if (event.type === 'auto-fight' || event.type === 'auto-resume') return rulesVersion >= 13 && event.value === 0;
     if (event.type === 'resolve-test-encounter') return rulesVersion >= 13 && event.value === 0;
@@ -204,18 +212,19 @@ function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 15): i
   });
 }
 function stateSupported(value: unknown): value is State {
-  if (!object(value) || Buffer.byteLength(JSON.stringify(value)) >= 64 * 1024 || value.schemaVersion !== 22 || value.rulesVersion !== 15 || value.collectionCapacity !== 60 || !Number.isSafeInteger(value.sequence) || Number(value.sequence) < 0 || !Array.isArray(value.collection) || !['tactical', 'auto'].includes(String(value.battleMode)) || !object(value.onboarding) || !keysExactly(value.onboarding, ['completed', 'starterId', 'offerSeed', 'offers'])) return false;
+  if (!object(value) || Buffer.byteLength(JSON.stringify(value)) >= 64 * 1024 || value.schemaVersion !== 23 || value.rulesVersion !== 16 || value.collectionCapacity !== 60 || !Number.isSafeInteger(value.sequence) || Number(value.sequence) < 0 || !Array.isArray(value.collection) || !['tactical', 'auto'].includes(String(value.battleMode)) || !object(value.onboarding) || !keysExactly(value.onboarding, ['completed', 'starterId', 'offerSeed', 'offers'])) return false;
   const bounded = (input: unknown, minimum: number, maximum: number) => Number.isSafeInteger(input) && Number(input) >= minimum && Number(input) <= maximum;
   if (![0, 1].includes(Number(value.autoCapture)) || typeof value.autoCapture !== 'number' || (value.autoCapture === 1 && (value.phase !== 'encounter' || value.battleMode !== 'auto' || Number(value.wildCaptureChance) <= 0))) return false;
   if (!bounded(value.worldSeed, 0, 0xffffffff)) return false;
   if (!bounded(value.receivedTrades, 0, Number(value.sequence))) return false;
   if (!bounded(value.foregroundSequence, 0, Number(value.sequence))) return false;
   if (!bounded(value.recoveryRestCount, 0, 40) || !bounded(value.queuedEncounters, 0, 42_949_672) || !bounded(value.stepsToNextEncounter, 0, 100) || value.phase !== 'home' && value.recoveryRestCount !== 0 ||
-    (value.phase === 'encounter' && [10, 11, 12, 13, 14, 15].includes(Number(value.wildRules)) ? !['common', 'uncommon', 'rare'].includes(String(value.wildRarity)) : value.wildRarity !== null)) return false;
-  if (!validLastCapture(value.lastCapture, value.foregroundSequence) || !validWalkingState(value.walking, value.phase) || value.maxLevel !== 20 || !bounded(value.wildCaptureChance, 0, 100) || !bounded(value.wildLevel, 0, 20) || !bounded(value.wildTurn, 0, 1000) ||
+    (value.phase === 'encounter' && [10, 11, 12, 13, 14, 15, 16].includes(Number(value.wildRules)) ? !['common', 'uncommon', 'rare'].includes(String(value.wildRarity)) : value.wildRarity !== null)) return false;
+  if (!validLastCapture(value.lastCapture, value.foregroundSequence) || !validWalkingState(value.walking, value.phase) || value.maxLevel !== 50 || !bounded(value.wildCaptureChance, 0, 100) || !bounded(value.wildLevel, 0, 50) || !bounded(value.wildTurn, 0, 1000) ||
+    !bounded(value.careMinute, 0, 0xffffffff) || typeof value.critical !== 'boolean' || ![0, 1].includes(Number(value.captureDeferred)) || typeof value.captureDeferred !== 'number' ||
     !object(value.evolution) || !Array.isArray(value.evolution.options) || value.evolution.options.length > 2 ||
-    !value.collection.every(member => object(member) && validCare(member) && bounded(member.level, 1, 20) && bounded(member.formId, 1, 512) && bounded(member.id, 1, 0xfffffffe) && bounded(member.xp, 0, 7600) && bounded(member.xpToNext, 0, 7600))) return false;
-  if (!bounded(value.nextMemberId, 1, 0xffffffff) || !bounded(value.wildFormId, 0, 512) || ![0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(Number(value.wildRules)) || !(value.wildGuard === null || ['brace', 'ward', 'counter'].includes(String(value.wildGuard))) ||
+    !value.collection.every(member => object(member) && validCare(member) && bounded(member.level, 1, 50) && bounded(member.formId, 1, 512) && bounded(member.id, 1, 0xfffffffe) && bounded(member.xp, 0, 49000) && bounded(member.xpToNext, 0, 49000) && bounded(member.carePoints, 0, 100) && bounded(member.toilet, 0, 100) && typeof member.careMissed === 'boolean')) return false;
+  if (!bounded(value.nextMemberId, 1, 0xffffffff) || !bounded(value.wildFormId, 0, 512) || ![0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].includes(Number(value.wildRules)) || !(value.wildGuard === null || ['brace', 'ward', 'counter'].includes(String(value.wildGuard))) ||
     !object(value.journal) || !keysExactly(value.journal, ['capacity', 'obtainedFormIds']) || value.journal.capacity !== 512 || !Array.isArray(value.journal.obtainedFormIds) || value.journal.obtainedFormIds.length > 512 ||
     !value.journal.obtainedFormIds.every((id, index, ids) => bounded(id, 1, 512) && (index === 0 || Number(ids[index - 1]) < Number(id))) ||
     !value.collection.every((member, index, members) => object(member) && Number(member.id) < Number(value.nextMemberId) && (index === 0 || Number((members[index - 1] as Record<string, unknown>).id) < Number(member.id)))) return false;
@@ -229,15 +238,15 @@ function stateSupported(value: unknown): value is State {
     : starterId === null && value.phase === 'egg' && value.collection.length === 0 && value.activeCreatureId === 0 && value.creature === null && value.species === null && value.combat === null;
 }
 function supportedStoredVersion(value: unknown): boolean {
-  return object(value) && ((value.formatVersion === 1 && value.gameSchemaVersion === 2 && value.rulesVersion === 1) || (value.formatVersion === 2 && value.gameSchemaVersion === 3 && value.rulesVersion === 2) || (value.formatVersion === 3 && value.gameSchemaVersion === 4 && value.rulesVersion === 3) || (value.formatVersion === 4 && value.gameSchemaVersion === 5 && value.rulesVersion === 3) || (value.formatVersion === 5 && value.gameSchemaVersion === 6 && value.rulesVersion === 3) || (value.formatVersion === 6 && value.gameSchemaVersion === 7 && value.rulesVersion === 4) || (value.formatVersion === 7 && value.gameSchemaVersion === 8 && value.rulesVersion === 5) || (value.formatVersion === 8 && value.gameSchemaVersion === 9 && value.rulesVersion === 6) || (value.formatVersion === 9 && value.gameSchemaVersion === 10 && value.rulesVersion === 7) || (value.formatVersion === 10 && value.gameSchemaVersion === 11 && value.rulesVersion === 8) || (value.formatVersion === 11 && value.gameSchemaVersion === 12 && value.rulesVersion === 9) || (value.formatVersion === 12 && value.gameSchemaVersion === 13 && value.rulesVersion === 10) || (value.formatVersion === 13 && value.gameSchemaVersion === 14 && value.rulesVersion === 11) || (value.formatVersion === 14 && (value.gameSchemaVersion === 15 || value.gameSchemaVersion === 16) && value.rulesVersion === 12) || (value.formatVersion === 15 && (value.gameSchemaVersion === 17 || value.gameSchemaVersion === 18 || value.gameSchemaVersion === 19 || value.gameSchemaVersion === 20) && value.rulesVersion === 13) || (value.formatVersion === 16 && value.gameSchemaVersion === 21 && value.rulesVersion === 14) || (value.formatVersion === 17 && value.gameSchemaVersion === 22 && value.rulesVersion === 15));
+  return object(value) && ((value.formatVersion === 1 && value.gameSchemaVersion === 2 && value.rulesVersion === 1) || (value.formatVersion === 2 && value.gameSchemaVersion === 3 && value.rulesVersion === 2) || (value.formatVersion === 3 && value.gameSchemaVersion === 4 && value.rulesVersion === 3) || (value.formatVersion === 4 && value.gameSchemaVersion === 5 && value.rulesVersion === 3) || (value.formatVersion === 5 && value.gameSchemaVersion === 6 && value.rulesVersion === 3) || (value.formatVersion === 6 && value.gameSchemaVersion === 7 && value.rulesVersion === 4) || (value.formatVersion === 7 && value.gameSchemaVersion === 8 && value.rulesVersion === 5) || (value.formatVersion === 8 && value.gameSchemaVersion === 9 && value.rulesVersion === 6) || (value.formatVersion === 9 && value.gameSchemaVersion === 10 && value.rulesVersion === 7) || (value.formatVersion === 10 && value.gameSchemaVersion === 11 && value.rulesVersion === 8) || (value.formatVersion === 11 && value.gameSchemaVersion === 12 && value.rulesVersion === 9) || (value.formatVersion === 12 && value.gameSchemaVersion === 13 && value.rulesVersion === 10) || (value.formatVersion === 13 && value.gameSchemaVersion === 14 && value.rulesVersion === 11) || (value.formatVersion === 14 && (value.gameSchemaVersion === 15 || value.gameSchemaVersion === 16) && value.rulesVersion === 12) || (value.formatVersion === 15 && (value.gameSchemaVersion === 17 || value.gameSchemaVersion === 18 || value.gameSchemaVersion === 19 || value.gameSchemaVersion === 20) && value.rulesVersion === 13) || (value.formatVersion === 16 && value.gameSchemaVersion === 21 && value.rulesVersion === 14) || (value.formatVersion === 17 && value.gameSchemaVersion === 22 && value.rulesVersion === 15) || (value.formatVersion === 18 && value.gameSchemaVersion === 23 && value.rulesVersion === 16));
 }
-function validSnapshot(value: unknown, format?: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22, maximumFormat = 22): value is string {
-  if (typeof value !== 'string' || ![540, 552, 572, 668, 768, 800, 848, 872, 876, 880, 888, 3936, 3952].includes(value.length)) return false;
+function validSnapshot(value: unknown, format?: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23, maximumFormat = 23): value is string {
+  if (typeof value !== 'string' || ![540, 552, 572, 668, 768, 800, 848, 872, 876, 880, 888, 3936, 3952, 4288].includes(value.length)) return false;
   const bytes = Buffer.from(value, 'base64');
   if (bytes.toString('base64') !== value || bytes.toString('ascii', 0, 4) !== 'DGVS') return false;
   const actualFormat = bytes.readUInt16LE(4);
-  return (format === undefined ? [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(actualFormat) && actualFormat <= maximumFormat : actualFormat === format) &&
-    bytes.length === (actualFormat === 22 ? 2964 : actualFormat === 21 ? 2952 : actualFormat === 20 ? 664 : actualFormat === 19 ? 660 : actualFormat === 18 ? 656 : actualFormat >= 16 ? 652 : actualFormat === 15 ? 636 : actualFormat === 14 ? 600 : actualFormat >= 8 ? 576 : actualFormat === 7 ? 500 : actualFormat === 6 ? 428 : actualFormat === 5 ? 412 : 404) && bytes.readUInt32LE(8) === (actualFormat === 3 ? 2 : actualFormat === 22 ? 15 : actualFormat === 21 ? 14 : actualFormat >= 17 ? 13 : actualFormat >= 15 ? 12 : actualFormat === 14 ? 11 : actualFormat === 13 ? 10 : actualFormat === 12 ? 9 : actualFormat === 11 ? 8 : actualFormat === 10 ? 7 : actualFormat === 9 ? 6 : actualFormat === 8 ? 5 : actualFormat === 7 ? 4 : 3);
+  return (format === undefined ? [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(actualFormat) && actualFormat <= maximumFormat : actualFormat === format) &&
+    bytes.length === (actualFormat === 23 ? 3216 : actualFormat === 22 ? 2964 : actualFormat === 21 ? 2952 : actualFormat === 20 ? 664 : actualFormat === 19 ? 660 : actualFormat === 18 ? 656 : actualFormat >= 16 ? 652 : actualFormat === 15 ? 636 : actualFormat === 14 ? 600 : actualFormat >= 8 ? 576 : actualFormat === 7 ? 500 : actualFormat === 6 ? 428 : actualFormat === 5 ? 412 : 404) && bytes.readUInt32LE(8) === (actualFormat === 3 ? 2 : actualFormat === 23 ? 16 : actualFormat === 22 ? 15 : actualFormat === 21 ? 14 : actualFormat >= 17 ? 13 : actualFormat >= 15 ? 12 : actualFormat === 14 ? 11 : actualFormat === 13 ? 10 : actualFormat === 12 ? 9 : actualFormat === 11 ? 8 : actualFormat === 10 ? 7 : actualFormat === 9 ? 6 : actualFormat === 8 ? 5 : actualFormat === 7 ? 4 : 3);
 }
 
 function baseSequence(legacy: Baseline | null): number { return legacy?.histories.reduce((total, history) => total + history.events.length, 0) ?? 0; }
@@ -251,11 +260,11 @@ function traceMatches(state: State, trace: AutoTrace): boolean {
   return trace.endSequence <= state.sequence && object(state.lastAutoBattle) && state.lastAutoBattle.sequence === trace.endSequence &&
     state.lastAutoBattle.turns === trace.steps.length && state.lastAutoBattle.outcome === trace.outcome;
 }
-function batchHash(baseRevision: number, events: Event[], rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15): string {
+function batchHash(baseRevision: number, events: Event[], rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16): string {
   const body = { baseRevision, events: events.map(({ type, value }) => ({ type, value })) };
   return sha256(JSON.stringify(rulesVersion === 1 ? body : { rulesVersion, ...body }));
 }
-function validateHistory(events: unknown, receipts: unknown, revisionOffset: number, rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15, batches: Set<string>): number {
+function validateHistory(events: unknown, receipts: unknown, revisionOffset: number, rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16, batches: Set<string>): number {
   if (!validEvents(events, MAX_EVENTS, rulesVersion) || !Array.isArray(receipts) || receipts.length > MAX_EVENTS) throw new Error('Unsupported or corrupt event history.');
   let end = 0;
   for (let index = 0; index < receipts.length; index++) {
@@ -291,20 +300,20 @@ function validateStore(value: unknown): asserts value is StoredData {
     }
     if ((Number(value.formatVersion) >= 3) && device.legacy !== null) {
       const legacy = device.legacy;
-      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 17 ? 22 : value.formatVersion === 16 ? 21 : value.formatVersion === 15 ? undefined : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 15 && ![17, 18, 19, 20].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2)) throw new Error('Corrupt migration baseline.');
+      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 18 ? 23 : value.formatVersion === 17 ? 22 : value.formatVersion === 16 ? 21 : value.formatVersion === 15 ? undefined : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 15 && ![17, 18, 19, 20].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2)) throw new Error('Corrupt migration baseline.');
       if (Object.hasOwn(legacy, 'autoTrace') && (Buffer.byteLength(JSON.stringify(legacy.autoTrace)) > 16 * 1024 || !parseAutoTrace(legacy.autoTrace, 'wild'))) throw new Error('Corrupt archived Auto trace.');
       let lastRules = 0;
       for (const history of legacy.histories) {
-        if (!object(history) || !keysExactly(history, ['rulesVersion', 'events', 'receipts']) || (![1, 2, ...(Number(value.formatVersion) >= 6 ? [3] : []), ...(Number(value.formatVersion) >= 7 ? [4] : []), ...(Number(value.formatVersion) >= 8 ? [5] : []), ...(Number(value.formatVersion) >= 9 ? [6] : []), ...(Number(value.formatVersion) >= 10 ? [7] : []), ...(Number(value.formatVersion) >= 11 ? [8] : []), ...(Number(value.formatVersion) >= 12 ? [9] : []), ...(Number(value.formatVersion) >= 13 ? [10] : []), ...(Number(value.formatVersion) >= 14 ? [11] : []), ...(Number(value.formatVersion) >= 15 ? [12] : []), ...(Number(value.formatVersion) >= 16 ? [13] : []), ...(value.formatVersion === 17 ? [14] : [])].includes(Number(history.rulesVersion))) || Number(history.rulesVersion) <= lastRules) throw new Error('Corrupt archived rule history.');
+        if (!object(history) || !keysExactly(history, ['rulesVersion', 'events', 'receipts']) || (![1, 2, ...(Number(value.formatVersion) >= 6 ? [3] : []), ...(Number(value.formatVersion) >= 7 ? [4] : []), ...(Number(value.formatVersion) >= 8 ? [5] : []), ...(Number(value.formatVersion) >= 9 ? [6] : []), ...(Number(value.formatVersion) >= 10 ? [7] : []), ...(Number(value.formatVersion) >= 11 ? [8] : []), ...(Number(value.formatVersion) >= 12 ? [9] : []), ...(Number(value.formatVersion) >= 13 ? [10] : []), ...(Number(value.formatVersion) >= 14 ? [11] : []), ...(Number(value.formatVersion) >= 15 ? [12] : []), ...(Number(value.formatVersion) >= 16 ? [13] : []), ...(Number(value.formatVersion) >= 17 ? [14] : []), ...(Number(value.formatVersion) >= 18 ? [15] : [])].includes(Number(history.rulesVersion))) || Number(history.rulesVersion) <= lastRules) throw new Error('Corrupt archived rule history.');
         if (device.initialMode === 'onboarding' && Number(history.rulesVersion) < 3) throw new Error('An onboarding identity cannot contain pre-onboarding history.');
-        legacyRevisions += validateHistory(history.events, history.receipts, legacyRevisions, history.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14, batches);
+        legacyRevisions += validateHistory(history.events, history.receipts, legacyRevisions, history.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15, batches);
         legacyEvents += (history.events as Event[]).length;
         lastRules = Number(history.rulesVersion);
       }
     }
     if (Number(value.gameSchemaVersion) < 20 && Array.isArray(device.events) && device.events.some(event => object(event) && event.type === 'world-seed')) throw new Error('Unsupported world seed event in a historical schema.');
     if (value.gameSchemaVersion === 15 && Array.isArray(device.events) && device.events.some(event => object(event) && ['accrue-steps', 'present-encounter'].includes(String(event.type)))) throw new Error('Unsupported deferred encounter events in a schema 15 history.');
-    const revisions = validateHistory(device.events, device.receipts, legacyRevisions, value.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15, batches);
+    const revisions = validateHistory(device.events, device.receipts, legacyRevisions, value.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16, batches);
     if (device.revision !== legacyRevisions + revisions || legacyEvents + (device.events as Event[]).length > MAX_EVENTS) throw new Error('Invalid device revision or lifetime history limit.');
   }
 }
@@ -399,7 +408,7 @@ function createUnlockedApp(options: AppOptions = {}) {
   mkdirSync(dataDir, { recursive: true, mode: 0o700 });
   const storePath = join(dataDir, 'store.json');
   const backupPath = join(dataDir, 'store.backup.json');
-  let loaded: StoredData = { formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: [] };
+  let loaded: StoredData = { formatVersion: 18, gameSchemaVersion: 23, rulesVersion: 16, devices: [] };
   let loadedText: string | null = null;
   let store: Store;
   let migratedLegacyStore = false;
@@ -456,8 +465,8 @@ function createUnlockedApp(options: AppOptions = {}) {
   // even with an empty store before advertising XP companions.
   try {
     const budget = runCore(['--budget'], []);
-    if (!object(budget) || budget.schemaVersion !== 22 || budget.rulesVersion !== 15 || budget.collectionCapacity !== 60 || budget.partyCapacity !== 3 ||
-      budget.snapshotBytes !== 2964 || budget.jsonBufferBytes !== 65536) throw new Error('Unsupported XP companion contract.');
+    if (!object(budget) || budget.schemaVersion !== 23 || budget.rulesVersion !== 16 || budget.collectionCapacity !== 60 || budget.partyCapacity !== 3 ||
+      budget.snapshotBytes !== 3216 || budget.jsonBufferBytes !== 65536) throw new Error('Unsupported XP companion contract.');
   } catch (error) {
     throw new Error('The installed game core does not support the XP companion contract. Run npm run build before starting this service.', { cause: error });
   }
@@ -466,7 +475,7 @@ function createUnlockedApp(options: AppOptions = {}) {
     if (starters) return starters;
     const value = runCore(['--starters'], []);
     const boundedText = (input: unknown) => typeof input === 'string' && input.length >= 1 && input.length <= 64 && !/[\u0000-\u001f\u007f]/.test(input);
-    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'starters']) || value.formatVersion !== 1 || value.rulesVersion !== 15 ||
+    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'starters']) || value.formatVersion !== 1 || value.rulesVersion !== 16 ||
       !Array.isArray(value.starters) || value.starters.length !== 8 || Buffer.byteLength(JSON.stringify(value)) > 8192 ||
       !value.starters.every((entry, index) => {
         if (!object(entry) || !keysExactly(entry, ['id', 'species', 'name', 'stage', 'combat']) || entry.id !== index + 1 || entry.species !== STARTER_SPECIES[index] || !boundedText(entry.name) || entry.stage !== 'Rookie' || !object(entry.combat)) return false;
@@ -485,15 +494,15 @@ function createUnlockedApp(options: AppOptions = {}) {
     const value = runCore(['--evolutions', species], []);
     const integer = (input: unknown, min: number, max: number) => Number.isSafeInteger(input) && Number(input) >= min && Number(input) <= max;
     const text = (input: unknown) => typeof input === 'string' && input.length >= 1 && input.length <= 64 && !/[\u0000-\u001f\u007f]/.test(input);
-    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'species', 'forms']) || value.formatVersion !== 1 || value.rulesVersion !== 15 || value.species !== species ||
+    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'species', 'forms']) || value.formatVersion !== 1 || value.rulesVersion !== 16 || value.species !== species ||
       !Array.isArray(value.forms) || value.forms.length < 1 || value.forms.length > 7 || Buffer.byteLength(JSON.stringify(value)) > 16 * 1024 || !value.forms.every(form => {
         if (!object(form) || !keysExactly(form, ['formId', 'parentId', 'children', 'name', 'stage', 'requiredLevel', 'requiredBond', 'previewLevel', 'artId', 'combat']) ||
           !integer(form.formId, 1, 512) || !integer(form.parentId, 0, 512) || !Array.isArray(form.children) || form.children.length > 2 || !form.children.every(id => integer(id, 1, 512)) ||
           !text(form.name) || !(form.stage === null || ['Fresh', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Armor', 'No Level', 'Original'].includes(String(form.stage))) ||
-          !integer(form.requiredLevel, 1, 20) || !integer(form.requiredBond, 0, 200) || !integer(form.previewLevel, 1, 20) || !(form.artId === null || text(form.artId)) || !object(form.combat)) return false;
+          !integer(form.requiredLevel, 1, 50) || !integer(form.requiredBond, 0, 200) || !integer(form.previewLevel, 1, 50) || !(form.artId === null || text(form.artId)) || !object(form.combat)) return false;
         const combat = form.combat;
         return keysExactly(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) &&
-          ['maxHp', 'attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 1000)) && ['grove', 'tide', 'ember', 'neutral'].includes(String(combat.type)) &&
+          integer(combat.maxHp, 1, 2048) && ['attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 256)) && ['grove', 'tide', 'ember', 'neutral'].includes(String(combat.type)) &&
           object(combat.skills) && keysExactly(combat.skills, ['physical', 'heavy', 'magic']) && Object.values(combat.skills).every(text);
       })) throw new HttpError(503, 'core_output_invalid', 'The game core returned an unsupported bounded evolution catalog.');
     const ids = new Set(value.forms.map(form => (form as Record<string, unknown>).formId));
@@ -512,17 +521,17 @@ function createUnlockedApp(options: AppOptions = {}) {
     const text = (input: unknown, max = 64) => typeof input === 'string' && Buffer.byteLength(input) >= 1 && Buffer.byteLength(input) <= max && !/[\u0000-\u001f\u007f]/.test(input);
     const ids = (input: unknown, max: number): input is number[] => Array.isArray(input) && input.length <= max && input.every(id => integer(id, 1, 512)) && new Set(input).size === input.length;
     const bad = () => { throw new HttpError(503, 'core_output_invalid', 'The native evolution graph is unsupported or exceeds its bounds.'); };
-    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms']) || value.formatVersion !== 2 || value.rulesVersion !== 15 || value.catalogVersion !== 6 || value.focusFormId !== formId || value.offset !== offset || value.limit !== limit || !integer(value.total, 1, 512) || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, Math.max(0, Number(value.total) - offset)) || Buffer.byteLength(JSON.stringify(value)) > 16384) return bad();
+    if (!object(value) || !keysExactly(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms']) || value.formatVersion !== 2 || value.rulesVersion !== 16 || value.catalogVersion !== 6 || value.focusFormId !== formId || value.offset !== offset || value.limit !== limit || !integer(value.total, 1, 512) || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, Math.max(0, Number(value.total) - offset)) || Buffer.byteLength(JSON.stringify(value)) > 16384) return bad();
     const expectedNext = offset + value.forms.length < Number(value.total) ? offset + value.forms.length : null;
     if (value.nextOffset !== expectedNext) return bad();
     const seen = new Set<number>();
     for (const form of value.forms) {
-      if (!object(form) || !keysExactly(form, ['formId', 'name', 'stage', 'artId', 'minLevel', 'minBond', 'previewLevel', 'combat', 'parents', 'children', 'edges']) || !integer(form.formId, 1, 512) || seen.has(Number(form.formId)) || !text(form.name) || !(form.stage === null || ['Fresh', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Armor', 'No Level', 'Original'].includes(String(form.stage))) || !(form.artId === null || text(form.artId)) || !integer(form.minLevel, 1, 20) || !integer(form.minBond, 0, 200) || !integer(form.previewLevel, Number(form.minLevel), 20) || !ids(form.parents, 512) || !ids(form.children, 2) || form.parents.includes(Number(form.formId)) || form.children.includes(Number(form.formId)) || !Array.isArray(form.edges) || form.edges.length !== form.children.length || !object(form.combat)) return bad();
+      if (!object(form) || !keysExactly(form, ['formId', 'name', 'stage', 'artId', 'minLevel', 'minBond', 'previewLevel', 'combat', 'parents', 'children', 'edges']) || !integer(form.formId, 1, 512) || seen.has(Number(form.formId)) || !text(form.name) || !(form.stage === null || ['Fresh', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Armor', 'No Level', 'Original'].includes(String(form.stage))) || !(form.artId === null || text(form.artId)) || !integer(form.minLevel, 1, 50) || !integer(form.minBond, 0, 200) || !integer(form.previewLevel, Number(form.minLevel), 50) || !ids(form.parents, 512) || !ids(form.children, 2) || form.parents.includes(Number(form.formId)) || form.children.includes(Number(form.formId)) || !Array.isArray(form.edges) || form.edges.length !== form.children.length || !object(form.combat)) return bad();
       seen.add(Number(form.formId));
       const children = form.children;
-      if (!form.edges.every((edge, index) => object(edge) && keysExactly(edge, ['toFormId', 'requiredLevel', 'requiredBond']) && edge.toFormId === children[index] && integer(edge.requiredLevel, 1, 20) && integer(edge.requiredBond, 0, 200))) return bad();
+      if (!form.edges.every((edge, index) => object(edge) && keysExactly(edge, ['toFormId', 'requiredLevel', 'requiredBond', 'requiredCare']) && edge.toFormId === children[index] && integer(edge.requiredLevel, 1, 50) && integer(edge.requiredBond, 0, 200) && integer(edge.requiredCare, 12, 100))) return bad();
       const combat = form.combat;
-      if (!keysExactly(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) || !['maxHp', 'attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 1000)) || !['grove', 'tide', 'ember', 'neutral'].includes(String(combat.type)) || !object(combat.skills) || !keysExactly(combat.skills, ['physical', 'heavy', 'magic']) || !Object.values(combat.skills).every(label => text(label, 32))) return bad();
+      if (!keysExactly(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) || !integer(combat.maxHp, 1, 2048) || !['attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 256)) || !['grove', 'tide', 'ember', 'neutral'].includes(String(combat.type)) || !object(combat.skills) || !keysExactly(combat.skills, ['physical', 'heavy', 'magic']) || !Object.values(combat.skills).every(label => text(label, 32))) return bad();
     }
     return value;
   }
@@ -570,13 +579,13 @@ function createUnlockedApp(options: AppOptions = {}) {
       if (JSON.stringify(restored) !== JSON.stringify(migrated.state)) throw new Error('Legacy migration baseline did not restore identically.');
       return { ...device, legacy, initialMode: 'legacy', events: [], receipts: [] };
     });
-    const next: Store = { formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices };
+    const next: Store = { formatVersion: 18, gameSchemaVersion: 23, rulesVersion: 16, devices };
     validateStore(next);
     const archivePath = join(dataDir, `store.rules-v${previous.rulesVersion}.json`);
     if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
     persist(next);
     migratedLegacyStore = true;
-  } else if (loaded.formatVersion === 3 || loaded.formatVersion === 4 || loaded.formatVersion === 5 || loaded.formatVersion === 6 || loaded.formatVersion === 7 || loaded.formatVersion === 8 || loaded.formatVersion === 9 || loaded.formatVersion === 10 || loaded.formatVersion === 11 || loaded.formatVersion === 12 || loaded.formatVersion === 13 || loaded.formatVersion === 14 || loaded.formatVersion === 15 || loaded.formatVersion === 16) {
+  } else if (loaded.formatVersion === 3 || loaded.formatVersion === 4 || loaded.formatVersion === 5 || loaded.formatVersion === 6 || loaded.formatVersion === 7 || loaded.formatVersion === 8 || loaded.formatVersion === 9 || loaded.formatVersion === 10 || loaded.formatVersion === 11 || loaded.formatVersion === 12 || loaded.formatVersion === 13 || loaded.formatVersion === 14 || loaded.formatVersion === 15 || loaded.formatVersion === 16 || loaded.formatVersion === 17) {
     const previous = loaded;
     const version = previous.rulesVersion;
     const devices = previous.devices.map((device): Device => {
@@ -584,14 +593,14 @@ function createUnlockedApp(options: AppOptions = {}) {
       const args = device.legacy ? [`--migrate-v${version}-snapshot`, device.legacy.snapshotBase64] :
         [`--migrate-v${version}${initialMode === 'onboarding' ? '-onboarding' : ''}`, String(device.seed)];
       const migrated = runCore(args, device.events);
-      if (!object(migrated) || !validSnapshot(migrated.snapshotBase64, 22) || !stateSupported(migrated.state)) throw new Error('Frozen-rules migration returned an unsupported baseline.');
+      if (!object(migrated) || !validSnapshot(migrated.snapshotBase64, 23) || !stateSupported(migrated.state)) throw new Error('Frozen-rules migration returned an unsupported baseline.');
       const legacy: Baseline = { histories: [...(device.legacy?.histories ?? []), { rulesVersion: version, events: device.events, receipts: device.receipts }], snapshotBase64: migrated.snapshotBase64 };
       if (migrated.state.sequence !== baseSequence(legacy)) throw new Error('Frozen-rules migration changed the event sequence.');
-      if (version === 8 || version === 9 || version === 10 || version === 11 || version === 12 || version === 13 || version === 14) {
+      if (version === 8 || version === 9 || version === 10 || version === 11 || version === 12 || version === 13 || version === 14 || version === 15) {
         const traceArgs = device.legacy ? [`--replay-v${version}-snapshot-trace`, device.legacy.snapshotBase64] :
           [`--replay-v${version}${initialMode === 'onboarding' ? '-onboarding' : ''}-trace`, String(device.seed)];
         const original = runCore(traceArgs, device.events);
-        if (!object(original) || !keysExactly(original, ['state', 'trace']) || !object(original.state) || original.state.schemaVersion !== (version === 14 ? 21 : version === 13 ? 20 : version === 12 ? 16 : version + 3) || original.state.rulesVersion !== version || original.state.sequence !== migrated.state.sequence || Buffer.byteLength(JSON.stringify(original.trace)) > 16 * 1024) throw new Error('Frozen-rules Auto trace recovery failed.');
+        if (!object(original) || !keysExactly(original, ['state', 'trace']) || !object(original.state) || original.state.schemaVersion !== (version === 15 ? 22 : version === 14 ? 21 : version === 13 ? 20 : version === 12 ? 16 : version + 3) || original.state.rulesVersion !== version || original.state.sequence !== migrated.state.sequence || Buffer.byteLength(JSON.stringify(original.trace)) > 16 * 1024) throw new Error('Frozen-rules Auto trace recovery failed.');
         let autoTrace = parseAutoTrace(original.trace, 'wild');
         if (device.legacy?.autoTrace) {
           // The old suffix may contain no Auto action, while its service baseline
@@ -610,7 +619,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       if (JSON.stringify(restored) !== JSON.stringify(migrated.state)) throw new Error('Frozen-rules migration baseline did not restore identically.');
       return { ...device, initialMode, legacy, events: [], receipts: [] };
     });
-    const next: Store = { formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices };
+    const next: Store = { formatVersion: 18, gameSchemaVersion: 23, rulesVersion: 16, devices };
     validateStore(next);
     const archivePath = join(dataDir, `store.rules-v${version}.json`);
     if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
@@ -683,7 +692,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       const method = request.method;
       if (path === '/api/device/health') {
         if (method !== 'GET' || request.url !== path) throw new HttpError(400, 'invalid_request', 'Device health expects GET without parameters.');
-        return json(response, 200, { status: 'ok', protocolVersion: 1, gameRulesVersion: 15, gameSchemaVersion: 22, assetProfile: DEVICE_PROFILE });
+        return json(response, 200, { status: 'ok', protocolVersion: 1, gameRulesVersion: 16, gameSchemaVersion: 23, assetProfile: DEVICE_PROFILE });
       }
       if (path === '/api/device/assets' || path.startsWith('/api/device/assets/')) {
         if (!deviceAssets) return json(response, 503, { error: 'device_assets_unavailable', message: 'Verified device assets are not installed.' });
@@ -747,7 +756,7 @@ function createUnlockedApp(options: AppOptions = {}) {
         if (Buffer.byteLength(JSON.stringify(result)) > 64 * 1024) throw new HttpError(503, 'roster_unavailable', 'Roster response exceeds its bounded size.');
         return json(response, 200, result);
       }
-      if (method === 'GET' && path === '/api/health') return json(response, 200, { status: 'ok', mode: 'local-development', assetStatus: assetService ? 'available' : 'unavailable', schemaVersion: 22, rulesVersion: 15, collectionCapacity: 60, partyCapacity: 3, capabilities: { captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1, ...(includeTestFixtures ? { testFixtures: 1 } : {}) }, recoveredFromBackup, migratedLegacyStore });
+      if (method === 'GET' && path === '/api/health') return json(response, 200, { status: 'ok', mode: 'local-development', assetStatus: assetService ? 'available' : 'unavailable', schemaVersion: 23, rulesVersion: 16, collectionCapacity: 60, partyCapacity: 3, capabilities: { captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1, ...(includeTestFixtures ? { testFixtures: 1 } : {}) }, recoveredFromBackup, migratedLegacyStore });
       if (method === 'GET' && path === '/api/starters') return json(response, 200, starterCatalog());
       if (path === '/api/evolution-graph') {
         const query = new URL(request.url!, 'http://localhost').searchParams, keys = [...query.keys()];
@@ -800,7 +809,7 @@ function createUnlockedApp(options: AppOptions = {}) {
         const token = randomBytes(32).toString('base64url');
         const device: Device = { deviceId: `dv_${randomBytes(12).toString('hex')}`, tokenHash: sha256(token), seed: nextSeed(), revision: 0, legacy: null, initialMode: 'onboarding', events: [], receipts: [] };
         const initialState = replay([], device.seed, null, 'onboarding');
-        persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: [...store.devices, device] });
+        persist({ formatVersion: 18, gameSchemaVersion: 23, rulesVersion: 16, devices: [...store.devices, device] });
         pairings.delete(input.code);
         return json(response, 201, { deviceId: device.deviceId, token, revision: 0, seed: device.seed, state: initialState, autoTrace: null, events: [], baseSequence: 0 });
       }
@@ -820,8 +829,8 @@ function createUnlockedApp(options: AppOptions = {}) {
           const nextEvents = [...device.events, ...events];
           result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
           const next: Device = { ...device, revision: device.revision + 1, events: nextEvents,
-            receipts: [...device.receipts, { batchId: `starter-offers-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 15), revision: device.revision + 1, eventEnd: nextEvents.length }] };
-          persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
+            receipts: [...device.receipts, { batchId: `starter-offers-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 16), revision: device.revision + 1, eventEnd: nextEvents.length }] };
+          persist({ formatVersion: 18, gameSchemaVersion: 23, rulesVersion: 16, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
           device = next;
         }
         return json(response, 200, { deviceId: device.deviceId, revision: device.revision, seed: device.seed, ...result, events: device.events, baseSequence: baseSequence(device.legacy) });
@@ -842,8 +851,8 @@ function createUnlockedApp(options: AppOptions = {}) {
           const nextEvents = [...device.events, ...events];
           result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
           const next: Device = { ...device, revision: device.revision + 1, events: nextEvents,
-            receipts: [...device.receipts, { batchId: `world-seed-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 15), revision: device.revision + 1, eventEnd: nextEvents.length }] };
-          persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
+            receipts: [...device.receipts, { batchId: `world-seed-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 16), revision: device.revision + 1, eventEnd: nextEvents.length }] };
+          persist({ formatVersion: 18, gameSchemaVersion: 23, rulesVersion: 16, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
           device = next;
         }
         return json(response, 200, { deviceId: device.deviceId, revision: device.revision, seed: device.seed, ...result, events: device.events, baseSequence: baseSequence(device.legacy) });
@@ -875,12 +884,12 @@ function createUnlockedApp(options: AppOptions = {}) {
         const input = await body(request);
         // Fetch again after body await: another request may have updated the store.
         const device = authenticated(request);
-        if (object(input) && input.rulesVersion !== 15) throw new HttpError(409, 'migration_required', 'This batch uses older or unsupported rules. Preserve it and fetch the current save; do not relabel or replay it.');
-        if (!object(input) || !keysExactly(input, ['rulesVersion', 'baseRevision', 'batchId', 'events']) || !Number.isSafeInteger(input.baseRevision) || Number(input.baseRevision) < 0 || typeof input.batchId !== 'string' || !/^[a-zA-Z0-9_-]{8,80}$/.test(input.batchId)) throw new HttpError(400, 'invalid_request', 'Supply rulesVersion:15, baseRevision, an 8–80 character batchId, and events.');
+        if (object(input) && input.rulesVersion !== 16) throw new HttpError(409, 'migration_required', 'This batch uses older or unsupported rules. Preserve it and fetch the current save; do not relabel or replay it.');
+        if (!object(input) || !keysExactly(input, ['rulesVersion', 'baseRevision', 'batchId', 'events']) || !Number.isSafeInteger(input.baseRevision) || Number(input.baseRevision) < 0 || typeof input.batchId !== 'string' || !/^[a-zA-Z0-9_-]{8,80}$/.test(input.batchId)) throw new HttpError(400, 'invalid_request', 'Supply rulesVersion:16, baseRevision, an 8–80 character batchId, and events.');
         if (!validEvents(input.events, MAX_EVENTS_PER_BATCH) || input.events.length === 0) throw new HttpError(422, 'invalid_events', 'Supply 1–100 supported, bounded events with exact type and value fields.');
         const events = input.events;
         if (events.some(event => event.type === 'world-seed')) throw new HttpError(422, 'server_owned_event', 'World initialization is generated by the trusted setup endpoint.');
-        const bodyHash = batchHash(Number(input.baseRevision), events, 15);
+        const bodyHash = batchHash(Number(input.baseRevision), events, 16);
         if (device.legacy?.histories.some(history => history.receipts.some(receipt => receipt.batchId === input.batchId))) throw new HttpError(409, 'legacy_batch_requires_reconciliation', 'This batch was committed under older rules. Fetch the current save; it will not be applied again.');
         const previous = device.receipts.find((entry) => entry.batchId === input.batchId);
         if (previous) {
@@ -891,14 +900,14 @@ function createUnlockedApp(options: AppOptions = {}) {
         // A receipt above acknowledges an already committed selection. Only new
         // selection batches consult this device's independent practice state.
         if (events.some(event => event.type === 'present-encounter') && battleService().get(device.deviceId).battle?.status === 'active') throw new HttpError(409, 'encounter_deferred', 'Finish the current practice battle before showing the waiting wild encounter.');
-        if (events.some(event => event.type === 'select' || event.type === 'evolve' || event.type === 'release' || event.type === 'party-add' || event.type === 'party-remove') && battleService().get(device.deviceId).battle?.status === 'active') {
+        if (events.some(event => event.type === 'select' || event.type === 'evolve' || event.type === 'evolve-member' || event.type === 'release' || event.type === 'party-add' || event.type === 'party-remove') && battleService().get(device.deviceId).battle?.status === 'active') {
           throw new HttpError(409, 'partner_locked', 'Finish or retreat from the current practice battle before changing the partner, XP companions, evolution or collection.');
         }
         if (baseSequence(device.legacy) + device.events.length + events.length > MAX_EVENTS) throw new HttpError(409, 'history_limit', 'The prototype lifetime event limit is reached; export and migrate the save.');
         const nextEvents = [...device.events, ...events];
         const result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
         const next: Device = { ...device, revision: device.revision + 1, events: nextEvents, receipts: [...device.receipts, { batchId: input.batchId, bodyHash, revision: device.revision + 1, eventEnd: nextEvents.length }] };
-        persist({ formatVersion: 17, gameSchemaVersion: 22, rulesVersion: 15, devices: store.devices.map((entry) => entry.deviceId === device.deviceId ? next : entry) });
+        persist({ formatVersion: 18, gameSchemaVersion: 23, rulesVersion: 16, devices: store.devices.map((entry) => entry.deviceId === device.deviceId ? next : entry) });
         return json(response, 200, { deviceId: device.deviceId, revision: next.revision, ...result });
       }
       if (method === 'GET' && ASSETS.has(path)) {

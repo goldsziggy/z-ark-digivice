@@ -186,6 +186,38 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
     interfaceDirty_ = true;
 }
 
+void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
+    if (powerFrozen() || interfacePaused_ || setup_.active()) {
+        careAwakeMs_ = now;
+        return;
+    }
+    auto model = interfaceModel();
+    // Touch is already applied this frame, so Run Away wins over the next chunk.
+    if (!touchPressed_ && !ui_.pending() && state_.sequence != autoStartSequence_ &&
+        deviceui::autoFightReady(state_, model) && allowsCareAction(Action::AutoFight)) {
+        autoStartSequence_ = state_.sequence;
+        deviceui::Intent intent;
+        intent.kind = deviceui::IntentKind::GameAction;
+        intent.action = Action::AutoFight;
+        interfaceIntent(intent);
+        model = interfaceModel();
+    }
+    if (touchPressed_ || ui_.pending() || state_.phase != Phase::Home || !state_.onboardingComplete ||
+        !saves_.writable() || battle_.locked() || nearbyBusy() || !allowsCareAction(Action::CareMinute)) {
+        if (state_.phase != Phase::Home || interfacePaused_) careAwakeMs_ = now;
+        return;
+    }
+    if (!careAwakeMs_ || now < careAwakeMs_) { careAwakeMs_ = now; return; }
+    if (now - careAwakeMs_ < 60000) return;
+    careAwakeMs_ = now; // One awake minute, even if the clock jumped.
+    if (state_.careMinute == UINT32_MAX) return;
+    deviceui::Intent intent;
+    intent.kind = deviceui::IntentKind::GameAction;
+    intent.action = Action::CareMinute;
+    intent.value = state_.careMinute + 1;
+    interfaceIntent(intent);
+}
+
 void HandheldRuntime::pollInterface(std::uint64_t now) {
     if (powerFrozen() || interfacePaused_) return;
     setup_.poll();
@@ -238,6 +270,7 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
             if (!captureFrameActive_) interfaceDirty_ = true;
         }
     }
+    pollCareAndAuto(now);
     pollIdle(now);
     updateMusicScene();
     // Full frames remain the fallback for entry, state changes and other screens.
@@ -312,7 +345,9 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
 }
 
 void HandheldRuntime::pauseInterface(bool paused) {
-    interfaceActivity(static_cast<std::uint64_t>(esp_timer_get_time() / 1000));
+    // Power-off, sleep, and USB pauses are not care time.
+    careAwakeMs_ = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
+    interfaceActivity(careAwakeMs_);
     interfacePaused_ = paused;
     if (paused) { setup_.suspend(); battle_.cancel(); }
     captureFrameActive_ = captureFrameValid_ = false;

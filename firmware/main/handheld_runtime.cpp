@@ -590,11 +590,12 @@ void HandheldRuntime::printEvolution() const {
         if (!form) continue;
         State probe = state_;
         const auto available = apply(probe, Action::Evolve, child) == Error::None && saves_.writable() && practice_.allowsCareAction(Action::Evolve);
-        const auto previewLevel = member.level > edge->minLevel ? member.level : edge->minLevel;
+        const auto need = forms::evolutionNeed(*edge);
+        const auto previewLevel = member.level > need.level ? member.level : need.level;
         const auto stats = combat::formProfile(child, previewLevel).stats;
-        std::printf("%u %s [%s]: requires level %u, bond %u, Home, and no active/uncertain practice; %s.\n",
-            static_cast<unsigned>(child), form->name, forms::stageName(form->stage), static_cast<unsigned>(edge->minLevel),
-            static_cast<unsigned>(edge->minBond), available ? "available" : "locked");
+        std::printf("%u %s [%s]: requires level %u, bond %u, care %u, Home, and no active/uncertain practice; %s.\n",
+            static_cast<unsigned>(child), form->name, forms::stageName(form->stage), static_cast<unsigned>(need.level),
+            static_cast<unsigned>(need.bond), static_cast<unsigned>(need.care), available ? "available" : "locked");
         std::printf("  Preview at level %lu: HP %lu ATK %lu DEF %lu MAG %lu RES %lu; art %s.\n",
             static_cast<unsigned long>(previewLevel), static_cast<unsigned long>(stats.maxHp), static_cast<unsigned long>(stats.attack),
             static_cast<unsigned long>(stats.defense), static_cast<unsigned long>(stats.magic), static_cast<unsigned long>(stats.resistance),

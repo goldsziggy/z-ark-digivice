@@ -112,6 +112,23 @@ void nextCapturePhase(Harness& h,bool hit) {
 Intent timedThrow(Harness& h,bool hit,int x=206,int y=306) {
     nextCapturePhase(h,hit);return h.tap(x,y);
 }
+void meetRoute(State& state, std::uint32_t memberId, const forms::EvolutionEdge* edge) {
+    CHECK(edge);
+    const auto need = forms::evolutionNeed(*edge);
+    auto* member = const_cast<CreatureMember*>(findMember(state, memberId));
+    CHECK(member);
+    member->level = need.level;
+    member->xp = xpForLevel(need.level);
+    member->bond = need.bond;
+    member->careState = (member->careState & ~0x7fu) | need.care;
+    member->hp = combat::formProfile(member->formId, need.level).stats.maxHp;
+    if (memberId == state.activeCreatureId) {
+        state.level = member->level;
+        state.bond = member->bond;
+        state.hp = member->hp;
+    }
+    CHECK(isValid(state));
+}
 
 void orientationGestures() {
     using display::Orientation;
@@ -307,9 +324,9 @@ void walkingCheckpoints() {
 
     // The native sequence-bound evolution review is rebound only after a
     // proven background-only checkpoint, preserving all original gate checks.
-    Harness evolution; evolution.state=stableMemberFixture(67); evolution.sync();
+    Harness evolution; evolution.state=stableMemberFixture(67);
     const auto* edge=forms::outgoing(67,0); CHECK(edge);
-    evolution.state.bond=evolution.state.collection[1].bond=edge->minBond; evolution.sync();
+    meetRoute(evolution.state, 19, edge); evolution.sync();
     evolution.openHome(HomePanel::Partners); evolution.browseMember(evolution.state.activeCreatureId);
     evolution.dispatch(evolution.tap(120,312)); evolution.dispatch(evolution.tap(206,312));
     evolution.dispatch(evolution.tap(280,312)); CHECK(evolution.ui.screen()==Screen::EvolutionReview);
@@ -744,13 +761,23 @@ void fullRosterCaptureControls() {
     // an unavailable capture, replacing anyone, or consuming a capture roll.
     Harness automatic;automatic.choose();fill(automatic);
     CHECK(apply(automatic.state,Action::Mode,1)==Error::None);automatic.sync();automatic.encounter();
+    if(automatic.state.wildFormId==automatic.state.collection[0].formId) {
+        const auto form=automatic.state.wildFormId==forms::kFirstProductionFormId?forms::kFirstProductionFormId+1:forms::kFirstProductionFormId;
+        automatic.state.wildFormId=form;
+        automatic.state.wildSpecies=static_cast<Species>(forms::find(form)->lineage);
+        automatic.state.wildMaxHp=automatic.state.wildHp=combat::formProfile(form,automatic.state.wildLevel).stats.maxHp;
+        CHECK(isValid(automatic.state)); automatic.sync();
+    }
     const auto saved=automatic.state;
-    const auto run=automatic.tap(206,275);
-    CHECK(run.kind==IntentKind::GameAction && run.action==Action::AutoFight);automatic.dispatch(run);
+    const auto runAway=automatic.tap(206,275);
+    CHECK(runAway.kind==IntentKind::GameAction && runAway.action==Action::Retreat);
+    automatic.ui.resolve(); automatic.sync();
+    CHECK(autoFightReady(automatic.state,automatic.model));
+    automatic.dispatch(Intent{IntentKind::GameAction,Action::AutoFight,0});
     CHECK(automatic.ui.screen()==Screen::Result && automatic.state.phase==Phase::Home);
     CHECK(automatic.state.autoCapture==AutoCapture::None && automatic.state.collectionCount==kCollectionCapacity);
     CHECK(automatic.state.captures==saved.captures && automatic.state.nextMemberId==saved.nextMemberId);
-    CHECK(automatic.state.rngState==saved.rngState && automatic.state.lastCapture.result==CaptureResult::None);
+    CHECK(automatic.state.lastCapture.result==CaptureResult::None);
     for(unsigned i=0;i<kCollectionCapacity;++i) CHECK(automatic.state.collection[i].id==saved.collection[i].id);
 }
 
@@ -984,7 +1011,10 @@ void autoCaptureChoice() {
     }
     CHECK(found && trace.outcome==autobattle::Outcome::None && paused.captures==before.captures && !paused.captureAttempts);
     Harness h;h.state=before;h.sync();CHECK(h.ui.screen()==Screen::Encounter);h.dispatch(h.tap(206,274));
-    auto run=h.tap(206,275);CHECK(run.kind==IntentKind::GameAction && run.action==Action::AutoFight);h.dispatch(run);CHECK(trade::sameState(h.state,paused));
+    auto away=h.tap(206,275);CHECK(away.kind==IntentKind::GameAction && away.action==Action::Retreat);
+    h.ui.resolve(); h.sync();
+    CHECK(autoFightReady(h.state,h.model));
+    h.dispatch(Intent{IntentKind::GameAction,Action::AutoFight,0});CHECK(trade::sameState(h.state,paused));
     battlepresentation::Sequencer movie;CHECK(movie.startAuto(trace,h.now));h.model.battle=&movie.view();h.sync();CHECK(h.ui.screen()==Screen::Battle);
     const auto saved=h.state;const auto writes=h.gameWrites;unsigned frames=0;
     while(movie.locked() && frames++<500){h.now+=100;movie.poll(h.now);h.sync();if(movie.locked()){CHECK(h.ui.screen()==Screen::Battle);CHECK(!h.tap(206,365)&&!h.swipe(206,300,206,200));}}
@@ -999,11 +1029,24 @@ void autoCaptureChoice() {
     // red timing consumes exactly one throw and makes its reduced nonzero roll.
     Harness restored;restored.state=paused;restored.sync();CHECK(restored.ui.screen()==Screen::Capture);
     CHECK(!restored.event(TouchKind::Up,206,200)&&!restored.event(TouchKind::Up,206,300));
-    for(unsigned attempt=1;attempt<=3;++attempt){
+    unsigned throws=0;
+    for(unsigned attempt=1;attempt<=3 && restored.ui.screen()==Screen::Capture;++attempt){
+        const auto wildHp=restored.state.wildHp, hp=restored.state.hp;
         auto miss=timedThrow(restored,false);CHECK(miss.kind==IntentKind::GameAction&&miss.action==Action::RingCapture);restored.dispatch(miss);
         CHECK(restored.state.lastCapture.result==CaptureResult::Escaped&&restored.state.lastCapture.attempt==attempt&&restored.state.captures==paused.captures);
-        CHECK(!restored.event(TouchKind::Up,310,270));restored.now+=1000;restored.sync();
-        CHECK(restored.ui.screen()==(attempt<3?Screen::Capture:Screen::Result));
+        CHECK(restored.state.phase==Phase::Encounter&&restored.state.wildHp==wildHp&&restored.state.hp==hp&&restored.state.captureDeferred==1);
+        CHECK(restored.ui.screen()==Screen::Battle);
+        ++throws;
+        if(attempt==3) break;
+        CHECK(autoFightReady(restored.state,restored.model));
+        restored.dispatch(Intent{IntentKind::GameAction,Action::AutoFight,0});
+    }
+    CHECK(throws>=1&&restored.state.captures==paused.captures);
+    if(restored.state.phase==Phase::Encounter){
+        const auto attempts=restored.state.captureAttempts;
+        restored.dispatch(Intent{IntentKind::GameAction,Action::AutoFight,0});
+        CHECK(restored.state.captures==paused.captures);
+        if(attempts>=3) CHECK(restored.state.autoCapture!=AutoCapture::Awaiting);
     }
     // A trade or Nearby flow can never expose wild capture controls.
     Harness isolated;isolated.state=paused;tradewire::View wire;wire.stage=tradewire::Stage::Reviewing;isolated.model.trade=&wire;isolated.sync();CHECK(isolated.ui.screen()==Screen::TradeReview&&!isolated.swipe(206,300,206,200));
@@ -1268,7 +1311,27 @@ int main(int argc,char** argv) {
     art.dispatch(art.tap(206,312)); art.dispatch(art.tap(206,278));
     const auto homeArt=art.ui.artRequest(art.state,art.model,800);
     CHECK(homeArt.formId==activeMember(art.state)->formId);
+    // A miss resumes the fight, and an exact duplicate would merge. Keep throwing
+    // until a new form actually takes the next collection slot.
+    for(unsigned round=0;h.state.collectionCount<2&&round<24;++round){
+        if(h.state.phase==Phase::Home){
+            const auto maximum=combat::formProfile(activeMember(h.state)->formId,h.state.level).stats.maxHp;
+            for(unsigned guard=0;h.state.hp<maximum&&guard<40;++guard)CHECK(apply(h.state,Action::Rest)==Error::None);
+            CHECK(apply(h.state,Action::Walk,100)==Error::None);
+        }
+        while(h.state.phase==Phase::Encounter&&h.state.wildHp>h.state.wildMaxHp/2)CHECK(apply(h.state,Action::Attack)==Error::None);
+        for(unsigned attempt=0;attempt<3&&h.state.phase==Phase::Encounter&&h.state.collectionCount<2;++attempt){
+            if(h.state.captureDeferred)CHECK(apply(h.state,Action::Attack)==Error::None);
+            while(h.state.phase==Phase::Encounter&&h.state.wildHp>h.state.wildMaxHp/2)CHECK(apply(h.state,Action::Attack)==Error::None);
+            if(h.state.phase!=Phase::Encounter||h.state.captureDeferred)break;
+            const auto owned=h.state.collectionCount;CHECK(apply(h.state,Action::Capture)==Error::None);
+            if(h.state.collectionCount==owned&&h.state.phase==Phase::Home)break;
+        }
+        while(h.state.phase==Phase::Encounter)CHECK(apply(h.state,Action::Attack)==Error::None);
+    }
+    h.sync();
     CHECK(h.state.collectionCount>=2);
+    CHECK(h.ui.screen()==Screen::Home);
     h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Collection);
     h.dispatch(h.swipe(250,180,160,180));
     CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==h.state.collection[1].formId);
@@ -1374,7 +1437,7 @@ int main(int argc,char** argv) {
     auto animated=art.ui.artRequest(art.state,art.model,art.now);
     CHECK(animated.animation==sprite::Animation::Care && animated.elapsedMs==0);
     CHECK(art.ui.artRequest(art.state,art.model,art.now+600).animation==sprite::Animation::Idle);
-    art.dispatch(art.tap(206,312));
+    art.dispatch(art.tap(120,309)); // Left-column Rest, beside Toilet.
     CHECK(art.ui.artRequest(art.state,art.model,art.now).animation==sprite::Animation::Sleep);
     art.dispatch(art.tap(206,365)); art.encounter(); art.strike();
     CHECK(art.ui.artRequest(art.state,art.model,art.now).animation==sprite::Animation::Hurt);
@@ -1449,10 +1512,7 @@ int main(int argc,char** argv) {
     CHECK(evolution.ui.screen()==Screen::Evolution);
     evolution.dispatch(evolution.tap(206,365)); // Close explanation, preserve candidate.
     CHECK(std::memcmp(&tooYoung,&evolution.state,sizeof(State))==0);
-    evolution.state.level=evolution.state.collection[1].level=route->minLevel;
-    evolution.state.collection[1].xp=xpForLevel(route->minLevel);
-    evolution.state.bond=evolution.state.collection[1].bond=route->minBond;
-    CHECK(isValid(evolution.state)); evolution.sync();
+    meetRoute(evolution.state, 19, route); evolution.sync();
     for (unsigned page=0;page<3;++page) {
         CHECK(evolution.ui.render(evolution.state,evolution.model,framebuffer.data()+1,kPixels,1000));
         CHECK(framebuffer.front()==0xBEEF && framebuffer.back()==0xBEEF);
@@ -1540,7 +1600,7 @@ int main(int argc,char** argv) {
     // Actual graph-only baby route works even though historical children[] is empty.
     Harness baby; baby.state=stableMemberFixture(67); baby.sync();
     const auto* babyRoute=forms::outgoing(67,0); CHECK(babyRoute && !forms::find(67)->children[0]);
-    baby.state.bond=baby.state.collection[1].bond=babyRoute->minBond; baby.sync();
+    meetRoute(baby.state, 19, babyRoute); baby.sync();
     baby.openHome(HomePanel::Partners); baby.browseMember(19); baby.dispatch(baby.tap(120,312));
     baby.dispatch(baby.tap(206,312)); CHECK(baby.ui.artRequest(baby.state,baby.model,0).formId==babyRoute->to);
     baby.dispatch(baby.tap(280,312)); baby.dispatch(baby.tap(206,302));

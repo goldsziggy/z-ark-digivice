@@ -79,8 +79,8 @@ let assetState = { ready: false, busy: false, packs: [], selectedId: 'scene-mead
 const backgroundPlayer = createBackgroundPlayer({ onChange: () => { if (deviceReady) { syncBackgroundStatus(); scheduleDraw(); } } });
 const battleClient = createBattleClient({ storage: (() => { try { return localStorage; } catch { return null; } })(), onChange: () => { if (deviceReady) render(); } });
 const formArt = createFormArt({ getCredential: () => identity, onChange: () => { artGeneration++; if (deviceReady) render(); } });
-const RULES_VERSION = 15;
-const SCHEMA_VERSION = 22;
+const RULES_VERSION = 16;
+const SCHEMA_VERSION = 23;
 const COLLECTION_CAPACITY = 60;
 const MAX_STATE_BYTES = 64 * 1024;
 // Save responses also carry at most 10,000 bounded history events and a trace.
@@ -563,7 +563,7 @@ function progressionView(screen, view, item) {
         items: member ? [item('evolution-options', active && game.evolution.options.length ? 'Digivolution choices' : active ? 'No further forms' : 'Set Partner to evolve', !active || !game.evolution.options.length), item('evolution-tree', 'Evolution graph'), ...(!active ? [item('progression-set-partner', 'Set Partner', !canSetPartner(member.id))] : [])] : [item('companions', 'Choose companion')], footer: member ? `COMPANION #${String(member.id).padStart(2, '0')} · XP IS SAVED` : '' }); break;
     case 'evolution-options':
       Object.assign(view, { title: 'Choose a path', eyebrow: member?.name || 'DIGIVOLUTION', layout: 'carousel',
-        items: active ? game.evolution.options.map(form => ({ ...item(`evolve-${form.formId}`, form.name, false, `${form.stage || 'Form'} · Lv ${form.requiredLevel} · Bond ${form.requiredBond}`, '◇'), formId: form.formId, eligible: form.eligible })) : [],
+        items: active ? game.evolution.options.map(form => ({ ...item(`evolve-${form.formId}`, form.name, false, `${form.stage || 'Form'} · Lv ${form.requiredLevel} · Bond ${form.requiredBond} · Care ${form.requiredCare}`, '◇'), formId: form.formId, eligible: form.eligible })) : [],
         footer: 'PREVIEW FIRST · NOTHING CHANGES' }); break;
     case 'evolution-preview':
       Object.assign(view, { title: option?.name || 'Form preview', eyebrow: option ? `${option.stage || 'FORM'} · PREVIEW LEVEL ${option.previewLevel}` : 'DIGIVOLUTION', layout: 'evolution-stats-carousel',
@@ -572,7 +572,7 @@ function progressionView(screen, view, item) {
         items: [item('evolution-requirements', 'Requirements', !option), item('evolution-skills', 'Compare moves', !option), item('evolution-review', 'Review Digivolution', !canEvolve())] }); break;
     case 'evolution-requirements':
       Object.assign(view, { title: 'Ready to Digivolve?', eyebrow: option?.name || 'REQUIREMENTS', layout: 'evolution-requirements',
-        facts: option && member ? evolutionRequirements(member, option) : [], detail: lock || (option?.eligible ? 'All requirements met. Review your choice before saving.' : 'Raise the missing level or bond, then return here.'),
+        facts: option && member ? evolutionRequirements(member, option) : [], detail: lock || (option?.eligible ? 'Digivolution requirements met. Review your choice before saving.' : 'Raise the missing level, bond or care, then return here.'),
         items: [item('evolution-review', 'Review Digivolution', !canEvolve())] }); break;
     case 'evolution-skills':
       Object.assign(view, { title: 'Compare moves', eyebrow: option?.name || 'DIGIVOLUTION', layout: 'carousel',
@@ -1419,13 +1419,14 @@ function validateSave(save) {
     || !validLastCapture(state.lastCapture, state.foregroundSequence) || !validWalkingState(state.walking, state.phase) || !validRecoveryCount(state.recoveryRestCount) || state.phase !== 'home' && state.recoveryRestCount !== 0 || !validEncounterRarity(state.wildRarity)
     || !Number.isSafeInteger(state.queuedEncounters) || state.queuedEncounters < 0 || state.queuedEncounters > 4294967295
     || !Number.isInteger(state.stepsToNextEncounter) || state.stepsToNextEncounter < 0 || state.stepsToNextEncounter > 100
-    || !validParty(state) || !validOnboarding || !(validEgg || validCompleted) || state.collectionCapacity !== COLLECTION_CAPACITY || !['tactical', 'auto'].includes(state.battleMode) || state.maxLevel !== 20
+    || !validParty(state) || !validOnboarding || !(validEgg || validCompleted) || state.collectionCapacity !== COLLECTION_CAPACITY || !['tactical', 'auto'].includes(state.battleMode) || state.maxLevel !== 50
     || !state.journal || state.journal.capacity !== 512 || !Array.isArray(state.journal.obtainedFormIds) || state.journal.obtainedFormIds.length > 512
     || !state.journal.obtainedFormIds.every((id, index, ids) => Number.isInteger(id) && id >= 1 && id <= 512 && (index === 0 || id > ids[index - 1]))
     || !Number.isInteger(state.nextMemberId) || state.nextMemberId < 1 || state.nextMemberId > 4294967295
     || !state.collection.every(member => Number.isInteger(member.id) && member.id >= 1 && member.id <= MAX_MEMBER_ID && Number.isInteger(member.formId) && member.formId >= 1 && member.formId <= 512
-      && Number.isInteger(member.level) && member.level >= 1 && member.level <= 20 && Number.isInteger(member.xp) && member.xp >= 0 && member.xp <= 7600
-      && Number.isInteger(member.xpToNext) && member.xpToNext >= 0 && member.xpToNext <= 7600)) {
+      && Number.isInteger(member.level) && member.level >= 1 && member.level <= 50 && Number.isInteger(member.xp) && member.xp >= 0 && member.xp <= 49000
+      && Number.isInteger(member.xpToNext) && member.xpToNext >= 0 && member.xpToNext <= 49000
+      && Number.isInteger(member.carePoints) && member.carePoints >= 0 && member.carePoints <= 100 && Number.isInteger(member.toilet) && member.toilet >= 0 && member.toilet <= 100 && typeof member.careMissed === 'boolean')) {
     throw new Error(`Unsupported save format. This browser requires schema ${SCHEMA_VERSION} and game rules ${RULES_VERSION}. Any pending action has been kept.`);
   }
 }

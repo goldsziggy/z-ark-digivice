@@ -104,6 +104,19 @@ struct Intent {
     std::uint32_t nearbyOpenNonce = 0;
     explicit operator bool() const { return kind != IntentKind::None; }
 };
+// Auto encounters continue themselves. Capture pauses, playback, and a same-frame
+// retreat stay in the caller's hands; this never spends a throw.
+inline bool autoFightReady(const State& state, const Model& model) {
+    if (!model.writable || !model.inputEnabled || model.encounterRecoveryRequired) return false;
+    if (model.battle && model.battle->locked) return false;
+    if (state.phase != Phase::Encounter || state.battleMode != BattleMode::Auto) return false;
+    if (state.autoCapture == AutoCapture::Awaiting) return false;
+    if (model.trade && model.trade->stage != tradewire::Stage::Closed &&
+        model.trade->stage != tradewire::Stage::Discovering) return false;
+    if (model.nearby && model.nearby->stage != nearby::Stage::Closed) return false;
+    State copy = state;
+    return apply(copy, Action::AutoFight) == Error::None;
+}
 class Controller {
 public:
     void update(const State& state, const Model& model);

@@ -83,8 +83,8 @@ void captureChecks() {
         CHECK(player.view().captureElapsedMs==end && player.view().progressPermille==1000 && player.consumeCue()==bp::Cue::None);
         CHECK(player.view().playerHp==f.before.hp && player.view().enemyHp==f.before.wildHp);
         if(attempt==3 && !caught) {
-            CHECK(f.after.phase==digivice::Phase::Home && f.after.message==Message::CaptureEnded);
-            CHECK(f.after.hp==f.before.hp && player.view().outcome==autobattle::Outcome::Retreated);
+            CHECK(f.after.phase==digivice::Phase::Encounter && f.after.message==Message::CaptureMissed);
+            CHECK(f.after.hp==f.before.hp && f.after.wildHp==f.before.wildHp && player.view().outcome==autobattle::Outcome::None);
         }
         // A reboot can replay the latest committed result, without inventing
         // terminal target HP, changing any byte or requesting a new game event.
@@ -166,7 +166,9 @@ void captureChecks() {
             CHECK(step.captureAttempt>=1 && step.captureAttempt<=3 && step.captureChance>=10 && step.captureChance<=90);
         }
         sawCaught=sawCaught || trace.outcome==autobattle::Outcome::Captured;
-        if(state.message==Message::CaptureEnded) { sawThird=true;CHECK(trace.steps[trace.count-1].playerHpAfter>0); }
+        for(std::size_t i=0;i<trace.count;++i) if(trace.steps[i].action==autobattle::Move::Capture && trace.steps[i].captureAttempt==3 && !trace.steps[i].captured) {
+            sawThird=true;CHECK(trace.steps[i].playerHpAfter==trace.steps[i].playerHpBefore && state.message!=Message::CaptureEnded);
+        }
         CHECK(player.startAuto(trace,0));player.consumeCue();drain(player,0);
         auto bad=trace;bad.playerOffenseBonus=6;CHECK(!player.startAuto(bad,0));
         for(std::size_t i=0;i<trace.count;++i) if(trace.steps[i].action==autobattle::Move::Capture) {

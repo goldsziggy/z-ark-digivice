@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { startServer } from '../service/server.ts';
 import { validCare, validLastCapture, captureReport } from '../web/care-capture-state.js';
+import { historicComparable } from './legacy-state-projection.ts';
 
 const rootDir = resolve(import.meta.dirname, '..');
 const corePath = process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/digivice-core');
@@ -17,7 +18,7 @@ type Event = { type: string; value: number };
 const token = Buffer.alloc(32, 62).toString('base64url'); // Public fixture identity.
 const id = `dv_${'d'.repeat(24)}`;
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
-const command = (revision: number, batchId: string, events: Event[], rulesVersion = 15) => ({ rulesVersion, baseRevision: revision, batchId, events });
+const command = (revision: number, batchId: string, events: Event[], rulesVersion = 16) => ({ rulesVersion, baseRevision: revision, batchId, events });
 const core = (args: string[], events: Event[] = []) => JSON.parse(execFileSync(corePath, args, { input: events.map(e => `${e.type} ${e.value}\n`).join(''), encoding: 'utf8', maxBuffer: 64 * 1024 }));
 function originalStore(events: Event[]) {
   return { formatVersion: 13, gameSchemaVersion: 14, rulesVersion: 11, devices: [{ deviceId: id, tokenHash: hash(token), seed: 12345, initialMode: 'onboarding', revision: events.length ? 1 : 0,
@@ -49,18 +50,18 @@ function beforeExtension(state: any) {
 for (const [name, value] of Object.entries(frozen.cases) as Array<[string, any]>) test(`rules11 ${name} migration preserves exact frozen fields, trace and receipts`, async t => {
   assert.deepEqual(core(['--replay-v11-onboarding-trace', '12345'], value.events), value.result, 'independent pre-change golden output');
   const original = originalStore(value.events), f = await fixture(t, original), saved = await f.request();
-  assert.equal(saved.status, 200); assert.deepEqual(beforeExtension(saved.body.state), value.result.state); assert.deepEqual(saved.body.autoTrace, value.result.trace);
+  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.status, 200); assert.deepEqual(historicComparable(beforeExtension(saved.body.state)), historicComparable(value.result.state)); assert.deepEqual(saved.body.autoTrace, value.result.trace);
   assert.ok(validLastCapture(saved.body.state.lastCapture, saved.body.state.sequence));
   assert.ok(saved.body.state.collection.every(validCare));
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [17, 22, 15]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [18, 23, 16]);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 11, events: value.events, receipts: original.devices[0].receipts }]);
-  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 2964);
+  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v11.json'), 'utf8')), original);
   if (value.events.length) {
     const pending = command(0, 'frozen-eleven-original-batch', value.events, 11);
     assert.equal((await f.request(pending)).body.error, 'migration_required');
-    assert.equal((await f.request({ ...pending, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
+    assert.equal((await f.request({ ...pending, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
   }
   await f.restart(); assert.deepEqual(await f.request(), saved);
   if (name === 'encounter') {
@@ -110,7 +111,7 @@ test('starter offers commit once across concurrent requests, reload and independ
   await f.restart(); assert.deepEqual((await f.request()).body.state, hatched.body.state);
 });
 
-test('three committed misses show no odds, preserve HP, close capture and cannot reroll on retry', async t => {
+test('three committed misses show no odds, preserve HP, and leave the same battle open', async t => {
   const f = await fixture(t); let saved = await f.request(); let revision = saved.body.revision;
   const send = async (name: string, events: Event[]) => { const result = await f.request(command(revision, name, events)); assert.equal(result.status, 200, JSON.stringify(result.body)); revision = result.body.revision; return result; };
   await send('capture-current-prepare', [{ type: 'hatch', value: 1 }, { type: 'explore', value: 1000 }]);
@@ -118,18 +119,23 @@ test('three committed misses show no odds, preserve HP, close capture and cannot
     saved = await f.request(); if (saved.body.state.wildCaptureChance) break;
     await send(`capture-weaken-${attack}`, [{ type: attack % 2 ? 'attack' : 'magic', value: 0 }]);
   }
-  const before = (await f.request()).body.state; assert.ok(before.wildCaptureChance > 0); let first: any, firstRequest: any;
+  let ready = (await f.request()).body.state; assert.ok(ready.wildCaptureChance > 0); let first: any, firstRequest: any;
   for (let attempt = 1; attempt <= 3; attempt++) {
     const request = command(revision, `capture-miss-${attempt}`, [{ type: 'flick', value: 0 }]);
     const accepted = await f.request(request); assert.equal(accepted.status, 200); revision = accepted.body.revision;
-    assert.equal(accepted.body.state.hp, before.hp); assert.equal(accepted.body.state.rngState, before.rngState);
+    assert.equal(accepted.body.state.hp, ready.hp); assert.equal(accepted.body.state.wildHp, ready.wildHp); assert.equal(accepted.body.state.rngState, ready.rngState);
     const report = captureReport(accepted.body.state.lastCapture); assert.ok(report); assert.equal(report.odds, 'Miss · no catch'); assert.equal(report.remaining, 3 - attempt);
     assert.equal(accepted.body.state.lastCapture.attempt, attempt); assert.equal(accepted.body.state.lastCapture.result, 'miss');
-    assert.equal(accepted.body.state.phase, attempt === 3 ? 'home' : 'encounter');
+    assert.equal(accepted.body.state.phase, 'encounter'); assert.equal(accepted.body.state.captureAttempts, attempt);
     assert.deepEqual(await f.request(request), accepted);
     if (attempt === 1) { first = accepted; firstRequest = request; }
+    if (attempt < 3) {
+      const opened = await send(`capture-resume-${attempt}`, [{ type: 'attack', value: 0 }]);
+      ready = opened.body.state; assert.equal(ready.phase, 'encounter'); assert.equal(ready.captureDeferred, 0); assert.ok(ready.wildCaptureChance > 0);
+    }
   }
   const exhausted = await f.request(); await f.restart(); assert.deepEqual(await f.request(), exhausted);
+  assert.equal(exhausted.body.state.phase, 'encounter'); assert.equal(exhausted.body.state.captureAttempts, 3);
   assert.equal((await f.request(command(revision, 'capture-fourth-forbidden', [{ type: 'flick', value: 41140 }]))).status, 422);
   assert.deepEqual(await f.request(firstRequest), first); assert.deepEqual(await f.request(), exhausted);
 });
@@ -147,8 +153,8 @@ test('care modifiers are bounded and repeated full-mood Play cannot spend energy
 
 test('a current-rules hit records its actual chance and owns exactly one captured instance through retry and later care', async t => {
   const f = await fixture(t);
-  const prepared = await f.request(command(0, 'current-catch-prepare', [{ type: 'hatch', value: 1 }, { type: 'explore', value: 1000 }, { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }]));
-  assert.equal(prepared.status, 200); assert.equal(prepared.body.state.wildRules, 15);
+  const prepared = await f.request(command(0, 'current-catch-prepare', [{ type: 'hatch', value: 1 }, { type: 'explore', value: 1000 }, { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }, { type: 'attack', value: 0 }]));
+  assert.equal(prepared.status, 200); assert.equal(prepared.body.state.wildRules, 16);
   const request = command(1, 'current-catch-exactly-once', [{ type: 'flick', value: 41140 }]);
   const saved = await f.request(request); assert.equal(saved.status, 200);
   assert.equal(saved.body.state.lastCapture.chance, prepared.body.state.wildCaptureChance);

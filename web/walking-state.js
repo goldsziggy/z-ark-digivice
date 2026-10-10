@@ -12,7 +12,7 @@ export function validWalkingState(value, phase) {
   if (pending !== null && (!pending || typeof pending !== 'object' || Array.isArray(pending) || Object.keys(pending).length !== 3
     || !['formId', 'level', 'rules'].every(key => Object.hasOwn(pending, key))
     || !Number.isInteger(pending.formId) || pending.formId < 1 || pending.formId > 512
-    || !Number.isInteger(pending.level) || pending.level < 1 || pending.level > 20 || ![12, 13, 14, 15].includes(pending.rules) || phase === 'egg')) return false;
+    || !Number.isInteger(pending.level) || pending.level < 1 || pending.level > 50 || ![12, 13, 14, 15, 16].includes(pending.rules) || phase === 'egg')) return false;
   if (value.target === 0) return value.eligibleSteps === 0 && value.encounters === 0 && value.rngState === 0 && value.progress === 0 && value.remainingSteps === 0 && pending === null;
   if (!value.rngState || value.target < 80 || value.target > 280 || value.target % 2 || value.progress >= value.target) return false;
   return value.remainingSteps === (phase !== 'egg' && value.rate && pending === null ? Math.ceil((value.target - value.progress) / value.rate) : 0);

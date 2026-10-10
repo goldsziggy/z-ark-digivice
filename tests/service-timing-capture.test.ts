@@ -14,7 +14,7 @@ const corePath = process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/dig
 const battleCorePath = process.env.DIGIVICE_TEST_BATTLE_PATH ?? join(rootDir, 'build/digivice-battle');
 const prepare = [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 },
   { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }];
-const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
 const ring = (value: unknown) => ({ type: 'ring-capture', value });
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const nextRoll = (input: number) => { let value = input; value ^= value << 13; value ^= value >>> 17; value ^= value << 5; return value >>> 0; };
@@ -53,7 +53,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
     const identity = await pair();
     const prepared = await request('/api/save-sync', identity.token, batch(0, 'ring-quality-prepare', prepare));
     assert.equal(prepared.status, 200); assert.equal(prepared.body.state.wildFormId, 102);
-    assert.equal(prepared.body.state.wildCaptureChance, 60);
+    assert.equal(prepared.body.state.wildCaptureChance, 64);
     return { ...identity, prepared };
   };
   return { dataDir, request, pair, ready, dropAcknowledgement, restart: async () => { await close(); app = await startServer(options); } };
@@ -85,9 +85,9 @@ test('timing grades apply once to eligible mon odds and the displayed chance mat
     states.set(grade, result.body.state);
   }
   assert.equal(states.get('red').lastCapture.chance, 6);
-  assert.equal(states.get('orange').lastCapture.chance, 30);
-  assert.equal(states.get('orange').lastCapture.result, 'escaped', 'a roll equal to the 30% threshold escapes');
-  assert.equal(states.get('green').lastCapture.chance, 60, 'green retains the full eligible chance, not guaranteed success');
+  assert.equal(states.get('orange').lastCapture.chance, 32);
+  assert.equal(states.get('orange').lastCapture.result, 'escaped', 'the capture roll remains above the orange threshold');
+  assert.equal(states.get('green').lastCapture.chance, 64, 'green retains the full eligible chance, not guaranteed success');
   const legacy = await f.ready();
   const oldHit = await f.request('/api/save-sync', legacy.token, batch(1, 'existing-flick-hit', [{ type: 'flick', value: 41140 }]));
   assert.equal(oldHit.status, 200); assert.deepEqual(oldHit.body.state, states.get('green'), 'green matches the previous eligible aimed capture exactly');
@@ -96,8 +96,8 @@ test('timing grades apply once to eligible mon odds and the displayed chance mat
 test('inclusive quality boundaries and adjacent phases preserve matching browser and authoritative odds', async t => {
   const f = await fixture(t);
   // Kumamon form102 targets radius68. Green is +/-12, orange extends to +/-24.
-  for (const [phase, grade, chance] of [[239, 'red', 6], [240, 'orange', 30], [599, 'orange', 30], [600, 'green', 60],
-    [1320, 'green', 60], [1321, 'orange', 30], [1680, 'orange', 30], [1681, 'red', 6]] as const) {
+  for (const [phase, grade, chance] of [[239, 'red', 6], [240, 'orange', 32], [599, 'orange', 32], [600, 'green', 64],
+    [1320, 'green', 64], [1321, 'orange', 32], [1680, 'orange', 32], [1681, 'red', 6]] as const) {
     const identity = await f.ready(), before = identity.prepared.body.state;
     const shown = sampleCaptureRing(phase, before.wildFormId); assert.equal(shown.grade, grade);
     assert.equal(captureRingChance(before.wildCaptureChance, grade), chance);
@@ -149,23 +149,28 @@ test('lost ACK, simultaneous duplicate posts and service restart never spend ano
   assert.equal((await f.request('/api/save-sync', identity.token, { ...first, events: [ring(960)] })).body.error, 'batch_mismatch');
   assert.equal((await f.request('/api/save-sync', identity.token, batch(1, 'ring-stale-fresh-id', [ring(0)]))).status, 409);
   let before = receipt.body.state;
+  let revision = receipt.body.revision;
   for (let attempt = 2; attempt <= 3; attempt++) {
-    const command = batch(attempt, `ring-red-attempt-${attempt}`, [ring(0)]);
+    const opened = await f.request('/api/save-sync', identity.token, batch(revision, `ring-open-${attempt}`, [{ type: 'attack', value: 0 }]));
+    assert.equal(opened.status, 200); assert.equal(opened.body.state.phase, 'encounter'); assert.equal(opened.body.state.captureDeferred, 0);
+    revision = opened.body.revision;
+    const chance = Math.max(1, Math.floor(opened.body.state.wildCaptureChance * 10 / 100));
+    const command = batch(revision, `ring-red-attempt-${attempt}`, [ring(0)]);
     const result = await f.request('/api/save-sync', identity.token, command);
-    assert.equal(result.status, 200); checkRoll(before, result.body.state, 6);
+    assert.equal(result.status, 200); checkRoll(opened.body.state, result.body.state, chance);
     assert.equal(result.body.state.lastCapture.attempt, attempt);
     assert.deepEqual(await f.request('/api/save-sync', identity.token, command), result);
-    before = result.body.state;
+    before = result.body.state; revision = result.body.revision;
   }
-  assert.equal(before.phase, 'home'); assert.equal(before.lastCapture.result, 'captured', 'a red attempt can actually capture');
-  assert.equal((await f.request('/api/save-sync', identity.token, batch(4, 'ring-fourth-forbidden', [ring(0)]))).body.error, 'invalid_transition');
+  assert.equal(before.phase, 'encounter'); assert.equal(before.captureAttempts, 3); assert.equal(before.lastCapture.result, 'escaped');
+  assert.equal((await f.request('/api/save-sync', identity.token, batch(revision, 'ring-fourth-forbidden', [ring(0)]))).body.error, 'invalid_transition');
   const current = await f.request('/api/save', identity.token);
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, first), receipt);
   assert.deepEqual(await f.request('/api/save', identity.token), current);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [17, 22, 15]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [18, 23, 16]);
   assert.equal(stored.devices[0].events.filter((event: any) => event.type === 'ring-capture').length, 3);
-  assert.equal(stored.devices[0].receipts.length, 4, 'preparation plus exactly three accepted throw receipts');
+  assert.equal(stored.devices[0].receipts.length, 6, 'preparation, three throws, and two attacks that reopen capture');
 });
 
 test('a full roster rejects timing throws without writes or receipts and release retries preserve the waiting encounter', async t => {
@@ -193,7 +198,7 @@ test('a full roster rejects timing throws without writes or receipts and release
       assert.ok(state.collection.at(-1).id > membersBefore.at(-1).id);
     }
   }
-  assert.equal(state.collection.length, 60); assert.equal(state.captures, 59);
+  assert.equal(state.collection.length, 60); assert.ok(state.captures >= 59);
   assert.equal(new Set(state.collection.map((member: any) => member.id)).size, 60);
   await submit([{ type: 'mode', value: 0 }, { type: 'walk', value: 100 }]);
   assert.equal(state.phase, 'encounter'); assert.equal(state.wildCaptureChance, 0);

@@ -51,8 +51,9 @@ int main(int argc, char** argv) {
         for (unsigned i = 0; const auto* edge = f::outgoing(id, i); ++i) {
             check(f::productionForm(edge->to), "production route cannot select a historical fixture");
             char route[128];
-            std::snprintf(route, sizeof(route), "{\"toFormId\":%u,\"requiredLevel\":%u,\"requiredBond\":%u}",
-                static_cast<unsigned>(edge->to), static_cast<unsigned>(edge->minLevel), static_cast<unsigned>(edge->minBond));
+            const auto need = f::evolutionNeed(*edge);
+            std::snprintf(route, sizeof(route), "{\"toFormId\":%u,\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u}",
+                static_cast<unsigned>(edge->to), static_cast<unsigned>(need.level), static_cast<unsigned>(need.bond), static_cast<unsigned>(need.care));
             check(std::strstr(storage.data() + 1, route) != nullptr, "published route preserves its destination and gates");
             ++expectedRoutes;
         }
@@ -74,7 +75,7 @@ int main(int argc, char** argv) {
         const auto n = c::writeCatalogPageJson(offset, 16, storage.data() + 1, c::kCatalogPageJsonCapacity);
         check(n > 0 && n < c::kCatalogPageJsonCapacity, "every possible page fits bound");
         check(storage.front() == 'Z' && storage.back() == 'Z', "page canaries intact");
-        check(std::strstr(storage.data() + 1, "\"rulesVersion\":15") && std::strstr(storage.data() + 1, "\"total\":266,"), "page identifies the current production projection");
+        check(std::strstr(storage.data() + 1, "\"rulesVersion\":16") && std::strstr(storage.data() + 1, "\"total\":266,"), "page identifies the current production projection");
         unsigned count = 0;
         for (const char* p = storage.data() + 1; (p = std::strstr(p, "\"formId\":")); ++p) {
             unsigned id = 0;

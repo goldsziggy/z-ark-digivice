@@ -38,7 +38,7 @@ bool valid(const autobattle::Trace& t,bool tactical) {
        (t.combatRulesVersion!=12 && (t.playerOffenseBonus || t.playerProtectionBonus || t.enemyOffenseBonus || t.enemyProtectionBonus))) return false;
     const auto p=profile(t.playerFormId,t.playerLevel,t.combatRulesVersion);
     const auto e=profile(t.enemyFormId,t.enemyLevel,t.combatRulesVersion);
-    if(!p.stats.maxHp || !e.stats.maxHp || p.stats.maxHp>512 || e.stats.maxHp>512) return false;
+    if(!p.stats.maxHp || !e.stats.maxHp || p.stats.maxHp>2048 || e.stats.maxHp>2048) return false;
     for(std::size_t i=0;i<t.count;++i) {
         const auto& s=t.steps[i];
         if(!tactical && t.outcome==Outcome::None && !attack(s.action)) return false;
@@ -48,8 +48,7 @@ bool valid(const autobattle::Trace& t,bool tactical) {
                s.captureResult>static_cast<std::uint8_t>(CaptureResult::Captured) ||
                (result==CaptureResult::Miss ? s.captureChance!=0 : s.captureChance<(tactical?1u:10u) || s.captureChance>90) ||
                s.captured!=(result==CaptureResult::Captured) || s.reflected || s.opponentAction!=Move::None ||
-               s.playerHpAfter!=s.playerHpBefore || s.enemyHpAfter!=s.enemyHpBefore ||
-               (s.captureAttempt==3 && i+1<t.count)) return false;
+               s.playerHpAfter!=s.playerHpBefore || s.enemyHpAfter!=s.enemyHpBefore) return false;
             std::uint8_t previous=0;
             for(std::size_t j=0;j<i;++j) if(t.steps[j].action==Move::Capture) previous=t.steps[j].captureAttempt;
             if((previous && s.captureAttempt!=previous+1) || (!tactical && !previous && s.captureAttempt!=1)) return false;
@@ -68,8 +67,10 @@ bool valid(const autobattle::Trace& t,bool tactical) {
     }
     const auto& last=t.steps[t.count-1];
     if(!tactical && t.outcome==Outcome::None && last.enemyHpAfter>e.stats.maxHp/2) return false;
-    const bool captureEnded=last.captureAttempt && last.action==Move::Capture &&
-        last.captureAttempt==3 && !last.captured;
+    // A calm third miss ends the fight only when that throw is the trace's outcome.
+    // Rules 16 keeps the same battle going, so later attacks may follow the throw.
+    const bool captureEnded=last.action==Move::Capture && last.captureAttempt==3 && !last.captured &&
+        t.outcome==Outcome::Retreated && last.playerHpAfter==last.playerHpBefore;
     return (last.captured==(t.outcome==Outcome::Captured)) && (t.outcome!=Outcome::Won || !last.enemyHpAfter) &&
            (!captureEnded || t.outcome==Outcome::Retreated) &&
            (t.outcome!=Outcome::Retreated || (!last.playerHpAfter || captureEnded || (!tactical && t.count==autobattle::kMaxTraceSteps))) &&
@@ -150,7 +151,8 @@ bool Sequencer::startSavedCapture(const State& state,std::uint64_t now) {
     if(!member || !forms::productionForm(record.targetFormId) || !record.sequence ||
        record.sequence!=state.foregroundSequence || record.result==CaptureResult::None) return false;
     const bool caught=record.result==CaptureResult::Captured;
-    const bool ended=!caught && record.attempt==3;
+    const bool ended=!caught && record.attempt==3 && state.phase==digivice::Phase::Home &&
+        state.message==Message::CaptureEnded;
     if(caught) {
         if(state.phase!=digivice::Phase::Home || (state.message!=Message::Captured && state.message!=Message::Trained)) return false;
         bool present=false;

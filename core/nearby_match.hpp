@@ -21,6 +21,7 @@ struct Match {
     Choice lastAttack=Choice::None, lastDefense=Choice::None;
     std::uint32_t lastDamage[2]{};
     bool lastReflected=false;
+    bool lastCritical=false;
 };
 bool sameFighter(const Fighter&,const Fighter&);
 bool validFighter(const Fighter&);

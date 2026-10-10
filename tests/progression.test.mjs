@@ -18,7 +18,7 @@ test('all eight starters expose actual outgoing choices independently of histori
     assert.deepEqual(choices.map(choice => choice.formId), root.children);
     assert.ok(choices.every(choice => choice.eligible === false));
     assert.match(evolutionRequirements(state.collection[0], choices[0])[0][1], /needed/);
-    for (const choice of choices) assert.deepEqual(root.edges.find(edge => edge.toFormId === choice.formId), { toFormId: choice.formId, requiredLevel: choice.requiredLevel, requiredBond: choice.requiredBond });
+    for (const choice of choices) assert.deepEqual(root.edges.find(edge => edge.toFormId === choice.formId), { toFormId: choice.formId, requiredLevel: choice.requiredLevel, requiredBond: choice.requiredBond, requiredCare: choice.requiredCare });
     assert.equal(nodes.length, pages[0].total); assert.equal(new Set(nodes.map(form => form.formId)).size, nodes.length);
   }
 });
@@ -38,7 +38,7 @@ test('bounded graph metadata rejects mismatched versions, pagination and malform
   const source = graph(15);
   for (const change of [x => x.rulesVersion = 5, x => x.catalogVersion = 1, x => x.focusFormId = 18, x => x.total = 513,
     x => x.nextOffset = 999, x => x.forms.push(x.forms[0]), x => x.forms[0].parents.push(x.forms[0].formId),
-    x => x.forms[0].combat.maxHp = 401, x => x.forms[0].previewLevel = 21, x => x.forms[0].artId = '../private.png',
+    x => x.forms[0].combat.maxHp = 2049, x => x.forms[0].previewLevel = 51, x => x.forms[0].artId = '../private.png',
     x => x.forms[0].edges[0].requiredBond = 201, x => x.forms[0].edges[0].toFormId = 512]) {
     const bad = structuredClone(source); change(bad); assert.throws(() => validateEvolutionGraph(bad, 15));
   }

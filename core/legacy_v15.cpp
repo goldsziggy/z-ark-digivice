@@ -1,4 +1,5 @@
-#include "game.hpp"
+// Frozen rules 15 / schema 22 before rules 16 care, level 50, and capture changes.
+#include "legacy_v15.hpp"
 #include "capture_ring.hpp"
 #include "combat.hpp"
 #include "forms.hpp"
@@ -14,7 +15,7 @@
 #include <cstring>
 #include <limits>
 
-namespace digivice {
+namespace digivice::legacy_v15 {
 const CreatureMember* findMember(const State& state,std::uint32_t id) {
     if(!id || state.collectionCount>kCollectionCapacity) return nullptr;
     for(std::size_t i=0;i<state.collectionCount;++i) if(state.collection[i].id==id) return &state.collection[i];
@@ -99,18 +100,8 @@ combat::Defense wildGuard(const State& state) {
     constexpr combat::Defense guards[]{combat::Defense::Brace,combat::Defense::Ward,combat::Defense::Counter};
     return guards[(state.encounters-1+state.wildTurn)%3];
 }
-namespace {
-bool ownsExactForm(const State& state, std::uint32_t formId) {
-    if (!formId) return false;
-    for (std::size_t i = 0; i < state.collectionCount && i < kCollectionCapacity; ++i)
-        if (state.collection[i].formId == formId) return true;
-    return false;
-}
-}
 std::uint32_t captureChance(const State& state) {
-    const bool mergeable = state.wildRules >= 16 && ownsExactForm(state, state.wildFormId);
-    if(!isValid(state) || state.phase!=Phase::Encounter || state.captureDeferred ||
-       (state.collectionCount>=kCollectionCapacity && !mergeable) ||
+    if(!isValid(state) || state.phase!=Phase::Encounter || state.collectionCount>=kCollectionCapacity ||
        state.nextMemberId==std::numeric_limits<std::uint32_t>::max() || state.captures==std::numeric_limits<std::uint32_t>::max() ||
        state.sequence==std::numeric_limits<std::uint32_t>::max() || state.captureAttempts>=3 || state.wildHp>state.wildMaxHp/2) return 0;
     if(state.wildRules<8) return 70u+(state.level<3?state.level:3u)*5u;
@@ -213,8 +204,8 @@ void addXp(State& state,std::uint32_t amount,std::uint32_t rules=0) {
 }
 // Exactly one terminal wild reward call. Extras use their own level/HP scale;
 // the active partner's cap never reduces their award, and care is untouched.
-void addPartyXp(State& state,std::uint32_t amount,std::uint32_t skip=0) {
-    for(const auto id:state.partyMemberIds)if(id && id!=skip){
+void addPartyXp(State& state,std::uint32_t amount) {
+    for(const auto id:state.partyMemberIds)if(id){
         auto& member=*const_cast<CreatureMember*>(findMember(state,id));
         const auto oldMax=maxHp(member.formId,member.level);
         member.xp=cappedAdd(member.xp,amount,kMaxXp);
@@ -222,92 +213,9 @@ void addPartyXp(State& state,std::uint32_t amount,std::uint32_t skip=0) {
         if(level>member.level){member.hp=scaleHp(member.hp,oldMax,maxHp(member.formId,level));member.level=level;}
     }
 }
-void addPartyBond(State& state,std::uint32_t amount,std::uint32_t skip=0) {
-    for(const auto id:state.partyMemberIds)if(id && id!=skip){
-        auto& member=*const_cast<CreatureMember*>(findMember(state,id));
-        member.bond=cappedAdd(member.bond,amount,200);
-    }
-}
-std::uint32_t carePointsOf(std::uint32_t packed) { return packed & 0x7fu; }
-std::uint32_t toiletOf(std::uint32_t packed) { return (packed >> 7) & 0x7fu; }
-bool careMissedOf(std::uint32_t packed) { return ((packed >> 14) & 1u) != 0; }
-std::uint32_t careCooldown(std::uint32_t packed, unsigned shift) { return (packed >> shift) & 7u; }
-std::uint32_t packCare(std::uint32_t care, std::uint32_t toilet, bool missed, std::uint32_t feed, std::uint32_t play, std::uint32_t rest, std::uint32_t toiletCd) {
-    return (care & 0x7fu) | ((toilet & 0x7fu) << 7) | (missed ? 1u << 14 : 0u) |
-        ((feed & 7u) << 15) | ((play & 7u) << 18) | ((rest & 7u) << 21) | ((toiletCd & 7u) << 24);
-}
-bool validCareState(std::uint32_t packed) {
-    return (packed >> 27) == 0 && carePointsOf(packed) <= 100 && toiletOf(packed) <= 100;
-}
-void grantMemberXp(State& state, CreatureMember& member, std::uint32_t amount, std::uint32_t rules = 0) {
-    if (member.id == state.activeCreatureId) { addXp(state, amount, rules); return; }
-    const auto oldMax = maxHp(member.formId, member.level);
-    member.xp = cappedAdd(member.xp, amount, kMaxXp);
-    const auto level = levelForXp(member.xp);
-    if (level > member.level) {
-        member.hp = scaleHp(member.hp, oldMax, maxHp(member.formId, level));
-        member.level = level;
-    }
-}
-void grantMemberBond(State& state, CreatureMember& member, std::uint32_t amount) {
-    if (member.id == state.activeCreatureId) addBond(state, amount);
-    else member.bond = cappedAdd(member.bond, amount, 200);
-}
-CreatureMember* oldestExact(State& state, std::uint32_t formId) {
-    CreatureMember* best = nullptr;
-    for (std::size_t i = 0; i < state.collectionCount; ++i) {
-        auto& member = state.collection[i];
-        if (member.formId != formId) continue;
-        if (!best || member.capturedAtSequence < best->capturedAtSequence ||
-            (member.capturedAtSequence == best->capturedAtSequence && member.id < best->id)) best = &member;
-    }
-    return best;
-}
-bool evolveOwned(State& next, CreatureMember& member, std::uint32_t formId) {
-    const auto* target = forms::find(formId);
-    const forms::EvolutionEdge* edge = nullptr;
-    for (std::size_t i = 0; i < 2; ++i) {
-        const auto* candidate = forms::outgoing(member.formId, i);
-        if (candidate && candidate->to == formId) edge = candidate;
-    }
-    if (!target || !edge) return false;
-    const auto need = forms::evolutionNeed(*edge);
-    const auto level = member.id == next.activeCreatureId ? next.level : member.level;
-    const auto bond = member.id == next.activeCreatureId ? next.bond : member.bond;
-    if (level < need.level || bond < need.bond || carePointsOf(member.careState) < need.care) return false;
-    const auto oldMax = maxHp(member.formId, level);
-    member.formId = formId;
-    member.species = static_cast<Species>(target->lineage);
-    obtain(next, formId);
-    const auto scaled = scaleHp(member.id == next.activeCreatureId ? next.hp : member.hp, oldMax, maxHp(formId, level));
-    if (member.id == next.activeCreatureId) next.hp = scaled;
-    else member.hp = scaled;
-    return true;
-}
-enum class CareKind : std::uint8_t { Feed, Play, Rest, Toilet };
-void noteCareReward(State& state, CreatureMember& member, CareKind kind) {
-    const auto shift = kind == CareKind::Feed ? 15u : kind == CareKind::Play ? 18u : kind == CareKind::Rest ? 21u : 24u;
-    if (careCooldown(member.careState, shift)) return;
-    grantMemberXp(state, member, 2);
-    const auto care = carePointsOf(member.careState);
-    const auto toilet = toiletOf(member.careState);
-    const auto missed = careMissedOf(member.careState);
-    auto feed = careCooldown(member.careState, 15);
-    auto play = careCooldown(member.careState, 18);
-    auto rest = careCooldown(member.careState, 21);
-    auto toiletCd = careCooldown(member.careState, 24);
-    const auto cooldown = state.careMinute ? 3u : 1u;
-    if (kind == CareKind::Feed) feed = cooldown;
-    else if (kind == CareKind::Play) play = cooldown;
-    else if (kind == CareKind::Rest) rest = cooldown;
-    else toiletCd = cooldown;
-    member.careState = packCare(care < 100 ? care + 4 : 100, toilet, missed, feed, play, rest, toiletCd);
-}
 void home(State& state) {
     state.phase = Phase::Home;
     state.autoCapture = AutoCapture::None;
-    state.captureDeferred = 0;
-    state.lastCritical = 0;
     state.wildHp = state.wildMaxHp = state.captureAttempts = 0;
     state.attackBoost = state.shield = 0;
     state.cardUsed = false;
@@ -338,20 +246,10 @@ combat::Hit encounterHit(const State& state,std::uint32_t attacker,std::uint32_t
         return combat::resolveCareForms(attacker,attackerLevel,defender,defenderLevel,move,guard,playerAttacking?bonus:combat::CareBonus{},playerAttacking?combat::CareBonus{}:bonus);}
     return combat::resolveForms(attacker,attackerLevel,defender,defenderLevel,move,guard);
 }
-void applyCrit(State& state, combat::Hit& hit, bool record) {
-    if (state.wildRules < 16 || hit.reflected) return;
-    const bool critical = random(state) % 100 < 5;
-    if (critical) {
-        const auto scaled = hit.damage * 3 / 2;
-        hit.damage = scaled ? scaled : 1;
-    }
-    if (record) state.lastCritical = critical ? 1u : 0u;
-}
 void wildResponse(State& state) {
     const auto move=state.wildTurn%2 ? combat::Move::Magic : combat::Move::Physical;
-    auto hit=encounterHit(state,state.wildFormId,state.wildLevel,active(state).formId,state.level,move,combat::Defense::None,false);
-    applyCrit(state, hit, false);
-    ++state.wildTurn; receiveDamage(state,hit.damage);
+    const auto damage=encounterHit(state,state.wildFormId,state.wildLevel,active(state).formId,state.level,move,combat::Defense::None,false).damage;
+    ++state.wildTurn; receiveDamage(state,damage);
 }
 void put32(std::uint8_t* bytes, std::uint32_t value) {
     for (unsigned i = 0; i < 4; ++i) bytes[i] = static_cast<std::uint8_t>(value >> (i * 8));
@@ -401,7 +299,7 @@ State newDevice(std::uint32_t seed) {
 
 static bool emptyMember(const CreatureMember& m) {
     return !m.id && m.species == Species::None && !m.hp && !m.energy && !m.fullness &&
-           !m.mood && !m.bond && !m.level && !m.capturedAtSequence && !m.xp && !m.formId && !m.careState;
+           !m.mood && !m.bond && !m.level && !m.capturedAtSequence && !m.xp && !m.formId;
 }
 
 static bool validLegacyForVersion(const State& state, bool legacy) {
@@ -551,12 +449,9 @@ static bool validForVersion(const State& s,bool) {
         for(std::size_t j=0;j<i;++j)if(s.partyMemberIds[j]==id)return false;
     }
     if(static_cast<unsigned>(s.autoCapture)>1)return false;
-    if(s.lastCritical>1 || s.captureDeferred>1)return false;
-    if(s.captureDeferred && (s.phase!=Phase::Encounter || !s.captureAttempts))return false;
-    const bool duplicateReady=s.wildRules>=16 && ownsExactForm(s,s.wildFormId);
     if(s.autoCapture==AutoCapture::Awaiting && (s.phase!=Phase::Encounter || s.battleMode!=BattleMode::Auto ||
-       (s.collectionCount>=kCollectionCapacity && !duplicateReady) || s.nextMemberId==kMax || s.captures==kMax ||
-       !s.wildHp || s.wildHp>s.wildMaxHp/2 || !s.wildTurn || s.captureAttempts>=3 || s.captureDeferred))return false;
+       s.collectionCount>=kCollectionCapacity || s.nextMemberId==kMax || s.captures==kMax ||
+       !s.wildHp || s.wildHp>s.wildMaxHp/2 || !s.wildTurn || s.captureAttempts>=3))return false;
     const auto& capture=s.lastCapture;
     if(static_cast<unsigned>(capture.result)>3)return false;
     if(capture.result==CaptureResult::None){if(capture.sequence||capture.targetFormId||capture.chance||capture.attempt||capture.targetLevel)return false;}
@@ -572,7 +467,7 @@ static bool validForVersion(const State& s,bool) {
     const auto& pending=s.pendingEncounter;
     if(pending.formId) {
         if(!s.onboardingComplete || !combat::validFormProfile(pending.formId,pending.level) ||
-           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15&&pending.rules!=16) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
+           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
            s.encounterProgress || s.encounters==kMax) return false;
     } else if(pending.level || pending.rules) return false;
     static_assert(forms::kFormCount<=kJournalCapacity);
@@ -587,7 +482,6 @@ static bool validForVersion(const State& s,bool) {
            s.wildHp || s.wildMaxHp || s.captureAttempts || s.cardUsed || s.attackBoost || s.shield || s.legacyCaptures ||
            s.activeCreatureId || s.collectionCount || s.wildSpecies!=Species::None || s.wildLevel || s.wildTurn || s.wildFormId || s.wildRules ||
            s.explorationSteps || s.walkingEncounters || s.encounterRng || s.encounterTarget || s.encounterProgress || s.worldSeed ||
-           s.careMinute || s.lastCritical || s.captureDeferred ||
            capture.result!=CaptureResult::None || s.encounterRate!=EncounterRate::Normal || s.nextMemberId!=1 || s.receivedTrades || s.message!=Message::EggReady || s.battleMode!=BattleMode::Tactical || s.lastAutoOutcome!=autobattle::Outcome::None) return false;
         for(const auto& m:s.collection) if(!emptyMember(m))return false;
         for(const auto word:s.journal) if(word)return false;
@@ -603,7 +497,7 @@ static bool validForVersion(const State& s,bool) {
         const auto* f=forms::find(m.formId);
         if(!m.id || m.id>=s.nextMemberId || (i&&m.id<=s.collection[i-1].id) || !f ||
            !forms::validForLineage(m.formId,static_cast<unsigned>(m.species)) || !combat::validFormProfile(m.formId,m.level) ||
-           m.bond>200 || m.bond<f->minBond || m.xp>kMaxXp || m.level!=levelForXp(m.xp) || !validCareState(m.careState) || !m.hp || m.hp>memberMaxHp(s,m) ||
+           m.bond>200 || m.bond<f->minBond || m.xp>kMaxXp || m.level!=levelForXp(m.xp) || !m.hp || m.hp>memberMaxHp(s,m) ||
            m.energy>100 || m.fullness>100 || m.mood>100 || m.capturedAtSequence>s.sequence || !hasObtained(s,m.formId)) return false;
         if(m.id==1) {
             const auto founder=s.starterId?starterForm(s,s.starterId):forms::initialForm(1u);
@@ -613,16 +507,16 @@ static bool validForVersion(const State& s,bool) {
     const auto& m=*activeMember(s);
     if(s.hp!=m.hp || s.energy!=m.energy || s.fullness!=m.fullness || s.mood!=m.mood || s.bond!=m.bond || s.level!=m.level ||
        !s.rngState || s.steps<s.stepCredit || (s.steps-s.stepCredit)%100 || static_cast<std::uint64_t>(s.encounters)!=(s.steps-s.stepCredit)/100+static_cast<std::uint64_t>(s.walkingEncounters) ||
-       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::Toileted)) return false;
-    if(s.phase==Phase::Home) return !s.wildHp&&!s.wildMaxHp&&!s.captureAttempts&&!s.captureDeferred&&!s.cardUsed&&!s.attackBoost&&!s.shield&&
+       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::PartyRemoved)) return false;
+    if(s.phase==Phase::Home) return !s.wildHp&&!s.wildMaxHp&&!s.captureAttempts&&!s.cardUsed&&!s.attackBoost&&!s.shield&&
         s.wildSpecies==Species::None&&!s.wildLevel&&!s.wildTurn&&!s.wildFormId&&!s.wildRules;
     if(s.phase!=Phase::Encounter || !s.encounters || !forms::validForLineage(s.wildFormId,static_cast<unsigned>(s.wildSpecies)) ||
-       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16) ||
+       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15) ||
        (s.wildRules>=13&&!forms::productionForm(s.wildFormId)) ||
        (s.wildRules==4&&(s.wildSpecies<Species::Flicker||s.wildSpecies>Species::Cinder||s.wildFormId!=rootForm(s.wildSpecies))) ||
-       s.wildTurn>1000 || s.wildMaxHp!=maxHpForRules(s.wildFormId,s.wildLevel,s.wildRules) || !s.wildHp || s.wildHp>s.wildMaxHp || s.captureAttempts>3 || (s.wildRules>=12&&s.wildRules<16&&s.captureAttempts==3) ||
+       s.wildTurn>1000 || s.wildMaxHp!=maxHpForRules(s.wildFormId,s.wildLevel,s.wildRules) || !s.wildHp || s.wildHp>s.wildMaxHp || s.captureAttempts>3 || (s.wildRules>=12&&s.captureAttempts==3) ||
        (s.attackBoost&&s.attackBoost!=5) || s.shield>12 || (s.attackBoost&&s.shield) || (!s.cardUsed&&(s.attackBoost||s.shield)))return false;
-    if(s.battleMode==BattleMode::Auto && s.autoCapture==AutoCapture::None && s.wildRules<16 && (s.wildHp!=s.wildMaxHp||s.captureAttempts||s.wildTurn||s.cardUsed||s.attackBoost||s.shield))return false;
+    if(s.battleMode==BattleMode::Auto && s.autoCapture==AutoCapture::None && (s.wildHp!=s.wildMaxHp||s.captureAttempts||s.wildTurn||s.cardUsed||s.attackBoost||s.shield))return false;
     return true;
 }
 
@@ -650,7 +544,7 @@ bool needsTestEncounterResolution(const State& state) {
 
 Error apply(State& state, Action action, std::uint32_t value) {
     if (!isValid(state)) return Error::InvalidState;
-    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::EvolveMember)) return Error::InvalidAction;
+    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::PartyRemove)) return Error::InvalidAction;
     if (state.sequence == kMax) return Error::CounterOverflow;
     if(needsTestEncounterResolution(state)&&action!=Action::ResolveTestEncounter)return Error::InvalidAction;
     if(action==Action::StarterOfferSeed){
@@ -707,13 +601,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
     } else if (action == Action::PartyAdd || action == Action::PartyRemove) {
         if(value<1||value==kMax)return Error::InvalidValue;
         if(state.phase!=Phase::Home)return Error::WrongPhase;
-    } else if (action == Action::CareMinute) {
-        if (!value) return Error::InvalidValue;
-    } else if (action == Action::EvolveMember) {
-        const auto memberId = value >> 16;
-        const auto formId = value & 0xffffu;
-        if (!memberId || memberId == kMax || !forms::productionForm(formId)) return Error::InvalidValue;
-        if (state.phase != Phase::Home) return Error::WrongPhase;
     } else if (action == Action::Select || action == Action::Release) {
         if (value < 1 || value == kMax) return Error::InvalidValue;
     } else if (value != 0) {
@@ -724,15 +611,10 @@ Error apply(State& state, Action action, std::uint32_t value) {
     if (action == Action::AutoResume) return applyAutoResume(state);
     if (state.phase == Phase::Encounter && state.battleMode == BattleMode::Auto && action != Action::Walk &&
         action != Action::AccrueSteps && action != Action::EncounterSeed && action != Action::WorldSeed && action != Action::ResolveTestEncounter &&
-        action != Action::Retreat &&
         !(action==Action::Release && state.wildRules>=10) &&
         !((action==Action::Flick || action==Action::RingCapture) && state.autoCapture==AutoCapture::Awaiting))
         return Error::WrongMode;
     State next = state;
-    // Background pacing must not clear a crit that the family has not acted on.
-    if (action != Action::Attack && action != Action::Heavy && action != Action::Magic &&
-        action != Action::WorldSeed && action != Action::EncounterSeed && action != Action::AccrueSteps)
-        next.lastCritical = 0;
     switch (action) {
     case Action::ResolveTestEncounter:
         if(next.phase==Phase::Encounter && !forms::productionForm(next.wildFormId)){
@@ -759,61 +641,16 @@ Error apply(State& state, Action action, std::uint32_t value) {
         for(;index+1<next.collectionCount;++index) next.collection[index]=next.collection[index+1];
         next.collection[--next.collectionCount]={}; reconcileParty(next); next.message=Message::Released; break;
     }
-    case Action::Evolve:
-        if (!evolveOwned(next, active(next), value)) return Error::EvolutionUnavailable;
-        next.message = Message::Evolved; break;
-    case Action::EvolveMember: {
-        const auto memberId = value >> 16;
-        auto* member = const_cast<CreatureMember*>(findMember(next, memberId));
-        if (!member) return Error::UnknownMember;
-        if (!evolveOwned(next, *member, value & 0xffffu)) return Error::EvolutionUnavailable;
-        next.message = Message::Evolved; break;
-    }
-    case Action::Retreat: {
-        if (next.phase != Phase::Encounter) return Error::WrongPhase;
-        const auto maximum = maxHpForRules(active(next).formId, next.level, next.wildRules);
-        home(next);
-        next.hp = (maximum + 9) / 10;
-        next.message = Message::Retreated; break;
-    }
-    case Action::CareMinute: {
-        if (value < next.careMinute || value == next.careMinute) return Error::InvalidAction;
-        if (value != next.careMinute + 1 || next.phase != Phase::Home) { next.careMinute = value; break; }
-        next.careMinute = value;
-        auto& member = active(next);
-        auto care = carePointsOf(member.careState);
-        auto toilet = toiletOf(member.careState);
-        auto missed = careMissedOf(member.careState);
-        auto feed = careCooldown(member.careState, 15);
-        auto play = careCooldown(member.careState, 18);
-        auto rest = careCooldown(member.careState, 21);
-        auto toiletCd = careCooldown(member.careState, 24);
-        if (feed) --feed; if (play) --play; if (rest) --rest; if (toiletCd) --toiletCd;
-        if (toilet < 100) toilet += 8; if (toilet > 100) toilet = 100;
-        if (next.fullness) --next.fullness;
-        if (toilet == 100 && !missed) {
-            missed = true;
-            next.mood = next.mood > 10 ? next.mood - 10 : 0;
-            next.bond = next.bond > 2 ? next.bond - 2 : 0;
-        }
-        member.careState = packCare(care, toilet, missed, feed, play, rest, toiletCd);
-        break;
-    }
-    case Action::Toilet: {
-        if (next.phase != Phase::Home) return Error::WrongPhase;
-        auto& member = active(next);
-        if (toiletOf(member.careState) < 25 && !careMissedOf(member.careState)) return Error::InvalidAction;
-        const auto care = carePointsOf(member.careState);
-        const auto feed = careCooldown(member.careState, 15);
-        const auto play = careCooldown(member.careState, 18);
-        const auto rest = careCooldown(member.careState, 21);
-        const auto toiletCd = careCooldown(member.careState, 24);
-        member.careState = packCare(care, 0, false, feed, play, rest, toiletCd);
-        next.mood = cappedAdd(next.mood, 10, 100);
-        addBond(next, 3);
-        next.message = Message::Toileted;
-        noteCareReward(next, active(next), CareKind::Toilet);
-        break;
+    case Action::Evolve: {
+        auto& member=active(next);
+        const auto* target=forms::find(value);
+        const forms::EvolutionEdge* edge=nullptr;
+        for(std::size_t i=0;i<2;++i) {const auto* candidate=forms::outgoing(member.formId,i);if(candidate&&candidate->to==value)edge=candidate;}
+        if (!target || !edge || next.level<edge->minLevel || next.bond<edge->minBond)
+            return Error::EvolutionUnavailable;
+        const auto oldMax=maxHp(member.formId,next.level); member.formId=value;
+        member.species=static_cast<Species>(target->lineage); obtain(next,value);
+        next.hp=scaleHp(next.hp,oldMax,maxHp(value,next.level)); next.message=Message::Evolved; break;
     }
     case Action::Mode:
         next.battleMode = static_cast<BattleMode>(value);
@@ -841,7 +678,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
         next.mood = cappedAdd(next.mood, 2, 100);
         next.message = Message::Fed;
         if(useful) addBond(next, 2);
-        if(useful) noteCareReward(next, active(next), CareKind::Feed);
         break; }
     case Action::Play: {
         if (next.phase != Phase::Home) return Error::WrongPhase;
@@ -851,7 +687,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
         next.mood = cappedAdd(next.mood, 12, 100);
         next.message = Message::Played;
         if(useful) addBond(next, 5);
-        if(useful) noteCareReward(next, active(next), CareKind::Play);
         break; }
     case Action::Rest: {
         if (next.phase != Phase::Home) return Error::WrongPhase;
@@ -861,7 +696,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
         next.energy = cappedAdd(next.energy, 25, 100);
         next.message = Message::Rested;
         if(useful) addBond(next, 1);
-        if(useful) noteCareReward(next, active(next), CareKind::Rest);
         break; }
     case Action::WorldSeed:
         next.worldSeed=value;
@@ -896,7 +730,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
         next.wildSpecies=static_cast<Species>(forms::find(pending.formId)->lineage);
         next.wildMaxHp=next.wildHp=maxHpForRules(pending.formId,pending.level,pending.rules);
         next.wildTurn=next.captureAttempts=next.attackBoost=next.shield=0; next.cardUsed=false;
-        next.captureDeferred=0; next.lastCritical=0;
         next.pendingEncounter={}; next.message=Message::Encounter;
         break;
     }
@@ -914,7 +747,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
             const auto* foe=forms::find(next.wildFormId); if(!foe)return Error::InvalidState;
             next.wildSpecies=static_cast<Species>(foe->lineage);
             next.wildMaxHp=next.wildHp=maxHp(next.wildFormId,next.wildLevel);
-            next.captureDeferred=0; next.lastCritical=0;
             next.message=Message::Encounter;
             next.encounterProgress=0; // Never retain surplus credit or create queued fights.
             drawEncounterTarget(next);
@@ -934,7 +766,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
             const auto* foe=forms::find(next.wildFormId); if(!foe)return Error::InvalidState;
             next.wildSpecies=static_cast<Species>(foe->lineage);
             next.wildMaxHp=next.wildHp=maxHp(next.wildFormId,next.wildLevel);
-            next.captureDeferred=0; next.lastCritical=0;
             next.message = Message::Encounter;
         }
         break;
@@ -958,10 +789,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (action == Action::Heavy && next.energy < cost) return Error::LowEnergy;
         const auto move = action == Action::Heavy ? combat::Move::Heavy :
                           action == Action::Magic ? combat::Move::Magic : combat::Move::Physical;
-        next.captureDeferred=0; next.lastCritical=0;
-        auto hit=encounterHit(next,active(next).formId,next.level,next.wildFormId,next.wildLevel,move,wildGuard(next));
-        applyCrit(next,hit,true);
-        const auto critical=next.lastCritical;
+        const auto hit=encounterHit(next,active(next).formId,next.level,next.wildFormId,next.wildLevel,move,wildGuard(next));
         next.energy=next.energy>cost?next.energy-cost:0;
         if(hit.reflected) {
             ++next.wildTurn; receiveDamage(next,hit.damage);
@@ -972,15 +800,12 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (damage >= next.wildHp) {
             const auto xpReward=20+6*next.wildLevel, encounterRules=next.wildRules;
             home(next);
-            next.lastCritical=critical;
             next.message = Message::Won;
-            addBond(next, 8); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward); addPartyBond(next,8);
+            addBond(next, 8); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward);
         } else {
             next.wildHp -= damage;
             next.message = Message::Attacked;
             wildResponse(next);
-            if(next.phase==Phase::Home) next.lastCritical=0;
-            else next.lastCritical=critical;
         }
         break;
     }
@@ -988,10 +813,8 @@ Error apply(State& state, Action action, std::uint32_t value) {
     case Action::Flick:
     case Action::RingCapture: {
         if (next.phase != Phase::Encounter) return Error::WrongPhase;
-        const bool mergeable=next.wildRules>=16 && ownsExactForm(next,next.wildFormId);
-        if (next.collectionCount >= kCollectionCapacity && !mergeable) return Error::CollectionFull;
+        if (next.collectionCount >= kCollectionCapacity) return Error::CollectionFull;
         if(next.nextMemberId==kMax || next.captures==kMax) return Error::CounterOverflow;
-        if (next.captureDeferred) return Error::InvalidAction;
         if (next.wildHp > next.wildMaxHp / 2) return Error::WildTooStrong;
         if (next.captureAttempts >= 3) return Error::CaptureLimit;
         const auto chance=action==Action::RingCapture ? ringCaptureChance(next,value) : captureChance(next);
@@ -1005,34 +828,22 @@ Error apply(State& state, Action action, std::uint32_t value) {
             static_cast<std::uint8_t>(next.captureAttempts),static_cast<std::uint8_t>(next.wildLevel),aimed?CaptureResult::Escaped:CaptureResult::Miss};
         if (aimed && random(next) % 100 < chance) {
             if(calm)next.lastCapture.result=CaptureResult::Captured;
+            auto captured=freshMember(next.nextMemberId,next.wildSpecies,next.sequence+1);
+            captured.formId=next.wildFormId; captured.bond=forms::find(captured.formId)->minBond;
+            captured.level=next.wildLevel; captured.xp=xpForLevel(captured.level);
+            captured.hp=maxHpForRules(captured.formId,captured.level,next.wildRules);
             const auto xpReward=20+6*next.wildLevel, encounterRules=next.wildRules;
-            auto* match=next.wildRules>=16 ? oldestExact(next,next.wildFormId) : nullptr;
-            if(match) {
-                const auto matchId=match->id;
-                grantMemberXp(next,*match,xpReward,encounterRules);
-                if(matchId!=next.activeCreatureId) addXp(next,xpReward,encounterRules);
-                addBond(next,12);
-                if(isPartyMember(next,matchId)) grantMemberBond(next,*oldestExact(next,next.wildFormId),12);
-                addPartyXp(next,xpReward,matchId); addPartyBond(next,12,matchId);
-                ++next.nextMemberId; ++next.captures;
-            } else {
-                auto captured=freshMember(next.nextMemberId,next.wildSpecies,next.sequence+1);
-                captured.formId=next.wildFormId; captured.bond=forms::find(captured.formId)->minBond;
-                captured.level=next.wildLevel; captured.xp=xpForLevel(captured.level);
-                captured.hp=maxHpForRules(captured.formId,captured.level,next.wildRules);
-                next.collection[next.collectionCount]=captured;
-                ++next.collectionCount; ++next.nextMemberId; obtain(next,captured.formId);
-                ++next.captures;
-                addBond(next, 12); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward); addPartyBond(next,12);
-            }
+            next.collection[next.collectionCount]=captured;
+            ++next.collectionCount; ++next.nextMemberId; obtain(next,captured.formId);
+            ++next.captures;
             home(next);
             next.message = Message::Captured;
-        } else if(calm&&next.captureAttempts==3&&next.wildRules<16){
+            addBond(next, 12); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward);
+        } else if(calm&&next.captureAttempts==3){
             home(next);next.message=Message::CaptureEnded;
         } else {
             next.message = Message::CaptureMissed;
-            if(next.wildRules>=16){next.captureDeferred=1;next.autoCapture=AutoCapture::None;}
-            else if(!calm)wildResponse(next);
+            if(!calm)wildResponse(next);
         }
         break;
     }
@@ -1117,7 +928,7 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow) {
         // original eight-slot decisions. Current AutoFight/manual throws use
         // all60 slots immediately, including when continuing an old encounter.
         const auto autoCapacity=state.wildRules<=13?kLegacyCollectionCapacity:kCollectionCapacity;
-        if (flow==AutoFlow::Legacy && !next.captureDeferred && next.collectionCount < autoCapacity && next.wildHp <= next.wildMaxHp / 2 && next.captureAttempts < 3)
+        if (flow==AutoFlow::Legacy && next.collectionCount < autoCapacity && next.wildHp <= next.wildMaxHp / 2 && next.captureAttempts < 3)
             chosen = Action::Capture;
         else {
             constexpr Action moves[]{Action::Attack, Action::Magic, Action::Heavy};
@@ -1157,10 +968,7 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow) {
         const auto members = next.collectionCount;
         const auto result = apply(next, chosen);
         if (result != Error::None) { if (trace) trace->count = 0; return result; }
-        frame.captured = next.collectionCount > members ||
-            (chosen == Action::Capture && next.phase == Phase::Home && next.message == Message::Captured);
-        if (next.phase == Phase::Home && !frame.captured &&
-            (next.message == Message::Won || next.message == Message::Trained)) enemyRemaining = 0;
+        frame.captured = next.collectionCount > members;
         const bool calmCapture=state.wildRules>=12 && chosen==Action::Capture;
         if(calmCapture) {
             captureRecorded=true;frame.captureChance=next.lastCapture.chance;
@@ -1266,7 +1074,6 @@ const char* messageText(Message message) {
     case Message::EncounterCleared: return "Ready to explore.";
     case Message::Released: return "Your Digimon is free to roam; your journal remembers them.";
     case Message::Trained: return "Your companion gained a level from battle experience!";
-    case Message::Toileted: return "Toilet need cleared. Your Digimon feels better.";
     }
     return "Unknown message.";
 }
@@ -1290,7 +1097,7 @@ const char* wildName(const State& state) {
 }
 bool parseAction(const char* name, Action& action) {
     if (!name) return false;
-    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member"};
+    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove"};
     if (std::strcmp(name, "physical") == 0) { action = Action::Attack; return true; }
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (std::strcmp(name, names[i]) == 0) {
@@ -1336,28 +1143,21 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     };
     char message[128];
     if(s.message==Message::Encounter) std::snprintf(message,sizeof(message),"A wild %s appeared!",wildName(s));
-    else if(s.message==Message::Captured) {
-        const CreatureMember* joined=nullptr;
-        for(std::size_t i=0;i<s.collectionCount;++i)
-            if(s.collection[i].capturedAtSequence==s.sequence) joined=&s.collection[i];
-        const auto* form=forms::find(joined ? joined->formId : s.lastCapture.targetFormId);
-        std::snprintf(message,sizeof(message),joined?"%s joined your collection!":"Bonus XP merged into your oldest %s.",form?form->name:"Digimon");
-    }
+    else if(s.message==Message::Captured) std::snprintf(message,sizeof(message),"%s joined your collection!",memberName(s.collection[s.collectionCount-1]));
     else if(s.message==Message::CaptureMissed) std::snprintf(message,sizeof(message),"%s slipped away from the capture beam.",wildName(s));
     else std::snprintf(message,sizeof(message),"%s",messageText(s.message));
     append("{\"schemaVersion\":%u,\"rulesVersion\":%u,\"sequence\":%u,\"seed\":%u,\"rngState\":%u,\"steps\":%u,\"stepCredit\":%u,"
-           "\"hp\":%u,\"energy\":%u,\"fullness\":%u,\"mood\":%u,\"bond\":%u,\"level\":%u,\"maxLevel\":%u,\"captures\":%u,\"encounters\":%u,"
+           "\"hp\":%u,\"energy\":%u,\"fullness\":%u,\"mood\":%u,\"bond\":%u,\"level\":%u,\"maxLevel\":20,\"captures\":%u,\"encounters\":%u,"
            "\"phase\":\"%s\",\"wildHp\":%u,\"wildMaxHp\":%u,\"wildLevel\":%u,\"wildTurn\":%u,\"captureAttempts\":%u,\"cardUsed\":%s,\"attackBoost\":%u,\"shield\":%u,",
            number(kSchemaVersion),number(kRulesVersion),number(s.sequence),number(s.seed),number(s.rngState),number(s.steps),number(s.stepCredit),
-           number(s.hp),number(s.energy),number(s.fullness),number(s.mood),number(s.bond),number(s.level),number(kMaxLevel),number(s.captures),number(s.encounters),
+           number(s.hp),number(s.energy),number(s.fullness),number(s.mood),number(s.bond),number(s.level),number(s.captures),number(s.encounters),
            s.phase==Phase::Egg ? "egg" : s.phase==Phase::Home ? "home" : "encounter",number(s.wildHp),number(s.wildMaxHp),number(s.wildLevel),number(s.wildTurn),
            number(s.captureAttempts),s.cardUsed ? "true" : "false",number(s.attackBoost),number(s.shield));
     if(s.onboardingComplete) {
         const auto& m=(*activeMember(s));
         append("\"creature\":\"%s\",\"species\":\"%s\",",memberName(m),speciesId(m.species));
         progress(m); metadata(m.formId); append(","); profile(m.formId,m.level,m.id==s.activeCreatureId); care(m);
-        append(",\"carePoints\":%u,\"toilet\":%u,\"careMissed\":%s",number(carePointsOf(m.careState)),number(toiletOf(m.careState)),careMissedOf(m.careState)?"true":"false");
-    } else append("\"creature\":null,\"species\":null,\"formId\":0,\"xp\":0,\"xpToNext\":0,\"stage\":null,\"artId\":null,\"combat\":null,\"care\":null,\"carePoints\":0,\"toilet\":0,\"careMissed\":false");
+    } else append("\"creature\":null,\"species\":null,\"formId\":0,\"xp\":0,\"xpToNext\":0,\"stage\":null,\"artId\":null,\"combat\":null,\"care\":null");
     append(",\"message\":\"%s\",\"activeCreatureId\":%u,\"collectionCapacity\":%u,\"legacyCaptures\":%u,\"onboarding\":{\"completed\":%s,\"starterId\":",
            message,number(s.activeCreatureId),number(kCollectionCapacity),number(s.legacyCaptures),s.onboardingComplete ? "true" : "false");
     if(s.starterId) append("%u",number(s.starterId)); else append("null");
@@ -1390,7 +1190,6 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     append(",\"partyCapacity\":%u,\"partyMemberIds\":[",number(kPartyCapacity));
     for(std::size_t i=0;i<partyCount(s);++i)append("%s%u",i?",":"",number(s.partyMemberIds[i]));
     append("]");
-    append(",\"careMinute\":%u,\"critical\":%s,\"captureDeferred\":%u",number(s.careMinute),s.lastCritical?"true":"false",number(s.captureDeferred));
     append(",\"foregroundSequence\":%u",number(s.foregroundSequence));
     append(",\"autoCapture\":%u,\"worldSeed\":%u,\"receivedTrades\":%u,\"nextMemberId\":%u,\"journal\":{\"capacity\":512,\"obtainedFormIds\":[",number(static_cast<unsigned>(s.autoCapture)),number(s.worldSeed),number(s.receivedTrades),number(s.nextMemberId));
     bool obtainedComma=false;
@@ -1400,8 +1199,7 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
         const auto& m=s.collection[i];
         append("%s{\"id\":%u,\"species\":\"%s\",\"name\":\"%s\",\"hp\":%u,\"energy\":%u,\"fullness\":%u,\"mood\":%u,\"bond\":%u,\"level\":%u,\"capturedAtSequence\":%u,",
                i ? "," : "",number(m.id),speciesId(m.species),memberName(m),number(m.hp),number(m.energy),number(m.fullness),number(m.mood),number(m.bond),number(m.level),number(m.capturedAtSequence));
-        progress(m); metadata(m.formId); append(","); profile(m.formId,m.level,m.id==s.activeCreatureId); care(m);
-        append(",\"carePoints\":%u,\"toilet\":%u,\"careMissed\":%s}",number(carePointsOf(m.careState)),number(toiletOf(m.careState)),careMissedOf(m.careState)?"true":"false");
+        progress(m); metadata(m.formId); append(","); profile(m.formId,m.level,m.id==s.activeCreatureId); care(m); append("}");
     }
     append("],\"evolution\":{\"options\":[");
     if(s.onboardingComplete) {
@@ -1409,11 +1207,10 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
         for(std::size_t i=0;i<2;++i) if(const auto* edge=forms::outgoing(m.formId,i)) {
             const auto id=edge->to;
             if(!forms::productionForm(id))continue;
-            const auto* nextForm=forms::find(id); const auto need=forms::evolutionNeed(*edge);
-            const auto preview=m.level<need.level ? need.level : m.level;
-            const auto eligible=s.phase==Phase::Home && m.level>=need.level && m.bond>=need.bond && carePointsOf(m.careState)>=need.care;
-            append("%s{\"formId\":%u,\"name\":\"%s\",",comma ? "," : "",number(id),nextForm->name); metadata(id);
-            append(",\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u,\"previewLevel\":%u,\"eligible\":%s,",number(need.level),number(need.bond),number(need.care),number(preview),eligible ? "true" : "false");
+            const auto* next=forms::find(id); const auto preview=m.level<edge->minLevel ? edge->minLevel : m.level;
+            const auto eligible=s.phase==Phase::Home && m.level>=edge->minLevel && m.bond>=edge->minBond;
+            append("%s{\"formId\":%u,\"name\":\"%s\",",comma ? "," : "",number(id),next->name); metadata(id);
+            append(",\"requiredLevel\":%u,\"requiredBond\":%u,\"previewLevel\":%u,\"eligible\":%s,",number(edge->minLevel),number(edge->minBond),number(preview),eligible ? "true" : "false");
             profile(id,preview); append("}"); comma=true;
         }
     }
@@ -1421,7 +1218,7 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
 }
 
 bool encodeSnapshot(const State& s, Snapshot& snapshot) {
-    static_assert(kSnapshotSize == 8 + (22 + 4 + kCollectionCapacity * 12 + 11 + kJournalWords + 6 + 9 + 4 + 3 + kPartyCapacity + 3) * 4 + 4);
+    static_assert(kSnapshotSize == 8 + (22 + 4 + kCollectionCapacity * 11 + 11 + kJournalWords + 6 + 9 + 4 + 3 + kPartyCapacity) * 4 + 4);
     if (!isValid(s)) return false;
     // Validation is the only failure point. Write directly afterwards so deep
     // durable trade/save calls do not stack another full collection snapshot.
@@ -1443,7 +1240,7 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
     for (const auto value : fields) { put32(bytes + offset, value); offset += 4; }
     for (const auto& member : s.collection) {
         const std::uint32_t values[] = {member.id, static_cast<std::uint32_t>(member.species),
-            member.hp, member.energy, member.fullness, member.mood, member.bond, member.level, member.capturedAtSequence, member.xp, member.formId, member.careState};
+            member.hp, member.energy, member.fullness, member.mood, member.bond, member.level, member.capturedAtSequence, member.xp, member.formId};
         for (const auto value : values) { put32(bytes + offset, value); offset += 4; }
     }
     put32(bytes + offset, s.onboardingComplete ? 1u : 0u);
@@ -1467,10 +1264,6 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
     put32(bytes+offset+20,static_cast<std::uint32_t>(s.autoCapture));
     put32(bytes+offset+24,s.worldSeed);
     for(std::size_t i=0;i<kPartyCapacity;++i)put32(bytes+offset+28+4*i,s.partyMemberIds[i]);
-    offset+=28+kPartyCapacity*4;
-    put32(bytes+offset,s.careMinute); put32(bytes+offset+4,s.lastCritical); put32(bytes+offset+8,s.captureDeferred);
-    offset += 12;
-    if (offset + 4 != kSnapshotSize) return false;
     put32(bytes + kSnapshotSize - 4, crc32(bytes, kSnapshotSize - 4));
     return true;
 }
@@ -1481,11 +1274,11 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     const auto version = static_cast<unsigned>(bytes[4]) | (static_cast<unsigned>(bytes[5]) << 8);
     if (version < 1 || version > kSchemaVersion) return SnapshotStatus::UnsupportedVersion;
     const auto required = version == 1 ? kLegacySnapshotSize : version == 2 ? kV2SnapshotSize :
-                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : version==22 ? kV22SnapshotSize : kSnapshotSize;
+                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : kSnapshotSize;
     const auto payload = static_cast<unsigned>(bytes[6]) | (static_cast<unsigned>(bytes[7]) << 8);
     if (length != required || payload != length - 12) return SnapshotStatus::InvalidLength;
     if (get32(bytes + length - 4) != crc32(bytes, length - 4)) return SnapshotStatus::BadChecksum;
-    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : version==22 ? 15u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
+    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
     std::size_t offset = 12;
     const auto read = [&]() { const auto value = get32(bytes + offset); offset += 4; return value; };
     State next;
@@ -1500,7 +1293,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     next.attackBoost = read();
     next.shield = version == 1 ? 0 : read();
     const auto message = read();
-    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : version<22 ? Message::EncounterCleared : version<23 ? Message::PartyRemoved : Message::Toileted;
+    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : version<22 ? Message::EncounterCleared : Message::PartyRemoved;
     if (phase > (version < 5 ? 1u : 2u) || card > 1 || message > static_cast<unsigned>(lastMessage))
         return SnapshotStatus::InvalidState;
     next.phase = static_cast<Phase>(phase);
@@ -1527,7 +1320,6 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
             member.hp = read(); member.energy = read(); member.fullness = read();
             member.mood = read(); member.bond = read(); member.level = read(); member.capturedAtSequence = read();
             if(version>=7){member.xp=read();member.formId=read();}
-            if(version>=23)member.careState=read();
         }
     }
     if (version >= 5) {
@@ -1566,10 +1358,6 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     if(version>=19){const auto value=read();if(value>1)return SnapshotStatus::InvalidState;next.autoCapture=static_cast<AutoCapture>(value);}
     if(version>=20)next.worldSeed=read();
     if(version>=22)for(auto& id:next.partyMemberIds)id=read();
-    if(version>=23){
-        next.careMinute=read(); next.lastCritical=read(); next.captureDeferred=read();
-        if(next.lastCritical>1 || next.captureDeferred>1) return SnapshotStatus::InvalidState;
-    }
     if(version==7 && !validRules4State(next,false)) return SnapshotStatus::InvalidState;
     if(version<7) {
         if(!validLegacyForVersion(next,version<4)) return SnapshotStatus::InvalidState;
@@ -1612,7 +1400,6 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
         if(next.wildRules>7 || (founder&&!legacy_v7::forms::canReach(root,founder->formId)))
             return SnapshotStatus::InvalidState;
     }
-    if(version<=22 && (next.wildRules>15 || next.pendingEncounter.rules>15)) return SnapshotStatus::InvalidState;
     if(version<=21 && (next.wildRules>14 || next.pendingEncounter.rules>14)) return SnapshotStatus::InvalidState;
     if(version<=20 && (next.wildRules>13 || next.pendingEncounter.rules>13)) return SnapshotStatus::InvalidState;
     if(version<=16 && (next.wildRules>12 || next.pendingEncounter.rules>12)) return SnapshotStatus::InvalidState;
@@ -1642,7 +1429,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
 const char* snapshotStatusText(SnapshotStatus status) {
     switch (status) {
     case SnapshotStatus::Ok: return "ok";
-    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 23";
+    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 22";
     case SnapshotStatus::InvalidLength: return "invalid snapshot length";
     case SnapshotStatus::BadMagic: return "invalid snapshot magic";
     case SnapshotStatus::UnsupportedVersion: return "unsupported snapshot version";
@@ -1652,4 +1439,4 @@ const char* snapshotStatusText(SnapshotStatus status) {
     }
     return "unknown snapshot status";
 }
-} // namespace digivice
+} // namespace digivice::legacy_v15

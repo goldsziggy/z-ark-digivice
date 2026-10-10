@@ -90,7 +90,7 @@ bool canOffer(const State& s,std::uint32_t id){
     return false;
 }
 bool valid(const Transcript& t){
-    return (t.rules==13||t.rules==14||t.rules==kRulesVersion)&&validIdentity(t.peers[0])&&validIdentity(t.peers[1])&&std::memcmp(t.peers[0].bytes,t.peers[1].bytes,6)<0&&t.session&&t.nonces[0]&&t.nonces[1]&&t.revision&&
+    return (t.rules==13||t.rules==14||t.rules==15||t.rules==kRulesVersion)&&validIdentity(t.peers[0])&&validIdentity(t.peers[1])&&std::memcmp(t.peers[0].bytes,t.peers[1].bytes,6)<0&&t.session&&t.nonces[0]&&t.nonces[1]&&t.revision&&
         t.sourceSequences[0]!=kMax&&t.sourceSequences[1]!=kMax&&t.receivedTrades[0]<=t.sourceSequences[0]&&t.receivedTrades[1]<=t.sourceSequences[1]&&validMember(t.offers[0],t.sourceSequences[0])&&validMember(t.offers[1],t.sourceSequences[1]);
 }
 bool encodeTranscript(const Transcript& t,std::uint8_t* bytes,std::size_t capacity){
@@ -176,9 +176,9 @@ bool encodeRecord(const Record& record,std::uint8_t* bytes,std::size_t capacity)
     return bytes&&capacity>=kRecordBytes&&valid(record)&&encodeValidatedRecord(record,bytes);
 }
 bool decodeRecord(const std::uint8_t* bytes,std::size_t length,Record& out){
-    if(!bytes||(length!=kRecordBytes&&length!=kV19RecordBytes&&length!=kV20RecordBytes&&length!=kV21RecordBytes)||std::memcmp(bytes,"DGTR",4)||get32(bytes+4)!=kVersion||bytes[12]>static_cast<unsigned>(Phase::Applied)||bytes[13]>1||bytes[14]||bytes[15]||get32(bytes+length-4)!=crc(bytes,length-4))return false;
+    if(!bytes||(length!=kRecordBytes&&length!=kV19RecordBytes&&length!=kV20RecordBytes&&length!=kV21RecordBytes&&length!=kV22RecordBytes)||std::memcmp(bytes,"DGTR",4)||get32(bytes+4)!=kVersion||bytes[12]>static_cast<unsigned>(Phase::Applied)||bytes[13]>1||bytes[14]||bytes[15]||get32(bytes+length-4)!=crc(bytes,length-4))return false;
     const bool legacy=length!=kRecordBytes;
-    const auto snapshotBytes=length==kV19RecordBytes?kV19SnapshotSize:length==kV20RecordBytes?kV20SnapshotSize:length==kV21RecordBytes?kV21SnapshotSize:kSnapshotSize;
+    const auto snapshotBytes=length==kV19RecordBytes?kV19SnapshotSize:length==kV20RecordBytes?kV20SnapshotSize:length==kV21RecordBytes?kV21SnapshotSize:length==kV22RecordBytes?kV22SnapshotSize:kSnapshotSize;
     const auto expectedStatus=legacy?SnapshotStatus::Migrated:SnapshotStatus::Ok;
     Record result;result.serial=get32(bytes+8);result.phase=static_cast<Phase>(bytes[12]);result.localSide=bytes[13];
     if(!decodeTranscript(bytes+16,kTranscriptBytes,result.transcript)||decodeSnapshot(bytes+16+kTranscriptBytes,snapshotBytes,result.before)!=expectedStatus||

@@ -71,6 +71,7 @@ private:
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
     void beginInterface();
     void pollInterface(std::uint64_t now);
+    void pollCareAndAuto(std::uint64_t now);
     void pauseInterface(bool paused);
     bool interfaceQuiescent() const;
     bool interfaceCommand(const char* line);
@@ -126,7 +127,8 @@ private:
     std::uint64_t lastWalkingSaveMs_ = 0;
     bool walkingFault_ = false;
     std::uint16_t* frame_ = nullptr;
-    std::uint64_t lastTouchMs_ = 0, lastFrameMs_ = 0;
+    std::uint64_t lastTouchMs_ = 0, lastFrameMs_ = 0, careAwakeMs_ = 0;
+    std::uint32_t autoStartSequence_ = UINT32_MAX;
     std::uint32_t uiSequence_ = UINT32_MAX, touchPresses_ = 0, touchReleases_ = 0;
     std::uint32_t renderedFrames_ = 0, maxFrameUs_ = 0;
     std::uint32_t maxRenderUs_ = 0, maxFlushUs_ = 0;

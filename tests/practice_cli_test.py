@@ -70,7 +70,7 @@ for action, value in [("capture", "0"), ("card", "0"), ("card", "3"), ("physical
 for value in ["-1", "4294967296", "1.5", ""]:
     run("--practice-start", value, "mote", "1", "flicker", "1", success=False)
 for player, level, enemy, enemy_level in [("mote", "0", "flicker", "1"), ("mote", "99", "flicker", "1"),
-    ("mote", "21", "flicker", "1"), ("mote", "1", "flicker", "21"), ("unknown", "1", "rill", "1")]:
+    ("mote", "51", "flicker", "1"), ("mote", "1", "flicker", "51"), ("unknown", "1", "rill", "1")]:
     run("--practice-start", "0", player, level, enemy, enemy_level, success=False)
 run("--practice-start", "12345", "1", success=False)  # Old ambiguous argument contract is not reused.
 evolved = run("--practice-read", fixtures[1]["start"]["snapshotBase64"])["state"]
@@ -163,9 +163,9 @@ form_auto = run("--practice-auto", form["snapshotBase64"], automatic=True)
 assert form_auto["trace"]["player"]["name"] == form["state"]["playerFormName"]
 assert form_auto["trace"]["player"]["combat"] == form["state"]["playerCombat"]
 assert form_auto["state"]["playerLevel"] == 20 and form_auto["state"]["playerFormId"] == 66
-for player, level, form_id in [("agumon", "20", "66"), ("renamon", "1", "66"), ("renamon", "21", "66"), ("renamon", "20", "0"), ("renamon", "20", "67")]:
+for player, level, form_id in [("agumon", "20", "66"), ("renamon", "1", "66"), ("renamon", "51", "66"), ("renamon", "20", "0"), ("renamon", "20", "67")]:
     run("--practice-start-forms", "1", player, level, form_id, "flicker", "1", "initial", success=False)
-for offset, value in [(4, 8), (8, 2), (108, 66), (112, 0), (104, 21)]:
+for offset, value in [(4, 8), (8, 2), (108, 66), (112, 0), (104, 51)]:
     corrupt = bytearray(base64.b64decode(current["snapshotBase64"]))
     struct.pack_into("<I", corrupt, offset, value)
     struct.pack_into("<I", corrupt, 116, zlib.crc32(corrupt[:116]))

@@ -80,8 +80,9 @@ void carePartnerAndOff(){
  CHECK(s.pendingEncounter.formId==pending.formId&&s.pendingEncounter.level==pending.level&&s.encounterTarget==target&&s.encounterRng==rng);
  restore(s);rejects(s,Action::AccrueSteps,1,Error::InvalidAction);step(s,Action::PresentEncounter);
  CHECK(s.wildFormId==pending.formId&&s.wildLevel==pending.level&&s.encounterRate==EncounterRate::Off);
- auto evolving=hatched(123);evolving.level=evolving.collection[0].level=5;evolving.collection[0].xp=xpForLevel(5);evolving.bond=evolving.collection[0].bond=200;
- const auto* edge=forms::outgoing(activeMember(evolving)->formId,0);CHECK(edge&&isValid(evolving));
+ auto evolving=hatched(123);const auto* edge=forms::outgoing(activeMember(evolving)->formId,0);CHECK(edge);
+ if(edge){const auto need=forms::evolutionNeed(*edge);evolving.level=evolving.collection[0].level=need.level;evolving.collection[0].xp=xpForLevel(need.level);evolving.bond=evolving.collection[0].bond=need.bond;evolving.collection[0].careState=need.care;evolving.hp=evolving.collection[0].hp=combat::formProfile(evolving.collection[0].formId,need.level).stats.maxHp;}
+ CHECK(isValid(evolving));
  step(evolving,Action::AccrueSteps,1000);const auto frozen=evolving.pendingEncounter;
  if(edge)step(evolving,Action::Evolve,edge->to);CHECK(evolving.pendingEncounter.formId==frozen.formId&&evolving.pendingEncounter.level==frozen.level);
 }
@@ -101,8 +102,9 @@ void migrationAndBounds(){
  auto egg=newDevice();rejects(egg,Action::AccrueSteps,1,Error::WrongPhase);rejects(egg,Action::PresentEncounter,0,Error::WrongPhase);
  auto s=hatched(1);rejects(s,Action::AccrueSteps,0,Error::InvalidValue);rejects(s,Action::AccrueSteps,1001,Error::InvalidValue);rejects(s,Action::PresentEncounter,1,Error::InvalidValue);
  step(s,Action::AccrueSteps,1000);Snapshot bytes;CHECK(encodeSnapshot(s,bytes));
- for(unsigned field=0;field<3;++field){auto corrupt=bytes;put32(corrupt.bytes+snapshot_test::currentOffset(632)+field*4,field==0?9999:0);put32(corrupt.bytes+kSnapshotSize-4,crc(corrupt.bytes,kSnapshotSize-4));auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::InvalidState&&same(dest,s));}
- for(unsigned index=snapshot_test::currentOffset(632);index<sizeof(bytes.bytes);++index){auto corrupt=bytes;corrupt.bytes[index]^=1;auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::BadChecksum&&same(dest,s));}
+ constexpr unsigned pendingAt=3160; // formId, level, rules after the schema23 walking tail
+ for(unsigned field=0;field<3;++field){auto corrupt=bytes;put32(corrupt.bytes+pendingAt+field*4,field==0?9999:0);put32(corrupt.bytes+kSnapshotSize-4,crc(corrupt.bytes,kSnapshotSize-4));auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::InvalidState&&same(dest,s));}
+ for(unsigned index=pendingAt;index<sizeof(bytes.bytes);++index){auto corrupt=bytes;corrupt.bytes[index]^=1;auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::BadChecksum&&same(dest,s));}
  auto bad=s;bad.foregroundSequence=s.sequence+1;CHECK(!isValid(bad));bad=s;bad.pendingEncounter.formId=0;CHECK(!isValid(bad));bad=s;bad.encounterProgress=1;CHECK(!isValid(bad));bad=s;bad.pendingEncounter.rules=11;CHECK(!isValid(bad));
  s.sequence=UINT32_MAX;rejects(s,Action::AccrueSteps,1,Error::CounterOverflow);rejects(s,Action::PresentEncounter,0,Error::CounterOverflow);
  s.sequence=999;s.explorationSteps=UINT32_MAX;CHECK(isValid(s));rejects(s,Action::AccrueSteps,1,Error::CounterOverflow);

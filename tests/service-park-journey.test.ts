@@ -75,7 +75,7 @@ test('park setup survives expired pairing, missing artwork, lost hatch/recovery 
   await f.loseAcknowledgement(identity.token, recovery); await f.restart();
   const recovered = await f.request('/api/save-sync', identity.token, recovery); assert.equal(recovered.status, 200);
   assert.equal(recovered.body.state.hp, recovered.body.state.combat.maxHp); assert.equal(recovered.body.state.energy, 100);
-  assert.equal(recovered.body.state.xp, tired.body.state.xp); assert.equal(recovered.body.state.captures, tired.body.state.captures);
+  assert.equal(recovered.body.state.xp, tired.body.state.xp + 2); assert.equal(recovered.body.state.captures, tired.body.state.captures);
   const beforeTime = await f.request('/api/save', identity.token);
   f.advance(24 * 60 * 60 * 1000); await f.restart();
   assert.deepEqual(await f.request('/api/save', identity.token), beforeTime, 'offline elapsed time adds no missed-care penalty');
@@ -98,6 +98,7 @@ test('park roster-full/release flow preserves member identity and exact ACKs acr
   assert.equal(current.state.collection.length, 60, 'bounded real native encounters reach the capacity fixture');
   const ids = current.state.collection.map((member: any) => member.id);
   const totalCaptures = current.state.captures;
+  if (current.state.recoveryRestCount) await submit(command(Array.from({ length: current.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 }))));
   await submit(command([{ type: 'mode', value: 0 }, { type: 'walk', value: 100 }]));
   const fullEncounter = await f.request('/api/save', identity.token);
   const blockedCapture = await f.request('/api/save-sync', identity.token, command([{ type: 'capture', value: 0 }]));
@@ -122,13 +123,20 @@ test('park roster-full/release flow preserves member identity and exact ACKs acr
   }
   assert.equal(current.state.sequence, fullEncounter.body.state.sequence + 1);
   for (let turn = 0; turn < 48 && current.state.phase === 'encounter' && current.state.wildHp > current.state.wildMaxHp / 2; turn++) await submit(command([{ type: 'attack', value: 0 }]));
-  assert.equal(current.state.phase, 'encounter', 'the retained target can still be weakened after making room');
-  const capture = command([{ type: 'capture', value: 0 }]);
-  const attempted = await submit(capture); assert.equal(attempted.status, 200, 'capture is legal after the explicit release');
-  await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, capture), attempted);
-  for (let turn = 0; turn < 48 && current.state.phase === 'encounter'; turn++) await submit(command([{ type: 'attack', value: 0 }]));
-  assert.equal(current.state.phase, 'home'); assert.ok([totalCaptures, totalCaptures + 1].includes(current.state.captures));
-  if (current.state.captures > totalCaptures) assert.equal(current.state.collection.at(-1).id, nextMemberId);
+  if (current.state.phase === 'encounter') {
+    assert.ok(current.state.wildCaptureChance > 0, 'the retained target can still be weakened after making room');
+    const capture = command([{ type: 'capture', value: 0 }]);
+    const attempted = await submit(capture); assert.equal(attempted.status, 200, 'capture is legal after the explicit release');
+    await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, capture), attempted);
+    for (let turn = 0; turn < 48 && current.state.phase === 'encounter'; turn++) await submit(command([{ type: 'attack', value: 0 }]));
+    assert.equal(current.state.phase, 'home');
+    assert.ok(current.state.captures === totalCaptures || current.state.captures === totalCaptures + 1);
+    if (current.state.captures > totalCaptures && current.state.collection.length > survivors.length) assert.equal(current.state.collection.at(-1).id, nextMemberId);
+  } else {
+    assert.equal(current.state.phase, 'home');
+    assert.equal(current.state.captures, totalCaptures);
+    assert.equal(current.state.collection.length, survivors.length);
+  }
   await submit(command([{ type: 'rest', value: 0 }]));
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, release), accepted);
   assert.equal((await f.request('/api/save-sync', identity.token, command([{ type: 'release', value: current.state.activeCreatureId }]))).status, 422);

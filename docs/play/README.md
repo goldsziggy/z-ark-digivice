@@ -1,6 +1,6 @@
 # z-ark browser demo
 
-A standalone browser sample of the Digivice game, using the same C++ game rules as installed firmware `171cda7` (rules 15, snapshot schema 22). The public source release is `4466aa1`; its game core and browser presentation helpers match that installed source.
+A standalone browser sample of the Digivice game. Its compiled core is still firmware `171cda7` (rules 15, snapshot schema 22). The rules 16 source in this repository — level cap 50, critical hits, automatic Auto battles, bench Digivolution, duplicate merges, toilet care, and capture that stays in the fight — is not in this demo until the WebAssembly bridge and these screens are rebuilt from that source.
 
 Open `index.html` through the GitHub Pages site or a local HTTP server. The browser must support JavaScript and WebAssembly. There is no account, backend API, analytics, device pairing, or network save service.
 
@@ -22,7 +22,7 @@ Sprite atlases are lossless RGBA conversions of the current installed game’s i
 
 Only the clips needed here are included, loaded for visible forms; original source sheets and import packs are not offered as asset downloads. Missing exact forms are explicitly labeled unavailable. [Source credits and rights notices](ART_SOURCES.md) accompany the [per-asset hash manifest](art/manifest.json).
 
-Battle movement uses lunge, recoil and impact effects around these exact idle sprites. It does not claim additional native attack clips. Auto exchanges use the native trace; Manual exchanges use the before/after command state. This rules version has no combat miss or critical-hit mechanic. On a Manual retreat, the native response clears the surviving foe's HP; the display shows `?` for that unavailable value instead of guessing. Reward growth and retreat recovery appear only after combat ends.
+Battle movement uses lunge, recoil and impact effects around these exact idle sprites. It does not claim additional native attack clips. Auto exchanges use the native trace; Manual exchanges use the before/after command state. This demo core has no combat miss or critical-hit mechanic. On a Manual retreat, the native response clears the surviving foe's HP; the display shows `?` for that unavailable value instead of guessing. Reward growth and retreat recovery appear only after combat ends.
 
 `shared/capture-ring.js`, `shared/capture-ring-input.js`, `shared/party.js`, and `shared/starter-onboarding.js` are copied from the installed source. The capture timing sampler and input guards are the existing browser implementations. All other JavaScript is presentation, input, or local persistence; it does not recreate game rules.
 

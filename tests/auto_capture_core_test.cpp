@@ -46,7 +46,7 @@ void pausesAndResume(){
     unsigned pauses=0,terminal=0;
     for(unsigned starter=1;starter<=8;++starter)for(unsigned seed=1;seed<=64;++seed){
         auto s=start(seed,starter);const auto before=s;auto legacy=s;autobattle::Trace trace,old;CHECK(applyAuto(legacy,&old)==Error::None);
-        CHECK(applyAutoFight(s,&trace)==Error::None&&isValid(s));attackTrace(trace);CHECK(s.rngState==before.rngState&&s.captures==before.captures&&s.captureAttempts==0);
+        CHECK(applyAutoFight(s,&trace)==Error::None&&isValid(s));attackTrace(trace);CHECK(s.captures==before.captures&&s.captureAttempts==0);
         CHECK(s.sequence==before.sequence+1&&s.foregroundSequence==s.sequence);restore(s);
         for(unsigned i=0;i<trace.count;++i){CHECK(i<old.count);if(i<old.count){const auto& a=trace.steps[i];const auto& b=old.steps[i];CHECK(a.action==b.action&&a.opponentAction==b.opponentAction&&a.playerHpBefore==b.playerHpBefore&&a.playerHpAfter==b.playerHpAfter&&a.enemyHpBefore==b.enemyHpBefore&&a.enemyHpAfter==b.enemyHpAfter&&a.guard==b.guard&&a.reflected==b.reflected&&a.captured==b.captured);}}
         if(s.autoCapture==AutoCapture::Awaiting){
@@ -57,7 +57,7 @@ void pausesAndResume(){
             reject(s,Action::AutoFight);reject(s,Action::Auto);reject(s,Action::Capture);reject(s,Action::Attack);reject(s,Action::Magic);
             const auto paused=s;step(s,Action::AccrueSteps,1000);CHECK(s.autoCapture==AutoCapture::Awaiting&&s.foregroundSequence==paused.foregroundSequence&&s.hp==paused.hp&&s.wildHp==paused.wildHp);restore(s);
             autobattle::Trace resumed;CHECK(applyAutoResume(s,&resumed)==Error::None&&s.phase==Phase::Home&&s.autoCapture==AutoCapture::None);attackTrace(resumed);
-            CHECK(resumed.outcome!=autobattle::Outcome::None&&resumed.outcome!=autobattle::Outcome::Captured&&s.rngState==before.rngState&&s.captures==before.captures);
+            CHECK(resumed.outcome!=autobattle::Outcome::None&&resumed.outcome!=autobattle::Outcome::Captured&&s.captures==before.captures);
             CHECK(resumed.steps[0].playerHpBefore==paused.hp&&resumed.steps[0].enemyHpBefore==paused.wildHp);
             reject(s,Action::AutoResume);restore(s);
         }else{++terminal;CHECK(s.phase==Phase::Home&&trace.outcome!=autobattle::Outcome::None&&trace.outcome!=autobattle::Outcome::Captured);}
@@ -65,22 +65,26 @@ void pausesAndResume(){
     CHECK(pauses>400&&terminal>0);std::printf("512 new Auto fights: %u durable flick pauses, %u terminal fights; all automatic traces attack-only\n",pauses,terminal);
 }
 State paused(unsigned seed=1){
-    auto s=start(seed);s.wildFormId=18;s.wildSpecies=Species::Agumon;s.wildLevel=1;s.wildMaxHp=s.wildHp=combat::formProfile(18,1).stats.maxHp;
+    auto s=start(seed);s.wildFormId=18;s.wildSpecies=Species::Agumon;s.wildLevel=1;s.wildMaxHp=combat::formProfile(18,1).stats.maxHp;s.wildHp=s.wildMaxHp/2+1;
     CHECK(isValid(s));CHECK(applyAutoFight(s)==Error::None&&s.autoCapture==AutoCapture::Awaiting);return s;
 }
 void actualFlickOnly(){
-    auto s=paused();const auto before=s;const auto rng=s.rngState;
-    for(unsigned i=1;i<=3;++i){const auto hp=s.hp,foe=s.wildHp;step(s,Action::Flick,0);CHECK(s.rngState==rng&&s.lastCapture.result==CaptureResult::Miss&&s.lastCapture.attempt==i&&s.lastCapture.chance==0&&s.hp==hp);
+    auto s=paused();const auto before=s;
+    for(unsigned i=1;i<=3;++i){const auto hp=s.hp,foe=s.wildHp,rng=s.rngState;step(s,Action::Flick,0);CHECK(s.rngState==rng&&s.lastCapture.result==CaptureResult::Miss&&s.lastCapture.attempt==i&&s.lastCapture.chance==0&&s.hp==hp);
         CHECK(s.lastCapture.sequence==s.foregroundSequence&&s.captures==before.captures);restore(s);
-        if(i<3)CHECK(s.autoCapture==AutoCapture::Awaiting&&s.wildHp==foe&&s.captureAttempts==i);
-        else CHECK(s.phase==Phase::Home&&s.autoCapture==AutoCapture::None&&s.message==Message::CaptureEnded);
+        CHECK(s.phase==Phase::Encounter&&s.autoCapture==AutoCapture::None&&s.captureDeferred==1&&s.wildHp==foe&&s.message==Message::CaptureMissed);
+        if(i<3){s.wildHp=s.wildMaxHp/2;s.hp=s.collection[0].hp=combat::formProfile(s.collection[0].formId,s.level).stats.maxHp;CHECK(isValid(s));
+            CHECK(applyAutoFight(s)==Error::None&&s.autoCapture==AutoCapture::Awaiting&&s.captureAttempts==i&&s.phase==Phase::Encounter);restore(s);}
     }
+    CHECK(s.phase==Phase::Encounter&&s.captureAttempts==3&&s.message!=Message::CaptureEnded);reject(s,Action::Flick);
+    s.wildHp=s.wildMaxHp/2;s.hp=s.collection[0].hp=combat::formProfile(s.collection[0].formId,s.level).stats.maxHp;CHECK(isValid(s));
+    autobattle::Trace continued;CHECK(applyAutoFight(s,&continued)==Error::None&&s.phase==Phase::Home&&s.autoCapture==AutoCapture::None&&s.message!=Message::CaptureEnded);attackTrace(continued);
     unsigned caught=0,escaped=0;
     for(unsigned seed=1;seed<=128;++seed){auto target=paused(seed);const auto chance=captureChance(target);const auto original=target;auto retry=target;
         step(target,Action::Flick,160*256+180);step(retry,Action::Flick,160*256+180);CHECK(trade::sameState(target,retry));
         CHECK(target.lastCapture.chance==chance&&target.lastCapture.attempt==1&&target.rngState!=original.rngState);
         if(target.lastCapture.result==CaptureResult::Captured){++caught;CHECK(target.phase==Phase::Home&&target.collectionCount==original.collectionCount+1&&target.autoCapture==AutoCapture::None);}
-        else{++escaped;CHECK(target.autoCapture==AutoCapture::Awaiting&&target.hp==original.hp&&target.wildHp==original.wildHp);reject(target,Action::AutoFight);}
+        else{++escaped;CHECK(target.phase==Phase::Encounter&&target.autoCapture==AutoCapture::None&&target.captureDeferred==1&&target.hp==original.hp&&target.wildHp==original.wildHp);reject(target,Action::Flick);}
         restore(target);
     }
     CHECK(caught&&escaped);std::printf("128 actual aimed flicks: %u captured/%u escaped; three missed flicks end calmly without RNG\n",caught,escaped);
@@ -135,8 +139,9 @@ void priorAutoCapacityAndNewInputs(){
 void boundsAndMigration(){
     auto full=start();full.sequence=full.foregroundSequence=100;full.collectionCount=60;full.captures=59;full.encounters=60;full.steps=5900;full.nextMemberId=61;
     for(unsigned i=1;i<60;++i){full.collection[i]=full.collection[0];full.collection[i].id=i+1;full.collection[i].capturedAtSequence=i+1;}
-    CHECK(isValid(full));const auto rng=full.rngState;autobattle::Trace trace;CHECK(applyAutoFight(full,&trace)==Error::None&&full.phase==Phase::Home&&full.autoCapture==AutoCapture::None&&full.rngState==rng);attackTrace(trace);
-    auto s=paused();auto bad=s;bad.autoCapture=AutoCapture::None;CHECK(!isValid(bad));bad=s;bad.autoCapture=static_cast<AutoCapture>(2);CHECK(!isValid(bad));bad=s;bad.battleMode=BattleMode::Tactical;CHECK(!isValid(bad));bad=s;bad.wildHp=bad.wildMaxHp;CHECK(!isValid(bad));
+    CHECK(isValid(full));auto replay=full;autobattle::Trace trace,again;CHECK(applyAutoFight(full,&trace)==Error::None&&full.phase==Phase::Home&&full.autoCapture==AutoCapture::None);attackTrace(trace);
+    CHECK(applyAutoFight(replay,&again)==Error::None&&trade::sameState(full,replay));
+    auto s=paused();auto bad=s;bad.autoCapture=AutoCapture::None;CHECK(isValid(bad));bad=s;bad.captureDeferred=1;CHECK(!isValid(bad));bad=s;bad.autoCapture=static_cast<AutoCapture>(2);CHECK(!isValid(bad));bad=s;bad.battleMode=BattleMode::Tactical;CHECK(!isValid(bad));bad=s;bad.wildHp=bad.wildMaxHp;CHECK(!isValid(bad));
     const auto before=s;CHECK(apply(s,Action::AutoResume,1)==Error::InvalidValue&&trade::sameState(s,before));
     s.sequence=UINT32_MAX;reject(s,Action::Flick);reject(s,Action::AutoResume);
     auto fresh=start();fresh.sequence=UINT32_MAX;reject(fresh,Action::AutoFight);
@@ -145,11 +150,11 @@ void boundsAndMigration(){
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.autoCapture==AutoCapture::None&&trade::sameState(fresh,migrated));
     CHECK(encodeSnapshot(migrated,bytes)&&snapshot_test::sameOldPayload(prior.data(),bytes.bytes,prior.size()));
     put32(bytes.bytes+snapshot_test::currentOffset(652),2);put32(bytes.bytes+kSnapshotSize-4,~updateCrc(~0u,bytes.bytes,kSnapshotSize-4));CHECK(decodeSnapshot(bytes.bytes,sizeof(bytes.bytes),migrated)==SnapshotStatus::InvalidState);
-    auto waiting=paused();autobattle::Trace partial;auto a=start();a.wildFormId=18;a.wildSpecies=Species::Agumon;a.wildHp=a.wildMaxHp=combat::formProfile(18,1).stats.maxHp;CHECK(applyAutoFight(a,&partial)==Error::None);CHECK(partial.outcome==autobattle::Outcome::None);
+    auto waiting=paused();autobattle::Trace partial;auto a=start();a.wildFormId=18;a.wildSpecies=Species::Agumon;a.wildMaxHp=combat::formProfile(18,1).stats.maxHp;a.wildHp=a.wildMaxHp/2+1;CHECK(applyAutoFight(a,&partial)==Error::None);CHECK(partial.outcome==autobattle::Outcome::None);
     char json[autobattle::kTraceJsonCapacity];auto invalid=partial;invalid.kind=autobattle::Kind::Practice;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     invalid=partial;invalid.steps[0].action=autobattle::Move::Capture;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));invalid=partial;invalid.steps[0].captureAttempt=1;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     CHECK(!trade::canOffer(waiting,1));Action action;CHECK(parseAction("auto-fight",action)&&action==Action::AutoFight);CHECK(parseAction("auto-resume",action)&&action==Action::AutoResume);
-    CHECK(kSchemaVersion==22&&kRulesVersion==15&&kSnapshotSize==2964);
+    CHECK(kSchemaVersion==23&&kRulesVersion==16&&kSnapshotSize==3216);
 }
 }
 int main(){historicalAutoUnchanged();pausesAndResume();actualFlickOnly();priorAutoCapacityAndNewInputs();boundsAndMigration();std::printf("%u Auto manual capture checks, %u failures; State=%zu snapshot=%zu\n",checks,failures,sizeof(State),kSnapshotSize);return failures?1:0;}

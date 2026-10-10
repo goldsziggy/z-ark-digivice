@@ -12,8 +12,8 @@ const battleCorePath = process.env.DIGIVICE_TEST_BATTLE_PATH ?? join(rootDir, 'b
 const hit = { type: 'flick', value: 41140 }; // dx 0, reach 180: target centre.
 const miss = { type: 'flick', value: 0 }; // dx -160, reach 0.
 const prepare = [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 },
-  { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }];
-const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
+  { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }, { type: 'attack', value: 0 }];
+const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
@@ -92,15 +92,19 @@ test('aim misses debit exactly one attempt, roll back mixed batches and retain e
   assert.deepEqual(await f.request('/api/save-sync', identity.token, request), accepted);
   assert.equal((await f.request('/api/save-sync', identity.token, { ...request, events: [hit] })).body.error, 'batch_mismatch');
   assert.equal((await f.request('/api/save-sync', identity.token, batch(1, 'flick-miss-stale-revision', [miss]))).status, 409);
+  let opened = accepted.body;
   for (let attempt = 2; attempt <= 3; attempt++) {
-    const next = await f.request('/api/save-sync', identity.token, batch(attempt, `flick-miss-attempt-${attempt}`, [{ ...miss, value: 82175 }]));
-    assert.equal(next.status, 200); assert.equal(next.body.state.captureAttempts, attempt === 3 ? 0 : attempt);
-    assert.equal(next.body.state.lastCapture.attempt, attempt);
-    assert.equal(next.body.state.rngState, before.body.state.rngState);
+    const resumed = await f.request('/api/save-sync', identity.token, batch(opened.revision, `flick-miss-resume-${attempt}`, [{ type: 'attack', value: 0 }]));
+    assert.equal(resumed.status, 200); assert.equal(resumed.body.state.phase, 'encounter'); assert.equal(resumed.body.state.captureDeferred, 0); assert.ok(resumed.body.state.wildCaptureChance > 0);
+    const next = await f.request('/api/save-sync', identity.token, batch(resumed.body.revision, `flick-miss-attempt-${attempt}`, [{ ...miss, value: 82175 }]));
+    assert.equal(next.status, 200); assert.equal(next.body.state.captureAttempts, attempt);
+    assert.equal(next.body.state.lastCapture.attempt, attempt); assert.equal(next.body.state.phase, 'encounter');
+    assert.equal(next.body.state.hp, resumed.body.state.hp); assert.equal(next.body.state.rngState, resumed.body.state.rngState);
+    opened = next.body;
   }
   const exhausted = await f.request('/api/save', identity.token);
-  assert.equal(exhausted.body.state.phase, 'home');
-  assert.equal((await f.request('/api/save-sync', identity.token, batch(4, 'flick-miss-fourth-rejected', [miss]))).body.error, 'invalid_transition');
+  assert.equal(exhausted.body.state.phase, 'encounter'); assert.equal(exhausted.body.state.captureAttempts, 3);
+  assert.equal((await f.request('/api/save-sync', identity.token, batch(exhausted.body.revision, 'flick-miss-fourth-rejected', [miss]))).body.error, 'invalid_transition');
   assert.deepEqual(await f.request('/api/save', identity.token), exhausted);
   await f.restart();
   assert.deepEqual(await f.request('/api/save-sync', identity.token, request), accepted, 'old receipt returns its original state after later throws');

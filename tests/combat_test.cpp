@@ -18,7 +18,7 @@ int main(){
  check(resolve(6,1,2,1,Move::Physical,Defense::None).damage==20);
  check(resolve(6,1,2,1,Move::Magic,Defense::None).damage==10);
  check(resolve(0,1,1,1,Move::Physical,Defense::None).damage==0);
- check(resolve(2,21,1,1,Move::Physical,Defense::None).damage==0);
+ check(resolve(2,51,1,1,Move::Physical,Defense::None).damage==0);
  check(resolve(1,1,1,1,static_cast<Move>(99),Defense::None).damage==0);
  // Bounded optional raw floor precedes type/guard; default remains identical.
  for(const auto invalid:{0u,3u,33u,UINT32_MAX})check(resolveForms(223,15,223,15,Move::Heavy,Defense::None,invalid).damage==0);
@@ -36,7 +36,7 @@ int main(){
    if(p.stats.maxHp>maxHp)maxHp=p.stats.maxHp;for(const auto v:{p.stats.attack,p.stats.defense,p.stats.magic,p.stats.resistance})if(v>maxOther)maxOther=v;
    for(unsigned move=0;move<3;++move)for(unsigned defense=0;defense<4;++defense){const auto hit=resolveForms(id,level,4,level,static_cast<Move>(move),static_cast<Defense>(defense));check(hit.damage>=1&&hit.damage<=400);const auto explicitDefault=resolveForms(id,level,4,level,static_cast<Move>(move),static_cast<Defense>(defense),4);check(hit.damage==explicitDefault.damage&&hit.reflected==explicitDefault.reflected&&hit.typePercent==explicitDefault.typePercent);}
   }
-  check(!validFormProfile(id,21));if(f->minLevel>1)check(!validFormProfile(id,f->minLevel-1));
+  check(!validFormProfile(id,51));if(f->minLevel>1)check(!validFormProfile(id,f->minLevel-1));
  }
  for(unsigned starter=1;starter<=8;++starter){const auto lineage=starterSpecies(starter),root=digivice::forms::initialForm(lineage);check(root==11+7*(starter-1));
   for(unsigned tier=1;tier<=3;++tier){const auto level=tier==1?1u:tier==2?5u:10u;const auto now=formProfile(root,level).stats;const auto old=digivice::legacy_v3::combat::profile(lineage,tier).stats;check(now.maxHp==old.maxHp&&now.attack==old.attack&&now.defense==old.defense&&now.magic==old.magic&&now.resistance==old.resistance);}
@@ -45,7 +45,7 @@ int main(){
  check(!validProfile(13,1)&&!validFormProfile(digivice::forms::kFormCount+1,1));check(writeProfileJson(1,1,small,sizeof(small))==0&&small[0]=='\0');
  // Historical profiles above remain addressable; the current catalog exposes
  // only the eight production starters, never the original fixture species.
- const auto catalogBytes=writeCatalogJson(tree,sizeof(tree));check(catalogBytes>0&&std::strstr(tree,"Night of Fire")&&std::strstr(tree,"\"rulesVersion\":15"));
+ const auto catalogBytes=writeCatalogJson(tree,sizeof(tree));check(catalogBytes>0&&std::strstr(tree,"Night of Fire")&&std::strstr(tree,"\"rulesVersion\":16"));
  unsigned catalogProfiles=0;for(const char* p=tree;(p=std::strstr(p,"\"species\":"));++p)++catalogProfiles;check(catalogProfiles==8);
  for(unsigned id=1;id<=10;++id){char excluded[64];std::snprintf(excluded,sizeof(excluded),"\"name\":\"%s\"",digivice::forms::find(id)->name);check(std::strstr(tree,excluded)==nullptr);}
  for(unsigned starter=1;starter<=8;++starter){char expected[64];std::snprintf(expected,sizeof(expected),"\"name\":\"%s\"",profile(starterSpecies(starter),1).name);check(std::strstr(tree,expected)!=nullptr);}

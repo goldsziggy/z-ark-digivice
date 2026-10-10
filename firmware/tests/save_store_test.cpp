@@ -429,9 +429,14 @@ int main() {
     MemoryBackend evolutionFlash; SaveStore evolutionStore(evolutionFlash);
     auto ready=newDevice(); CHECK(apply(ready,Action::Hatch,2)==Error::None);
     const auto target=forms::find(ready.collection[0].formId)->children[0];
-    const auto* form=forms::find(target);
-    ready.level=ready.collection[0].level=form->minLevel;
-    ready.collection[0].xp=xpForLevel(ready.level); ready.bond=ready.collection[0].bond=form->minBond;
+    const forms::EvolutionEdge* edge=nullptr;
+    for(unsigned i=0;i<2;++i){const auto* candidate=forms::outgoing(ready.collection[0].formId,i); if(candidate && candidate->to==target) edge=candidate;}
+    CHECK(edge);
+    const auto need=forms::evolutionNeed(*edge);
+    ready.level=ready.collection[0].level=need.level;
+    ready.collection[0].xp=xpForLevel(ready.level); ready.bond=ready.collection[0].bond=need.bond;
+    ready.collection[0].careState=need.care;
+    ready.hp=ready.collection[0].hp=combat::formProfile(ready.collection[0].formId,need.level).stats.maxHp;
     CHECK(isValid(ready) && evolutionStore.restore(ready)==BootStatus::Empty && evolutionStore.checkpoint(ready));
     controls::EvolutionChoice choice; State evolved;
     CHECK(choice.propose(ready,target) && choice.confirm(ready,evolved));

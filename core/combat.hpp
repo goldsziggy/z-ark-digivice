@@ -7,7 +7,7 @@ constexpr std::size_t kProfileJsonCapacity = 512;
 constexpr std::size_t kCatalogJsonCapacity = 8192; // Bounded initial roster / one lineage tree; host output.
 constexpr std::size_t kStarterJsonCapacity = 4096;
 constexpr std::size_t kCatalogPageJsonCapacity = 6144;
-constexpr std::size_t kFormCatalogJsonCapacity = 6144;
+constexpr std::size_t kFormCatalogJsonCapacity = 12288;
 constexpr std::size_t kEvolutionGraphJsonCapacity = 16384; // Host-only bounded page, never device state.
 constexpr std::uint32_t kStarterCount = 8;
 constexpr std::uint32_t kSpeciesCount = 12;
@@ -27,7 +27,7 @@ struct Profile {
 };
 enum class Move : std::uint8_t { Physical, Heavy, Magic };
 enum class Defense : std::uint8_t { None, Brace, Counter, Ward };
-struct Hit { std::uint32_t damage; bool reflected; std::uint32_t typePercent; };
+struct Hit { std::uint32_t damage; bool reflected; std::uint32_t typePercent; bool critical = false; };
 bool validProfile(std::uint32_t species, std::uint32_t level);
 Profile profile(std::uint32_t species, std::uint32_t level);
 bool validFormProfile(std::uint32_t formId, std::uint32_t level);

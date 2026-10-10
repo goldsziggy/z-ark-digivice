@@ -32,6 +32,7 @@ constexpr std::size_t kRecordBytes = 16 + kTranscriptBytes + 2 * kSnapshotSize +
 // and transcript stay v1; decoding migrates snapshots, never consent/decision.
 constexpr std::size_t kV19RecordBytes = 16 + kTranscriptBytes + 2 * kV19SnapshotSize + 4;
 constexpr std::size_t kV21RecordBytes = 16 + kTranscriptBytes + 2 * kV21SnapshotSize + 4;
+constexpr std::size_t kV22RecordBytes = 16 + kTranscriptBytes + 2 * kV22SnapshotSize + 4;
 constexpr std::size_t kV20RecordBytes = 16 + kTranscriptBytes + 2 * kV20SnapshotSize + 4;
 
 bool sameIdentity(const Identity&, const Identity&);

@@ -15,9 +15,13 @@ bool same(const State& a,const State& b) {
 State eligible(std::uint32_t starter,std::uint32_t& target) {
     auto s = newDevice(); CHECK(apply(s,Action::Hatch,starter)==Error::None);
     auto& member=s.collection[0]; target=forms::find(member.formId)->children[0];
-    const auto* form=forms::find(target); CHECK(form!=nullptr);
-    member.level=s.level=form->minLevel; member.xp=xpForLevel(member.level);
-    member.bond=s.bond=form->minBond;
+    const forms::EvolutionEdge* edge=nullptr;
+    for(unsigned i=0;i<2;++i){const auto* candidate=forms::outgoing(member.formId,i); if(candidate && candidate->to==target) edge=candidate;}
+    CHECK(edge!=nullptr);
+    const auto need=forms::evolutionNeed(*edge);
+    member.level=s.level=need.level; member.xp=xpForLevel(member.level);
+    member.bond=s.bond=need.bond; member.careState=need.care;
+    member.hp=s.hp=combat::formProfile(member.formId,need.level).stats.maxHp;
     CHECK(isValid(s)); return s;
 }
 int main() {
@@ -45,9 +49,15 @@ int main() {
         CHECK(form->children[0] && !choice.propose(before,form->children[0])); // Cannot skip stages.
     }
     auto gaps = stableMemberFixture(18);
-    const auto target = forms::find(18)->children[0]; const auto* child = forms::find(target);
-    gaps.level = gaps.collection[1].level = child->minLevel;
-    gaps.collection[1].xp = xpForLevel(child->minLevel); gaps.bond = gaps.collection[1].bond = child->minBond;
+    const auto target = forms::find(18)->children[0];
+    const forms::EvolutionEdge* gapEdge=nullptr;
+    for(unsigned i=0;i<2;++i){const auto* candidate=forms::outgoing(18,i); if(candidate && candidate->to==target) gapEdge=candidate;}
+    CHECK(gapEdge);
+    const auto gapNeed=forms::evolutionNeed(*gapEdge);
+    gaps.level = gaps.collection[1].level = gapNeed.level;
+    gaps.collection[1].xp = xpForLevel(gapNeed.level); gaps.bond = gaps.collection[1].bond = gapNeed.bond;
+    gaps.collection[1].careState = gapNeed.care;
+    gaps.hp = gaps.collection[1].hp = combat::formProfile(18, gapNeed.level).stats.maxHp;
     CHECK(isValid(gaps) && activeMember(gaps)->id == 19);
     CHECK(choice.propose(gaps, target));
     CHECK(apply(gaps, Action::Release, 1) == Error::None && activeMember(gaps) == &gaps.collection[0]);
@@ -73,16 +83,22 @@ int main() {
     CHECK(apply(baby, Action::Feed) == Error::None);
     CHECK(apply(baby, Action::Play) == Error::None);
     CHECK(apply(baby, Action::Rest) == Error::None);
-    CHECK(baby.bond==usefulCareBond && activeMember(baby)->xp==babyXp);
-    CHECK(baby.bond<babyEdge->minBond && !choice.propose(baby,babyEdge->to));
+    CHECK(baby.bond==usefulCareBond && activeMember(baby)->xp==babyXp+6);
+    CHECK(!choice.propose(baby,babyEdge->to));
     // Explicit synthetic eligibility fixture: this suite checks confirmation,
     // not acquisition of bond through encounters (covered by native tests).
-    baby.bond=baby.collection[1].bond=babyEdge->minBond;
+    const auto need=forms::evolutionNeed(*babyEdge);
+    baby.level=baby.collection[1].level=need.level;
+    baby.collection[1].xp=xpForLevel(need.level);
+    baby.bond=baby.collection[1].bond=need.bond;
+    baby.collection[1].careState=need.care;
+    baby.hp=baby.collection[1].hp=combat::formProfile(67,need.level).stats.maxHp;
     CHECK(isValid(baby));
     const auto babyBefore = baby;
+    const auto preparedXp = activeMember(baby)->xp;
     CHECK(choice.propose(baby, babyEdge->to) && same(baby, babyBefore));
     CHECK(choice.confirm(baby, candidate) && activeMember(candidate)->id == 19);
-    CHECK(activeMember(candidate)->xp == babyXp && activeMember(candidate)->formId == babyEdge->to);
+    CHECK(activeMember(candidate)->xp == preparedXp && activeMember(candidate)->formId == babyEdge->to);
     CHECK(activeMember(candidate)->species == static_cast<Species>(forms::find(babyEdge->to)->lineage));
     CHECK(hasObtained(candidate, 67) && hasObtained(candidate, babyEdge->to));
     CHECK(same(baby, babyBefore)); // Caller still owns the durability boundary.

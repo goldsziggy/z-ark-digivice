@@ -201,9 +201,9 @@ constexpr Stats compute(const Form& form, std::uint32_t level) {
     return add(form.baseStats,bonus);
 }
 constexpr bool bounded(Stats s) {
-    return s.maxHp >= 1 && s.maxHp <= 512 && s.attack >= 1 && s.attack <= 128 &&
-           s.defense >= 1 && s.defense <= 128 && s.magic >= 1 && s.magic <= 128 &&
-           s.resistance >= 1 && s.resistance <= 128;
+    return s.maxHp >= 1 && s.maxHp <= 2048 && s.attack >= 1 && s.attack <= 256 &&
+           s.defense >= 1 && s.defense <= 256 && s.magic >= 1 && s.magic <= 256 &&
+           s.resistance >= 1 && s.resistance <= 256;
 }
 constexpr bool safeLabel(const char* s) {
     if (!s || !s[0]) return false;
@@ -248,6 +248,17 @@ constexpr bool validEdges() {
     return true;
 }
 static_assert(validEdges(), "Evolution route IDs, choices and gates must be bounded");
+constexpr bool earnedEvolutionNeeds() {
+    for (const auto& edge : kEvolutionEdges) {
+        const auto& src = kForms[edge.from - 1];
+        const auto& dest = kForms[edge.to - 1];
+        const auto need = evolutionNeedFor(src.minLevel, src.minBond, dest.stage, dest.minLevel, dest.minBond, edge.minLevel, edge.minBond);
+        if (need.level <= src.minLevel || need.level > kMaxRpgLevel || need.care < 12 || need.care > 100 || need.bond > 200) return false;
+        if (src.minBond < 200 && need.bond <= src.minBond) return false;
+    }
+    return true;
+}
+static_assert(earnedEvolutionNeeds(), "Every evolution route must be earned and still reachable by level 50");
 } // namespace
 
 const Form* find(std::uint32_t id) {

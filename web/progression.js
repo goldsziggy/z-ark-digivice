@@ -7,16 +7,16 @@ const stage = value => value === null || ['Original', 'Fresh', 'In-Training', 'R
 const art = value => value === null || typeof value === 'string' && /^[a-z][a-z0-9-]{0,63}$/.test(value);
 export function validProgressCombat(value) {
   return exact(value, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills'])
-    && integer(value.maxHp, 1, 400) && ['attack', 'defense', 'magic', 'resistance'].every(key => integer(value[key], 1, 128))
+    && integer(value.maxHp, 1, 2048) && ['attack', 'defense', 'magic', 'resistance'].every(key => integer(value[key], 1, 256))
     && ['grove', 'tide', 'ember', 'neutral'].includes(value.type) && exact(value.skills, ['physical', 'heavy', 'magic']) && Object.values(value.skills).every(label);
 }
 function form(value) {
   return object(value) && integer(value.formId, 1, 512) && label(value.name) && stage(value.stage) && art(value.artId)
-    && integer(value.requiredLevel, 1, 20) && integer(value.requiredBond, 0, 200) && integer(value.previewLevel, 1, 20) && validProgressCombat(value.combat);
+    && integer(value.requiredLevel, 1, 50) && integer(value.requiredBond, 0, 200) && integer(value.requiredCare, 12, 100) && integer(value.previewLevel, 1, 50) && validProgressCombat(value.combat);
 }
 export function validateEvolutionOptions(value) {
   if (!Array.isArray(value) || value.length > 2 || new Set(value.map(entry => entry?.formId)).size !== value.length
-    || !value.every(entry => exact(entry, ['formId', 'name', 'stage', 'artId', 'requiredLevel', 'requiredBond', 'previewLevel', 'eligible', 'combat']) && form(entry) && typeof entry.eligible === 'boolean')) throw new Error('Unsupported evolution choices.');
+    || !value.every(entry => exact(entry, ['formId', 'name', 'stage', 'artId', 'requiredLevel', 'requiredBond', 'requiredCare', 'previewLevel', 'eligible', 'combat']) && form(entry) && typeof entry.eligible === 'boolean')) throw new Error('Unsupported evolution choices.');
   return structuredClone(value);
 }
 const ids = (value, max, self) => Array.isArray(value) && value.length <= max
@@ -25,12 +25,12 @@ export function validEvolutionLinks(value, self) {
   return object(value) && ids(value.parents, 512, self) && ids(value.children, 2, self)
     && Array.isArray(value.edges) && value.edges.length === value.children.length
     && new Set(value.edges.map(edge => edge?.toFormId)).size === value.edges.length
-    && value.edges.every(edge => exact(edge, ['toFormId', 'requiredLevel', 'requiredBond']) && value.children.includes(edge.toFormId)
-      && integer(edge.requiredLevel, 1, 20) && integer(edge.requiredBond, 0, 200));
+    && value.edges.every(edge => exact(edge, ['toFormId', 'requiredLevel', 'requiredBond', 'requiredCare']) && value.children.includes(edge.toFormId)
+      && integer(edge.requiredLevel, 1, 50) && integer(edge.requiredBond, 0, 200) && integer(edge.requiredCare, 12, 100));
 }
 export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8) {
   if (!exact(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms'])
-    || value.formatVersion !== 2 || value.rulesVersion !== 15 || value.catalogVersion !== 6
+    || value.formatVersion !== 2 || value.rulesVersion !== 16 || value.catalogVersion !== 6
     || !integer(focusFormId, 1, 512) || value.focusFormId !== focusFormId || value.offset !== offset || value.limit !== limit
     || !integer(offset, 0, 511) || !integer(limit, 1, 16) || !integer(value.total, 1, 512) || offset > value.total
     || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, value.total - offset)
@@ -39,14 +39,16 @@ export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8
   for (const entry of value.forms) {
     if (!exact(entry, ['formId', 'name', 'stage', 'artId', 'minLevel', 'minBond', 'previewLevel', 'combat', 'parents', 'children', 'edges'])
       || !integer(entry.formId, 1, 512) || !label(entry.name) || !stage(entry.stage) || !art(entry.artId)
-      || !integer(entry.minLevel, 1, 20) || !integer(entry.minBond, 0, 200) || !integer(entry.previewLevel, 1, 20)
+      || !integer(entry.minLevel, 1, 50) || !integer(entry.minBond, 0, 200) || !integer(entry.previewLevel, 1, 50)
       || !validProgressCombat(entry.combat) || !validEvolutionLinks(entry, entry.formId)) throw new Error('Unsupported evolution graph node.');
   }
   return structuredClone(value);
 }
 export function evolutionRequirements(member, option) {
+  const care = member.carePoints ?? 0;
   return [['Level', `${member.level} / ${option.requiredLevel}${member.level >= option.requiredLevel ? ' ✓' : ' needed'}`],
-    ['Bond', `${member.bond} / ${option.requiredBond}${member.bond >= option.requiredBond ? ' ✓' : ' needed'}`]];
+    ['Bond', `${member.bond} / ${option.requiredBond}${member.bond >= option.requiredBond ? ' ✓' : ' needed'}`],
+    ['Care', `${care} / ${option.requiredCare}${care >= option.requiredCare ? ' ✓' : ' needed'}`]];
 }
 
 // No silhouette of a different form is substituted for missing character art.

@@ -277,6 +277,20 @@ bool legal(const State& state, const Model& model, Action action, std::uint32_t 
     State copy = state;
     return apply(copy, action, value) == Error::None;
 }
+bool routeReady(const State& state, const Model& model, const CreatureMember& member, const forms::EvolutionEdge& edge) {
+    const bool active = member.id == state.activeCreatureId;
+    const auto action = active ? Action::Evolve : Action::EvolveMember;
+    const auto value = active ? static_cast<std::uint32_t>(edge.to) : ((member.id << 16) | (edge.to & 0xffffu));
+    return legal(state, model, action, value);
+}
+bool anyRouteReady(const State& state, const Model& model, const CreatureMember& member) {
+    for (unsigned i = 0; i < 2; ++i) {
+        const auto* edge = forms::outgoing(member.formId, i);
+        if (!edge) break;
+        if (routeReady(state, model, member, *edge)) return true;
+    }
+    return false;
+}
 std::size_t peerCount(const nearby::View* view) {
     return view ? std::min(view->peerCount,nearby::kMaxPeers) : 0;
 }
@@ -347,13 +361,14 @@ const char* shortMessage(Message message) {
     case Message::CaptureMissed: return "TRY ANOTHER THROW";
     case Message::CaptureEnded: return "THE WILD DIGIMON LEFT";
     case Message::Retreated: return "HOME SAFE - TAKE A REST";
+    case Message::Toileted: return "TOILET NEED CLEARED";
     case Message::Evolved: return "A NEW FORM!";
     case Message::Selected: return "PARTNER READY";
     default: return "ONE ADVENTURE AT A TIME";
     }
 }
 enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Settings,
- Feed, Play, Rest, Battle, Attack, Heavy, Magic, Capture, Auto,
+ Feed, Play, Rest, Toilet, Battle, Attack, Heavy, Magic, Capture, Auto, Retreat,
  Again, MemberNext, MemberPrev, MemberSelect, Mute, Gyro, Mode, ModeConfirm, Setup, Sleep,
  MemberStats, StatsPrevious, StatsNext, ReleaseOpen, ReleaseConfirm, EvolveOpen, EvolutionPrevious, EvolutionNext,
  EvolutionDetails, EvolutionReview, EvolutionConfirm, EvolutionDone, Encounters, RateOff, RateRelaxed, RateNormal, RateFrequent,
@@ -486,20 +501,20 @@ void Controller::update(const State& state, const Model& model) {
     if (nearbyStage==nearby::Stage::Closed) nearbyMode_=nearby::Mode::Tactical;
     const bool contextChanged = presentationLocked!=battleLocked_ || revision || starterStage_ != model.starterStage || selectedId_ != model.selectedId || starterForm_!=model.starterFormId || starterCount_!=model.starterCount ||
         writable_ != model.writable || enabled_ != model.inputEnabled || partyEditable_ != model.partyEditable;
-    const auto* partner = activeMember(state);
+    const auto* evolvedMember = findMember(state, evolutionMember_);
     const bool evolutionCommitted = revision && screen_==Screen::EvolutionReview &&
-        lastAction_==Action::Evolve && state.sequence==actionSequence_ &&
-        partner && partner->id==evolutionMember_ && partner->formId==evolutionTarget_ &&
+        (lastAction_==Action::Evolve || lastAction_==Action::EvolveMember) && state.sequence==actionSequence_ &&
+        evolvedMember && evolvedMember->formId==evolutionTarget_ &&
         state.message==Message::Evolved;
     if (contextChanged) {
         resetTouch();
-        cancelEvolution();
+        if (evolutionCommitted) { evolution_.cancel(); screen_=Screen::EvolutionResult; }
+        else cancelEvolution();
         if (screen_==Screen::ReleaseReview) {
             releaseMember_=0;
             screen_=revision && lastAction_==Action::Release && state.sequence==actionSequence_ && state.message==Message::Released ?
                 Screen::Collection : Screen::Stats;
         }
-        if (evolutionCommitted) screen_=Screen::EvolutionResult;
         if (screen_==Screen::NearbyReview) screen_=Screen::Nearby;
         if (screen_==Screen::ModeReview) {
             // A review authorizes one proposal against the viewed state only.
@@ -551,7 +566,7 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     };
     auto left=[&](int row,const char* label,int id,bool enabled=true) { add(62,232+row*54,139,46,label,id,enabled); };
     auto right=[&](int row,const char* label,int id,bool enabled=true) { add(211,232+row*54,139,46,label,id,enabled); };
-    auto back=[&]() { add(144,348,124,38,"BACK",Back); };
+    auto back=[&]() { add(116,340,180,52,"BACK",Back); };
     switch(screen_) {
     case Screen::Egg:
         add(116,260,180,54,"MEET PARTNER",EggOpen,model.writable);
@@ -567,14 +582,18 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         add(116,300,180,46,homeActions[static_cast<unsigned>(homePanel_)],HomeOpen,state.phase==Phase::Home); break;
     case Screen::Care:
         left(0,"FEED",Feed,legal(state,model,Action::Feed)); right(0,"PLAY",Play,legal(state,model,Action::Play));
-        add(116,292,180,44,"REST +25",Rest,legal(state,model,Action::Rest)); back(); break;
+        left(1,"REST +25",Rest,legal(state,model,Action::Rest));
+        right(1,"TOILET",Toilet,legal(state,model,Action::Toilet)); back(); break;
     case Screen::Explore:
         add(100,270,212,48,"ENCOUNTER SETTINGS",Encounters); back(); break;
     case Screen::Encounter:
         add(116,248,180,52,state.battleMode==BattleMode::Auto ? "AUTO BATTLE" : "BATTLE",Battle); break;
     case Screen::Battle:
-        if (state.battleMode==BattleMode::Auto) add(116,250,180,52,"RUN AUTO",Auto,legal(state,model,Action::AutoFight));
-        else add(274,287,76,44,"CATCH",Capture,canCapture(state,model));
+        if (state.battleMode==BattleMode::Auto) add(116,250,180,52,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
+        else {
+            add(48,287,140,44,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
+            add(274,287,76,44,"CATCH",Capture,canCapture(state,model));
+        }
         back(); break;
     case Screen::Capture:
         if(state.autoCapture==AutoCapture::Awaiting) add(104,348,204,38,"SKIP / RESUME FIGHT",AutoResume,legal(state,model,Action::AutoResume));
@@ -593,24 +612,31 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         right(1,"MAKE PARTNER",MemberSelect,member && !active && legal(state,model,Action::Select,member->id));
         back(); break;
     }
-    case Screen::Stats:
-        if (selectedMember(state) && memberId_==state.activeCreatureId)
-            add(108,292,196,44,"DIGIVOLVE",EvolveOpen,state.phase==Phase::Home);
-        else add(108,292,196,44,"RELEASE DIGIMON",ReleaseOpen,selectedMember(state) &&
+    case Screen::Stats: {
+        const auto* member=selectedMember(state);
+        const bool active=member && member->id==state.activeCreatureId;
+        if (member && !active) add(62,236,139,46,"DIGIVOLVE",EvolveOpen,state.phase==Phase::Home);
+        if (active) add(108,292,196,44,"DIGIVOLVE",EvolveOpen,state.phase==Phase::Home);
+        else add(108,292,196,44,"RELEASE DIGIMON",ReleaseOpen,member &&
             legal(state,model,Action::Release,memberId_));
         back(); break;
+    }
     case Screen::ReleaseReview:
         add(108,280,196,50,"RELEASE",ReleaseConfirm,releaseMember_ && legal(state,model,Action::Release,releaseMember_)); back(); break;
     case Screen::Evolution: {
-        const auto* partner=activeMember(state);
-        const auto* edge=partner ? forms::outgoing(partner->formId,evolutionIndex_) : nullptr;
+        const auto* member=selectedMember(state);
+        const auto* edge=member ? forms::outgoing(member->formId,evolutionIndex_) : nullptr;
         add(62,286,100,46,evolutionPage_ ? "CLOSE INFO" : "? INFO",EvolutionDetails,edge);
         add(174,286,176,46,"SELECT",EvolutionReview,edge && evolutionPage_!=3);
         back(); break;
     }
-    case Screen::EvolutionReview:
+    case Screen::EvolutionReview: {
+        const bool active=!evolutionMember_ || evolutionMember_==state.activeCreatureId;
+        const auto action=active ? Action::Evolve : Action::EvolveMember;
+        const auto value=active ? evolution_.target() : ((evolutionMember_<<16)|(evolution_.target()&0xffffu));
         add(108,280,196,50,"DIGIVOLVE",EvolutionConfirm,evolution_.target() &&
-            legal(state,model,Action::Evolve,evolution_.target())); back(); break;
+            legal(state,model,action,value)); back(); break;
+    }
     case Screen::EvolutionResult:
         add(108,284,196,50,"VIEW STATS",EvolutionDone); back(); break;
     case Screen::Settings:
@@ -796,12 +822,14 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case Feed: return propose(state,model,Action::Feed);
     case Play: return propose(state,model,Action::Play);
     case Rest: return propose(state,model,Action::Rest);
+    case Toilet: return propose(state,model,Action::Toilet);
     case Battle: return navigate(Screen::Battle);
     case Attack: battleSelection_=combat::Move::Physical; return {IntentKind::Navigation};
     case Heavy: battleSelection_=combat::Move::Heavy; return {IntentKind::Navigation};
     case Magic: battleSelection_=combat::Move::Magic; return {IntentKind::Navigation};
     case Capture: return navigate(Screen::Capture);
     case Auto: return propose(state,model,Action::AutoFight);
+    case Retreat: return propose(state,model,Action::Retreat);
     case AutoResume: return propose(state,model,Action::AutoResume);
     case Again: return navigate(Screen::Home);
     case MemberNext: case MemberPrev: {
@@ -824,27 +852,35 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         return propose(state,model,Action::Release,id);
     }
     case EvolveOpen: evolutionIndex_=evolutionPage_=0; cancelEvolution(); return navigate(Screen::Evolution);
-    case EvolutionPrevious: case EvolutionNext:
-        if (!activeMember(state) || !forms::outgoing(activeMember(state)->formId,1)) return {};
+    case EvolutionPrevious: case EvolutionNext: {
+        const auto* member=selectedMember(state);
+        if (!member || !forms::outgoing(member->formId,1)) return {};
         evolutionIndex_=evolutionIndex_ ? 0 : 1; evolutionPage_=0; cancelEvolution(); return {IntentKind::Navigation};
+    }
     case EvolutionDetails: evolutionPage_=evolutionPage_ ? 0 : 1; return {IntentKind::Navigation};
     case EvolutionReview: {
-        const auto* partner=activeMember(state);
-        const auto* edge=partner ? forms::outgoing(partner->formId,evolutionIndex_) : nullptr;
-        if (!edge) return {};
-        if (!evolution_.propose(state,edge->to) || !model.writable) { evolutionPage_=3; return navigate(Screen::Evolution); }
-        evolutionMember_=partner->id; evolutionForm_=partner->formId; evolutionTarget_=edge->to;
+        const auto* member=selectedMember(state);
+        const auto* edge=member ? forms::outgoing(member->formId,evolutionIndex_) : nullptr;
+        if (!edge || !member) return {};
+        if (!evolution_.propose(state,edge->to,member->id) || !model.writable) { evolutionPage_=3; return navigate(Screen::Evolution); }
+        evolutionMember_=member->id; evolutionForm_=member->formId; evolutionTarget_=edge->to;
         return navigate(Screen::EvolutionReview);
     }
     case EvolutionConfirm: {
         State candidate;
         const auto target=evolution_.target();
+        const auto memberId=evolutionMember_;
         if (!evolution_.confirm(state,candidate)) { cancelEvolution(); return navigate(Screen::Evolution); }
-        return propose(state,model,Action::Evolve,target);
+        const bool bench=memberId && memberId!=state.activeCreatureId;
+        const auto value=bench ? ((memberId<<16)|(target&0xffffu)) : target;
+        return propose(state,model,bench ? Action::EvolveMember : Action::Evolve,value);
     }
-    case EvolutionDone:
-        memberIndex_=0; memberId_=state.activeCreatureId;
-        statsPage_=0; return navigate(Screen::Stats);
+    case EvolutionDone: {
+        const auto evolved=evolutionMember_ ? evolutionMember_ : state.activeCreatureId;
+        const auto index=displayIndexForMember(state,evolved);
+        memberIndex_=index<state.collectionCount ? static_cast<std::uint8_t>(index) : 0;
+        memberId_=evolved; statsPage_=0; return navigate(Screen::Stats);
+    }
     case NearbyOpen: nearbyIndex_=0; navigate(Screen::Nearby); return {IntentKind::OpenNearby};
     case NearbyPrevious: case NearbyNext:
         if (!model.nearby || peerCount(model.nearby)<2) return {};
@@ -1218,8 +1254,17 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         std::snprintf(label,sizeof(label),"LV %u   HP %u/%u",static_cast<unsigned>(state.level),static_cast<unsigned>(state.hp),static_cast<unsigned>(maxHp(state)));
         c.center(92,label,2,dim);
         actor(206+tx,158+ty,5);
+        const auto* partner=activeMember(state);
+        const auto nextXp=partner && state.level<kMaxLevel ? xpForLevel(state.level+1)-partner->xp : 0;
+        std::snprintf(label,sizeof(label),"XP %u  NEXT +%u",static_cast<unsigned>(partner?partner->xp:0),static_cast<unsigned>(nextXp));
+        c.center(186,label,1,dim,36);
+        const auto toilet=partner?toiletNeed(*partner):0;
+        const auto missed=partner && careWasMissed(*partner);
+        std::snprintf(label,sizeof(label),missed?"TOILET %u  MISSED CARE":toilet>=25?"TOILET %u  NEEDED":"TOILET %u",static_cast<unsigned>(toilet));
+        c.center(200,label,1,missed||toilet>=25?amber:dim,36);
         std::snprintf(label,sizeof(label),"FOOD %u   MOOD %u   EN %u",static_cast<unsigned>(state.fullness),static_cast<unsigned>(state.mood),static_cast<unsigned>(state.energy));
-        c.center(207,label,2,dim);
+        c.center(214,label,1,dim,40);
+        if (partner && anyRouteReady(state,model,*partner)) c.badge(228,"DIGIVOLUTION REQUIREMENTS MET",1,mint,36);
         break;
     }
     case Screen::Explore:
@@ -1332,6 +1377,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             const auto guard=wildGuard(state);
             const auto* guardName=guard==combat::Defense::Brace ? "BRACE" : guard==combat::Defense::Counter ? "COUNTER" : guard==combat::Defense::Ward ? "WARD" : "NONE";
             std::snprintf(label,sizeof(label),"%s  EN %u",guardName,static_cast<unsigned>(state.energy)); c.badge(79,label,1,dim,42);
+            if (state.lastCritical) c.badge(307,"CRITICAL HIT",2,amber,36);
         }
         break;
     }
@@ -1340,6 +1386,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         break;
     case Screen::Result:
         c.center(78,shortMessage(state.message),2,mint);
+        if (state.lastCritical) c.center(100,"CRITICAL HIT",2,amber);
         actor(206+tx,166+ty,5);
         std::snprintf(label,sizeof(label),"LEVEL %u   DIGIMON %u/%u",static_cast<unsigned>(state.level),static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(kCollectionCapacity));
         c.center(235,label,1,dim); break;
@@ -1389,7 +1436,10 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         } else if (statsPage_==1) {
             row(113,"FULLNESS",member.fullness); row(134,"MOOD",member.mood); row(155,"ENERGY",member.energy); row(176,"BOND",member.bond);
             std::snprintf(label,sizeof(label),"XP %u  NEXT +%u",static_cast<unsigned>(member.xp),
-                static_cast<unsigned>(member.level<kMaxLevel ? xpForLevel(member.level+1)-member.xp : 0)); c.center(207,label,1,dim,36);
+                static_cast<unsigned>(member.level<kMaxLevel ? xpForLevel(member.level+1)-member.xp : 0)); c.center(197,label,1,dim,36);
+            std::snprintf(label,sizeof(label),careWasMissed(member)?"TOILET %u  MISSED CARE":toiletNeed(member)>=25?"TOILET %u  NEEDED":"TOILET %u",
+                static_cast<unsigned>(toiletNeed(member)));
+            c.center(214,label,1,careWasMissed(member)||toiletNeed(member)>=25?amber:dim,36);
         } else if (statsPage_==2) {
             c.center(115,"PHYSICAL",1,dim); c.center(130,profile.physicalSkill,std::strlen(profile.physicalSkill)<=24 ? 2 : 1,ink,40);
             c.center(151,"HEAVY",1,dim); c.center(166,profile.heavySkill,std::strlen(profile.heavySkill)<=24 ? 2 : 1,ink,40);
@@ -1402,11 +1452,11 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         }
         std::snprintf(label,sizeof(label),"CARE RANK %u  OFF +%u  GUARD +%u",static_cast<unsigned>(std::min<std::uint32_t>(4,member.bond/50)),static_cast<unsigned>(care.offense),static_cast<unsigned>(care.protection));
         c.badge(264,label,1,mint,40);
-        if (member.id!=state.activeCreatureId && hintAge>=7000) c.badge(340,"MAKE PARTNER TO DIGIVOLVE",1,amber,30);
+        if (anyRouteReady(state,model,member)) c.badge(340,"DIGIVOLUTION REQUIREMENTS MET",1,mint,30);
         break;
     }
     case Screen::Evolution: {
-        const auto* member=activeMember(state);
+        const auto* member=selectedMember(state);
         const auto* route=member ? forms::outgoing(member->formId,evolutionIndex_) : nullptr;
         const auto* target=route ? forms::find(route->to) : nullptr;
         c.badge(67,"DIGIVOLUTION",2,mint);
@@ -1415,13 +1465,19 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.center(164,"NO FURTHER ROUTE",2,amber);
             c.center(195,"THIS FORM IS COMPLETE",1,dim,32); break;
         }
-        const auto previewLevel=std::max<std::uint32_t>(member->level,std::max<std::uint32_t>(target->minLevel,route->minLevel));
+        const auto need=forms::evolutionNeed(*route);
+        const auto level=member->id==state.activeCreatureId ? state.level : member->level;
+        const auto bond=member->id==state.activeCreatureId ? state.bond : member->bond;
+        const auto care=carePoints(*member);
+        const bool ready=routeReady(state,model,*member,*route);
+        const auto previewLevel=std::max<std::uint32_t>(level,need.level);
         const auto before=combat::formProfile(member->formId,previewLevel);
         const auto after=combat::formProfile(target->id,previewLevel);
         if (evolutionPage_==0) {
             actor(206,184,9);
-            std::snprintf(label,sizeof(label),"%s  %u/%u",legal(state,model,Action::Evolve,route->to) ? "READY" : "LOCKED",evolutionIndex_+1,forms::outgoing(member->formId,1) ? 2 : 1);
-            c.badge(262,label,1,legal(state,model,Action::Evolve,route->to) ? mint : amber,40);
+            std::snprintf(label,sizeof(label),"%s  %u/%u",ready ? "READY" : "LOCKED",evolutionIndex_+1,forms::outgoing(member->formId,1) ? 2 : 1);
+            c.badge(262,label,1,ready ? mint : amber,40);
+            if (ready) c.badge(284,"DIGIVOLUTION REQUIREMENTS MET",1,mint,36);
         } else if (evolutionPage_==1) {
             std::snprintf(label,sizeof(label),"BASE STATS AT LEVEL %u",static_cast<unsigned>(previewLevel)); c.center(113,label,1,dim,36);
             const std::uint32_t oldStats[]{before.stats.maxHp,before.stats.attack,before.stats.defense,before.stats.magic,before.stats.resistance};
@@ -1438,8 +1494,8 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.center(216,"LEVEL XP CARE AND ID ARE KEPT",1,dim,40);
         } else {
             c.center(132,"NOT READY YET",2,amber);
-            c.center(166,member->level<route->minLevel ? "GAIN LEVELS THROUGH PLAY" : "LEVEL REQUIREMENT MET",1,dim,40);
-            c.center(191,member->bond<route->minBond ? "CARE TO BUILD YOUR BOND" : "BOND REQUIREMENT MET",1,dim,40);
+            c.center(166,level<need.level ? "GAIN LEVELS THROUGH PLAY" : bond<need.bond ? "CARE TO BUILD YOUR BOND" : "KEEP CARING TO DIGIVOLVE",1,dim,40);
+            if (ready) c.center(191,"DIGIVOLUTION REQUIREMENTS MET",1,mint,40);
             if(!model.writable) c.center(214,"SAVE RECOVERY REQUIRED",1,amber,36);
             else if(state.phase!=Phase::Home) c.center(214,"RETURN HOME TO DIGIVOLVE",1,amber,36);
         }
@@ -1450,8 +1506,8 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.center(225,label,1,mint,42);
         }
         if(evolutionPage_) {
-            std::snprintf(label,sizeof(label),"LEVEL %u/%u  BOND %u/%u",static_cast<unsigned>(member->level),route->minLevel,static_cast<unsigned>(member->bond),route->minBond);
-            c.center(240,label,2,member->level>=route->minLevel && member->bond>=route->minBond ? mint : amber,36);
+            std::snprintf(label,sizeof(label),"LV %u/%u  BOND %u/%u  CARE %u/%u",static_cast<unsigned>(level),need.level,static_cast<unsigned>(bond),need.bond,static_cast<unsigned>(care),need.care);
+            c.center(240,label,1,ready ? mint : amber,40);
             if(evolutionPage_!=3) c.center(264,"TAP / SWIPE FOR STATS / SKILLS",1,dim,36);
         }
         break;
@@ -1468,7 +1524,9 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::EvolutionResult: {
         c.badge(76,"DIGIVOLUTION COMPLETE",2,mint);
         actor(206+tx,172+ty,9);
-        c.badge(249,creatureName(state),std::strlen(creatureName(state))>21 ? 1 : 2,mint,36);
+        const auto* evolved=findMember(state,evolutionMember_);
+        const char* evolvedName=evolved ? memberName(*evolved) : creatureName(state);
+        c.badge(249,evolvedName,std::strlen(evolvedName)>21 ? 1 : 2,mint,36);
         c.badge(272,"NEW FORM SAVED",1,dim,36); break;
     }
     case Screen::Settings:
@@ -1688,6 +1746,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
                     const int x=actorX(receiver)-static_cast<int>(std::strlen(label))*6,y=139-static_cast<int>(elapsed-impactAt)*10/1200;
                     c.rect(x-4,y-3,static_cast<int>(std::strlen(label))*12+8,20,panel); c.text(x,y,label,2,amber);
                     if(match.lastReflected) c.badge(326,"COUNTER REFLECTED",1,amber);
+                    else if(match.lastCritical) c.badge(326,"CRITICAL HIT",1,amber);
                 }
             } else if (stage==nearby::Stage::Finished) {
                 const bool won=(match.status==nearby::Status::HostWon && n->host) || (match.status==nearby::Status::GuestWon && !n->host);
@@ -1729,7 +1788,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     if(browse || picker) {
         const bool multiple=picker || screen_==Screen::Starter || screen_==Screen::Stats || screen_==Screen::Sound || screen_==Screen::TradeReview ||
             (screen_==Screen::TradeChoose && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::Collection && state.collectionCount>1) ||
-            (screen_==Screen::Evolution && (evolutionPage_ || (activeMember(state) && forms::outgoing(activeMember(state)->formId,1)))) || screen_==Screen::Nearby;
+            (screen_==Screen::Evolution && (evolutionPage_ || (selectedMember(state) && forms::outgoing(selectedMember(state)->formId,1)))) || screen_==Screen::Nearby;
         if(multiple) {
             c.chevron(49,180,-1,screen_==Screen::Sound && !model.volumePercent ? dim : arrowColor);
             c.chevron(352,180,1,screen_==Screen::Sound && model.volumePercent>=100 ? dim : arrowColor);

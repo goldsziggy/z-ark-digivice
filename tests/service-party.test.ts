@@ -6,13 +6,14 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createApp, startServer } from '../service/server.ts';
+import { historicComparable } from './legacy-state-projection.ts';
 
 const rootDir = resolve(import.meta.dirname, '..');
 const corePath = process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/digivice-core');
 const battleCorePath = process.env.DIGIVICE_TEST_BATTLE_PATH ?? join(rootDir, 'build/digivice-battle');
 type Event = { type: string; value: number };
 const event = (type: string, value = 0): Event => ({ type, value });
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
 const hash = (text: string | Buffer) => createHash('sha256').update(text).digest('hex');
 const oldToken = Buffer.alloc(32, 65).toString('base64url'); // Temporary synthetic identity only.
 const frozen = (events: Event[], version = 14) => JSON.parse(execFileSync(corePath, [`--replay-v${version}-onboarding-trace`, '12345'], {
@@ -99,7 +100,7 @@ test('wild rewards pay each selected companion full native XP exactly once acros
     for (const member of before.collection) {
       const actual = after.collection.find((row: any) => row.id === member.id);
       const eligible = member.id === before.activeCreatureId || ids.includes(member.id);
-      assert.equal(actual.xp, Math.min(7600, member.xp + (rewarded && eligible ? 20 + 6 * before.wildLevel : 0)), `XP for member ${member.id}`);
+      assert.equal(actual.xp, Math.min(49000, member.xp + (rewarded && eligible ? 20 + 6 * before.wildLevel : 0)), `XP for member ${member.id}`);
     }
     await f.restart(); assert.deepEqual((await f.get()).body.state, after);
     assert.deepEqual(await f.request('/api/save-sync', f.identity.token, finish), responses[0]);
@@ -133,14 +134,15 @@ for (const version of [13, 14]) test(`rules${version} migration leaves companion
     deviceId: `dv_${'5'.repeat(24)}`, tokenHash: hash(oldToken), seed: 12345, initialMode: 'onboarding', revision: 1, legacy: null, events, receipts: [receipt],
   }] };
   const f = await fixture(t, original), save = await f.request('/api/save', oldToken); assert.equal(save.status, 200);
-  assert.deepEqual(save.body.state, { ...previous.state, schemaVersion: 22, rulesVersion: 15, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [] });
+  assert.equal(save.body.state.maxLevel, 50);
+  assert.deepEqual(historicComparable(save.body.state), historicComparable({ ...previous.state, schemaVersion: 23, rulesVersion: 16, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(save.body.autoTrace, previous.trace);
   assert.equal((await f.request('/api/save-sync', oldToken, pending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [17, 22, 15]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [18, 23, 16]);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: version, events, receipts: [receipt] }]);
-  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 2964);
+  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, `store.rules-v${version}.json`), 'utf8')), original);
   await f.restart(); assert.deepEqual(await f.request('/api/save', oldToken), save);
   await writeFile(join(f.dataDir, 'store.json'), '{interrupted'); await f.restart(); assert.deepEqual(await f.request('/api/save', oldToken), save);
@@ -163,7 +165,8 @@ test('rules14 snapshot baseline preserves inherited rules13 Auto trace and both 
     legacy: { histories: [archived], snapshotBase64: snapshot, autoTrace: previous.trace }, events: suffix, receipts: [receipts[1]],
   }] };
   const f = await fixture(t, original), saved = await f.request('/api/save', oldToken); assert.equal(saved.status, 200);
-  assert.deepEqual(saved.body.state, { ...expected.state, schemaVersion: 22, rulesVersion: 15, partyCapacity: 3, partyMemberIds: [] });
+  assert.equal(saved.body.state.maxLevel, 50);
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...expected.state, schemaVersion: 23, rulesVersion: 16, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, previous.trace, 'care suffix inherits exact earlier frames');
   const histories = [archived, { rulesVersion: 14, events: suffix, receipts: [receipts[1]] }];
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
@@ -171,7 +174,7 @@ test('rules14 snapshot baseline preserves inherited rules13 Auto trace and both 
   for (const [index, events] of [initial, suffix].entries()) {
     const pending = { rulesVersion: 13 + index, baseRevision: index, batchId: receipts[index].batchId, events };
     assert.equal((await f.request('/api/save-sync', oldToken, pending)).body.error, 'migration_required');
-    assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
+    assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
   }
   await f.restart(); assert.deepEqual(await f.request('/api/save', oldToken), saved);
   const current = await f.request('/api/save-sync', oldToken, batch(2, 'party-chain-current-care', [event('rest')])); assert.equal(current.status, 200);

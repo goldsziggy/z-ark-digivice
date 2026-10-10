@@ -6,6 +6,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { startServer } from '../service/server.ts';
+import { historicComparable } from './legacy-state-projection.ts';
 
 const rootDir = resolve(import.meta.dirname, '..');
 const frozen = JSON.parse(readFileSync(join(rootDir, 'tests/fixtures/schema17-trade-migration.json'), 'utf8'));
@@ -41,22 +42,23 @@ for (const archivedBaseline of [false, true]) test(`schema17 upgrades metadata w
     return { status: response.status, body: await response.json() as any };
   };
   const saved = await request(); assert.equal(saved.status, 200);
-  assert.deepEqual(saved.body.state, { ...frozen.cases.pending.state, schemaVersion: 22, rulesVersion: 15, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [], receivedTrades: 0, autoCapture: 0, worldSeed: 0 });
+  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 23); assert.equal(saved.body.state.rulesVersion, 16);
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...frozen.cases.pending.state, schemaVersion: 23, rulesVersion: 16, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [], receivedTrades: 0, autoCapture: 0, worldSeed: 0 }));
   assert.equal(saved.body.revision, original.devices[0].revision);
   const upgraded = JSON.parse(await readFile(join(dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([upgraded.formatVersion, upgraded.gameSchemaVersion, upgraded.rulesVersion], [17, 22, 15]);
+  assert.deepEqual([upgraded.formatVersion, upgraded.gameSchemaVersion, upgraded.rulesVersion], [18, 23, 16]);
   assert.deepEqual(upgraded.devices[0].legacy.histories, [...(original.devices[0].legacy?.histories ?? []), { rulesVersion: 13, events, receipts: [savedReceipt] }]);
   assert.deepEqual(upgraded.devices[0].events, []); assert.deepEqual(upgraded.devices[0].receipts, []);
   assert.equal(await readFile(join(dataDir, 'store.rules-v13.json'), 'utf8'), originalText);
   assert.deepEqual(await readFile(join(dataDir, 'store.json')), await readFile(join(dataDir, 'store.backup.json')));
   const retry = { rulesVersion: 13, baseRevision, batchId: savedReceipt.batchId, events };
   const accepted = await request(retry); assert.equal(accepted.status, 409); assert.equal(accepted.body.error, 'migration_required');
-  assert.equal((await request({ ...retry, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await request({ ...retry, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
   await close(); app = await startServer(options);
   assert.deepEqual(await request(), saved); assert.deepEqual(await request(retry), accepted);
   // Native trading is not an HTTP event or an unvalidated snapshot import.
   for (const forbidden of [{ type: 'trade', value: 1 }, { type: 'received-trades', value: 1 }]) {
-    const rejected = await request({ rulesVersion: 15, baseRevision: saved.body.revision, batchId: 'no-network-trade-import', events: [forbidden] });
+    const rejected = await request({ rulesVersion: 16, baseRevision: saved.body.revision, batchId: 'no-network-trade-import', events: [forbidden] });
     assert.equal(rejected.status, 422); assert.deepEqual(await request(), saved);
   }
 });

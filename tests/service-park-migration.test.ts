@@ -1,4 +1,4 @@
-import { legacyFields } from './legacy-state-projection.ts';
+import { historicComparable, legacyFields } from './legacy-state-projection.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -29,9 +29,10 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, check
   return { dataDir, request, restart: async () => { await close(); app = await startServer(options); } };
 }
 function oldFields(current: any) {
+  assert.equal(current.maxLevel, 50);
   const { schemaVersion, rulesVersion, wildRarity, recoveryRestCount, queuedEncounters, stepsToNextEncounter, walking, ...state } = legacyFields(current);
   assert.deepEqual(walking, { rate: 2, name: 'Normal', eligibleSteps: 0, encounters: 0, rngState: 0, target: 0, progress: 0, remainingSteps: 0 });
-  assert.equal(schemaVersion, 22); assert.equal(rulesVersion, 15);
+  assert.equal(schemaVersion, 23); assert.equal(rulesVersion, 16);
   assert.equal(wildRarity, null, 'historical encounter/result cannot acquire a rarity label retroactively');
   assert.ok(Number.isInteger(recoveryRestCount) && recoveryRestCount >= 0 && recoveryRestCount <= 40);
   assert.equal(queuedEncounters, Math.floor(state.stepCredit / 100));
@@ -42,24 +43,24 @@ function oldFields(current: any) {
 for (const name of ['egg', 'encounter', 'autoResult', 'afterCare']) test(`genuine9 ${name} migrates once without rerolls, rewards or relabeled pending commands`, async t => {
   const checkpoint = frozen.care.checkpoints[name], f = await fixture(t, checkpoint);
   const current = await f.request(); assert.equal(current.status, 200);
-  assert.deepEqual(oldFields(current.body.state), checkpoint.response.body.state);
+  assert.deepEqual(historicComparable(oldFields(current.body.state)), historicComparable(checkpoint.response.body.state));
   assert.deepEqual(current.body.autoTrace, checkpoint.response.body.autoTrace);
   assert.equal(current.body.revision, checkpoint.response.body.revision);
   const store = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [17, 22, 15]);
+  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [18, 23, 16]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v9.json'), 'utf8')), checkpoint.store);
   for (const command of frozen.care.commands.slice(0, current.body.revision)) {
     assert.equal((await f.request(command.body)).body.error, 'migration_required');
-    assert.equal((await f.request({ ...command.body, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
+    assert.equal((await f.request({ ...command.body, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
   }
   await f.restart(); assert.deepEqual(await f.request(), current);
   if (name === 'encounter') {
-    const rejected = await f.request({ rulesVersion: 15, baseRevision: 1, batchId: 'park-mixed-auto-rollback', events: [{ type: 'auto', value: 0 }, { type: 'attack', value: 0 }] });
+    const rejected = await f.request({ rulesVersion: 16, baseRevision: 1, batchId: 'park-mixed-auto-rollback', events: [{ type: 'auto', value: 0 }, { type: 'attack', value: 0 }] });
     assert.equal(rejected.status, 422); assert.deepEqual(await f.request(), current);
     const oldAuto = JSON.parse(execFileSync(process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/digivice-core'), ['--replay-v9-onboarding-trace', String(checkpoint.store.devices[0].seed)], { input: [...checkpoint.store.devices[0].events, ...frozen.care.commands[1].body.events].map((e: any) => `${e.type} ${e.value}\n`).join(''), encoding: 'utf8' }));
     assert.deepEqual(oldAuto.state, frozen.care.commands[1].response.body.state); assert.deepEqual(oldAuto.trace, frozen.care.commands[1].response.body.autoTrace);
-    assert.equal((await f.request({ ...frozen.care.commands[1].body, rulesVersion: 15, batchId: 'park-reject-frozen-nine-auto' })).status, 422);
-    const command = { rulesVersion: 15, baseRevision: 1, batchId: 'park-clear-frozen-nine-test', events: [{ type: 'resolve-test-encounter', value: 0 }] };
+    assert.equal((await f.request({ ...frozen.care.commands[1].body, rulesVersion: 16, batchId: 'park-reject-frozen-nine-auto' })).status, 422);
+    const command = { rulesVersion: 16, baseRevision: 1, batchId: 'park-clear-frozen-nine-test', events: [{ type: 'resolve-test-encounter', value: 0 }] };
     const accepted = await f.request(command); assert.equal(accepted.status, 200);
     for (const key of ['hp', 'energy', 'xp', 'journal', 'captures', 'rngState', 'activeCreatureId', 'nextMemberId']) assert.deepEqual(accepted.body.state[key], current.body.state[key], key);
     // Stored care values are unchanged; leaving a pre12 fight re-enables
@@ -77,10 +78,10 @@ for (const name of ['egg', 'encounter', 'autoResult', 'afterCare']) test(`genuin
 
 for (const name of ['inherited8', 'afterRest', 'newAuto']) test(`second migration preserves the correct recorded trace for ${name}`, async t => {
   const checkpoint = inherited.checkpoints[name], f = await fixture(t, checkpoint), saved = await f.request();
-  assert.equal(saved.status, 200); assert.deepEqual(oldFields(saved.body.state), checkpoint.response.body.state);
+  assert.equal(saved.status, 200); assert.deepEqual(historicComparable(oldFields(saved.body.state)), historicComparable(checkpoint.response.body.state));
   assert.deepEqual(saved.body.autoTrace, checkpoint.response.body.autoTrace);
   assert.equal(saved.body.autoTrace.endSequence, saved.body.state.lastAutoBattle.sequence);
-  const body = { rulesVersion: 15, baseRevision: saved.body.revision, batchId: `park-keep-trace-${name}`, events: [{ type: 'rest', value: 0 }] };
+  const body = { rulesVersion: 16, baseRevision: saved.body.revision, batchId: `park-keep-trace-${name}`, events: [{ type: 'rest', value: 0 }] };
   const accepted = await f.request(body); assert.equal(accepted.status, 200); assert.deepEqual(accepted.body.autoTrace, saved.body.autoTrace);
   await f.restart(); assert.deepEqual(await f.request(body), accepted);
 });
@@ -88,7 +89,7 @@ for (const name of ['inherited8', 'afterRest', 'newAuto']) test(`second migratio
 test('native recovery/rarity metadata is bounded and only existing Rest batches mutate recovery', async t => {
   const f = await fixture(t, frozen.care.checkpoints.afterCare);
   let saved = (await f.request()).body;
-  const recovery = { rulesVersion: 15, baseRevision: saved.revision, batchId: 'park-native-count-recovery', events: Array.from({ length: saved.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })) };
+  const recovery = { rulesVersion: 16, baseRevision: saved.revision, batchId: 'park-native-count-recovery', events: Array.from({ length: saved.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })) };
   assert.ok(recovery.events.length > 0 && recovery.events.length <= 40);
   for (const events of [Array.from({ length: 101 }, () => ({ type: 'rest', value: 0 })), [{ type: 'rest', value: 0 }, { type: 'attack', value: 0 }]]) {
     assert.equal((await f.request({ ...recovery, events })).status, 422);
@@ -96,12 +97,12 @@ test('native recovery/rarity metadata is bounded and only existing Rest batches 
   }
   const recovered = await f.request(recovery); assert.equal(recovered.status, 200);
   assert.equal(recovered.body.state.recoveryRestCount, 0); assert.equal(recovered.body.state.energy, 100);
-  assert.equal(recovered.body.state.hp, recovered.body.state.combat.maxHp); assert.equal(recovered.body.state.xp, saved.state.xp);
+  assert.equal(recovered.body.state.hp, recovered.body.state.combat.maxHp); assert.equal(recovered.body.state.xp, saved.state.xp + 2);
   assert.equal((await f.request({ ...recovery, batchId: 'park-stale-recovery-command' })).body.error, 'revision_conflict');
   await f.restart(); assert.deepEqual(await f.request(recovery), recovered);
   saved = recovered.body;
-  const encounter = await f.request({ rulesVersion: 15, baseRevision: saved.revision, batchId: 'park-current-rarity-encounter', events: [{ type: 'walk', value: 100 }] });
-  assert.equal(encounter.status, 200); assert.equal(encounter.body.state.wildRules, 15); assert.equal(encounter.body.state.recoveryRestCount, 0);
+  const encounter = await f.request({ rulesVersion: 16, baseRevision: saved.revision, batchId: 'park-current-rarity-encounter', events: [{ type: 'walk', value: 100 }] });
+  assert.equal(encounter.status, 200); assert.equal(encounter.body.state.wildRules, 16); assert.equal(encounter.body.state.recoveryRestCount, 0);
   assert.ok(['common', 'uncommon', 'rare'].includes(encounter.body.state.wildRarity));
   const detail = await f.request(undefined, `/api/roster/${encounter.body.state.wildFormId}`);
   assert.equal(detail.status, 200); assert.equal(detail.body.form.encounterRarity, encounter.body.state.wildRarity);
@@ -119,18 +120,18 @@ test('carried-over wild9 still refuses release while new Auto encounters allow a
   device.events.push(...events); device.revision++;
   const old = await fixture(t, checkpoint), before = await old.request();
   assert.equal(before.body.state.wildRules, 9); assert.equal(before.body.state.collection.length, 2);
-  const release = { rulesVersion: 15, baseRevision: before.body.revision, batchId: 'park-old-encounter-release-blocked', events: [{ type: 'release', value: 2 }] };
+  const release = { rulesVersion: 16, baseRevision: before.body.revision, batchId: 'park-old-encounter-release-blocked', events: [{ type: 'release', value: 2 }] };
   assert.equal((await old.request(release)).status, 422); assert.deepEqual(await old.request(), before);
 
   const current = await fixture(t, frozen.care.checkpoints.afterCare), home = await current.request();
-  const encountered = await current.request({ rulesVersion: 15, baseRevision: home.body.revision, batchId: 'park-new-auto-make-room', events });
-  assert.equal(encountered.status, 200); assert.equal(encountered.body.state.wildRules, 15); assert.equal(encountered.body.state.battleMode, 'auto');
+  const encountered = await current.request({ rulesVersion: 16, baseRevision: home.body.revision, batchId: 'park-new-auto-make-room', events });
+  assert.equal(encountered.status, 200); assert.equal(encountered.body.state.wildRules, 16); assert.equal(encountered.body.state.battleMode, 'auto');
   const currentRelease = { ...release, baseRevision: encountered.body.revision, batchId: 'park-confirm-nonactive-release' };
   const released = await current.request(currentRelease); assert.equal(released.status, 200);
   assert.equal(released.body.state.collection.length, 1); assert.equal(released.body.state.phase, 'encounter');
   for (const key of ['rngState', 'hp', 'activeCreatureId', 'wildFormId', 'wildHp', 'wildTurn', 'captureAttempts', 'cardUsed', 'battleMode']) assert.deepEqual(released.body.state[key], encountered.body.state[key], key);
   await current.restart(); assert.deepEqual(await current.request(currentRelease), released);
-  const resolved = await current.request({ rulesVersion: 15, baseRevision: released.body.revision, batchId: 'park-confirm-auto-after-room', events: [{ type: 'auto', value: 0 }] });
+  const resolved = await current.request({ rulesVersion: 16, baseRevision: released.body.revision, batchId: 'park-confirm-auto-after-room', events: [{ type: 'auto', value: 0 }] });
   assert.equal(resolved.status, 200); assert.equal(resolved.body.state.phase, 'home');
   assert.ok(resolved.body.autoTrace); assert.equal(resolved.body.state.sequence, released.body.state.sequence + 1);
   assert.deepEqual(await current.request(currentRelease), released, 'replaying the release ACK after battle completion cannot remove a new capture');

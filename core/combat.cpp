@@ -111,7 +111,7 @@ std::size_t writeCatalogJson(char* output, std::size_t capacity) {
         if (length >= capacity - used) return false;
         std::memcpy(output + used, text, length + 1); used += length; return true;
     };
-    if (!append("{\"rulesVersion\":15,\"types\":[\"grove\",\"tide\",\"ember\",\"neutral\"],\"typeChart\":["
+    if (!append("{\"rulesVersion\":16,\"types\":[\"grove\",\"tide\",\"ember\",\"neutral\"],\"typeChart\":["
         "{\"attacker\":\"grove\",\"strongAgainst\":\"tide\",\"weakAgainst\":\"ember\"},"
         "{\"attacker\":\"tide\",\"strongAgainst\":\"ember\",\"weakAgainst\":\"grove\"},"
         "{\"attacker\":\"ember\",\"strongAgainst\":\"grove\",\"weakAgainst\":\"tide\"},"
@@ -135,7 +135,7 @@ std::size_t writeStarterJson(char* output, std::size_t capacity) {
         if (length >= capacity - used) { output[0] = '\0'; return false; }
         std::memcpy(output + used, text, length + 1); used += length; return true;
     };
-    if (!append("{\"formatVersion\":1,\"rulesVersion\":15,\"starters\":[")) return 0;
+    if (!append("{\"formatVersion\":1,\"rulesVersion\":16,\"starters\":[")) return 0;
     for (std::uint32_t id = 1; id <= kStarterCount; ++id) {
         char entry[640], stats[kProfileJsonCapacity];
         const auto s = starterSpecies(id);
@@ -159,7 +159,7 @@ std::size_t writeEvolutionJson(std::uint32_t species,char* output,std::size_t ca
         if(n<0 || static_cast<std::size_t>(n)>=capacity-used) {ok=false;return;}
         used+=static_cast<std::size_t>(n);
     };
-    append("{\"formatVersion\":1,\"rulesVersion\":15,\"species\":\"%s\",\"forms\":[",speciesName(species));
+    append("{\"formatVersion\":1,\"rulesVersion\":16,\"species\":\"%s\",\"forms\":[",speciesName(species));
     bool comma=false;
     for(std::uint32_t id=1;id<=forms::kFormCount;++id) {
         const auto* f=forms::find(id); if (!forms::productionForm(id) || f->lineage!=species) continue;
@@ -223,9 +223,11 @@ void writeGraphLinks(CatalogWriter& json, std::uint32_t formId) {
     for (unsigned i = 0; const auto* edge = forms::outgoing(formId, i); ++i)
         json.append("%s%u", i ? "," : "", static_cast<unsigned>(edge->to));
     json.append("],\"edges\":[");
-    for (unsigned i = 0; const auto* edge = forms::outgoing(formId, i); ++i)
-        json.append("%s{\"toFormId\":%u,\"requiredLevel\":%u,\"requiredBond\":%u}", i ? "," : "",
-                    static_cast<unsigned>(edge->to), static_cast<unsigned>(edge->minLevel), static_cast<unsigned>(edge->minBond));
+    for (unsigned i = 0; const auto* edge = forms::outgoing(formId, i); ++i) {
+        const auto need = forms::evolutionNeed(*edge);
+        json.append("%s{\"toFormId\":%u,\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u}", i ? "," : "",
+                    static_cast<unsigned>(edge->to), static_cast<unsigned>(need.level), static_cast<unsigned>(need.bond), static_cast<unsigned>(need.care));
+    }
     json.append("]");
 }
 }
@@ -253,7 +255,7 @@ std::size_t writeEvolutionGraphJson(std::uint32_t formId, std::uint32_t offset,
     if (offset > total) return 0;
     const auto count = limit < total - offset ? limit : total - offset;
     CatalogWriter json(output, capacity);
-    json.append("{\"formatVersion\":2,\"rulesVersion\":15,\"catalogVersion\":%u,\"focusFormId\":%u,"
+    json.append("{\"formatVersion\":2,\"rulesVersion\":16,\"catalogVersion\":%u,\"focusFormId\":%u,"
                 "\"offset\":%u,\"limit\":%u,\"total\":%u,\"nextOffset\":", static_cast<unsigned>(forms::kCatalogVersion),
                 static_cast<unsigned>(formId), static_cast<unsigned>(offset), static_cast<unsigned>(limit), total);
     if (offset + count < total) json.append("%u", static_cast<unsigned>(offset + count)); else json.append("null");
@@ -279,7 +281,7 @@ std::size_t writeCatalogPageJson(std::uint32_t offset, std::uint32_t limit, char
     if (!output || !capacity || !limit || limit > 16 || offset > forms::kProductionFormCount) return 0;
     CatalogWriter json(output, capacity);
     const auto count = limit < forms::kProductionFormCount - offset ? limit : forms::kProductionFormCount - offset;
-    json.append("{\"formatVersion\":1,\"rulesVersion\":15,\"catalogVersion\":%" PRIu32
+    json.append("{\"formatVersion\":1,\"rulesVersion\":16,\"catalogVersion\":%" PRIu32
                 ",\"total\":%" PRIu32 ",\"offset\":%" PRIu32 ",\"nextOffset\":", forms::kCatalogVersion, forms::kProductionFormCount, offset);
     if (offset + count < forms::kProductionFormCount) json.append("%" PRIu32, offset + count); else json.append("%s", "null");
     json.append(",\"forms\":[");

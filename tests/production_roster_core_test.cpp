@@ -47,11 +47,12 @@ void releaseEvolutionEdges(){
   const auto* edge=forms::edgeAt(i);
   if(!forms::productionForm(edge->from)||!forms::productionForm(edge->to)){++retainedOnly;continue;}
   ++released;const auto* from=forms::find(edge->from);const auto* to=forms::find(edge->to);
-  const auto level=edge->minLevel>from->minLevel?edge->minLevel:from->minLevel;
-  const auto bond=edge->minBond>from->minBond?edge->minBond:from->minBond;
+  const auto need=forms::evolutionNeed(*edge);
+  const auto level=need.level;
+  const auto bond=need.bond;
   auto s=newDevice(73);step(s,Action::Hatch,1);s.sequence=s.foregroundSequence=3;s.steps=100;s.captures=s.encounters=1;
   s.collectionCount=2;s.nextMemberId=3;s.activeCreatureId=2;
-  s.collection[1]={2,static_cast<Species>(from->lineage),17,80,70,80,bond,level,2,xpForLevel(level),from->id};
+  s.collection[1]={2,static_cast<Species>(from->lineage),17,80,70,80,bond,level,2,xpForLevel(level),from->id,need.care};
   s.hp=17;s.energy=80;s.fullness=70;s.mood=80;s.bond=bond;s.level=level;s.journal[(from->id-1)/32]|=1u<<((from->id-1)%32);CHECK(isValid(s));
   const auto before=s;const auto maxBefore=combat::formProfile(from->id,level).stats.maxHp;step(s,Action::Evolve,to->id);
   CHECK(s.collection[1].id==2&&s.collection[1].formId==to->id&&unsigned(s.collection[1].species)==to->lineage&&s.collection[1].xp==before.collection[1].xp);
@@ -116,7 +117,7 @@ void frozenInstalledFixtures(){
  // No rules17 record can invent a current-rules original foe, but oldrules remain decodable until explicit repair.
  auto s=newDevice();step(s,Action::Hatch,1);step(s,Action::AccrueSteps,1000);auto bad=s;bad.pendingEncounter={4,1,13};CHECK(!isValid(bad));bad.pendingEncounter.rules=12;CHECK(isValid(bad));
  Action action;CHECK(parseAction("resolve-test-encounter",action)&&action==Action::ResolveTestEncounter);
- CHECK(kSchemaVersion==22&&kRulesVersion==15&&kSnapshotSize==2964);
+ CHECK(kSchemaVersion==23&&kRulesVersion==16&&kSnapshotSize==3216);
 }
 }
 int main(){productionPool();releaseEvolutionEdges();firstStepsAndStarters();resolution();frozenInstalledFixtures();std::printf("%u production-roster/migration checks, %u failures\n",checks,failures);return failures?1:0;}

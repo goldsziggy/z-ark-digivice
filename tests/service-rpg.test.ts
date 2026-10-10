@@ -34,27 +34,27 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved
   const pair = async () => { const code = (await request('/api/pairing/start', undefined, {})).body.code; return (await request('/api/pairing/claim', undefined, { code })).body; };
   return { request, pair, dataDir, restart: async () => { await close(); app = await startServer({ seedSource: () => 12345, dataDir, corePath, battleCorePath, port: 0 }); } };
 }
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
 
 test('rules-three Auto capture migrates once without retroactive XP or relabelled receipts', async t => {
   const events = [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }, { type: 'auto', value: 0 }];
   const old = oldCare(events), f = await fixture(t, old);
   const migrated = (await f.request('/api/save', TOKEN)).body;
-  assert.equal(migrated.state.schemaVersion, 22); assert.equal(migrated.state.rulesVersion, 15);
+  assert.equal(migrated.state.schemaVersion, 23); assert.equal(migrated.state.rulesVersion, 16);
   assert.equal(migrated.revision, 1); assert.equal(migrated.baseSequence, 4); assert.deepEqual(migrated.events, []);
   assert.equal(migrated.state.rngState, 3336926330); assert.equal(migrated.state.captures, 1);
   assert.deepEqual(migrated.state.collection.map((member: any) => [member.id, member.species, member.xp, member.level, member.capturedAtSequence]), [[1, 'impmon', 0, 1, 0], [2, 'flicker', 0, 1, 4]]);
   assert.deepEqual(migrated.state.lastAutoBattle, { sequence: 4, turns: 4, outcome: 'captured' }); assert.equal(migrated.autoTrace, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 17); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 2964);
+  assert.equal(stored.formatVersion, 18); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 3, events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v3.json'), 'utf8')), old);
   const oldPending = { rulesVersion: 3, baseRevision: 0, batchId: old.devices[0].receipts[0].batchId, events };
   assert.equal((await f.request('/api/save-sync', TOKEN, oldPending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', TOKEN, { ...oldPending, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', TOKEN, { ...oldPending, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
   await f.restart(); assert.deepEqual((await f.request('/api/save', TOKEN)).body, migrated);
-  const care = await f.request('/api/save-sync', TOKEN, batch(1, 'care-does-not-award-xp', [{ type: 'feed', value: 0 }]));
-  assert.equal(care.status, 200); assert.equal(care.body.state.xp, 0); assert.equal(care.body.state.level, 1);
+  const care = await f.request('/api/save-sync', TOKEN, batch(1, 'care-awards-xp-once', [{ type: 'feed', value: 0 }]));
+  assert.equal(care.status, 200); assert.equal(care.body.state.xp, migrated.state.fullness < 100 ? 2 : 0); assert.equal(care.body.state.level, 1);
 });
 
 test('zero-event legacy identities stay partners and unhatched onboarding remains an egg after RPG migration', async t => {
@@ -83,7 +83,14 @@ test('new wild XP and captures are atomic and exact retries survive restart with
   assert.deepEqual(await f.request('/api/save-sync', identity.token, confirmed), accepted);
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, confirmed), accepted);
   const later = await f.request('/api/save-sync', identity.token, batch(2, 'after-reward-care', [{ type: 'feed', value: 0 }, { type: 'play', value: 0 }, { type: 'rest', value: 0 }]));
-  assert.equal(later.status, 200); assert.equal(later.body.state.xp, accepted.body.state.xp);
+  assert.equal(later.status, 200);
+  {
+    const start = accepted.body.state; let xp = start.xp, fullness = start.fullness, mood = start.mood, energy = start.energy, hp = start.hp;
+    if (fullness < 100) { xp += 2; fullness = Math.min(100, fullness + 15); energy = Math.min(100, energy + 3); mood = Math.min(100, mood + 2); }
+    if (mood < 100 && energy >= 5) { xp += 2; energy -= 5; mood = Math.min(100, mood + 12); }
+    if (hp < start.combat.maxHp || energy < 100) xp += 2;
+    assert.equal(later.body.state.xp, xp);
+  }
   assert.deepEqual(await f.request('/api/save-sync', identity.token, confirmed), accepted);
 });
 
@@ -92,19 +99,43 @@ test('native branch catalogs are bounded, evolution needs eligibility and is loc
   const f = await fixture(t, oldCare(events)), before = (await f.request('/api/save', TOKEN)).body;
   assert.equal(before.state.level, 10); assert.equal(before.state.formId, 11); assert.equal(before.state.evolution.options.length, 2);
   const catalog = await f.request('/api/evolution/catalog?species=impmon');
-  assert.equal(catalog.status, 200); assert.equal(catalog.body.rulesVersion, 15); assert.equal(catalog.body.forms.length, 7); assert.ok(Buffer.byteLength(JSON.stringify(catalog.body)) <= 16384);
+  assert.equal(catalog.status, 200); assert.equal(catalog.body.rulesVersion, 16); assert.equal(catalog.body.forms.length, 7); assert.ok(Buffer.byteLength(JSON.stringify(catalog.body)) <= 16384);
   for (const path of ['/api/evolution/catalog', '/api/evolution/catalog?species=impmon&species=agumon', '/api/evolution/catalog?species=../../secret', '/api/evolution/catalog?species=impmon&level=20']) assert.equal((await f.request(path)).status, 400);
-  const target = before.state.evolution.options.find((option: any) => option.eligible);
-  assert.ok(target);
-  const evolve = batch(1, 'confirmed-native-evolution', [{ type: 'evolve', value: target.formId }]);
-  assert.equal((await f.request('/api/save-sync', TOKEN, batch(1, 'invalid-cross-lineage', [{ type: 'evolve', value: 19 }]))).status, 422);
+  assert.equal(before.state.evolution.options.some((option: any) => option.eligible), false, 'level 10 does not meet the earned champion gate');
+  let revision = before.revision, serial = 0, saved = before;
+  const send = async (events: Event[]) => {
+    const result = await f.request('/api/save-sync', TOKEN, batch(revision, `earn-evolution-${++serial}`, events));
+    assert.equal(result.status, 200, JSON.stringify(result.body?.error ?? result.body?.state?.message));
+    revision = result.body.revision; return result.body;
+  };
+  for (let guard = 0; guard < 100 && !saved.state.evolution.options.some((option: any) => option.eligible); ++guard) {
+    const option = saved.state.evolution.options[0];
+    const member = saved.state.collection.find((row: any) => row.id === saved.state.activeCreatureId);
+    if (member.carePoints < option.requiredCare) {
+      const minutes = [1, 2, 3, 4].map(step => ({ type: 'care-minute', value: saved.state.careMinute + step }));
+      saved = await send([minutes[0], { type: 'feed', value: 0 }, ...minutes.slice(1)]);
+      const carried = saved.state.collection.find((row: any) => row.id === saved.state.activeCreatureId);
+      if (carried.toilet >= 25 || carried.careMissed) saved = await send([{ type: 'toilet', value: 0 }]);
+      continue;
+    }
+    const prep: Event[] = [];
+    if (saved.state.battleMode !== 'auto') prep.push({ type: 'mode', value: 1 });
+    prep.push(...Array.from({ length: saved.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 });
+    saved = await send(prep);
+  }
+  const target = saved.state.evolution.options.find((option: any) => option.eligible);
+  assert.ok(target, 'an earned route becomes eligible without changing partners');
+  const ready = (await f.request('/api/save', TOKEN)).body;
+  assert.equal(ready.revision, revision);
+  const evolve = batch(revision, 'confirmed-native-evolution', [{ type: 'evolve', value: target.formId }]);
+  assert.equal((await f.request('/api/save-sync', TOKEN, batch(revision, 'invalid-cross-lineage', [{ type: 'evolve', value: 19 }]))).status, 422);
   const started = await f.request('/api/battle/start', TOKEN, { rulesVersion: 7, expectedRevision: 0, requestId: 'rpg-profile-practice-start' });
-  assert.equal(started.status, 200); assert.equal(started.body.battle.playerFormId, 11); assert.equal(started.body.battle.playerLevel, 10); assert.equal(started.body.battle.enemyLevel, 10);
+  assert.equal(started.status, 200); assert.equal(started.body.battle.playerFormId, 11); assert.equal(started.body.battle.playerLevel, ready.state.level); assert.equal(started.body.battle.enemyLevel, ready.state.level);
   assert.equal((await f.request('/api/save-sync', TOKEN, evolve)).body.error, 'partner_locked');
   const retired = await f.request('/api/battle/act', TOKEN, { rulesVersion: 7, expectedRevision: 1, requestId: 'rpg-profile-practice-retreat', action: { type: 'retreat', value: 0 } });
-  assert.equal(retired.status, 200); assert.deepEqual((await f.request('/api/save', TOKEN)).body, before, 'practice grants no XP or care changes');
+  assert.equal(retired.status, 200); assert.deepEqual((await f.request('/api/save', TOKEN)).body, ready, 'practice grants no XP or care changes');
   const evolved = await f.request('/api/save-sync', TOKEN, evolve);
-  assert.equal(evolved.status, 200); assert.equal(evolved.body.state.formId, target.formId); assert.equal(evolved.body.state.activeCreatureId, 1); assert.equal(evolved.body.state.xp, before.state.xp);
+  assert.equal(evolved.status, 200); assert.equal(evolved.body.state.formId, target.formId); assert.equal(evolved.body.state.activeCreatureId, 1); assert.equal(evolved.body.state.xp, ready.state.xp);
   assert.equal((await f.request('/api/battle/start', TOKEN, { rulesVersion: 7, expectedRevision: 2, requestId: 'rpg-evolved-practice-start' })).body.battle.playerFormId, target.formId);
   assert.deepEqual(await f.request('/api/save-sync', TOKEN, evolve), evolved, 'committed evolution receipt precedes later practice lock');
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', TOKEN, evolve), evolved);

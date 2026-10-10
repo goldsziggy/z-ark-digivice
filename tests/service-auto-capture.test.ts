@@ -11,7 +11,7 @@ const rootDir = resolve(import.meta.dirname, '..');
 const token = Buffer.alloc(32, 62).toString('base64url'); // Synthetic identity.
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 type Event = { type: string; value: number };
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-auto-flick-'));
   const events = [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }];

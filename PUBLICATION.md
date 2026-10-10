@@ -1,14 +1,14 @@
 # Source publication contents
 
-This curated public export is prepared for **goldsziggy/z-ark-digivice**, preserving public history through `3293352c81f92e22db7c750613d64f0ea5252c75`. Game and firmware source is frozen at **`171cda7e698cf2915b50aa46bc766d8d1d0ee50d`**. Development Git history stays local.
+This curated public export is prepared for **goldsziggy/z-ark-digivice**. Public history includes `f12027d` and the battle-demo animation at `50f658e`. Current gameplay source is schema 23 / rules 16. The previous device package remains firmware `171cda7`. Development-only history that never reached this public repository is not reconstructed here.
 
 The later `/play/` showcase update adds only browser-optimized in-game artwork with [scoped credits and provenance](docs/play/ART_SOURCES.md). The frozen firmware/source export boundaries below describe release `4466aa1`; its service catalogs and original import packs remain unchanged.
 
 ## Included
 
 - The deterministic C++ game core, frozen replay executors, ESP firmware adapters, native touch UI, TypeScript service and browser simulator.
-- Current capacity 60/schema 22/rules 15 migration with three additional XP companions, graded capture, independent world seeds, sound controls and durable one-for-one nearby trading.
-- Hash-verified [171cda7 firmware build images](releases/firmware-171cda7/README.md), alongside the unchanged historical [f74 package](releases/firmware-f74ee4c/README.md).
+- Current capacity 60/schema 23/rules 16, with level cap 50, three XP companions that also earn bond once, duplicate merges, three-attempt capture that stays in the battle, automatic Auto battles, critical hits, and care actions that grant small XP.
+- Hash-verified historical [171cda7 firmware build images](releases/firmware-171cda7/README.md), alongside the unchanged historical [f74 package](releases/firmware-f74ee4c/README.md). Those images are the last packaged device builds, not the rules 16 source.
 - Source tests, roster research and acquisition references, original CC0 fixture sprites and scoped component notices.
 - Unchanged C14-P19 editable CAD, 11 print STLs, six-page assembly PDF, six guide images and [six native-project/G-code ZIP packages](hardware/c14-p19/downloads/README.md).
 - The existing public [showcase](docs/index.html), parts sourcing, reviewed device clips and native simulator samples. Those demonstrations retain their original provenance and `f74ee4c` labels; they do not depict this newer build.
@@ -25,7 +25,7 @@ Existing publication adaptations retain explicit-only Garage configuration, port
 
 ## Verification scope
 
-Run `npm run test:publication` from this export. The completed local run passed **30 host CTest targets, 30 installer host tests and 330 Node tests**. The original private-scene fixtures remain absent: `background-decode-test`, `assets-service.test.ts`, `asset-cache.test.mjs` and `background*.test.*` are outside this reduced-content command. Publication catalog tests cover empty normal catalogs, explicit fixture opt-in, advertised downloads, hashes and missing-asset responses. These tests use synthetic temporary profiles and no hardware ports.
+Run `npm run test:publication` from this export. The completed local run passed **31 host CTest targets, 30 installer host tests and 330 Node tests**. The original private-scene fixtures remain absent: `background-decode-test`, `assets-service.test.ts`, `asset-cache.test.mjs` and `background*.test.*` are outside this reduced-content command. Publication catalog tests cover empty normal catalogs, explicit fixture opt-in, advertised downloads, hashes and missing-asset responses. These tests use synthetic temporary profiles and no hardware ports.
 
 The bundled ESP application is 1,601,056 bytes, built with official ESP-IDF 5.3.6: 2,224 bytes larger than the prepared66 build, with 1,544,672 bytes free in its 3 MiB OTA slot. Host State/snapshot sizes are 2,936/2,964 bytes. Static DIRAM is 208,663 of 341,760 bytes; linker remainder is not runtime heap. The [resource summary](releases/firmware-171cda7/resource-summary.json) records a 38,500-byte synthetic JSON maximum under the unchanged 64 KiB bound. The conservative known application stack chain is 26,720 of 32,768 bytes, leaving 6,048 bytes before unmeasured SDK/library and indirect-call stack. These are offline measurements, not physical stack high-water or full-roster stress results. Prior profiles retain their members and migrate with an empty XP companion list; firmware predating schema 22 cannot read the new save. Preserve each device's own pre-upgrade backup.
 

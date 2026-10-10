@@ -21,18 +21,30 @@ unsigned checks=0;
 #define CHECK(x) do { ++checks; if(!(x)) { std::fprintf(stderr,"FAIL %s:%d: %s\n",__FILE__,__LINE__,#x);std::exit(1); } } while(false)
 void put32(std::uint8_t* p,std::uint32_t v){for(unsigned i=0;i<4;++i)p[i]=static_cast<std::uint8_t>(v>>(8*i));}
 std::uint32_t crc(const std::uint8_t* p,std::size_t n){std::uint32_t v=~0u;for(std::size_t i=0;i<n;++i){v^=p[i];for(unsigned j=0;j<8;++j)v=(v>>1)^((v&1)?0xedb88320u:0);}return ~v;}
+void projectSchema22(const std::uint8_t* current,std::uint8_t* old){
+ constexpr unsigned size=2964;
+ snapshot_test::rules15Image(current,old);
+ old[4]=22;old[5]=0;old[6]=(size-12)&255;old[7]=(size-12)>>8;put32(old+8,15);put32(old+size-4,crc(old,size-4));
+}
 void oldSnapshot(const std::uint8_t* current,std::uint8_t* old,unsigned version=19){
- CHECK(version==19||version==20||version==21);const unsigned size=version==19?660:version==20?664:2952;
- const auto projected=snapshot_test::eightSlotBytes(current);std::memcpy(old,version==21?current:projected.data(),size-4);put32(old+8,version==21?14:13);
+ CHECK(version==19||version==20||version==21||version==22);
+ if(version==22){projectSchema22(current,old);return;}
+ if(version==21){
+  std::uint8_t image[2964];snapshot_test::rules15Image(current,image);
+  constexpr unsigned size=2952;std::memcpy(old,image,size-4);put32(old+8,14);
+  old[4]=21;old[5]=0;old[6]=(size-12)&255;old[7]=(size-12)>>8;put32(old+size-4,crc(old,size-4));return;
+ }
+ const unsigned size=version==19?660:664;
+ const auto projected=snapshot_test::eightSlotBytes(current);std::memcpy(old,projected.data(),size-4);put32(old+8,13);
  old[4]=version;old[5]=0;old[6]=(size-12)&255;old[7]=(size-12)>>8;put32(old+size-4,crc(old,size-4));
 }
 dt::Slot journalSlot(const t::Record& record,unsigned revision,unsigned version){
  std::array<std::uint8_t,t::kRecordBytes> bytes{};CHECK(t::encodeRecord(record,bytes.data(),bytes.size()));
- const bool legacy=version!=22;const unsigned snapshotSize=version==19?660:version==20?664:2952;
+ const bool legacy=version!=23;const unsigned snapshotSize=version==19?660:version==20?664:version==21?2952:2964;
  dt::Slot slot;slot.length=legacy?20+168+2*snapshotSize+4:dt::kJournalBytes;auto* out=slot.bytes.data;
  std::memcpy(out,"DVTJ",4);put32(out+4,1);put32(out+8,revision);
  if(legacy){
-  CHECK(record.transcript.rules==(version==21?14:13));
+  CHECK(record.transcript.rules==(version==22?15:version==21?14:13));
   if(version==19)CHECK(record.before.worldSeed==0&&record.after.worldSeed==0);
   std::memcpy(out+16,bytes.data(),168);
   oldSnapshot(bytes.data()+168,out+16+168,version);oldSnapshot(bytes.data()+168+kSnapshotSize,out+16+168+snapshotSize,version);
@@ -79,17 +91,17 @@ struct Care final:digivice::storage::Backend {
  bool writeSlot(unsigned i,const Snapshot& s)override{++writes;if(writes==fail&&!landed)return false;std::memcpy(slots[i].bytes,s.bytes,kSnapshotSize);slots[i].length=kSnapshotSize;present[i]=true;return writes!=fail;}
 };
 void installedJournalRecovery(){
- CHECK(dt::kJournalBytes==6120&&dt::kV21JournalBytes==6096&&dt::kV20JournalBytes==1520&&dt::kV19JournalBytes==1512);
- CHECK(dt::supportedJournalSize(1512)&&dt::supportedJournalSize(1520)&&dt::supportedJournalSize(6096)&&dt::supportedJournalSize(6120));
- for(const auto size:{0u,1u,1511u,1513u,1519u,1521u,6095u,6097u,6119u,6121u,UINT32_MAX})CHECK(!dt::supportedJournalSize(size));
+ CHECK(dt::kJournalBytes==6624&&dt::kV22JournalBytes==6120&&dt::kV21JournalBytes==6096&&dt::kV20JournalBytes==1520&&dt::kV19JournalBytes==1512);
+ CHECK(dt::supportedJournalSize(1512)&&dt::supportedJournalSize(1520)&&dt::supportedJournalSize(6096)&&dt::supportedJournalSize(6120)&&dt::supportedJournalSize(6624));
+ for(const auto size:{0u,1u,1511u,1513u,1519u,1521u,6095u,6097u,6119u,6121u,6623u,6625u,UINT32_MAX})CHECK(!dt::supportedJournalSize(size));
  auto a=fixture(),b=fixture(2);auto x=transcript(a,b);x.rules=13;
- for(unsigned version:{19u,20u,21u})for(unsigned side=0;side<2;++side){
-  x.rules=version==21?14:13;
+ for(unsigned version:{19u,20u,21u,22u})for(unsigned side=0;side<2;++side){
+  x.rules=version==22?15:version==21?14:13;
   const auto& before=side?b:a;auto walked=before;step(walked,Action::EncounterSeed,777+side);step(walked,Action::AccrueSteps,1000);walked.pendingEncounter.rules=x.rules;
   t::Record prepared,committed,applied,aborted;CHECK(t::prepare(before,x,side,7,prepared));CHECK(t::commit(prepared,walked,committed));
   CHECK(t::applied(committed,committed.after,applied));CHECK(t::abort(prepared,aborted));
   for(const auto& phase:{prepared,committed,applied,aborted}){
-   const auto old=journalSlot(phase,19,version),current=journalSlot(phase,19,22);
+   const auto old=journalSlot(phase,19,version),current=journalSlot(phase,19,23);
    // Identical installed journals are decoded in RAM without any storage write.
    Journal untouched;untouched.present[0]=untouched.present[1]=true;untouched.slots[0]=untouched.slots[1]=old;
    dt::Store loaded(untouched);CHECK(loaded.restore()==dt::Boot::Ready&&loaded.mirrored());CHECK(sameRecord(*loaded.record(),phase));
@@ -105,7 +117,7 @@ void installedJournalRecovery(){
     dt::Store again(mixed);CHECK(again.restore()==dt::Boot::Ready&&sameRecord(*again.record(),phase));
     // A semantic conflict remains a fault even when both CRCs are valid.
     auto changed=phase;changed.before.worldSeed=changed.after.worldSeed=42;CHECK(t::valid(changed));
-    Journal conflict=untouched;conflict.slots[first]=journalSlot(changed,19,22);
+    Journal conflict=untouched;conflict.slots[first]=journalSlot(changed,19,23);
     dt::Store rejected(conflict);CHECK(rejected.restore()==dt::Boot::RecoveryRequired&&!rejected.writable()&&conflict.writes==0);
    }
    // Missing mirror repairs and every possible uncertain write in that repair
@@ -123,7 +135,7 @@ void installedJournalRecovery(){
     const bool terminalOwnership=phase.phase==t::Phase::Committed||phase.phase==t::Phase::Applied;
     const auto& saved=(alreadyApplied||phase.phase==t::Phase::Applied)?committed.after:walked;
     Care care;Snapshot encoded;CHECK(encodeSnapshot(saved,encoded));
-    for(unsigned slot=0;slot<2;++slot){care.present[slot]=true;care.slots[slot].length=version==19?660:version==20?664:2952;oldSnapshot(encoded.bytes,care.slots[slot].bytes,version);}
+    for(unsigned slot=0;slot<2;++slot){care.present[slot]=true;care.slots[slot].length=version==19?660:version==20?664:version==21?2952:2964;oldSnapshot(encoded.bytes,care.slots[slot].bytes,version);}
     State state;storage::SaveStore saves(care);CHECK(saves.restore(state)==storage::BootStatus::Migrated&&care.writes==0);
     Journal journal=untouched;dt::Session session(state,saves,journal);CHECK(session.restore());
     CHECK(t::sameState(state,terminalOwnership?committed.after:walked));CHECK(state.worldSeed==0);

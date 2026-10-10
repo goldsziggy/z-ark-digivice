@@ -125,7 +125,7 @@ const pausedNative = () => JSON.parse(execFileSync(process.env.DIGIVICE_TEST_COR
 
 test('manual Auto pause accepts its complete positive-HP attack trace, never a terminal/practice capture', () => {
   const { state, trace } = pausedNative();
-  assert.equal(state.schemaVersion, 22); assert.equal(state.autoCapture, 1); assert.equal(trace.outcome, 'none');
+  assert.equal(state.schemaVersion, 23); assert.equal(state.autoCapture, 1); assert.equal(trace.outcome, 'none');
   assert.deepEqual(validateAutoTrace(trace, 'wild'), trace);
   assert.equal(awaitingAutoCapture(state), true); assert.equal(pausedAutoTraceMatchesState(trace, state), true);
   for (const change of [

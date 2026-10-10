@@ -22,7 +22,7 @@ function oldStore(events: Event[], legacy: unknown = null, revision = events.len
   return { formatVersion: 8, gameSchemaVersion: 9, rulesVersion: 6, devices: [{ deviceId: `dv_${'1'.repeat(24)}`, tokenHash: hash(TOKEN), seed: 12345, initialMode, revision, legacy, events,
     receipts: events.length ? [receipt(6, revision - 1, events, 'frozen-six-committed-batch')] : [] }] };
 }
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 15, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved: unknown) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-digigame-migration-'));
   for (const name of ['store.json', 'store.backup.json']) await writeFile(join(dataDir, name), JSON.stringify(saved));
@@ -40,22 +40,22 @@ test('frozen6 snapshot plus suffix migrates once, preserving released journal an
   const history5 = { rulesVersion: 5, events: frozen.prefixEvents, receipts: [receipt(5, 0, frozen.prefixEvents, 'frozen-five-before-six')] };
   const old = oldStore(frozen.suffixEvents, { histories: [history5], snapshotBase64: frozen.rules6Baseline.snapshotBase64 }, 2);
   const f = await fixture(t, old), saved = (await f.request('/api/save')).body;
-  assert.equal(saved.state.schemaVersion, 22); assert.equal(saved.state.rulesVersion, 15); assert.equal(saved.revision, 2);
+  assert.equal(saved.state.schemaVersion, 23); assert.equal(saved.state.rulesVersion, 16); assert.equal(saved.revision, 2);
   assert.equal(saved.baseSequence, 7); assert.deepEqual(saved.events, []); assert.equal(saved.autoTrace, null);
   for (const key of ['collection', 'activeCreatureId', 'nextMemberId', 'journal', 'rngState', 'xp', 'formId', 'hp', 'bond', 'captures', 'onboarding', 'battleMode', 'lastAutoBattle']) assert.deepEqual(legacyFields(saved.state[key]), frozen.suffixResult.state[key], key);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [17, 22, 15]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [18, 23, 16]);
   const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64');
-  assert.equal(snapshot.length, 2964); assert.equal(snapshot.readUInt16LE(4), 22); assert.equal(snapshot.readUInt32LE(8), 15);
+  assert.equal(snapshot.length, 3216); assert.equal(snapshot.readUInt16LE(4), 23); assert.equal(snapshot.readUInt32LE(8), 16);
   assert.deepEqual(stored.devices[0].legacy.histories, [history5, { rulesVersion: 6, events: old.devices[0].events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v6.json'), 'utf8')), old);
   const pending = { rulesVersion: 6, baseRevision: 1, batchId: old.devices[0].receipts[0].batchId, events: old.devices[0].events };
   assert.equal((await f.request('/api/save-sync', pending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 15 })).body.error, 'legacy_batch_requires_reconciliation');
-  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 15, events: [{ type: 'feed', value: 0 }] })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 16, events: [{ type: 'feed', value: 0 }] })).body.error, 'legacy_batch_requires_reconciliation');
   await f.restart(); assert.deepEqual((await f.request('/api/save')).body, saved);
   const input = batch(2, 'current-seven-care-retry', [{ type: 'feed', value: 0 }]);
-  const accepted = await f.request('/api/save-sync', input); assert.equal(accepted.status, 200); assert.equal(accepted.body.state.xp, saved.state.xp);
+  const accepted = await f.request('/api/save-sync', input); assert.equal(accepted.status, 200); assert.equal(accepted.body.state.xp, saved.state.xp + 2);
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', input), accepted); assert.equal((await f.request('/api/save')).body.revision, 3);
 });
 

@@ -306,7 +306,7 @@ void rpgForms() {
         CHECK(!p::isValid(p::newBattleWithForms(2, wrongLineage, 20, id, 2, 1, f::initialForm(2))));
         if (form->minLevel > 1) CHECK(!p::isValid(p::newBattleWithForms(2, form->lineage, form->minLevel - 1, id, 2, 1, f::initialForm(2))));
     }
-    CHECK(!p::isValid(p::newBattle(2, 1, 21, 2, 1)));
+    CHECK(!p::isValid(p::newBattle(2, 1, 51, 2, 1)));
     auto state = p::newBattle(77, 5, 20, 2, 1);
     p::Snapshot bytes; CHECK(p::encodeSnapshot(state, bytes));
     for (std::size_t i = 0; i < p::kSnapshotSize; ++i) {
