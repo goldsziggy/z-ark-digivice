@@ -163,7 +163,9 @@ void stableIdsAndJournal(){
 }
 void captureEveryForm(){
  bool obtained[kJournalCapacity]{};unsigned distinct=0;
- for(unsigned encounter=2;encounter<100000&&distinct<forms::kFormCount;++encounter){
+ // Rules 12 (this historical namespace) draws from the frozen 276-form roster only.
+ const unsigned capturable=forms::kRules18FormCount;
+ for(unsigned encounter=2;encounter<100000&&distinct<capturable;++encounter){
   const auto prospective=selectWildForm(encounter,kDevelopmentSeed,14,20);
   if(obtained[prospective-1])continue;
   auto s=newDevice();step(s,Action::Hatch,1);fixture(s,14,20);
@@ -187,7 +189,7 @@ void captureEveryForm(){
   obtained[id-1]=true;++distinct;step(s,Action::Select,2);CHECK(activeMember(s)->formId==id&&s.level==20);
   Snapshot snap;CHECK(encodeSnapshot(s,snap));State restored;CHECK(decodeSnapshot(snap.bytes,sizeof(snap.bytes),restored)==SnapshotStatus::Ok&&same(s,restored));
  }
- for(unsigned id=1;id<=forms::kFormCount;++id)CHECK(obtained[id-1]);
+ for(unsigned id=1;id<=forms::kFormCount;++id)CHECK(obtained[id-1]==(id<=forms::kRules18FormCount));
 }
 
 void poolsAndGuard(){
@@ -198,7 +200,7 @@ void poolsAndGuard(){
  }
  bool seen[kJournalCapacity]{};
  for(unsigned n=2;n<32770;++n){const auto id=selectWildForm(n,12345,14,20);CHECK(id&&id<=forms::kFormCount);seen[id-1]=true;}
- for(unsigned id=1;id<=forms::kFormCount;++id)CHECK(seen[id-1]);
+ for(unsigned id=1;id<=forms::kFormCount;++id)CHECK(seen[id-1]==(id<=forms::kRules18FormCount)); // rules 12 pool is frozen at 276
  for(unsigned n=2;n<100;++n){const auto id=selectWildForm(n,77,11,20);CHECK(forms::combatTier(id)<=forms::CombatTier::Rookie);}
  auto s=newDevice();step(s,Action::Hatch,1);step(s,Action::Walk,100);CHECK(wildGuard(s)==combat::Defense::Brace);
  step(s,Action::Card,1);const auto boost=s.attackBoost;s.wildTurn=2;CHECK(isValid(s));
@@ -376,7 +378,7 @@ void newGraphEpochGuards() {
  auto s=newGame();step(s,Action::Walk,100);Snapshot bytes;CHECK(encodeSnapshot(s,bytes));
  legacyHeader(bytes,9,6);const auto before=s;
  CHECK(decodeSnapshot(bytes.bytes,kV13SnapshotSize,s)==SnapshotStatus::InvalidState&&same(s,before));
- CHECK(added>=16&&founderPaths>0&&sheetRoutes==91);
+ CHECK(added>=16&&founderPaths>0&&sheetRoutes==82);
  std::printf("Rules6 freeze: 276 progress-byte migrations, 72 active Auto continuations, %u historical routes rejected, %u sheet routes unavailable, %u future founder paths rejected\n",added,sheetRoutes,founderPaths);
 }
 void newRules8EpochGuards() {
@@ -408,7 +410,7 @@ void newRules8EpochGuards() {
  auto s=newGame();step(s,Action::Walk,100);Snapshot bytes;CHECK(encodeSnapshot(s,bytes));
  legacyHeader(bytes,10,7);const auto before=s;
  CHECK(decodeSnapshot(bytes.bytes,kV13SnapshotSize,s)==SnapshotStatus::InvalidState&&same(s,before));
- CHECK(added==9&&sheetRoutes==91);
+ CHECK(added==9&&sheetRoutes==82);
  std::printf("Rules7 freeze: 276 progress-byte migrations, 72 active Auto continuations, %u historical routes rejected, %u sheet routes unavailable, %u future founder paths rejected\n",added,sheetRoutes,founderPaths);
 }
 

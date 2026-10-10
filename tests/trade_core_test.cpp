@@ -103,7 +103,11 @@ void exchangeProgression(){
         auto& incoming=b.collection[1];incoming.formId=formId;incoming.species=static_cast<Species>(f->lineage);
         incoming.level=f->minLevel>20?f->minLevel:20;incoming.xp=xpForLevel(incoming.level);incoming.bond=f->minBond>177?f->minBond:177;
         const auto maximum=combat::formProfile(formId,incoming.level).stats.maxHp;incoming.hp=maximum>13?13:maximum;incoming.energy=21;incoming.fullness=39;incoming.mood=57;
-        b.journal[(formId-1)/32]|=1u<<((formId-1)%32);CHECK(isValid(b));
+        b.journal[(formId-1)/32]|=1u<<((formId-1)%32);
+        CHECK(isValid(b));
+        if(!forms::productionForm(formId)){ // retired duplicates never trade
+            CHECK(forms::retiredAliasOf(formId)&&!t::canOffer(b,2)&&!t::validMember(*findMember(b,2),b.sequence));continue;
+        }
         const auto x=transcript(a,b);t::Record records[2],committed[2],done[2];
         CHECK(t::prepare(a,x,0,1,records[0]));CHECK(t::prepare(b,x,1,1,records[1]));
         for(unsigned side=0;side<2;++side){const auto& before=side?b:a;
@@ -215,7 +219,7 @@ void encodingAndMigration(){
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.receivedTrades==0&&t::sameState(a,migrated));
     CHECK(encodeSnapshot(migrated,current)&&snapshot_test::sameOldPayload(prior.data(),current.bytes,prior.size()));
     put32(current.bytes+snapshot_test::currentOffset(648),1);put32(current.bytes+kSnapshotSize-4,crc(current.bytes,kSnapshotSize-4));CHECK(decodeSnapshot(current.bytes,sizeof(current.bytes),migrated)==SnapshotStatus::InvalidState);
-    CHECK(kSchemaVersion==25&&kRulesVersion==18&&kSnapshotSize==3216&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==6604&&t::kV19RecordBytes==1492);
+    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==6604&&t::kV19RecordBytes==1492);
 }
 }
 int main(){exchangeProgression();fullCollectionsExchange();restrictionsAndConsent();walkingAndInterruptedDecisions();encodingAndMigration();installedJournalMigration();

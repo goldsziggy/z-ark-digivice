@@ -7,8 +7,8 @@ import { validWalkingState } from '../web/walking-state.js';
 test('deferred walking accepts preserved old encounters and current XP companion rules', () => {
   const walking = { rate: 2, name: 'Normal', eligibleSteps: 100, encounters: 1, rngState: 12345,
     target: 100, progress: 0, remainingSteps: 0, pendingEncounter: { formId: 18, level: 1, rules: 14 } };
-  for (const rules of [12, 13, 14, 15, 16, 17, 18]) assert.equal(validWalkingState({ ...walking, pendingEncounter: { ...walking.pendingEncounter, rules } }, 'home'), true);
-  for (const rules of [0, 11, 19, 14.5, '14']) assert.equal(validWalkingState({ ...walking, pendingEncounter: { ...walking.pendingEncounter, rules } }, 'home'), false);
+  for (const rules of [12, 13, 14, 15, 16, 17, 18, 19]) assert.equal(validWalkingState({ ...walking, pendingEncounter: { ...walking.pendingEncounter, rules } }, 'home'), true);
+  for (const rules of [0, 11, 20, 14.5, '14']) assert.equal(validWalkingState({ ...walking, pendingEncounter: { ...walking.pendingEncounter, rules } }, 'home'), false);
   assert.equal(validWalkingState(walking, 'egg'), false);
 });
 

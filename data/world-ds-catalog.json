@@ -76,12 +76,6 @@
       "minimumBond": 80
     },
     {
-      "fromFormId": 14,
-      "toFormId": 406,
-      "minimumLevel": 15,
-      "minimumBond": 80
-    },
-    {
       "fromFormId": 15,
       "toFormId": 16,
       "minimumLevel": 10,
@@ -294,12 +288,6 @@
     {
       "fromFormId": 48,
       "toFormId": 49,
-      "minimumLevel": 15,
-      "minimumBond": 80
-    },
-    {
-      "fromFormId": 49,
-      "toFormId": 407,
       "minimumLevel": 15,
       "minimumBond": 80
     },
@@ -640,12 +628,6 @@
       "minimumBond": 20
     },
     {
-      "fromFormId": 99,
-      "toFormId": 279,
-      "minimumLevel": 5,
-      "minimumBond": 20
-    },
-    {
       "fromFormId": 100,
       "toFormId": 129,
       "minimumLevel": 5,
@@ -832,12 +814,6 @@
       "minimumBond": 50
     },
     {
-      "fromFormId": 125,
-      "toFormId": 382,
-      "minimumLevel": 15,
-      "minimumBond": 80
-    },
-    {
       "fromFormId": 127,
       "toFormId": 23,
       "minimumLevel": 10,
@@ -940,12 +916,6 @@
       "minimumBond": 50
     },
     {
-      "fromFormId": 146,
-      "toFormId": 279,
-      "minimumLevel": 5,
-      "minimumBond": 20
-    },
-    {
       "fromFormId": 147,
       "toFormId": 181,
       "minimumLevel": 10,
@@ -1016,12 +986,6 @@
       "toFormId": 173,
       "minimumLevel": 10,
       "minimumBond": 50
-    },
-    {
-      "fromFormId": 164,
-      "toFormId": 313,
-      "minimumLevel": 5,
-      "minimumBond": 20
     },
     {
       "fromFormId": 165,
@@ -1270,12 +1234,6 @@
       "minimumBond": 50
     },
     {
-      "fromFormId": 279,
-      "toFormId": 185,
-      "minimumLevel": 10,
-      "minimumBond": 50
-    },
-    {
       "fromFormId": 293,
       "toFormId": 181,
       "minimumLevel": 10,
@@ -1307,21 +1265,9 @@
     },
     {
       "fromFormId": 299,
-      "toFormId": 59,
-      "minimumLevel": 15,
-      "minimumBond": 80
-    },
-    {
-      "fromFormId": 299,
       "toFormId": 335,
       "minimumLevel": 10,
       "minimumBond": 50
-    },
-    {
-      "fromFormId": 300,
-      "toFormId": 59,
-      "minimumLevel": 15,
-      "minimumBond": 80
     },
     {
       "fromFormId": 300,
@@ -1616,6 +1562,11 @@
       "reason": "Pyrel is a final form in this prototype. Care, training and battles remain available."
     },
     {
+      "formId": 14,
+      "status": "terminal",
+      "reason": "Beelzemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
       "formId": 17,
       "status": "terminal",
       "reason": "VenomMyotismon is a final form in this prototype. Care, training and battles remain available."
@@ -1659,6 +1610,11 @@
       "formId": 45,
       "status": "terminal",
       "reason": "GranKuwagamon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 49,
+      "status": "terminal",
+      "reason": "Rosemon is a final form in this prototype. Care, training and battles remain available."
     },
     {
       "formId": 52,
@@ -2129,6 +2085,26 @@
       "formId": 276,
       "status": "independent",
       "reason": "Calumon has no evolution route. This friendly companion remains available through encounters."
+    },
+    {
+      "formId": 279,
+      "status": "independent",
+      "reason": "Retired duplicate of Kurisarimon (146); kept only to preserve the append-only ID."
+    },
+    {
+      "formId": 286,
+      "status": "independent",
+      "reason": "Retired duplicate of DarkTyrannomon (127); kept only to preserve the append-only ID."
+    },
+    {
+      "formId": 287,
+      "status": "independent",
+      "reason": "Retired duplicate of DarkLizardmon (126); kept only to preserve the append-only ID."
+    },
+    {
+      "formId": 288,
+      "status": "independent",
+      "reason": "Retired duplicate of Flarerizamon (132); kept only to preserve the append-only ID."
     }
   ],
   "battleSkillBindings": [
@@ -9731,17 +9707,11 @@
           68
         ],
         "children": [
-          146,
-          279
+          146
         ],
         "edges": [
           {
             "toFormId": 146,
-            "requiredLevel": 5,
-            "requiredBond": 20
-          },
-          {
-            "toFormId": 279,
             "requiredLevel": 5,
             "requiredBond": 20
           }
@@ -12989,19 +12959,13 @@
           81
         ],
         "children": [
-          183,
-          382
+          183
         ],
         "edges": [
           {
             "toFormId": 183,
             "requiredLevel": 10,
             "requiredBond": 50
-          },
-          {
-            "toFormId": 382,
-            "requiredLevel": 15,
-            "requiredBond": 80
           }
         ],
         "status": "progression",
@@ -15672,19 +15636,13 @@
           99
         ],
         "children": [
-          185,
-          279
+          185
         ],
         "edges": [
           {
             "toFormId": 185,
             "requiredLevel": 10,
             "requiredBond": 50
-          },
-          {
-            "toFormId": 279,
-            "requiredLevel": 5,
-            "requiredBond": 20
           }
         ],
         "status": "progression",
@@ -18127,19 +18085,13 @@
           79
         ],
         "children": [
-          173,
-          313
+          173
         ],
         "edges": [
           {
             "toFormId": 173,
             "requiredLevel": 10,
             "requiredBond": 50
-          },
-          {
-            "toFormId": 313,
-            "requiredLevel": 5,
-            "requiredBond": 20
           }
         ],
         "status": "progression",
@@ -20549,8 +20501,7 @@
       ],
       "evolution": {
         "parents": [
-          146,
-          279
+          146
         ],
         "children": [
           233
@@ -25610,18 +25561,10 @@
         "parents": [
           13
         ],
-        "children": [
-          406
-        ],
-        "edges": [
-          {
-            "toFormId": 406,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          }
-        ],
-        "status": "progression",
-        "reason": null
+        "children": [],
+        "edges": [],
+        "status": "terminal",
+        "reason": "Beelzemon is a final form in this prototype. Care, training and battles remain available."
       },
       "combatTier": "Mega",
       "role": "Striker",
@@ -25702,7 +25645,7 @@
       "obtainability": {
         "method": "stage-appropriate-encounter-and-capture",
         "evolutionStatus": "reviewed-authored-route",
-        "leafReason": null,
+        "leafReason": "Beelzemon is a final form in this prototype. Care, training and battles remain available.",
         "canonicalEvolutionClaim": false
       }
     },
@@ -30785,8 +30728,6 @@
       "evolution": {
         "parents": [
           58,
-          299,
-          300,
           335
         ],
         "children": [],
@@ -31103,18 +31044,10 @@
           48,
           189
         ],
-        "children": [
-          407
-        ],
-        "edges": [
-          {
-            "toFormId": 407,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          }
-        ],
-        "status": "progression",
-        "reason": null
+        "children": [],
+        "edges": [],
+        "status": "terminal",
+        "reason": "Rosemon is a final form in this prototype. Care, training and battles remain available."
       },
       "combatTier": "Mega",
       "role": "Mystic",
@@ -31200,7 +31133,7 @@
       "obtainability": {
         "method": "stage-appropriate-encounter-and-capture",
         "evolutionStatus": "reviewed-authored-route",
-        "leafReason": null,
+        "leafReason": "Rosemon is a final form in this prototype. Care, training and battles remain available.",
         "canonicalEvolutionClaim": false
       }
     },
@@ -33302,26 +33235,16 @@
       "formId": 279,
       "preservedFormId": null,
       "lineageId": 1279,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames.",
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of Kurisarimon (146), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 146,
       "parent": 0,
       "children": [],
       "evolution": {
-        "parents": [
-          99,
-          146
-        ],
-        "children": [
-          185
-        ],
-        "edges": [
-          {
-            "toFormId": 185,
-            "requiredLevel": 10,
-            "requiredBond": 50
-          }
-        ],
-        "status": "progression",
-        "reason": null
+        "parents": [],
+        "children": [],
+        "edges": [],
+        "status": "independent",
+        "reason": "Retired duplicate of Kurisarimon (146); kept only to preserve the append-only ID."
       },
       "combatTier": "Champion",
       "role": "Striker",
@@ -33388,9 +33311,9 @@
         "policy": "Optional private unpublished artwork; availability is checked locally, never inferred from metadata."
       },
       "obtainability": {
-        "method": "stage-appropriate-encounter-and-capture",
-        "evolutionStatus": "reviewed-authored-route",
-        "leafReason": null,
+        "method": "retired-duplicate",
+        "evolutionStatus": "independent-encounter-form",
+        "leafReason": "Retired duplicate of Kurisarimon (146); kept only to preserve the append-only ID.",
         "canonicalEvolutionClaim": false
       }
     },
@@ -33929,7 +33852,8 @@
       "formId": 286,
       "preservedFormId": null,
       "lineageId": 1286,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames.",
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of DarkTyrannomon (127), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 127,
       "parent": 0,
       "children": [],
       "evolution": {
@@ -33937,7 +33861,7 @@
         "children": [],
         "edges": [],
         "status": "independent",
-        "reason": "No reviewed evolution route yet."
+        "reason": "Retired duplicate of DarkTyrannomon (127); kept only to preserve the append-only ID."
       },
       "combatTier": "Champion",
       "role": "Striker",
@@ -34004,9 +33928,9 @@
         "policy": "Optional private unpublished artwork; availability is checked locally, never inferred from metadata."
       },
       "obtainability": {
-        "method": "stage-appropriate-encounter-and-capture",
+        "method": "retired-duplicate",
         "evolutionStatus": "independent-encounter-form",
-        "leafReason": "No reviewed evolution route yet.",
+        "leafReason": "Retired duplicate of DarkTyrannomon (127); kept only to preserve the append-only ID.",
         "canonicalEvolutionClaim": false
       }
     },
@@ -34017,7 +33941,8 @@
       "formId": 287,
       "preservedFormId": null,
       "lineageId": 1287,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames.",
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of DarkLizardmon (126), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 126,
       "parent": 0,
       "children": [],
       "evolution": {
@@ -34025,7 +33950,7 @@
         "children": [],
         "edges": [],
         "status": "independent",
-        "reason": "No reviewed evolution route yet."
+        "reason": "Retired duplicate of DarkLizardmon (126); kept only to preserve the append-only ID."
       },
       "combatTier": "Champion",
       "role": "Striker",
@@ -34092,9 +34017,9 @@
         "policy": "Optional private unpublished artwork; availability is checked locally, never inferred from metadata."
       },
       "obtainability": {
-        "method": "stage-appropriate-encounter-and-capture",
+        "method": "retired-duplicate",
         "evolutionStatus": "independent-encounter-form",
-        "leafReason": "No reviewed evolution route yet.",
+        "leafReason": "Retired duplicate of DarkLizardmon (126); kept only to preserve the append-only ID.",
         "canonicalEvolutionClaim": false
       }
     },
@@ -34105,7 +34030,8 @@
       "formId": 288,
       "preservedFormId": null,
       "lineageId": 1288,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames.",
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of Flarerizamon (132), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 132,
       "parent": 0,
       "children": [],
       "evolution": {
@@ -34113,7 +34039,7 @@
         "children": [],
         "edges": [],
         "status": "independent",
-        "reason": "No reviewed evolution route yet."
+        "reason": "Retired duplicate of Flarerizamon (132); kept only to preserve the append-only ID."
       },
       "combatTier": "Champion",
       "role": "Striker",
@@ -34180,9 +34106,9 @@
         "policy": "Optional private unpublished artwork; availability is checked locally, never inferred from metadata."
       },
       "obtainability": {
-        "method": "stage-appropriate-encounter-and-capture",
+        "method": "retired-duplicate",
         "evolutionStatus": "independent-encounter-form",
-        "leafReason": "No reviewed evolution route yet.",
+        "leafReason": "Retired duplicate of Flarerizamon (132); kept only to preserve the append-only ID.",
         "canonicalEvolutionClaim": false
       }
     },
@@ -35123,15 +35049,9 @@
       "evolution": {
         "parents": [],
         "children": [
-          59,
           335
         ],
         "edges": [
-          {
-            "toFormId": 59,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          },
           {
             "toFormId": 335,
             "requiredLevel": 10,
@@ -35225,15 +35145,9 @@
       "evolution": {
         "parents": [],
         "children": [
-          59,
           450
         ],
         "edges": [
-          {
-            "toFormId": 59,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          },
           {
             "toFormId": 450,
             "requiredLevel": 10,
@@ -36468,9 +36382,7 @@
       "parent": 0,
       "children": [],
       "evolution": {
-        "parents": [
-          164
-        ],
+        "parents": [],
         "children": [
           347
         ],
@@ -42858,8 +42770,7 @@
       "children": [],
       "evolution": {
         "parents": [
-          34,
-          125
+          34
         ],
         "children": [],
         "edges": [],
@@ -44994,13 +44905,11 @@
       "parent": 0,
       "children": [],
       "evolution": {
-        "parents": [
-          14
-        ],
+        "parents": [],
         "children": [],
         "edges": [],
-        "status": "terminal",
-        "reason": "End of the reviewed prototype route."
+        "status": "independent",
+        "reason": "No reviewed evolution route yet."
       },
       "combatTier": "Mega",
       "role": "Striker",
@@ -45068,8 +44977,8 @@
       },
       "obtainability": {
         "method": "stage-appropriate-encounter-and-capture",
-        "evolutionStatus": "reviewed-authored-route",
-        "leafReason": "End of the reviewed prototype route.",
+        "evolutionStatus": "independent-encounter-form",
+        "leafReason": "No reviewed evolution route yet.",
         "canonicalEvolutionClaim": false
       }
     },
@@ -45084,13 +44993,11 @@
       "parent": 0,
       "children": [],
       "evolution": {
-        "parents": [
-          49
-        ],
+        "parents": [],
         "children": [],
         "edges": [],
-        "status": "terminal",
-        "reason": "End of the reviewed prototype route."
+        "status": "independent",
+        "reason": "No reviewed evolution route yet."
       },
       "combatTier": "Mega",
       "role": "Striker",
@@ -45158,8 +45065,8 @@
       },
       "obtainability": {
         "method": "stage-appropriate-encounter-and-capture",
-        "evolutionStatus": "reviewed-authored-route",
-        "leafReason": "End of the reviewed prototype route.",
+        "evolutionStatus": "independent-encounter-form",
+        "leafReason": "No reviewed evolution route yet.",
         "canonicalEvolutionClaim": false
       }
     },

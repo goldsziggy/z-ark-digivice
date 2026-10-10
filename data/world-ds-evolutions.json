@@ -2973,16 +2973,6 @@
       "rationale": "woodmon -> jureimon uses the existing stage level and bond gates."
     },
     {
-      "fromFormId": 164,
-      "toFormId": 313,
-      "minimumLevel": 5,
-      "minimumBond": 20,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "vegiemon -> redvegiemon uses the existing stage level and bond gates."
-    },
-    {
       "fromFormId": 318,
       "toFormId": 358,
       "minimumLevel": 10,
@@ -3111,16 +3101,6 @@
       "reviewStatus": "reviewed-for-prototype",
       "canonicalClaim": false,
       "rationale": "mammothmon -> skullmammon uses the existing stage level and bond gates."
-    },
-    {
-      "fromFormId": 49,
-      "toFormId": 407,
-      "minimumLevel": 15,
-      "minimumBond": 80,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "rosemon -> rosemonburst uses the existing stage level and bond gates."
     },
     {
       "fromFormId": 33,
@@ -3323,16 +3303,6 @@
       "rationale": "shakkoumon -> slashangemon uses the existing stage level and bond gates."
     },
     {
-      "fromFormId": 14,
-      "toFormId": 406,
-      "minimumLevel": 15,
-      "minimumBond": 80,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "beelzemon -> beelzebumonblast uses the existing stage level and bond gates."
-    },
-    {
       "fromFormId": 212,
       "toFormId": 392,
       "minimumLevel": 15,
@@ -3351,16 +3321,6 @@
       "reviewStatus": "reviewed-for-prototype",
       "canonicalClaim": false,
       "rationale": "magnaangemon -> goddramon uses the existing stage level and bond gates."
-    },
-    {
-      "fromFormId": 125,
-      "toFormId": 382,
-      "minimumLevel": 15,
-      "minimumBond": 80,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "birdramon -> goddramon uses the existing stage level and bond gates."
     },
     {
       "fromFormId": 357,
@@ -3503,36 +3463,6 @@
       "rationale": "ebidramon -> anomalocarimon uses the existing stage level and bond gates."
     },
     {
-      "fromFormId": 99,
-      "toFormId": 279,
-      "minimumLevel": 5,
-      "minimumBond": 20,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "keramon -> chrysalimon uses the existing stage level and bond gates."
-    },
-    {
-      "fromFormId": 279,
-      "toFormId": 185,
-      "minimumLevel": 10,
-      "minimumBond": 50,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "chrysalimon -> infermon uses the existing stage level and bond gates."
-    },
-    {
-      "fromFormId": 146,
-      "toFormId": 279,
-      "minimumLevel": 5,
-      "minimumBond": 20,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "kurisarimon -> chrysalimon uses the existing stage level and bond gates."
-    },
-    {
       "fromFormId": 120,
       "toFormId": 340,
       "minimumLevel": 10,
@@ -3633,16 +3563,6 @@
       "rationale": "monochromon -> triceramon uses the existing stage level and bond gates."
     },
     {
-      "fromFormId": 299,
-      "toFormId": 59,
-      "minimumLevel": 15,
-      "minimumBond": 80,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "coelamon -> plesiomon uses the existing stage level and bond gates."
-    },
-    {
       "fromFormId": 335,
       "toFormId": 59,
       "minimumLevel": 15,
@@ -3661,16 +3581,6 @@
       "reviewStatus": "reviewed-for-prototype",
       "canonicalClaim": false,
       "rationale": "gesomon -> dagomon uses the existing stage level and bond gates."
-    },
-    {
-      "fromFormId": 300,
-      "toFormId": 59,
-      "minimumLevel": 15,
-      "minimumBond": 80,
-      "origin": "dawn-dusk-sheet-line",
-      "reviewStatus": "reviewed-for-prototype",
-      "canonicalClaim": false,
-      "rationale": "shellmon -> plesiomon uses the existing stage level and bond gates."
     },
     {
       "fromFormId": 175,
@@ -3765,6 +3675,11 @@
       "reason": "Pyrel is a final form in this prototype. Care, training and battles remain available."
     },
     {
+      "formId": 14,
+      "status": "terminal",
+      "reason": "Beelzemon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
       "formId": 17,
       "status": "terminal",
       "reason": "VenomMyotismon is a final form in this prototype. Care, training and battles remain available."
@@ -3808,6 +3723,11 @@
       "formId": 45,
       "status": "terminal",
       "reason": "GranKuwagamon is a final form in this prototype. Care, training and battles remain available."
+    },
+    {
+      "formId": 49,
+      "status": "terminal",
+      "reason": "Rosemon is a final form in this prototype. Care, training and battles remain available."
     },
     {
       "formId": 52,
@@ -4278,6 +4198,26 @@
       "formId": 276,
       "status": "independent",
       "reason": "Calumon has no evolution route. This friendly companion remains available through encounters."
+    },
+    {
+      "formId": 279,
+      "status": "independent",
+      "reason": "Retired duplicate of Kurisarimon (146); kept only to preserve the append-only ID."
+    },
+    {
+      "formId": 286,
+      "status": "independent",
+      "reason": "Retired duplicate of DarkTyrannomon (127); kept only to preserve the append-only ID."
+    },
+    {
+      "formId": 287,
+      "status": "independent",
+      "reason": "Retired duplicate of DarkLizardmon (126); kept only to preserve the append-only ID."
+    },
+    {
+      "formId": 288,
+      "status": "independent",
+      "reason": "Retired duplicate of Flarerizamon (132); kept only to preserve the append-only ID."
     }
   ],
   "heldProposals": [
@@ -4290,6 +4230,51 @@
       "fromFormId": 204,
       "toFormId": 170,
       "reason": "Black Digitron variant conversion is not implemented; no bond-only conversion substituted."
+    },
+    {
+      "fromFormId": 164,
+      "toFormId": 313,
+      "reason": "Vegiemon to RedVegiemon: same-stage variant change. Deferred until reviewed, per COLLECTION_RULES (stage skips and mode changes need individual review)."
+    },
+    {
+      "fromFormId": 49,
+      "toFormId": 407,
+      "reason": "Rosemon to RosemonBurst: same-stage mode change. Deferred until reviewed, per COLLECTION_RULES (stage skips and mode changes need individual review)."
+    },
+    {
+      "fromFormId": 14,
+      "toFormId": 406,
+      "reason": "Beelzemon to BeelzebumonBlast: same-stage mode change. Deferred until reviewed, per COLLECTION_RULES (stage skips and mode changes need individual review)."
+    },
+    {
+      "fromFormId": 125,
+      "toFormId": 382,
+      "reason": "Birdramon to Goddramon: Champion to Mega stage skip. Deferred until reviewed, per COLLECTION_RULES (stage skips and mode changes need individual review)."
+    },
+    {
+      "fromFormId": 99,
+      "toFormId": 279,
+      "reason": "Retired duplicate route; Kurisarimon (146) is the roster form and already carries the reviewed routes."
+    },
+    {
+      "fromFormId": 279,
+      "toFormId": 185,
+      "reason": "Retired duplicate route; Kurisarimon (146) is the roster form and already carries the reviewed routes."
+    },
+    {
+      "fromFormId": 146,
+      "toFormId": 279,
+      "reason": "Retired duplicate route; Kurisarimon (146) is the roster form and already carries the reviewed routes."
+    },
+    {
+      "fromFormId": 299,
+      "toFormId": 59,
+      "reason": "Coelamon to Plesiomon: Champion to Mega stage skip. Deferred until reviewed, per COLLECTION_RULES (stage skips and mode changes need individual review)."
+    },
+    {
+      "fromFormId": 300,
+      "toFormId": 59,
+      "reason": "Shellmon to Plesiomon: Champion to Mega stage skip. Deferred until reviewed, per COLLECTION_RULES (stage skips and mode changes need individual review)."
     }
   ]
 }

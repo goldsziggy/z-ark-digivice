@@ -2323,7 +2323,8 @@
       "formId": 279,
       "preservedFormId": null,
       "lineageId": 1279,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of Kurisarimon (146), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 146
     },
     {
       "entryKey": "shisamon",
@@ -2386,7 +2387,8 @@
       "formId": 286,
       "preservedFormId": null,
       "lineageId": 1286,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of DarkTyrannomon (127), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 127
     },
     {
       "entryKey": "darklizamon",
@@ -2395,7 +2397,8 @@
       "formId": 287,
       "preservedFormId": null,
       "lineageId": 1287,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of DarkLizardmon (126), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 126
     },
     {
       "entryKey": "flarelizamon",
@@ -2404,7 +2407,8 @@
       "formId": 288,
       "preservedFormId": null,
       "lineageId": 1288,
-      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+      "bindingReason": "Retired duplicate: the Dawn/Dusk romanization of Flarerizamon (132), already on the roster. ID stays reserved (append-only); not playable, not encountered, no routes.",
+      "retiredAliasOf": 132
     },
     {
       "entryKey": "drimogemon",

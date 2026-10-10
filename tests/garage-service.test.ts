@@ -118,7 +118,7 @@ test('Garage failures are sanitized and local health, signed assets, pairing and
   assert.ok(unavailable.text.length < 512);
   assert.equal((await app.request('/api/health')).status, 200);
   assert.equal((await app.request('/api/assets/catalog')).status, 200);
-  const saved = await app.request('/api/save-sync', { token, body: { rulesVersion: 18, baseRevision: 0, batchId: 'garage-offline-feed', events: [{ type: 'hatch', value: 1 }, { type: 'feed', value: 0 }] } });
+  const saved = await app.request('/api/save-sync', { token, body: { rulesVersion: 19, baseRevision: 0, batchId: 'garage-offline-feed', events: [{ type: 'hatch', value: 1 }, { type: 'feed', value: 0 }] } });
   assert.equal(saved.status, 200); assert.equal(saved.body.revision, 1);
   const restored = await app.request('/api/save', { token });
   assert.equal(restored.status, 200); assert.equal(restored.body.state.sequence, 2);

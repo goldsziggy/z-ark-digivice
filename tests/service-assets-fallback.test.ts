@@ -24,7 +24,7 @@ test('corrupt optional art fails asset routes closed while game pairing, saves a
     assert.equal((await fetch(base + '/api/assets/packs/starter-v2/1')).status, 503);
     const pairing = await (await post('/api/pairing/start', {})).json();
     const identity = await (await post('/api/pairing/claim', { code: pairing.code })).json();
-    const saved = await post('/api/save-sync', { rulesVersion: 18, baseRevision: 0, batchId: 'asset-fallback-care-1', events: [{ type: 'hatch', value: 1 }, { type: 'feed', value: 0 }] }, identity.token);
+    const saved = await post('/api/save-sync', { rulesVersion: 19, baseRevision: 0, batchId: 'asset-fallback-care-1', events: [{ type: 'hatch', value: 1 }, { type: 'feed', value: 0 }] }, identity.token);
     assert.equal(saved.status, 200); assert.equal((await saved.json()).revision, 1);
     const restored = await fetch(base + '/api/save', { headers: { Authorization: `Bearer ${identity.token}` } });
     assert.equal(restored.status, 200); assert.equal((await restored.json()).state.sequence, 2);

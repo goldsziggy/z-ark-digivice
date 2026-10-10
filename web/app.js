@@ -79,8 +79,8 @@ let assetState = { ready: false, busy: false, packs: [], selectedId: 'scene-mead
 const backgroundPlayer = createBackgroundPlayer({ onChange: () => { if (deviceReady) { syncBackgroundStatus(); scheduleDraw(); } } });
 const battleClient = createBattleClient({ storage: (() => { try { return localStorage; } catch { return null; } })(), onChange: () => { if (deviceReady) render(); } });
 const formArt = createFormArt({ getCredential: () => identity, onChange: () => { artGeneration++; if (deviceReady) render(); } });
-const RULES_VERSION = 18;
-const SCHEMA_VERSION = 25;
+const RULES_VERSION = 19;
+const SCHEMA_VERSION = 26;
 const FOCUS_NO_TAP = 2400;
 let focusShownAt = 0, focusShownSequence = -1;
 const activeCareMember = () => game?.collection?.find(member => member.id === game.activeCreatureId) ?? null;

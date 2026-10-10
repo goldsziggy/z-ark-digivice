@@ -30,16 +30,16 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved
 
 test('wild Auto requires explicit confirmation, resolves once, and preserves captured result and trace across reload', async t => {
   const f = await fixture(t), identity = await f.pair();
-  const prepare = { rulesVersion: 18, baseRevision: 0, batchId: 'prepare-wild-auto', events: [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }] };
+  const prepare = { rulesVersion: 19, baseRevision: 0, batchId: 'prepare-wild-auto', events: [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }] };
   const encounter = await f.request('/api/save-sync', identity.token, prepare);
   assert.equal(encounter.status, 200); assert.equal(encounter.body.state.phase, 'encounter'); assert.equal(encounter.body.state.battleMode, 'auto'); assert.equal(encounter.body.autoTrace, null);
   const before = (await f.request('/api/save', identity.token)).body;
   await f.restart(); assert.deepEqual((await f.request('/api/save', identity.token)).body, before, 'GET/reload must not confirm or resolve Auto');
   for (const event of [{ type: 'mode', value: 0 }, { type: 'attack', value: 0 }, { type: 'card', value: 1 }, { type: 'capture', value: 0 }]) {
-    assert.equal((await f.request('/api/save-sync', identity.token, { rulesVersion: 18, baseRevision: 1, batchId: `blocked-${event.type}`, events: [event] })).status, 422);
+    assert.equal((await f.request('/api/save-sync', identity.token, { rulesVersion: 19, baseRevision: 1, batchId: `blocked-${event.type}`, events: [event] })).status, 422);
   }
   assert.deepEqual((await f.request('/api/save', identity.token)).body, before);
-  const body = { rulesVersion: 18, baseRevision: 1, batchId: 'confirmed-wild-auto', events: [{ type: 'auto', value: 0 }] };
+  const body = { rulesVersion: 19, baseRevision: 1, batchId: 'confirmed-wild-auto', events: [{ type: 'auto', value: 0 }] };
   const accepted = await f.request('/api/save-sync', identity.token, body);
   assert.equal(accepted.status, 200); assert.equal(accepted.body.revision, 2); assert.equal(accepted.body.state.sequence, 4);
   assert.equal(accepted.body.state.phase, 'home'); assert.equal(accepted.body.state.captures, 1); assert.equal(accepted.body.state.collection.length, 2);
@@ -48,7 +48,7 @@ test('wild Auto requires explicit confirmation, resolves once, and preserves cap
   assert.equal(trace.outcome, 'captured'); assert.equal(trace.startSequence, 3); assert.equal(trace.endSequence, 4);
   assert.equal(trace.player.species, 'impmon'); assert.equal(trace.enemy.species, encounter.body.state.wildSpecies); assert.ok(trace.enemy.formId !== undefined && trace.enemy.formId >= 11); assert.ok(trace.steps.some(step => step.action === 'capture' && step.captured));
   assert.deepEqual(await f.request('/api/save-sync', identity.token, body), accepted, 'lost acknowledgement retry');
-  const later = await f.request('/api/save-sync', identity.token, { rulesVersion: 18, baseRevision: 2, batchId: 'care-after-auto', events: [{ type: 'feed', value: 0 }, { type: 'select', value: 2 }, { type: 'mode', value: 0 }] });
+  const later = await f.request('/api/save-sync', identity.token, { rulesVersion: 19, baseRevision: 2, batchId: 'care-after-auto', events: [{ type: 'feed', value: 0 }, { type: 'select', value: 2 }, { type: 'mode', value: 0 }] });
   assert.equal(later.status, 200); assert.equal(later.body.state.species, encounter.body.state.wildSpecies); assert.deepEqual(later.body.autoTrace, trace, 'past participants must remain the original named pair after changing partners');
   assert.deepEqual(await f.request('/api/save-sync', identity.token, body), accepted);
   const mismatch = await f.request('/api/save-sync', identity.token, { ...body, events: [{ type: 'auto', value: 0 }, { type: 'feed', value: 0 }] });
@@ -62,10 +62,10 @@ test('wild Auto requires explicit confirmation, resolves once, and preserves cap
 
 test('Tactical wild encounters reject Auto or mode changes and keep existing manual behavior', async t => {
   const f = await fixture(t), identity = await f.pair();
-  const entered = await f.request('/api/save-sync', identity.token, { rulesVersion: 18, baseRevision: 0, batchId: 'tactical-encounter', events: [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 }] });
+  const entered = await f.request('/api/save-sync', identity.token, { rulesVersion: 19, baseRevision: 0, batchId: 'tactical-encounter', events: [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 }] });
   assert.equal(entered.status, 200); assert.equal(entered.body.state.battleMode, 'tactical'); assert.equal(entered.body.autoTrace, null);
-  for (const event of [{ type: 'auto', value: 0 }, { type: 'mode', value: 1 }]) assert.equal((await f.request('/api/save-sync', identity.token, { rulesVersion: 18, baseRevision: 1, batchId: `tactical-block-${event.type}`, events: [event] })).status, 422);
-  const attack = await f.request('/api/save-sync', identity.token, { rulesVersion: 18, baseRevision: 1, batchId: 'tactical-manual-attack', events: [{ type: 'attack', value: 0 }] });
+  for (const event of [{ type: 'auto', value: 0 }, { type: 'mode', value: 1 }]) assert.equal((await f.request('/api/save-sync', identity.token, { rulesVersion: 19, baseRevision: 1, batchId: `tactical-block-${event.type}`, events: [event] })).status, 422);
+  const attack = await f.request('/api/save-sync', identity.token, { rulesVersion: 19, baseRevision: 1, batchId: 'tactical-manual-attack', events: [{ type: 'attack', value: 0 }] });
   assert.equal(attack.status, 200); assert.ok(attack.body.state.wildHp < entered.body.state.wildHp); assert.equal(attack.body.autoTrace, null);
 });
 
@@ -123,7 +123,7 @@ test('schema-five onboarding histories migrate intact and default to Tactical, i
     revision: index ? 0 : 1, events: index ? [] : events, receipts: index ? [] : [{ batchId, bodyHash: hash(JSON.stringify({ rulesVersion: 3, baseRevision: 0, events })), revision: 1, eventEnd: 2 }] }));
   const old = { formatVersion: 4, gameSchemaVersion: 5, rulesVersion: 3, devices }, f = await fixture(t, old);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 20); assert.equal(stored.gameSchemaVersion, 25);
+  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 26);
   for (let i = 0; i < devices.length; i++) {
     assert.equal(stored.devices[i].deviceId, devices[i].deviceId); assert.equal(stored.devices[i].revision, devices[i].revision);
     assert.deepEqual(stored.devices[i].events, []); assert.deepEqual(stored.devices[i].receipts, []);
@@ -134,7 +134,7 @@ test('schema-five onboarding histories migrate intact and default to Tactical, i
   const current = (await f.request('/api/save', tokens[0])).body; assert.equal(current.state.species, 'renamon'); assert.equal(current.state.battleMode, 'tactical'); assert.equal(current.autoTrace, null);
   const egg = (await f.request('/api/save', tokens[1])).body; assert.equal(egg.state.phase, 'egg'); assert.equal(egg.state.battleMode, 'tactical');
   const retry = await f.request('/api/save-sync', tokens[0], { rulesVersion: 3, baseRevision: 0, batchId, events }); assert.equal(retry.status, 409); assert.equal(retry.body.error, 'migration_required');
-  const relabeled = await f.request('/api/save-sync', tokens[0], { rulesVersion: 18, baseRevision: 0, batchId, events });
+  const relabeled = await f.request('/api/save-sync', tokens[0], { rulesVersion: 19, baseRevision: 0, batchId, events });
   assert.equal(relabeled.body.error, 'legacy_batch_requires_reconciliation');
   await f.restart(); assert.deepEqual((await f.request('/api/save', tokens[0])).body, current);
 });

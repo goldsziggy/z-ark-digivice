@@ -12,7 +12,10 @@ namespace digivice::forms {
 constexpr std::uint32_t kPreservedFormCount = 66;
 constexpr std::uint32_t kFormCount = 465; // Stable ID space includes decode-only original fixtures.
 constexpr std::uint32_t kFirstProductionFormId = 11;
-constexpr std::uint32_t kProductionFormCount = 455;
+constexpr std::uint32_t kProductionFormCount = 451; // 455 IDs from 11, minus 4 retired duplicates.
+// Frozen roster of rules 13-18 (and the rules 10-12 pool): forms 1..276, 172 routes.
+constexpr std::uint32_t kRules18FormCount = 276;
+constexpr std::uint32_t kRules18ProductionFormCount = 266;
 constexpr std::uint32_t kCatalogVersion = 6;
 constexpr std::uint32_t kMaxRpgLevel = 50;
 enum class Stage : std::uint8_t { Original, Rookie, Champion, Ultimate, Mega, Fresh, InTraining, Armor, NoLevel };
@@ -80,7 +83,11 @@ inline EvolutionNeed evolutionNeed(const EvolutionEdge& edge) {
     return evolutionNeedFor(src->minLevel, src->minBond, dest->stage, dest->minLevel, dest->minBond, edge.minLevel, edge.minBond);
 }
 // IDs1..10 remain for old saves and frozen replays, never new production pools.
-bool productionForm(std::uint32_t formId);
+bool productionForm(std::uint32_t formId); // Rules 19+: excludes retired duplicates.
+// Retired duplicate IDs keep their append-only row but leave play; 0 when not retired.
+std::uint32_t retiredAliasOf(std::uint32_t formId);
+// The index-th production form (0-based, skipping retired IDs); 0 past the end.
+std::uint32_t productionFormAt(std::uint32_t index);
 // Curated routes are independent of profile families and stat anchors. A form
 // can have several parents, with at most two outgoing choices. No heap use.
 std::size_t edgeCount();
@@ -107,5 +114,21 @@ const char* evolutionStatus(std::uint32_t formId); // progression, terminal, ind
 // use growth above 10. Other forms grow after their minLevel anchor.
 // Eligibility also needs the current parent, bond and game phase: caller-owned.
 combat::Stats stats(std::uint32_t formId, std::uint32_t rpgLevel);
+
+// Frozen rules-18 roster view for rules 13-18 replay (frozen executors only).
+// Forms 1..276 with the 172 routes and leaf data exactly as released; later
+// additions, route edits and retirements never change these answers.
+namespace rules18 {
+constexpr std::uint32_t kFormCount = kRules18FormCount;
+constexpr std::uint32_t kProductionFormCount = kRules18ProductionFormCount;
+bool productionForm(std::uint32_t formId);
+bool encounterObtainable(std::uint32_t formId);
+std::size_t edgeCount();
+const EvolutionEdge* edgeAt(std::size_t index);
+const EvolutionEdge* outgoing(std::uint32_t formId, std::uint32_t index);
+bool canReach(std::uint32_t from, std::uint32_t to);
+const char* leafReason(std::uint32_t formId);
+const char* evolutionStatus(std::uint32_t formId);
+} // namespace rules18
 
 } // namespace digivice::forms

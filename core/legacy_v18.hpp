@@ -1,3 +1,4 @@
+// Frozen rules 18 / schema 25 before rules 19 opened the 465-form roster (forms 277+ in the wild).
 #pragma once
 
 #include <cstddef>
@@ -7,10 +8,10 @@
 #include "encounters.hpp"
 
 // This core has no heap allocation, clock, network, filesystem, or hardware dependency.
-namespace digivice {
+namespace digivice::legacy_v18 {
 
-constexpr std::uint32_t kSchemaVersion = 26;
-constexpr std::uint32_t kRulesVersion = 19;
+constexpr std::uint32_t kSchemaVersion = 25;
+constexpr std::uint32_t kRulesVersion = 18;
 constexpr std::uint32_t kDevelopmentSeed = 12345;
 constexpr std::size_t kSnapshotSize = 3216; // V23, V24 and V25 share this layout.
 constexpr std::size_t kV22SnapshotSize = 2964;
@@ -312,4 +313,4 @@ bool encodeSnapshot(const State& state, Snapshot& snapshot);
 SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, State& state);
 const char* snapshotStatusText(SnapshotStatus status);
 
-} // namespace digivice
+} // namespace digivice::legacy_v18

@@ -446,3 +446,11 @@ constexpr CatalogEntry kCatalogEntries[] = {
     {464,"troopmon","Troopmon","Striker"},
     {465,"wisemon","Wisemon","Warden"},
 };
+// Retired duplicate IDs (kept for the append-only ledger) and the roster form each one aliases.
+struct RetiredForm { uint16_t formId, aliasOf; };
+constexpr RetiredForm kRetiredForms[] = {
+    {279,146},
+    {286,127},
+    {287,126},
+    {288,132},
+};

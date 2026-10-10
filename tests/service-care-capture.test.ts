@@ -18,7 +18,7 @@ type Event = { type: string; value: number };
 const token = Buffer.alloc(32, 62).toString('base64url'); // Public fixture identity.
 const id = `dv_${'d'.repeat(24)}`;
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
-const command = (revision: number, batchId: string, events: Event[], rulesVersion = 18) => ({ rulesVersion, baseRevision: revision, batchId, events });
+const command = (revision: number, batchId: string, events: Event[], rulesVersion = 19) => ({ rulesVersion, baseRevision: revision, batchId, events });
 const core = (args: string[], events: Event[] = []) => JSON.parse(execFileSync(corePath, args, { input: events.map(e => `${e.type} ${e.value}\n`).join(''), encoding: 'utf8', maxBuffer: 64 * 1024 }));
 function originalStore(events: Event[]) {
   return { formatVersion: 13, gameSchemaVersion: 14, rulesVersion: 11, devices: [{ deviceId: id, tokenHash: hash(token), seed: 12345, initialMode: 'onboarding', revision: events.length ? 1 : 0,
@@ -54,14 +54,14 @@ for (const [name, value] of Object.entries(frozen.cases) as Array<[string, any]>
   assert.ok(validLastCapture(saved.body.state.lastCapture, saved.body.state.sequence));
   assert.ok(saved.body.state.collection.every(validCare));
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [20, 25, 18]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 11, events: value.events, receipts: original.devices[0].receipts }]);
   assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v11.json'), 'utf8')), original);
   if (value.events.length) {
     const pending = command(0, 'frozen-eleven-original-batch', value.events, 11);
     assert.equal((await f.request(pending)).body.error, 'migration_required');
-    assert.equal((await f.request({ ...pending, rulesVersion: 18 })).body.error, 'legacy_batch_requires_reconciliation');
+    assert.equal((await f.request({ ...pending, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
   }
   await f.restart(); assert.deepEqual(await f.request(), saved);
   if (name === 'encounter') {
@@ -154,7 +154,7 @@ test('care modifiers are bounded and repeated full-mood Play cannot spend energy
 test('a current-rules hit records its actual chance and owns exactly one captured instance through retry and later care', async t => {
   const f = await fixture(t);
   const prepared = await f.request(command(0, 'current-catch-prepare', [{ type: 'hatch', value: 1 }, { type: 'explore', value: 1000 }, { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }, { type: 'attack', value: 0 }]));
-  assert.equal(prepared.status, 200); assert.equal(prepared.body.state.wildRules, 18);
+  assert.equal(prepared.status, 200); assert.equal(prepared.body.state.wildRules, 19);
   const request = command(1, 'current-catch-exactly-once', [{ type: 'flick', value: 41140 }]);
   const saved = await f.request(request); assert.equal(saved.status, 200);
   assert.equal(saved.body.state.lastCapture.chance, prepared.body.state.wildCaptureChance);

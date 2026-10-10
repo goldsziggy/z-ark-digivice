@@ -23,7 +23,7 @@ void target(State& s,unsigned id,unsigned level=1){s.wildFormId=id;s.wildSpecies
 unsigned formWith(encounters::Rarity rarity){for(unsigned id=forms::kFirstProductionFormId;id<=forms::kFormCount;++id)if(encounters::rarityForForm(id)==rarity&&combat::validFormProfile(id,1))return id;return 0;}
 unsigned phaseFor(const State& s,capturering::Grade grade){for(unsigned phase=0;phase<capturering::kCycleMs;++phase)if(capturering::sample(phase,s.wildFormId).grade==grade)return phase;CHECK(false);return 0;}
 void contract(){
-    CHECK(kSchemaVersion==25&&kRulesVersion==18&&kSnapshotSize==3216);
+    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216);
     CHECK(static_cast<unsigned>(Action::RingCapture)==static_cast<unsigned>(Action::WorldSeed)+1);
     Action parsed;CHECK(parseAction("ring-capture",parsed)&&parsed==Action::RingCapture);
     auto s=fight();reject(s,2400,Error::InvalidValue);reject(s,UINT32_MAX,Error::InvalidValue);

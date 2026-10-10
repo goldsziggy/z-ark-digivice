@@ -40,7 +40,7 @@ void rewardMember(const CreatureMember& before,const CreatureMember& after,unsig
  CHECK(trade::sameMember(before,normalized));
 }
 void contractAndSelection(){
- CHECK(kSchemaVersion==25&&kRulesVersion==18&&kPartyCapacity==3&&kCollectionCapacity==60&&kSnapshotSize==3216&&sizeof(State)==3188);
+ CHECK(kSchemaVersion==26&&kRulesVersion==19&&kPartyCapacity==3&&kCollectionCapacity==60&&kSnapshotSize==3216&&sizeof(State)==3188);
  Action parsed=Action::Feed;CHECK(!parseAction(nullptr,parsed)&&parsed==Action::Feed);CHECK(!parseAction("",parsed)&&parsed==Action::Feed);CHECK(parseAction("party-add",parsed)&&parsed==Action::PartyAdd);CHECK(parseAction("party-remove",parsed)&&parsed==Action::PartyRemove);
  auto egg=newDevice();reject(egg,Action::PartyAdd,2,Error::WrongPhase);
  auto s=roster(60);reject(s,Action::PartyAdd,0,Error::InvalidValue);reject(s,Action::PartyAdd,UINT32_MAX,Error::InvalidValue);reject(s,Action::PartyAdd,61,Error::UnknownMember);

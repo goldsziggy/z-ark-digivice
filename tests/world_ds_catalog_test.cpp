@@ -25,13 +25,16 @@ int main(int argc, char** argv) {
         check(f::validForLineage(id, form->lineage), "form lineage");
         check(f::lineageFromSlug(f::lineageSlug(form->lineage)) == form->lineage, "stable lineage slug roundtrip");
         check(f::combatTier(id) != f::CombatTier::Unknown, "explicit combat tier");
-        check(f::productionForm(id) == (id >= 11), "released ID boundary");
-        check(f::encounterObtainable(id) == (id >= 11), "only production forms are obtainable");
+        const bool retired = f::retiredAliasOf(id) != 0;
+        check(retired == (id == 279 || id == 286 || id == 287 || id == 288), "exactly the four retired duplicates");
+        check(f::productionForm(id) == (id >= 11 && !retired), "released ID boundary");
+        check(f::encounterObtainable(id) == (id >= 11 && !retired), "only production forms are obtainable");
+        check(!retired || (!f::outgoing(id, 0) && f::productionForm(f::retiredAliasOf(id))), "retired form has no routes and aliases a live form");
         if (f::outgoing(id, 0)) check(f::leafReason(id) == nullptr, "nonleaf has no false terminal label");
         else check(f::leafReason(id) != nullptr, "leaf has an honest reason");
         storage.fill('Z');
         const auto n = c::writeFormCatalogJson(id, storage.data() + 1, capacity);
-        if (id <= 10) {
+        if (id <= 10 || f::retiredAliasOf(id)) {
             check(n == 0 && storage[1] == '\0', "historical fixture detail is not published");
             check(storage.front() == 'Z' && storage.back() == 'Z', "rejected detail canaries intact");
             storage.fill('Z');
@@ -68,8 +71,8 @@ int main(int argc, char** argv) {
         check(storage[exact + 1] == 'Z', "detail respects undersized boundary");
         check(c::writeFormCatalogJson(id, storage.data() + 1, exact + 1) == exact, "exact detail capacity succeeds");
     }
-    check(productionDetails == f::kProductionFormCount && publishedRoutes == 257, "complete production roster and routes are published");
-    check(retainedFixtureRoutes == 6 && f::edgeCount() == 263, "six historical routes remain available for old replay");
+    check(productionDetails == f::kProductionFormCount && publishedRoutes == 248, "complete production roster and routes are published");
+    check(retainedFixtureRoutes == 6 && f::edgeCount() == 254, "six historical routes remain available for old replay");
     for (unsigned offset = 0; offset <= f::kProductionFormCount; ++offset) {
         storage.fill('Z');
         const auto n = c::writeCatalogPageJson(offset, 16, storage.data() + 1, c::kCatalogPageJsonCapacity);
@@ -77,11 +80,11 @@ int main(int argc, char** argv) {
         check(storage.front() == 'Z' && storage.back() == 'Z', "page canaries intact");
         char totalKey[32];
         std::snprintf(totalKey, sizeof(totalKey), "\"total\":%u,", f::kProductionFormCount);
-        check(std::strstr(storage.data() + 1, "\"rulesVersion\":18") && std::strstr(storage.data() + 1, totalKey), "page identifies the current production projection");
+        check(std::strstr(storage.data() + 1, "\"rulesVersion\":19") && std::strstr(storage.data() + 1, totalKey), "page identifies the current production projection");
         unsigned count = 0;
         for (const char* p = storage.data() + 1; (p = std::strstr(p, "\"formId\":")); ++p) {
             unsigned id = 0;
-            check(std::sscanf(p, "\"formId\":%u", &id) == 1 && id == offset + count + 11 && f::productionForm(id), "page IDs are consecutive production forms only");
+            check(std::sscanf(p, "\"formId\":%u", &id) == 1 && id == f::productionFormAt(offset + count) && f::productionForm(id), "page IDs are consecutive production forms only");
             ++count;
         }
         const auto remaining = f::kProductionFormCount - offset;

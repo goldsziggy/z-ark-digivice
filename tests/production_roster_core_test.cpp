@@ -30,7 +30,10 @@ void productionPool(){
    CHECK(selected==selectWildForm(encounter,seed,partner,level));++draws;
   }
  }
- for(unsigned id=1;id<=forms::kFormCount;++id)CHECK(forms::productionForm(id)==(id>=11)&&forms::encounterObtainable(id)==(id>=11));
+ for(unsigned id=1;id<=forms::kFormCount;++id){const bool live=id>=11&&!forms::retiredAliasOf(id);CHECK(forms::productionForm(id)==live&&forms::encounterObtainable(id)==live);}
+ // Frozen rules-18 view: exactly the 276-form roster, unaffected by later additions and retirements.
+ for(unsigned id=1;id<=forms::kFormCount;++id)CHECK(forms::rules18::productionForm(id)==(id>=11&&id<=276));
+ CHECK(forms::rules18::edgeCount()==172&&forms::kProductionFormCount==451);
  for(unsigned seed=1;seed<=8192;++seed){const auto id=encounters::selectProduction(1,seed,11,1);++counts[unsigned(encounters::rarityForForm(id))];}
  CHECK(!counts[0]&&counts[1]>5000&&counts[2]>1500&&counts[3]>200);
  unsigned covered=0;for(unsigned id=1;id<=forms::kFormCount;++id)covered+=seen[id];
@@ -58,7 +61,7 @@ void releaseEvolutionEdges(){
   CHECK(s.collection[1].id==2&&s.collection[1].formId==to->id&&unsigned(s.collection[1].species)==to->lineage&&s.collection[1].xp==before.collection[1].xp);
   CHECK(s.hp==(17*combat::formProfile(to->id,level).stats.maxHp+maxBefore-1)/maxBefore&&s.rngState==before.rngState&&hasObtained(s,to->id));restore(s);
  }
- CHECK(released==257&&retainedOnly==6&&released+retainedOnly==forms::edgeCount());std::printf("All%u released evolution routes preserve partner identity/XP and HP fraction; %u original-only routes remain historical\n",released,retainedOnly);
+ CHECK(released==248&&retainedOnly==6&&released+retainedOnly==forms::edgeCount());std::printf("All%u released evolution routes preserve partner identity/XP and HP fraction; %u original-only routes remain historical\n",released,retainedOnly);
 }
 void firstStepsAndStarters(){
  auto egg=newDevice();reject(egg,Action::ResolveTestEncounter,Error::WrongPhase);
@@ -117,7 +120,7 @@ void frozenInstalledFixtures(){
  // No rules17 record can invent a current-rules original foe, but oldrules remain decodable until explicit repair.
  auto s=newDevice();step(s,Action::Hatch,1);step(s,Action::AccrueSteps,1000);auto bad=s;bad.pendingEncounter={4,1,13};CHECK(!isValid(bad));bad.pendingEncounter.rules=12;CHECK(isValid(bad));
  Action action;CHECK(parseAction("resolve-test-encounter",action)&&action==Action::ResolveTestEncounter);
- CHECK(kSchemaVersion==25&&kRulesVersion==18&&kSnapshotSize==3216);
+ CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216);
 }
 }
 int main(){productionPool();releaseEvolutionEdges();firstStepsAndStarters();resolution();frozenInstalledFixtures();std::printf("%u production-roster/migration checks, %u failures\n",checks,failures);return failures?1:0;}

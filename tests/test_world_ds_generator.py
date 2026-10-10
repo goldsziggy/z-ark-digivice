@@ -143,7 +143,7 @@ class GeneratorTest(unittest.TestCase):
         old_routes = {pair: gates for pair, gates in routes.items() if pair[0] <= 276 and pair[1] <= 276}
         self.assertEqual(len(baseline['edges']), 163)
         self.assertEqual(len(old_routes), 172)
-        self.assertEqual(len(routes), 263)
+        self.assertEqual(len(routes), 254)  # 9 unreviewed or retired-duplicate routes held
         for edge in baseline['edges']:
             self.assertEqual(routes[(edge['fromFormId'], edge['toFormId'])], (edge['minimumLevel'], edge['minimumBond']))
 

@@ -14,7 +14,7 @@ type Event = { type: string; value: number };
 const token = Buffer.alloc(32, 83).toString('base64url'); // Public fixture identity.
 const id = `dv_${'f'.repeat(24)}`;
 const sha = (value: string) => createHash('sha256').update(value).digest('hex');
-const command = (revision: number, batchId: string, events: Event[], rulesVersion = 18) => ({ rulesVersion, baseRevision: revision, batchId, events });
+const command = (revision: number, batchId: string, events: Event[], rulesVersion = 19) => ({ rulesVersion, baseRevision: revision, batchId, events });
 
 // A rules-17 (format 19) store: hatched, Auto mode, nothing else.
 function rules17Store() {
@@ -41,9 +41,9 @@ test('a rules17 store migrates once; a real Auto fight pauses for one focus tap 
   const f = await fixture(t);
   assert.equal((await f.request(undefined, '/api/health')).body.capabilities.autoFocus, 1);
   let current = (await f.request()).body, serial = 0;
-  assert.equal(current.state.rulesVersion, 18); assert.equal(current.state.focus, null);
+  assert.equal(current.state.rulesVersion, 19); assert.equal(current.state.focus, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [20, 25, 18]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
   assert.deepEqual(stored.devices[0].legacy.histories.map((history: any) => history.rulesVersion), [17]);
   const send = async (events: Event[]) => {
     const result = await f.request(command(current.revision, `focus-flow-${++serial}`, events));

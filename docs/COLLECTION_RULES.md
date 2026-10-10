@@ -1,5 +1,7 @@
 # Individual collection and journal
 
+> **Current roster (rules 19):** 465 form IDs, 451 playable (four retired duplicates), 254 routes; rules 13–18 keep the 276-form / 172-route roster below. See [ROSTER_RULES19.md](ROSTER_RULES19.md). The counts below describe the rules-14 release.
+
 The shared, allocation-free native core uses **care schema 21, rules 14, catalog 6 and a 2,952-byte snapshot**. Browser and firmware execute the same transitions. The full catalog has 276 forms, including all 255 named source-sheet entries. [Gameplay review](GAMEPLAY_REVIEW.md) · [Roster and provenance](WORLD_DS_ROSTER.md) · [HTTP contract](../service/API.md).
 
 ## At sixty of sixty Digimon

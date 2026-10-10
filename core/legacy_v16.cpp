@@ -140,7 +140,7 @@ bool decodeFlick(std::uint32_t value, FlickTrajectory& result) {
 }
 std::uint32_t worldSelectionSeed(const State& state) { return state.worldSeed ? state.worldSeed : state.seed; }
 std::uint32_t selectWildForm(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partnerFormId,std::uint32_t rivalLevel) {
-    return encounters::selectProduction(encounter,seed,partnerFormId,rivalLevel);
+    return encounters::rules18::selectProduction(encounter,seed,partnerFormId,rivalLevel);
 }
 std::uint32_t wildEncounterLevel(std::uint32_t encounter,std::uint32_t seed,std::uint32_t center) {
     auto value=seed^(encounter*0x9e3779b9u);
@@ -277,7 +277,7 @@ bool evolveOwned(State& next, CreatureMember& member, std::uint32_t formId) {
     const auto* target = forms::find(formId);
     const forms::EvolutionEdge* edge = nullptr;
     for (std::size_t i = 0; i < 2; ++i) {
-        const auto* candidate = forms::outgoing(member.formId, i);
+        const auto* candidate = forms::rules18::outgoing(member.formId, i);
         if (candidate && candidate->to == formId) edge = candidate;
     }
     if (!target || !edge) return false;
@@ -582,15 +582,15 @@ static bool validForVersion(const State& s,bool) {
     const auto& pending=s.pendingEncounter;
     if(pending.formId) {
         if(!s.onboardingComplete || !combat::validFormProfile(pending.formId,pending.level) ||
-           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15&&pending.rules!=16) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
+           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15&&pending.rules!=16) || (pending.rules>=13&&!forms::rules18::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
            s.encounterProgress || s.encounters==kMax) return false;
     } else if(pending.level || pending.rules) return false;
-    static_assert(forms::kFormCount<=kJournalCapacity);
+    static_assert(forms::rules18::kFormCount<=kJournalCapacity);
     if(static_cast<unsigned>(s.battleMode)>1 || static_cast<unsigned>(s.lastAutoOutcome)>3) return false;
     if(s.lastAutoOutcome==autobattle::Outcome::None) {if(s.lastAutoTurns || s.lastAutoSequence)return false;}
     else if(!s.lastAutoTurns || s.lastAutoTurns>48 || !s.lastAutoSequence || s.lastAutoSequence>s.sequence ||
             (s.lastAutoOutcome==autobattle::Outcome::Captured && !s.captures)) return false;
-    for(std::uint32_t id=forms::kFormCount+1;id<=kJournalCapacity;++id) if(hasObtained(s,id)) return false;
+    for(std::uint32_t id=forms::rules18::kFormCount+1;id<=kJournalCapacity;++id) if(hasObtained(s,id)) return false;
     if(!s.onboardingComplete) {
         if(s.phase!=Phase::Egg || s.starterId || s.sequence!=(s.starterOfferSeed?1u:0u) || s.rngState!=(s.seed?s.seed:0x6d2b79f5u) ||
            s.steps || s.stepCredit || s.hp || s.energy || s.fullness || s.mood || s.bond || s.level || s.captures || s.encounters ||
@@ -617,7 +617,7 @@ static bool validForVersion(const State& s,bool) {
            m.energy>100 || m.fullness>100 || m.mood>100 || m.capturedAtSequence>s.sequence || !hasObtained(s,m.formId)) return false;
         if(m.id==1) {
             const auto founder=s.starterId?starterForm(s,s.starterId):forms::initialForm(1u);
-            if(!forms::canReach(founder,m.formId) || m.capturedAtSequence) return false;
+            if(!forms::rules18::canReach(founder,m.formId) || m.capturedAtSequence) return false;
         } else if(!m.capturedAtSequence || (i&&m.capturedAtSequence<=s.collection[i-1].capturedAtSequence)) return false;
     }
     const auto& m=*activeMember(s);
@@ -628,7 +628,7 @@ static bool validForVersion(const State& s,bool) {
         s.wildSpecies==Species::None&&!s.wildLevel&&!s.wildTurn&&!s.wildFormId&&!s.wildRules;
     if(s.phase!=Phase::Encounter || !s.encounters || !forms::validForLineage(s.wildFormId,static_cast<unsigned>(s.wildSpecies)) ||
        !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16) ||
-       (s.wildRules>=13&&!forms::productionForm(s.wildFormId)) ||
+       (s.wildRules>=13&&!forms::rules18::productionForm(s.wildFormId)) ||
        (s.wildRules==4&&(s.wildSpecies<Species::Flicker||s.wildSpecies>Species::Cinder||s.wildFormId!=rootForm(s.wildSpecies))) ||
        s.wildTurn>1000 || s.wildMaxHp!=maxHpForRules(s.wildFormId,s.wildLevel,s.wildRules) || !s.wildHp || s.wildHp>s.wildMaxHp || s.captureAttempts>3 || (s.wildRules>=12&&s.wildRules<16&&s.captureAttempts==3) ||
        (s.attackBoost&&s.attackBoost!=5) || s.shield>12 || (s.attackBoost&&s.shield) || (!s.cardUsed&&(s.attackBoost||s.shield)))return false;
@@ -676,7 +676,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if(value)return Error::InvalidValue;
         if(!needsTestEncounterResolution(state))return Error::InvalidAction;
     } else if (action == Action::Evolve) {
-        if (!forms::productionForm(value)) return Error::InvalidValue;
+        if (!forms::rules18::productionForm(value)) return Error::InvalidValue;
         if (state.phase != Phase::Home) return Error::WrongPhase;
     } else if (action == Action::Mode) {
         if (value > 1) return Error::InvalidValue;
@@ -722,7 +722,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
     } else if (action == Action::EvolveMember) {
         const auto memberId = value >> 16;
         const auto formId = value & 0xffffu;
-        if (!memberId || memberId == kMax || !forms::productionForm(formId)) return Error::InvalidValue;
+        if (!memberId || memberId == kMax || !forms::rules18::productionForm(formId)) return Error::InvalidValue;
         if (state.phase != Phase::Home) return Error::WrongPhase;
     } else if (action == Action::Select || action == Action::Release) {
         if (value < 1 || value == kMax) return Error::InvalidValue;
@@ -745,10 +745,10 @@ Error apply(State& state, Action action, std::uint32_t value) {
         next.lastCritical = 0;
     switch (action) {
     case Action::ResolveTestEncounter:
-        if(next.phase==Phase::Encounter && !forms::productionForm(next.wildFormId)){
+        if(next.phase==Phase::Encounter && !forms::rules18::productionForm(next.wildFormId)){
             home(next);next.message=Message::EncounterCleared;
         }
-        if(next.pendingEncounter.formId && !forms::productionForm(next.pendingEncounter.formId))next.pendingEncounter={};
+        if(next.pendingEncounter.formId && !forms::rules18::productionForm(next.pendingEncounter.formId))next.pendingEncounter={};
         break;
     case Action::PartyAdd:
         if(!findMember(next,value))return Error::UnknownMember;
@@ -1054,7 +1054,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
     case Action::Select:
         if (next.phase != Phase::Home) return Error::WrongPhase;
         if (!findMember(next,value)) return Error::UnknownMember;
-        if (!forms::productionForm(findMember(next,value)->formId)) return Error::InvalidAction;
+        if (!forms::rules18::productionForm(findMember(next,value)->formId)) return Error::InvalidAction;
         next.activeCreatureId = value;
         reconcileParty(next);
         loadActive(next);
@@ -1409,7 +1409,7 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     append(",\"foregroundSequence\":%u",number(s.foregroundSequence));
     append(",\"autoCapture\":%u,\"worldSeed\":%u,\"receivedTrades\":%u,\"nextMemberId\":%u,\"journal\":{\"capacity\":512,\"obtainedFormIds\":[",number(static_cast<unsigned>(s.autoCapture)),number(s.worldSeed),number(s.receivedTrades),number(s.nextMemberId));
     bool obtainedComma=false;
-    for(std::uint32_t id=1;id<=forms::kFormCount;++id) if(hasObtained(s,id)){append("%s%u",obtainedComma?",":"",number(id));obtainedComma=true;}
+    for(std::uint32_t id=1;id<=forms::rules18::kFormCount;++id) if(hasObtained(s,id)){append("%s%u",obtainedComma?",":"",number(id));obtainedComma=true;}
     append("]},\"collection\":[");
     for(std::size_t i=0;i<s.collectionCount;++i) {
         const auto& m=s.collection[i];
@@ -1421,9 +1421,9 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     append("],\"evolution\":{\"options\":[");
     if(s.onboardingComplete) {
         const auto& m=(*activeMember(s)); bool comma=false;
-        for(std::size_t i=0;i<2;++i) if(const auto* edge=forms::outgoing(m.formId,i)) {
+        for(std::size_t i=0;i<2;++i) if(const auto* edge=forms::rules18::outgoing(m.formId,i)) {
             const auto id=edge->to;
-            if(!forms::productionForm(id))continue;
+            if(!forms::rules18::productionForm(id))continue;
             const auto* nextForm=forms::find(id); const auto need=forms::evolutionNeed(*edge);
             const auto preview=m.level<need.level ? need.level : m.level;
             const auto eligible=s.phase==Phase::Home && m.level>=need.level && m.bond>=need.bond && carePointsOf(m.careState)>=need.care;

@@ -92,7 +92,7 @@ async function careFixture(t: { after: (fn: () => Promise<void>) => unknown }, c
   };
   return { dataDir, historical, request, restart: async () => { await close(); app.close(); app = await startServer({ seedSource: () => 12345, rootDir, dataDir, corePath: corePathCare, battleCorePath: corePath, port: 0 }); } };
 }
-const currentCare = (state: any) => ({ ...state, schemaVersion: 25, rulesVersion: 18, walking: { rate: 2, name: 'Normal', eligibleSteps: 0, encounters: 0, rngState: 0, target: 0, progress: 0, remainingSteps: 0 }, wildRarity: null, recoveryRestCount: state.phase === 'home' ? Math.ceil(Math.max(state.combat.maxHp - state.hp, 100 - state.energy) / 25) : 0, queuedEncounters: Math.floor(state.stepCredit / 100), stepsToNextEncounter: state.stepCredit >= 100 ? 0 : 100 - state.stepCredit });
+const currentCare = (state: any) => ({ ...state, schemaVersion: 26, rulesVersion: 19, walking: { rate: 2, name: 'Normal', eligibleSteps: 0, encounters: 0, rngState: 0, target: 0, progress: 0, remainingSteps: 0 }, wildRarity: null, recoveryRestCount: state.phase === 'home' ? Math.ceil(Math.max(state.combat.maxHp - state.hp, 100 - state.energy) / 25) : 0, queuedEncounters: Math.floor(state.stepCredit / 100), stepsToNextEncounter: state.stepCredit >= 100 ? 0 : 100 - state.stepCredit });
 test('care8 committed Auto history migrates once, reserves pending IDs, and cannot duplicate its capture reward', async t => {
   const f = await careFixture(t, 'afterCare'), saved = await f.request();
   assert.equal(saved.status, 200);
@@ -100,23 +100,23 @@ test('care8 committed Auto history migrates once, reserves pending IDs, and cann
   assert.deepEqual(saved.body.autoTrace, f.historical.response.body.autoTrace); assert.deepEqual(saved.body.events, []);
   assert.equal(saved.body.revision, 3); assert.equal(saved.body.baseSequence, f.historical.response.body.state.sequence);
   const store = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [20, 25, 18]);
+  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [21, 26, 19]);
   assert.deepEqual(store.devices[0].legacy.histories, [{ rulesVersion: 8, events: f.historical.store.devices[0].events, receipts: f.historical.store.devices[0].receipts }]);
   assert.deepEqual(store.devices[0].legacy.autoTrace, f.historical.response.body.autoTrace);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v8.json'), 'utf8')), f.historical.store);
   const snapshot = Buffer.from(store.devices[0].legacy.snapshotBase64, 'base64');
-  assert.deepEqual([snapshot.length, snapshot.readUInt16LE(4), snapshot.readUInt32LE(8)], [3216, 25, 18]);
+  assert.deepEqual([snapshot.length, snapshot.readUInt16LE(4), snapshot.readUInt32LE(8)], [3216, 26, 19]);
   for (const command of frozen.care.commands) {
     assert.equal((await f.request(command.body)).body.error, 'migration_required');
-    assert.equal((await f.request({ ...command.body, rulesVersion: 18 })).body.error, 'legacy_batch_requires_reconciliation');
+    assert.equal((await f.request({ ...command.body, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
   }
   await f.restart(); assert.deepEqual(await f.request(), saved);
-  const body = { rulesVersion: 18, baseRevision: saved.body.revision, batchId: 'new-nine-after-old-auto', events: [{ type: 'rest', value: 0 }] };
+  const body = { rulesVersion: 19, baseRevision: saved.body.revision, batchId: 'new-nine-after-old-auto', events: [{ type: 'rest', value: 0 }] };
   const accepted = await f.request(body); assert.equal(accepted.status, 200);
   assert.equal(accepted.body.state.xp, saved.body.state.xp + (saved.body.state.hp < saved.body.state.combat.maxHp || saved.body.state.energy < 100 ? 2 : 0)); assert.equal(accepted.body.state.captures, saved.body.state.captures);
   assert.deepEqual(accepted.body.autoTrace, saved.body.autoTrace);
   await f.restart(); assert.deepEqual(await f.request(body), accepted);
-  const next = { rulesVersion: 18, baseRevision: accepted.body.revision, batchId: 'next-nine-auto-after-migration', events: [...Array.from({ length: 8 }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 }] };
+  const next = { rulesVersion: 19, baseRevision: accepted.body.revision, batchId: 'next-nine-auto-after-migration', events: [...Array.from({ length: 8 }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 }] };
   const newer = await f.request(next); assert.equal(newer.status, 200); assert.ok(newer.body.autoTrace.endSequence > saved.body.autoTrace.endSequence);
   await f.restart(); assert.deepEqual(await f.request(next), newer);
   assert.deepEqual(await f.request(body), accepted, 'older current9 receipt retains the original8 trace after another Auto result');
@@ -126,12 +126,12 @@ test('an active wild8 test encounter retains its archive and clears without a ne
   const f = await careFixture(t, 'encounter'), before = await f.request();
   assert.equal(before.body.state.maxLevel, 50); assert.deepEqual(historicComparable(legacyFields(before.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
   assert.equal(before.body.state.wildRules, 8);
-  assert.equal((await f.request({ rulesVersion: 18, baseRevision: 1, batchId: 'no-manual-input-old-auto', events: [{ type: 'attack', value: 0 }] })).status, 422);
+  assert.equal((await f.request({ rulesVersion: 19, baseRevision: 1, batchId: 'no-manual-input-old-auto', events: [{ type: 'attack', value: 0 }] })).status, 422);
   assert.deepEqual(await f.request(), before);
   const oldAuto = JSON.parse(execFileSync(corePathCare ?? join(rootDir, 'build/digivice-core'), ['--replay-v8-onboarding-trace', String(f.historical.store.devices[0].seed)], { input: [...f.historical.store.devices[0].events, ...frozen.care.commands[1].body.events].map((e: any) => `${e.type} ${e.value}\n`).join(''), encoding: 'utf8' }));
   assert.deepEqual(oldAuto.state, frozen.care.commands[1].response.body.state); assert.deepEqual(oldAuto.trace, frozen.care.commands[1].response.body.autoTrace);
-  assert.equal((await f.request({ ...frozen.care.commands[1].body, rulesVersion: 18, batchId: 'reject-preserved-eight-auto' })).status, 422);
-  const body = { rulesVersion: 18, baseRevision: 1, batchId: 'clear-preserved-eight-test', events: [{ type: 'resolve-test-encounter', value: 0 }] };
+  assert.equal((await f.request({ ...frozen.care.commands[1].body, rulesVersion: 19, batchId: 'reject-preserved-eight-auto' })).status, 422);
+  const body = { rulesVersion: 19, baseRevision: 1, batchId: 'clear-preserved-eight-test', events: [{ type: 'resolve-test-encounter', value: 0 }] };
   const accepted = await f.request(body); assert.equal(accepted.status, 200);
   for (const key of ['hp', 'energy', 'xp', 'journal', 'captures', 'rngState', 'activeCreatureId', 'nextMemberId']) assert.deepEqual(accepted.body.state[key], before.body.state[key], key);
   // Stored care values are unchanged; leaving a pre12 fight re-enables
@@ -151,7 +151,7 @@ test('explicit unhatched care8 identity remains an egg after migration and fresh
   const f = await careFixture(t, 'egg'), before = await f.request();
   assert.equal(before.body.state.maxLevel, 50); assert.deepEqual(historicComparable(legacyFields(before.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
   assert.equal(before.body.revision, 0); assert.equal(before.body.state.phase, 'egg');
-  const body = { rulesVersion: 18, baseRevision: 0, batchId: 'new-nine-hatch-on-old-egg', events: [{ type: 'hatch', value: 1 }] };
+  const body = { rulesVersion: 19, baseRevision: 0, batchId: 'new-nine-hatch-on-old-egg', events: [{ type: 'hatch', value: 1 }] };
   const accepted = await f.request(body); assert.equal(accepted.status, 200); assert.equal(accepted.body.state.collection.length, 1);
   await f.restart(); assert.deepEqual(await f.request(body), accepted);
 });
@@ -192,9 +192,9 @@ test('legacy Lumen/Pelagia checkpoints retain historical HP scaling and clear te
       const events = checkpoint.continuation.trim().split('\n').map((line: string) => { const [type, value] = line.split(' '); return { type, value: Number(value) }; });
       const historical = JSON.parse(execFileSync(corePathCare ?? join(rootDir, 'build/digivice-core'), ['--replay-v12-snapshot-trace', checkpoint.migrated.snapshotBase64], { input: checkpoint.continuation, encoding: 'utf8' }));
       for (const key of ['hp', 'energy', 'xp', 'collection', 'journal', 'captures', 'rngState']) assert.deepEqual(legacyFields(historical.state[key]), checkpoint.terminal.state[key], `frozen continuation ${key}`);
-      assert.equal((await f.request({ rulesVersion: 18, baseRevision: 1, batchId: `profile-${checkpoint.name}-reject`, events })).status, 422);
+      assert.equal((await f.request({ rulesVersion: 19, baseRevision: 1, batchId: `profile-${checkpoint.name}-reject`, events })).status, 422);
       assert.deepEqual(await f.request(), migrated);
-      const command = { rulesVersion: 18, baseRevision: 1, batchId: `profile-${checkpoint.name}-clear-test`, events: [{ type: 'resolve-test-encounter', value: 0 }] };
+      const command = { rulesVersion: 19, baseRevision: 1, batchId: `profile-${checkpoint.name}-clear-test`, events: [{ type: 'resolve-test-encounter', value: 0 }] };
       const result = await f.request(command); assert.equal(result.status, 200);
       for (const key of ['energy', 'xp', 'journal', 'captures', 'rngState', 'formId', 'activeCreatureId', 'nextMemberId']) assert.deepEqual(result.body.state[key], migrated.body.state[key], key);
       assert.equal(result.body.state.hp, Math.ceil(migrated.body.state.hp * result.body.state.combat.maxHp / migrated.body.state.combat.maxHp), 'leaving the old HP scale preserves the health fraction');

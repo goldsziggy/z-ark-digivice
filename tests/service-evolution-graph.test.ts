@@ -17,7 +17,7 @@ const DEVICE = `dv_${'9'.repeat(24)}`, TOKEN = Buffer.alloc(32, 9).toString('bas
 type Event = { type: string; value: number };
 function receipt(rulesVersion: number, baseRevision: number, events: Event[], batchId: string) { return { batchId, revision: baseRevision + 1, eventEnd: events.length, bodyHash: hash(JSON.stringify({ rulesVersion, baseRevision, events })) }; }
 function oldStore(events: Event[], legacy: unknown = null, revision = 1) { return { formatVersion: 7, gameSchemaVersion: 8, rulesVersion: 5, devices: [{ deviceId: DEVICE, tokenHash: hash(TOKEN), seed: 12345, initialMode: 'onboarding', revision, legacy, events, receipts: [receipt(5, revision - 1, events, 'frozen-five-committed-batch')] }] }; }
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 18, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 19, baseRevision, batchId, events });
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved: unknown, prepare?: (dataDir: string) => void) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-evolution-graph-'));
   for (const name of ['store.json', 'store.backup.json']) await writeFile(join(dataDir, name), JSON.stringify(saved));
@@ -33,17 +33,17 @@ test('rules5 history and released-form journal migrate once without changing XP,
   const oldHistory = { rulesVersion: 4, events: frozen.oldRule4Events, receipts: [receipt(4, 0, frozen.oldRule4Events, 'frozen-four-baseline-batch')] };
   const old = oldStore(frozen.rules5SuffixEvents, { histories: [oldHistory], snapshotBase64: frozen.rules5Baseline.snapshotBase64 }, 2);
   const f = await fixture(t, old), before = (await f.request('/api/save')).body;
-  assert.equal(before.state.schemaVersion, 25); assert.equal(before.state.rulesVersion, 18); assert.equal(before.revision, 2); assert.equal(before.baseSequence, 6); assert.deepEqual(before.events, []);
+  assert.equal(before.state.schemaVersion, 26); assert.equal(before.state.rulesVersion, 19); assert.equal(before.revision, 2); assert.equal(before.baseSequence, 6); assert.deepEqual(before.events, []);
   for (const key of ['collection', 'activeCreatureId', 'nextMemberId', 'journal', 'rngState', 'xp', 'formId', 'hp', 'bond', 'captures', 'onboarding', 'battleMode', 'lastAutoBattle']) assert.deepEqual(legacyFields(before.state[key]), frozen.rules5SuffixResult.state[key], key);
   assert.deepEqual(before.state.journal.obtainedFormIds, [4, 11]); assert.equal(before.state.collection.length, 1); assert.equal(before.autoTrace, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 20); assert.equal(stored.gameSchemaVersion, 25); assert.equal(stored.rulesVersion, 18);
-  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 3216); assert.equal(snapshot.readUInt16LE(4), 25); assert.equal(snapshot.readUInt32LE(8), 18);
+  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 26); assert.equal(stored.rulesVersion, 19);
+  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 3216); assert.equal(snapshot.readUInt16LE(4), 26); assert.equal(snapshot.readUInt32LE(8), 19);
   assert.deepEqual(stored.devices[0].legacy.histories, [oldHistory, { rulesVersion: 5, events: old.devices[0].events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v5.json'), 'utf8')), old, 'archival baseline bytes, initial mode and body hashes remain exact');
   const pending = { rulesVersion: 5, baseRevision: 1, batchId: old.devices[0].receipts[0].batchId, events: old.devices[0].events };
   assert.equal((await f.request('/api/save-sync', pending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 18 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
   assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 999 })).body.error, 'migration_required');
   await f.restart(); assert.deepEqual((await f.request('/api/save')).body, before);
   const feed = batch(2, 'current-six-care-receipt', [{ type: 'feed', value: 0 }]), accepted = await f.request('/api/save-sync', feed);
@@ -81,7 +81,7 @@ test('graph pages and per-form metadata expose authoritative routes without muta
   const f = await fixture(t, oldStore([{ type: 'hatch', value: 1 }]));
   const before = (await f.request('/api/save')).body;
   const graph = (await f.request('/api/evolution-graph?formId=11&limit=8', undefined, '')).body;
-  assert.equal(graph.formatVersion, 2); assert.equal(graph.catalogVersion, 6); assert.equal(graph.rulesVersion, 18); assert.equal(graph.focusFormId, 11);
+  assert.equal(graph.formatVersion, 2); assert.equal(graph.catalogVersion, 6); assert.equal(graph.rulesVersion, 19); assert.equal(graph.focusFormId, 11);
   const forms = new Map<number, any>(runtime.forms.map((form: any) => [form.formId, form]));
   const expected = new Set<number>([11]);
   for (let changed = true; changed;) { changed = false; for (const id of [...expected]) for (const next of [...forms.get(id).evolution.parents, ...forms.get(id).evolution.children]) if (!expected.has(next)) { expected.add(next); changed = true; } }

@@ -104,7 +104,7 @@ def assemble():
                 'policy': 'Optional private unpublished artwork; availability is checked locally, never inferred from metadata.'
             },
             'obtainability': {
-                'method': 'stage-appropriate-encounter-and-capture',
+                'method': 'retired-duplicate' if binding.get('retiredAliasOf') else 'stage-appropriate-encounter-and-capture',
                 'evolutionStatus': 'reviewed-authored-route' if graph[form_id]['parents'] or graph[form_id]['children'] else 'independent-encounter-form',
                 'leafReason': graph[form_id]['reason'],
                 'canonicalEvolutionClaim': False,

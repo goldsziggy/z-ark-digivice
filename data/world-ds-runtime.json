@@ -2511,20 +2511,12 @@
         "parents": [
           13
         ],
-        "children": [
-          406
-        ],
-        "edges": [
-          {
-            "toFormId": 406,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          }
-        ],
-        "status": "progression",
-        "reason": null
+        "children": [],
+        "edges": [],
+        "status": "terminal",
+        "reason": "Beelzemon is a final form in this prototype. Care, training and battles remain available."
       },
-      "leafReason": null,
+      "leafReason": "Beelzemon is a final form in this prototype. Care, training and battles remain available.",
       "encounterRarity": "rare"
     },
     {
@@ -8074,20 +8066,12 @@
           48,
           189
         ],
-        "children": [
-          407
-        ],
-        "edges": [
-          {
-            "toFormId": 407,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          }
-        ],
-        "status": "progression",
-        "reason": null
+        "children": [],
+        "edges": [],
+        "status": "terminal",
+        "reason": "Rosemon is a final form in this prototype. Care, training and battles remain available."
       },
-      "leafReason": null,
+      "leafReason": "Rosemon is a final form in this prototype. Care, training and battles remain available.",
       "encounterRarity": "uncommon"
     },
     {
@@ -9621,8 +9605,6 @@
       "evolution": {
         "parents": [
           58,
-          299,
-          300,
           335
         ],
         "children": [],
@@ -17965,17 +17947,11 @@
           68
         ],
         "children": [
-          146,
-          279
+          146
         ],
         "edges": [
           {
             "toFormId": 146,
-            "requiredLevel": 5,
-            "requiredBond": 20
-          },
-          {
-            "toFormId": 279,
             "requiredLevel": 5,
             "requiredBond": 20
           }
@@ -23447,19 +23423,13 @@
           81
         ],
         "children": [
-          183,
-          382
+          183
         ],
         "edges": [
           {
             "toFormId": 183,
             "requiredLevel": 10,
             "requiredBond": 50
-          },
-          {
-            "toFormId": 382,
-            "requiredLevel": 15,
-            "requiredBond": 80
           }
         ],
         "status": "progression",
@@ -27355,19 +27325,13 @@
           99
         ],
         "children": [
-          185,
-          279
+          185
         ],
         "edges": [
           {
             "toFormId": 185,
             "requiredLevel": 10,
             "requiredBond": 50
-          },
-          {
-            "toFormId": 279,
-            "requiredLevel": 5,
-            "requiredBond": 20
           }
         ],
         "status": "progression",
@@ -30676,19 +30640,13 @@
           79
         ],
         "children": [
-          173,
-          313
+          173
         ],
         "edges": [
           {
             "toFormId": 173,
             "requiredLevel": 10,
             "requiredBond": 50
-          },
-          {
-            "toFormId": 313,
-            "requiredLevel": 5,
-            "requiredBond": 20
           }
         ],
         "status": "progression",
@@ -33753,8 +33711,7 @@
       "obtainable": true,
       "evolution": {
         "parents": [
-          146,
-          279
+          146
         ],
         "children": [
           233
@@ -45322,24 +45279,13 @@
       "entryKey": "chrysalimon",
       "obtainable": true,
       "evolution": {
-        "parents": [
-          99,
-          146
-        ],
-        "children": [
-          185
-        ],
-        "edges": [
-          {
-            "toFormId": 185,
-            "requiredLevel": 10,
-            "requiredBond": 50
-          }
-        ],
-        "status": "progression",
-        "reason": null
+        "parents": [],
+        "children": [],
+        "edges": [],
+        "status": "independent",
+        "reason": "Retired duplicate of Kurisarimon (146); kept only to preserve the append-only ID."
       },
-      "leafReason": null,
+      "leafReason": "Retired duplicate of Kurisarimon (146); kept only to preserve the append-only ID.",
       "encounterRarity": "common"
     },
     {
@@ -46576,9 +46522,9 @@
         "children": [],
         "edges": [],
         "status": "independent",
-        "reason": "No reviewed evolution route yet."
+        "reason": "Retired duplicate of DarkTyrannomon (127); kept only to preserve the append-only ID."
       },
-      "leafReason": "No reviewed evolution route yet.",
+      "leafReason": "Retired duplicate of DarkTyrannomon (127); kept only to preserve the append-only ID.",
       "encounterRarity": "common"
     },
     {
@@ -46753,9 +46699,9 @@
         "children": [],
         "edges": [],
         "status": "independent",
-        "reason": "No reviewed evolution route yet."
+        "reason": "Retired duplicate of DarkLizardmon (126); kept only to preserve the append-only ID."
       },
-      "leafReason": "No reviewed evolution route yet.",
+      "leafReason": "Retired duplicate of DarkLizardmon (126); kept only to preserve the append-only ID.",
       "encounterRarity": "common"
     },
     {
@@ -46930,9 +46876,9 @@
         "children": [],
         "edges": [],
         "status": "independent",
-        "reason": "No reviewed evolution route yet."
+        "reason": "Retired duplicate of Flarerizamon (132); kept only to preserve the append-only ID."
       },
-      "leafReason": "No reviewed evolution route yet.",
+      "leafReason": "Retired duplicate of Flarerizamon (132); kept only to preserve the append-only ID.",
       "encounterRarity": "common"
     },
     {
@@ -48919,15 +48865,9 @@
       "evolution": {
         "parents": [],
         "children": [
-          59,
           335
         ],
         "edges": [
-          {
-            "toFormId": 59,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          },
           {
             "toFormId": 335,
             "requiredLevel": 10,
@@ -49110,15 +49050,9 @@
       "evolution": {
         "parents": [],
         "children": [
-          59,
           450
         ],
         "edges": [
-          {
-            "toFormId": 59,
-            "requiredLevel": 15,
-            "requiredBond": 80
-          },
           {
             "toFormId": 450,
             "requiredLevel": 10,
@@ -51510,9 +51444,7 @@
       "entryKey": "redvegiemon",
       "obtainable": true,
       "evolution": {
-        "parents": [
-          164
-        ],
+        "parents": [],
         "children": [
           347
         ],
@@ -61601,8 +61533,7 @@
       "obtainable": true,
       "evolution": {
         "parents": [
-          34,
-          125
+          34
         ],
         "children": [],
         "edges": [],
@@ -63953,15 +63884,13 @@
       "entryKey": "beelzebumonblast",
       "obtainable": true,
       "evolution": {
-        "parents": [
-          14
-        ],
+        "parents": [],
         "children": [],
         "edges": [],
-        "status": "terminal",
-        "reason": "End of the reviewed prototype route."
+        "status": "independent",
+        "reason": "No reviewed evolution route yet."
       },
-      "leafReason": "End of the reviewed prototype route.",
+      "leafReason": "No reviewed evolution route yet.",
       "encounterRarity": "rare"
     },
     {
@@ -64052,15 +63981,13 @@
       "entryKey": "rosemonburst",
       "obtainable": true,
       "evolution": {
-        "parents": [
-          49
-        ],
+        "parents": [],
         "children": [],
         "edges": [],
-        "status": "terminal",
-        "reason": "End of the reviewed prototype route."
+        "status": "independent",
+        "reason": "No reviewed evolution route yet."
       },
-      "leafReason": "End of the reviewed prototype route.",
+      "leafReason": "No reviewed evolution route yet.",
       "encounterRarity": "rare"
     },
     {

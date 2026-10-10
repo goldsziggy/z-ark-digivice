@@ -21,7 +21,7 @@ unsigned tierFor(unsigned level) { return level < 18 ? 2 : level < 28 ? 3 : leve
 std::vector<unsigned> partnersFor(unsigned tier, unsigned level) {
     std::vector<unsigned> ids;
     for (unsigned id = forms::kFirstProductionFormId; id <= forms::kFormCount; ++id)
-        if (static_cast<unsigned>(forms::combatTier(id)) == tier && forms::find(id)->minLevel <= level) ids.push_back(id);
+        if (forms::productionForm(id) && static_cast<unsigned>(forms::combatTier(id)) == tier && forms::find(id)->minLevel <= level) ids.push_back(id);
     return ids;
 }
 

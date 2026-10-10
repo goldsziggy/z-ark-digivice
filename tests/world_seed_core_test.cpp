@@ -57,7 +57,7 @@ void setup(State& state,std::uint32_t seed) {
     reject(state,Action::WorldSeed,seed==1?2:1,Error::InvalidAction);
 }
 void contracts() {
-    CHECK(kSchemaVersion==25&&kRulesVersion==18&&kSnapshotSize==3216&&kV19SnapshotSize==660);
+    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216&&kV19SnapshotSize==660);
     Action parsed; CHECK(parseAction("world-seed",parsed)&&parsed==Action::WorldSeed);
     auto egg=newDevice(); reject(egg,Action::WorldSeed,17,Error::WrongPhase);
     auto state=home(); CHECK(worldSelectionSeed(state)==state.seed&&state.worldSeed==0);
@@ -73,7 +73,7 @@ void contracts() {
     auto automatic=home(); step(automatic,Action::Mode,1); step(automatic,Action::Explore,1000); setup(automatic,37);
     auto paused=waiting(); step(paused,Action::Flick,0); setup(paused,41);
     char json[kJsonCapacity]; CHECK(writeJson(paused,json,sizeof(json))>0);
-    CHECK(std::strstr(json,"\"worldSeed\":41")&&std::strstr(json,"\"schemaVersion\":25"));
+    CHECK(std::strstr(json,"\"worldSeed\":41")&&std::strstr(json,"\"schemaVersion\":26"));
 }
 void futureSelection() {
     unsigned different=0;

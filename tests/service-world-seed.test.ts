@@ -11,7 +11,7 @@ const corePath = process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/dig
 const token = Buffer.alloc(32, 63).toString('base64url'); // Synthetic test identity only.
 type Event = { type: string; value: number };
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 18, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 19, baseRevision, batchId, events });
 const oldStore = (events: Event[], seed = 12345) => ({ formatVersion: 15, gameSchemaVersion: 19, rulesVersion: 13, devices: [{
   deviceId: `dv_${'a'.repeat(24)}`, tokenHash: hash(token), seed, initialMode: 'onboarding', revision: events.length ? 1 : 0, legacy: null, events,
   receipts: events.length ? [{ batchId: 'historical-world-before', revision: 1, eventEnd: events.length, bodyHash: hash(JSON.stringify({ rulesVersion: 13, baseRevision: 0, events })) }] : [],
@@ -85,7 +85,7 @@ test('world setup is trusted, concurrent-idempotent, durable, and preserves old 
   assert.deepEqual(await f.request('/api/world/seed', paired.token, {}), saved);
   assert.equal(calls, 2, 'backup recovery preserves the committed seed and receipt');
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.gameSchemaVersion, 25); assert.equal(stored.devices[0].receipts.length, 2);
+  assert.equal(stored.gameSchemaVersion, 26); assert.equal(stored.devices[0].receipts.length, 2);
 });
 
 for (const kind of ['pending', 'capture'] as const) test(`schema19 ${kind} archives exact history and seeds only future encounters`, async t => {
@@ -97,7 +97,7 @@ for (const kind of ['pending', 'capture'] as const) test(`schema19 ${kind} archi
   if (kind === 'pending') assert.ok(before.body.state.walking.pendingEncounter);
   else assert.equal(before.body.state.autoCapture, 1);
   const migrated = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([migrated.formatVersion, migrated.gameSchemaVersion, migrated.rulesVersion], [20, 25, 18]);
+  assert.deepEqual([migrated.formatVersion, migrated.gameSchemaVersion, migrated.rulesVersion], [21, 26, 19]);
   assert.deepEqual(migrated.devices[0].legacy.histories, [{ rulesVersion: 13, events, receipts: original.devices[0].receipts }]);
   assert.deepEqual(migrated.devices[0].events, []); assert.deepEqual(migrated.devices[0].receipts, []);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v13.json'), 'utf8')), original);

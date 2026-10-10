@@ -179,6 +179,7 @@ constexpr Form kForms[kFormCount] = {
 };
 #include "world_ds_catalog_generated.inc"
 #include "world_ds_evolutions_generated.inc"
+#include "forms_rules18_frozen.inc"
 
 constexpr std::uint32_t interpolate(std::uint32_t from, std::uint32_t to,
                                     std::uint32_t step, std::uint32_t span) {
@@ -264,7 +265,15 @@ static_assert(earnedEvolutionNeeds(), "Every evolution route must be earned and 
 const Form* find(std::uint32_t id) {
     return id >= 1 && id <= kFormCount ? &kForms[id-1] : nullptr;
 }
-bool productionForm(std::uint32_t id) { return id>=kFirstProductionFormId && id<=kFormCount; }
+std::uint32_t retiredAliasOf(std::uint32_t id) {
+    for (const auto& r : kRetiredForms) if (r.formId && r.formId == id) return r.aliasOf;
+    return 0;
+}
+bool productionForm(std::uint32_t id) { return id>=kFirstProductionFormId && id<=kFormCount && !retiredAliasOf(id); }
+std::uint32_t productionFormAt(std::uint32_t index) {
+    for (std::uint32_t id = kFirstProductionFormId; id <= kFormCount; ++id) if (productionForm(id) && !index--) return id;
+    return 0;
+}
 std::size_t edgeCount() { return sizeof(kEvolutionEdges) / sizeof(kEvolutionEdges[0]); }
 const EvolutionEdge* edgeAt(std::size_t index) { return index < edgeCount() ? &kEvolutionEdges[index] : nullptr; }
 const EvolutionEdge* outgoing(std::uint32_t id, std::uint32_t index) {
@@ -369,4 +378,50 @@ const char* evolutionStatus(std::uint32_t id) {
     if (!find(id)) return nullptr;
     return outgoing(id, 0) ? "progression" : kEvolutionTerminalLeaves[id - 1] ? "terminal" : "independent";
 }
+static_assert(sizeof(kRules18EvolutionEdges) / sizeof(kRules18EvolutionEdges[0]) == 172, "Frozen rules-18 route table changed");
+constexpr bool frozenWithinRoster() {
+    for (const auto& e : kRules18EvolutionEdges) if (e.from > kRules18FormCount || e.to > kRules18FormCount) return false;
+    for (const auto& r : kRetiredForms) if (r.formId && r.formId <= kRules18FormCount) return false;
+    return true;
+}
+static_assert(frozenWithinRoster(), "Rules-18 roster must stay frozen; retire only later IDs");
+namespace rules18 {
+namespace {
+const EvolutionEdge* frozenEdge(std::size_t index) {
+    return index < sizeof(kRules18EvolutionEdges) / sizeof(kRules18EvolutionEdges[0]) ? &kRules18EvolutionEdges[index] : nullptr;
+}
+}
+bool productionForm(std::uint32_t id) { return id>=kFirstProductionFormId && id<=kFormCount; }
+bool encounterObtainable(std::uint32_t id) { return productionForm(id); }
+std::size_t edgeCount() { return sizeof(kRules18EvolutionEdges) / sizeof(kRules18EvolutionEdges[0]); }
+const EvolutionEdge* edgeAt(std::size_t index) { return frozenEdge(index); }
+const EvolutionEdge* outgoing(std::uint32_t id, std::uint32_t index) {
+    if (id < 1 || id > kFormCount || index >= 2) return nullptr;
+    for (const auto& edge : kRules18EvolutionEdges) if (edge.from == id) {
+        if (!index) return &edge;
+        --index;
+    }
+    return nullptr;
+}
+bool canReach(std::uint32_t from, std::uint32_t to) {
+    if (from < 1 || from > kFormCount || to < 1 || to > kFormCount) return false;
+    std::uint32_t reached[(kFormCount + 31) / 32]{};
+    const auto contains = [&](std::uint32_t id) { return (reached[(id - 1) / 32] & (1u << ((id - 1) % 32))) != 0; };
+    const auto add = [&](std::uint32_t id) { reached[(id - 1) / 32] |= 1u << ((id - 1) % 32); };
+    add(from);
+    for (std::uint32_t pass = 0; pass < kFormCount && !contains(to); ++pass) {
+        bool changed = false;
+        for (const auto& edge : kRules18EvolutionEdges) if (contains(edge.from) && !contains(edge.to)) {
+            add(edge.to); changed = true;
+        }
+        if (!changed) break;
+    }
+    return contains(to);
+}
+const char* leafReason(std::uint32_t id) { return id >= 1 && id <= kFormCount ? kRules18LeafReasons[id - 1] : nullptr; }
+const char* evolutionStatus(std::uint32_t id) {
+    if (id < 1 || id > kFormCount) return nullptr;
+    return outgoing(id, 0) ? "progression" : kRules18TerminalLeaves[id - 1] ? "terminal" : "independent";
+}
+} // namespace rules18
 } // namespace digivice::forms

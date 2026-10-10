@@ -245,6 +245,19 @@ def generate(catalog, ledger, preserved, inventory, families):
     for f in sorted(rows, key=lambda r: r['formId']):
         meta.append('    {' + f'{f["formId"]},{q(f["entryKey"])},{q(f["displayName"])},{q(f["role"])}' + '},')
     meta.append('};')
+    # Retired duplicates keep their append-only ID and profile row but leave play:
+    # not production, never encountered, no routes in or out.
+    retired = sorted((r['formId'], r['retiredAliasOf']) for r in rows if r.get('retiredAliasOf') is not None)
+    for form_id, alias in retired:
+        check(form_id > 276 and integer(alias, 11, 512) and alias != form_id and alias not in dict(retired), 'invalid retired alias')
+        check(not any(e['fromFormId'] in (form_id,) or e['toFormId'] in (form_id,) for e in edges), 'retired form keeps an evolution route')
+    meta.append('// Retired duplicate IDs (kept for the append-only ledger) and the roster form each one aliases.')
+    meta.append('struct RetiredForm { uint16_t formId, aliasOf; };')
+    meta.append('constexpr RetiredForm kRetiredForms[] = {')
+    meta.extend('    {' + f'{form_id},{alias}' + '},' for form_id, alias in retired)
+    if not retired:
+        meta.append('    {0,0},')
+    meta.append('};')
     graph_lines = ['// Generated evolution routes; historical family/profile fields remain unchanged.', 'constexpr EvolutionEdge kEvolutionEdges[] = {']
     for edge in edges:
         graph_lines.append('    {' + ','.join(str(edge[k]) for k in ('fromFormId', 'toFormId', 'minimumLevel', 'minimumBond')) + '},')

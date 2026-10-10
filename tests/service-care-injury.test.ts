@@ -15,7 +15,7 @@ type Event = { type: string; value: number };
 const token = Buffer.alloc(32, 71).toString('base64url'); // Public fixture identity.
 const id = `dv_${'e'.repeat(24)}`;
 const sha = (value: string) => createHash('sha256').update(value).digest('hex');
-const command = (revision: number, batchId: string, events: Event[], rulesVersion = 18) => ({ rulesVersion, baseRevision: revision, batchId, events });
+const command = (revision: number, batchId: string, events: Event[], rulesVersion = 19) => ({ rulesVersion, baseRevision: revision, batchId, events });
 
 // A rules-16 (format 18) store with one hatched device and an acknowledged care batch.
 function rules16Store() {
@@ -42,13 +42,13 @@ const partner = (state: any) => state.collection.find((member: any) => member.id
 test('rules16 store migrates once to current rules with clean care-quality fields and an archived history', async t => {
   const f = await fixture(t), saved = await f.request();
   assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.schemaVersion, 25); assert.equal(saved.body.state.rulesVersion, 18);
+  assert.equal(saved.body.state.schemaVersion, 26); assert.equal(saved.body.state.rulesVersion, 19);
   assert.ok(saved.body.state.collection.every((member: any) => member.careMistakes === 0 && member.injury === 0));
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [20, 25, 18]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
   assert.deepEqual(stored.devices[0].legacy.histories.map((history: any) => history.rulesVersion), [16]);
   const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64');
-  assert.deepEqual([snapshot.length, snapshot.readUInt16LE(4), snapshot.readUInt32LE(8)], [3216, 25, 18]);
+  assert.deepEqual([snapshot.length, snapshot.readUInt16LE(4), snapshot.readUInt32LE(8)], [3216, 26, 19]);
   // Treat is a rules-17 event: an old-rules batch cannot carry it.
   assert.equal((await f.request(command(saved.body.revision, 'old-rules-treat', [{ type: 'treat', value: 0 }], 16))).status, 409);
   // A healthy partner has nothing to treat; the batch changes nothing.

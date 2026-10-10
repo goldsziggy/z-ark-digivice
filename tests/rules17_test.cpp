@@ -51,7 +51,7 @@ unsigned singleRouteForm() {
 unsigned routeLevel(unsigned formId, unsigned index) { return forms::evolutionNeed(*forms::outgoing(formId, index)).level; }
 
 void versions() {
-    CHECK(kSchemaVersion == 25 && kRulesVersion == 18 && kSnapshotSize == 3216);
+    CHECK(kSchemaVersion==26&&kRulesVersion==19 && kSnapshotSize == 3216);
     CHECK(legacy_v16::kSchemaVersion == 23 && legacy_v16::kRulesVersion == 16);
     Action a; CHECK(parseAction("treat", a) && a == Action::Treat);
 }

@@ -21,7 +21,8 @@ std::uint32_t select(std::uint32_t encounter,std::uint32_t seed,std::uint32_t pa
     const auto partnerTier=forms::combatTier(partner);
     const auto tier=partnerTier<forms::CombatTier::Rookie?forms::CombatTier::Rookie:partnerTier;
     std::uint32_t counts[4]{};
-    for(std::uint32_t id=1;id<=forms::kFormCount;++id)if(eligible(id,tier,level))++counts[static_cast<unsigned>(rarityForForm(id))];
+    // Frozen: the rules 10-12 pool is the rules-18 roster (1..276), never later additions.
+    for(std::uint32_t id=1;id<=forms::kRules18FormCount;++id)if(eligible(id,tier,level))++counts[static_cast<unsigned>(rarityForForm(id))];
     constexpr std::uint32_t weights[]{0,70,25,5};
     std::uint32_t total=0;for(unsigned bucket=1;bucket<=3;++bucket)if(counts[bucket])total+=weights[bucket];
     if(!total)return 0;
@@ -33,16 +34,19 @@ std::uint32_t select(std::uint32_t encounter,std::uint32_t seed,std::uint32_t pa
     }
     if(!selected)return 0;
     auto index=mix(key^0x464f524du)%counts[selected];
-    for(std::uint32_t id=1;id<=forms::kFormCount;++id)
+    for(std::uint32_t id=1;id<=forms::kRules18FormCount;++id)
         if(static_cast<unsigned>(rarityForForm(id))==selected && eligible(id,tier,level) && index--==0)return id;
     return 0;
 }
-std::uint32_t selectProduction(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partner,std::uint32_t level) {
+namespace {
+// One weighted draw over a production predicate; the pool bound and predicate
+// define the roster edition (rules 13-18 frozen at 276, rules 19+ live).
+std::uint32_t selectFrom(bool (*production)(std::uint32_t),std::uint32_t lastId,std::uint32_t encounter,std::uint32_t seed,std::uint32_t partner,std::uint32_t level) {
     if(!encounter || !forms::find(partner) || level<1 || level>forms::kMaxRpgLevel)return 0;
     const auto partnerTier=forms::combatTier(partner);
     const auto tier=partnerTier<forms::CombatTier::Rookie?forms::CombatTier::Rookie:partnerTier;
     std::uint32_t counts[4]{};
-    for(std::uint32_t id=1;id<=forms::kFormCount;++id)if(forms::productionForm(id)&&eligible(id,tier,level))++counts[static_cast<unsigned>(rarityForForm(id))];
+    for(std::uint32_t id=1;id<=lastId;++id)if(production(id)&&eligible(id,tier,level))++counts[static_cast<unsigned>(rarityForForm(id))];
     constexpr std::uint32_t weights[]{0,70,25,5};
     std::uint32_t total=0;for(unsigned bucket=1;bucket<=3;++bucket)if(counts[bucket])total+=weights[bucket];
     if(!total)return 0;
@@ -54,8 +58,17 @@ std::uint32_t selectProduction(std::uint32_t encounter,std::uint32_t seed,std::u
     }
     if(!selected)return 0;
     auto index=mix(key^0x464f524du)%counts[selected];
-    for(std::uint32_t id=1;id<=forms::kFormCount;++id)
-        if(forms::productionForm(id) && static_cast<unsigned>(rarityForForm(id))==selected && eligible(id,tier,level) && index--==0)return id;
+    for(std::uint32_t id=1;id<=lastId;++id)
+        if(production(id) && static_cast<unsigned>(rarityForForm(id))==selected && eligible(id,tier,level) && index--==0)return id;
     return 0;
+}
+}
+std::uint32_t selectProduction(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partner,std::uint32_t level) {
+    return selectFrom(&forms::productionForm,forms::kFormCount,encounter,seed,partner,level);
+}
+namespace rules18 {
+std::uint32_t selectProduction(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partner,std::uint32_t level) {
+    return selectFrom(&forms::rules18::productionForm,forms::kRules18FormCount,encounter,seed,partner,level);
+}
 }
 } // namespace digivice::encounters

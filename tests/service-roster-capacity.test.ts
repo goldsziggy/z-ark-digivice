@@ -57,8 +57,8 @@ test('rules13 full-eight Auto history stays exact before expansion; archived ret
   events.push(...Array.from({ length: old.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 });
   old = frozen(events); assert.equal(old.state.collection.length, 8); assert.equal(old.state.captures, 7);
   const f = await fixture(t, events), saved = await f.request(); assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 25); assert.equal(saved.body.state.rulesVersion, 18);
-  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 25, rulesVersion: 18, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [] }));
+  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 26); assert.equal(saved.body.state.rulesVersion, 19);
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 26, rulesVersion: 19, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, old.trace);
   assert.deepEqual(saved.body.events, []); assert.equal(saved.body.baseSequence, events.length);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
@@ -68,14 +68,14 @@ test('rules13 full-eight Auto history stays exact before expansion; archived ret
   const first = f.original.devices[0].receipts[0];
   const oldPending = { rulesVersion: 13, baseRevision: 0, batchId: first.batchId, events: events.slice(0, first.eventEnd) };
   assert.equal((await f.request(oldPending)).body.error, 'migration_required');
-  assert.equal((await f.request({ ...oldPending, rulesVersion: 18 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request({ ...oldPending, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
   assert.deepEqual(await f.request(), saved);
   await f.restart(); assert.deepEqual(await f.request(), saved);
   await writeFile(join(f.dataDir, 'store.json'), '{interrupted'); await f.restart(); assert.deepEqual(await f.request(), saved);
   const health = await f.request(undefined, '/api/health'); assert.equal(health.body.collectionCapacity, 60);
   let current = saved.body;
   for (let attempt = 0; attempt < 32 && current.state.collection.length === 8; ++attempt) {
-    const result = await f.request({ rulesVersion: 18, baseRevision: current.revision, batchId: `expanded-roster-capture-${attempt}`, events: [
+    const result = await f.request({ rulesVersion: 19, baseRevision: current.revision, batchId: `expanded-roster-capture-${attempt}`, events: [
       ...Array.from({ length: current.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 },
     ] });
     assert.equal(result.status, 200); current = result.body;
@@ -90,8 +90,8 @@ test('rules13 ring event and paused Auto trace migrate without another timing dr
   const events = [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }, { type: 'auto-fight', value: 0 }, { type: 'ring-capture', value: 0 }];
   const old = frozen(events), f = await fixture(t, events), saved = await f.request();
   assert.equal(saved.status, 200); assert.equal(saved.body.state.lastCapture.chance, old.state.lastCapture.chance);
-  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 25); assert.equal(saved.body.state.rulesVersion, 18);
-  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 25, rulesVersion: 18, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [] }));
+  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 26); assert.equal(saved.body.state.rulesVersion, 19);
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 26, rulesVersion: 19, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, old.trace);
   await f.restart(); assert.deepEqual(await f.request(), saved);
 });

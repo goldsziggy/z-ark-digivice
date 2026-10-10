@@ -9,7 +9,7 @@ import { startServer } from '../service/server.ts';
 type Event = { type: string; value: number };
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
 const species = ['impmon', 'agumon', 'gabumon', 'patamon', 'tentomon', 'palmon', 'gomamon', 'renamon'];
-const hatch = (id: number, batchId = 'onboarding-hatch-001', baseRevision = 0) => ({ rulesVersion: 18, baseRevision, batchId, events: [{ type: 'hatch', value: id }] });
+const hatch = (id: number, batchId = 'onboarding-hatch-001', baseRevision = 0) => ({ rulesVersion: 19, baseRevision, batchId, events: [{ type: 'hatch', value: id }] });
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved?: unknown) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-onboarding-'));
   if (saved) for (const file of ['store.json', 'store.backup.json']) await writeFile(join(dataDir, file), JSON.stringify(saved));
@@ -34,18 +34,18 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved
 
 test('new identities start as eggs; invalid and mixed hatch batches leave them unchanged', async t => {
   const f = await fixture(t), paired = await f.pair();
-  assert.equal(paired.revision, 0); assert.equal(paired.state.schemaVersion, 25); assert.equal(paired.state.rulesVersion, 18);
+  assert.equal(paired.revision, 0); assert.equal(paired.state.schemaVersion, 26); assert.equal(paired.state.rulesVersion, 19);
   assert.equal(paired.state.phase, 'egg'); assert.equal(paired.state.sequence, 0);
   assert.deepEqual(paired.state.onboarding, { completed: false, starterId: null, offerSeed: 0, offers: [0, 0, 0] });
   assert.deepEqual(paired.state.collection, []); assert.equal(paired.state.activeCreatureId, 0);
   for (const key of ['creature', 'species', 'combat']) assert.equal(paired.state[key], null);
   const before = (await f.request('/api/save', paired.token)).body;
-  assert.equal((await f.request('/api/health')).body.schemaVersion, 25);
-  assert.equal((await f.request('/api/device/health')).body.gameSchemaVersion, 25);
+  assert.equal((await f.request('/api/health')).body.schemaVersion, 26);
+  assert.equal((await f.request('/api/device/health')).body.gameSchemaVersion, 26);
   assert.equal((await f.request('/api/save-sync', undefined, hatch(1))).status, 401);
   for (const value of [0, 9, 1.5, -1]) assert.equal((await f.request('/api/save-sync', paired.token, hatch(value))).status, 422);
   for (const type of ['feed', 'walk', 'select']) {
-    assert.equal((await f.request('/api/save-sync', paired.token, { rulesVersion: 18, baseRevision: 0, batchId: `unhatched-${type}`, events: [{ type, value: type === 'walk' || type === 'select' ? 1 : 0 }] })).status, 422);
+    assert.equal((await f.request('/api/save-sync', paired.token, { rulesVersion: 19, baseRevision: 0, batchId: `unhatched-${type}`, events: [{ type, value: type === 'walk' || type === 'select' ? 1 : 0 }] })).status, 422);
   }
   const practice = await f.request('/api/battle/start', paired.token, { rulesVersion: 7, expectedRevision: 0, requestId: 'unhatched-practice' });
   assert.equal(practice.status, 409); assert.equal(practice.body.error, 'onboarding_required');
@@ -55,12 +55,12 @@ test('new identities start as eggs; invalid and mixed hatch batches leave them u
   await f.restart();
   assert.deepEqual((await f.request('/api/save', paired.token)).body, before);
   const store = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(store.formatVersion, 20); assert.equal(store.devices[0].initialMode, 'onboarding');
+  assert.equal(store.formatVersion, 21); assert.equal(store.devices[0].initialMode, 'onboarding');
 });
 
 test('all eight native starters hatch as member one; retries survive later care, restart and recovery', async t => {
   const f = await fixture(t), catalog = await f.request('/api/starters');
-  assert.equal(catalog.status, 200); assert.equal(catalog.body.formatVersion, 1); assert.equal(catalog.body.rulesVersion, 18);
+  assert.equal(catalog.status, 200); assert.equal(catalog.body.formatVersion, 1); assert.equal(catalog.body.rulesVersion, 19);
   assert.deepEqual(catalog.body.starters.map((entry: any) => entry.species), species);
   assert.deepEqual(catalog.body.starters.map((entry: any) => entry.id), [1, 2, 3, 4, 5, 6, 7, 8]);
   assert.ok(catalog.body.starters.every((entry: any) => entry.stage === 'Rookie' && entry.combat.maxHp > 0));
@@ -77,7 +77,7 @@ test('all eight native starters hatch as member one; retries survive later care,
     assert.deepEqual(await f.request('/api/save-sync', paired.token, body), accepted, 'lost response retries exactly');
     if (!index) { owner = paired; original = accepted; }
   }
-  const feed = await f.request('/api/save-sync', owner.token, { rulesVersion: 18, baseRevision: 1, batchId: 'post-hatch-care-001', events: [{ type: 'feed', value: 0 }] });
+  const feed = await f.request('/api/save-sync', owner.token, { rulesVersion: 19, baseRevision: 1, batchId: 'post-hatch-care-001', events: [{ type: 'feed', value: 0 }] });
   assert.equal(feed.status, 200); assert.equal(feed.body.revision, 2);
   assert.deepEqual(await f.request('/api/save-sync', owner.token, hatch(1)), original, 'old receipt must replay from the egg initializer');
   assert.equal((await f.request('/api/save-sync', owner.token, hatch(2))).body.error, 'batch_mismatch');
@@ -118,7 +118,7 @@ test('legacy zero-event pets, current receipts and archived baseline bytes survi
   const old = { formatVersion: 3, gameSchemaVersion: 4, rulesVersion: 3, devices };
   const f = await fixture(t, old);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 20); assert.equal(stored.gameSchemaVersion, 25);
+  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 26);
   for (let i = 0; i < devices.length; i++) {
     const current = stored.devices[i], previous = devices[i];
     assert.equal(current.deviceId, previous.deviceId); assert.equal(current.tokenHash, previous.tokenHash);
@@ -140,7 +140,7 @@ test('legacy zero-event pets, current receipts and archived baseline bytes survi
   const retry = await f.request('/api/save-sync', credentials[1].token, oldPending);
   assert.equal(retry.status, 409); assert.equal(retry.body.error, 'migration_required');
   assert.equal((await f.request('/api/save', credentials[1].token)).body.state.fullness, 85);
-  const relabeled = await f.request('/api/save-sync', credentials[1].token, { ...oldPending, rulesVersion: 18 });
+  const relabeled = await f.request('/api/save-sync', credentials[1].token, { ...oldPending, rulesVersion: 19 });
   assert.equal(relabeled.status, 409); assert.equal(relabeled.body.error, 'legacy_batch_requires_reconciliation');
   const archived = (await f.request('/api/save', credentials[2].token)).body;
   assert.equal(archived.baseSequence, 6); assert.equal(archived.state.legacyCaptures, 1); assert.equal(archived.state.hp, 97);

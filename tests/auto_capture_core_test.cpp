@@ -156,7 +156,7 @@ void boundsAndMigration(){
     auto invalid=partial;invalid.kind=autobattle::Kind::Practice;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     invalid=partial;invalid.steps[0].action=autobattle::Move::Capture;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));invalid=partial;invalid.steps[0].captureAttempt=1;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     CHECK(!trade::canOffer(waiting,1));Action action;CHECK(parseAction("auto-fight",action)&&action==Action::AutoFight);CHECK(parseAction("auto-resume",action)&&action==Action::AutoResume);
-    CHECK(kSchemaVersion==25&&kRulesVersion==18&&kSnapshotSize==3216);
+    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216);
 }
 }
 int main(){historicalAutoUnchanged();pausesAndResume();actualFlickOnly();priorAutoCapacityAndNewInputs();boundsAndMigration();std::printf("%u Auto manual capture checks, %u failures; State=%zu snapshot=%zu\n",checks,failures,sizeof(State),kSnapshotSize);return failures?1:0;}
