@@ -508,6 +508,27 @@ void HandheldRuntime::printInterface() const {
         static_cast<unsigned long>(panel.touchLockMisses),
         esp_err_to_name(panel.lastTouchError), static_cast<unsigned long>(touch_.presses()), static_cast<unsigned long>(touch_.releases()),
         static_cast<unsigned long>(touch_.chatter()), static_cast<unsigned long>(touch_.rearms()), static_cast<unsigned long>(touch_.rolledOff()), touch_.x(), touch_.y());
+    char versionHex[37]{};
+    char statusHex[9]{};
+    char packetHex[33]{};
+    if (panel.touchVersionRead) {
+        for (int i = 0; i < 18; ++i) std::snprintf(versionHex + i * 2, 3, "%02X", panel.touchVersion[i]);
+    }
+    if (panel.lastTouchStatusValid) {
+        for (int i = 0; i < 4; ++i) std::snprintf(statusHex + i * 2, 3, "%02X", panel.lastTouchStatus[i]);
+    }
+    const unsigned shown = std::min<unsigned>(panel.lastTouchPacketLength, sizeof(panel.lastTouchPacket));
+    if (panel.lastTouchPacketValid) {
+        for (unsigned i = 0; i < shown; ++i) std::snprintf(packetHex + i * 2, 3, "%02X", panel.lastTouchPacket[i]);
+    }
+    std::printf("device touch raw points=%lu noContact=%lu malformed=%lu modeResets=%lu noUpdate=%lu kind=%s\n",
+        static_cast<unsigned long>(panel.touchPointReports), static_cast<unsigned long>(panel.touchNoContactReports),
+        static_cast<unsigned long>(panel.touchMalformedReports), static_cast<unsigned long>(panel.touchModeResets),
+        static_cast<unsigned long>(panel.touchNoUpdateReports), display::spdStatusName(panel.lastTouchKind));
+    std::printf("device touch ctrl version=%s versionError=%s status=%s packet=%u:%s\n",
+        panel.touchVersionRead ? versionHex : "unread", esp_err_to_name(panel.touchVersionError),
+        panel.lastTouchStatusValid ? statusHex : "none",
+        static_cast<unsigned>(panel.lastTouchPacketLength), panel.lastTouchPacketValid ? packetHex : "none");
     std::printf("device audio ready=%d muted=%d volume=%u error=%s; imu ready=%d revision=0x%02x valid=%d calibrated=%d tilt=%d error=%s\n",
         audio_.ready(), audio_.muted(), audio_.volume(), esp_err_to_name(audio_.lastError()),
         imu_.ready(), imu_.revision(), sample.valid, sample.calibrated, gyroEnabled_, esp_err_to_name(imu_.lastError()));

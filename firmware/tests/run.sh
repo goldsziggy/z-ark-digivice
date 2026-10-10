@@ -2,6 +2,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 mkdir -p build/firmware-host
+"${CXX:-c++}" -std=c++17 -Wall -Wextra -Werror -pedantic \
+  -fsanitize=address,undefined -fno-omit-frame-pointer \
+  -Ifirmware/main firmware/tests/touch_raw_test.cpp -o build/firmware-host/touch-raw-test
+./build/firmware-host/touch-raw-test
 bash firmware/tests/test_device_entropy.sh
 bash firmware/tests/test_save_store.sh
 bash firmware/tests/test_audio_settings.sh

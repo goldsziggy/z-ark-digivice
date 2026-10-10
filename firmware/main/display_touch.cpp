@@ -2,6 +2,7 @@
 #if !defined(CONFIG_DIGIVICE_BOARD_WAVESHARE_21) || !CONFIG_DIGIVICE_BOARD_WAVESHARE_21 || !defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) || !CONFIG_DIGIVICE_DISPLAY_TOUCH
 #include "display_touch.hpp"
 #include "board_hal.hpp"
+#include "touch_raw.hpp"
 #include "sdkconfig.h"
 
 #include <algorithm>
@@ -222,7 +223,12 @@ esp_err_t initializeTouch() {
     config.scl_speed_hz = 400000;
     error = i2c_master_bus_add_device(board::sharedI2cBus(), &config, &touchDevice);
     std::uint8_t version[18]{};
-    if (error == ESP_OK) error = TouchBus{}.read(0x2600, version, sizeof(version));
+    if (error == ESP_OK) {
+        current.touchVersionError = TouchBus{}.read(0x2600, version, sizeof(version));
+        error = current.touchVersionError;
+        std::memcpy(current.touchVersion, version, sizeof(version));
+        current.touchVersionRead = error == ESP_OK;
+    }
     if (error == ESP_OK) {
         const bool zeros = std::all_of(std::begin(version), std::end(version), [](auto b) { return b == 0; });
         const bool ones = std::all_of(std::begin(version), std::end(version), [](auto b) { return b == 0xff; });
@@ -238,48 +244,63 @@ esp_err_t readTouch(TouchPoint& point) {
     std::uint8_t state[4]{};
     auto error = bus.read(0x2000, state, sizeof(state));
     if (error != ESP_OK) return error;
+    std::memcpy(current.lastTouchStatus, state, sizeof(state));
+    current.lastTouchStatusValid = true;
+    const auto kind = classifySpd2010Status(state);
+    current.lastTouchKind = kind;
     const auto length = static_cast<std::size_t>(state[2] | (state[3] << 8));
-    if (state[1] & 0x80) return ESP_OK; // Busy is no new report, never neutral.
-    if (state[1] & 0x40) { // BIOS -> CPU (vendor handshake, no flash update).
+    switch (kind) {
+    case SpdStatus::Busy:
+        ++current.touchNoUpdateReports;
+        return ESP_OK; // Busy is no new report, never neutral.
+    case SpdStatus::BiosToCpu: { // BIOS -> CPU (vendor handshake, no flash update).
+        ++current.touchModeResets;
         point.pressed = false;
         error = bus.clear();
         if (error == ESP_OK) error = bus.command(0x0400, 1);
         // A controller restart cancels a held gesture; it is never touch Up.
         return error == ESP_OK ? ESP_ERR_INVALID_STATE : error;
     }
-    if (state[1] & 0x20) { // CPU -> point mode -> start.
+    case SpdStatus::PointModeStart: { // CPU -> point mode -> start.
+        ++current.touchModeResets;
         point.pressed = false;
         error = bus.command(0x5000);
         if (error == ESP_OK) error = bus.command(0x4600);
         if (error == ESP_OK) error = bus.clear();
         return error == ESP_OK ? ESP_ERR_INVALID_STATE : error;
     }
-    if ((state[1] & 0x08) && length == 0 && !(state[0] & 0x03)) {
+    case SpdStatus::NoContact:
+        ++current.touchNoContactReports;
         point.pressed = false;
         point.fresh = true;
         return bus.clear();
-    }
-    if (state[0] & 0x03) {
+    case SpdStatus::PointData: {
         if (length < 4 || length > kTouchPacketBytes) {
+            ++current.touchMalformedReports;
+            current.lastTouchPacketLength = static_cast<std::uint16_t>(length);
+            current.lastTouchPacketValid = false;
             error = bus.clear();
             return error == ESP_OK ? ESP_ERR_INVALID_SIZE : error;
         }
         std::uint8_t packet[kTouchPacketBytes]{};
         error = bus.read(0x0003, packet, length);
         if (error != ESP_OK) return error;
+        std::memcpy(current.lastTouchPacket, packet, std::min(length, sizeof(current.lastTouchPacket)));
+        current.lastTouchPacketLength = static_cast<std::uint16_t>(length);
+        current.lastTouchPacketValid = true;
         point.pressed = false;
         // Decode exactly one contact. Malformed, gesture and multicontact
         // reports still drain/ack below, then cancel input rather than emit Up.
         esp_err_t reportError = ESP_ERR_INVALID_RESPONSE;
-        if ((state[0] & 0x01) && length == 10 && packet[4] <= 0x0a) {
-            const auto x = static_cast<std::uint16_t>(((packet[7] & 0xf0) << 4) | packet[5]);
-            const auto y = static_cast<std::uint16_t>(((packet[7] & 0x0f) << 8) | packet[6]);
-            if (x < kWidth && y < kHeight) {
-                const auto logical = panelToLogical(kOrientation, {x, y});
-                point = {packet[8] != 0, static_cast<std::uint16_t>(logical.x),
-                         static_cast<std::uint16_t>(logical.y), true};
-                reportError = ESP_OK;
-            }
+        std::uint16_t x = 0, y = 0;
+        if (spdDecodedPoint(state[0], packet, length, x, y)) {
+            const auto logical = panelToLogical(kOrientation, {x, y});
+            point = {packet[8] != 0, static_cast<std::uint16_t>(logical.x),
+                     static_cast<std::uint16_t>(logical.y), true};
+            reportError = ESP_OK;
+            ++current.touchPointReports;
+        } else {
+            ++current.touchMalformedReports;
         }
         // Acknowledge complete HDP, draining at most eight bounded continuations.
         for (int attempt = 0; attempt < 8; ++attempt) {
@@ -300,8 +321,14 @@ esp_err_t readTouch(TouchPoint& point) {
         }
         return ESP_ERR_TIMEOUT;
     }
-    if ((state[1] & 0x08) && (state[0] & 0x08)) return bus.clear();
-    // Busy/no new report: preserve the previous level, never invent a release.
+    case SpdStatus::RunningAck:
+        ++current.touchNoUpdateReports;
+        return bus.clear();
+    case SpdStatus::NoUpdate:
+        ++current.touchNoUpdateReports;
+        // No new report: preserve the previous level, never invent a release.
+        return ESP_OK;
+    }
     return ESP_OK;
 }
 #endif

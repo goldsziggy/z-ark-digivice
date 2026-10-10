@@ -4,6 +4,7 @@
 #include <cstdint>
 #include "esp_err.h"
 #include "display_orientation.hpp"
+#include "touch_raw.hpp"
 
 namespace digivice::display {
 
@@ -22,6 +23,24 @@ struct Status {
     std::uint32_t touchErrors = 0;
     std::uint32_t touchLockMisses = 0; // Subset of errors: shared-bus acquisition timed out.
     esp_err_t lastTouchError = ESP_OK;
+    // Raw SPD2010 report counters. Read-only diagnostics; they do not change
+    // the point published to the gesture stream. noUpdate is busy, leftover
+    // ack, or a status word with no report. modeResets counts BIOS->CPU and
+    // point-mode start. malformed is a point-shaped word that did not decode.
+    std::uint32_t touchPointReports = 0;
+    std::uint32_t touchNoContactReports = 0;
+    std::uint32_t touchMalformedReports = 0;
+    std::uint32_t touchModeResets = 0;
+    std::uint32_t touchNoUpdateReports = 0;
+    std::uint8_t touchVersion[18]{};
+    bool touchVersionRead = false;
+    esp_err_t touchVersionError = ESP_ERR_INVALID_STATE;
+    std::uint8_t lastTouchStatus[4]{};
+    bool lastTouchStatusValid = false;
+    SpdStatus lastTouchKind = SpdStatus::NoUpdate;
+    std::uint8_t lastTouchPacket[16]{};
+    std::uint16_t lastTouchPacketLength = 0;
+    bool lastTouchPacketValid = false;
 };
 
 struct TouchPoint {
