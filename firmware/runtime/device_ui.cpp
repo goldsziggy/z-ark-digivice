@@ -178,6 +178,25 @@ struct Canvas {
         const auto fill = maximum ? static_cast<int>(static_cast<std::uint64_t>(std::min(value,maximum))*width/maximum) : 0;
         rect(x,y,fill,8,color);
     }
+    // 9x10 heart from the existing rects. The 5x7 font has no heart glyph.
+    void heart(int x, int y, bool filled, std::uint16_t color) {
+        if (filled) {
+            rect(x+1,y,3,2,color); rect(x+5,y,3,2,color);
+            rect(x,y+2,9,4,color);
+            rect(x+1,y+6,7,1,color);
+            rect(x+2,y+7,5,1,color);
+            rect(x+3,y+8,3,1,color);
+            rect(x+4,y+9,1,1,color);
+        } else {
+            rect(x+1,y,3,1,color); rect(x+5,y,3,1,color);
+            rect(x,y+1,1,4,color); rect(x+8,y+1,1,4,color);
+            rect(x+3,y+1,1,2,color); rect(x+5,y+1,1,2,color);
+            rect(x+1,y+5,1,2,color); rect(x+7,y+5,1,2,color);
+            rect(x+2,y+7,1,1,color); rect(x+6,y+7,1,1,color);
+            rect(x+3,y+8,1,1,color); rect(x+5,y+8,1,1,color);
+            rect(x+4,y+9,1,1,color);
+        }
+    }
     void badge(int y,const char* value,int scale=2,std::uint16_t color=ink,std::size_t max=40) {
         const auto length=std::min(std::strlen(value ? value : ""),max);
         const int width=static_cast<int>(length)*6*scale-scale;
@@ -394,8 +413,13 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  NearbyPhysical, NearbyMagic, NearbyHeavy, NearbyCommit, NearbyBrace, NearbyCounter, NearbyWard,
  HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
  TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat, FocusSkip,
- Tile0, Tile1, Tile2, Tile3, BoxOpen };
+ Tile0, Tile1, Tile2, Tile3, BoxOpen, BoxSort };
 std::size_t boxPages(const State& state) { return std::max<std::size_t>(1,(state.collectionCount+kTiles-1)/kTiles); }
+// Member card and the Squad/Box controls sit above y 320, clear of the shared BACK spot.
+constexpr int kDetailX=116, kDetailY=228, kDetailW=180, kDetailH=36;
+constexpr int kPrimaryX=116, kPrimaryY=270, kPrimaryW=180, kPrimaryH=44;
+constexpr int kRosterX=116, kRosterY=284, kRosterW=180, kRosterH=36;
+constexpr int kSortX=149, kSortY=284, kSortW=114, kSortH=36;
 // Status word under a tile's level: injury first, then a ready route, then its role.
 const char* tileStatus(const State& state,const Model& model,const CreatureMember& member,std::uint16_t& color) {
     if(isInjured(member)) { color=red; return "HURT"; }
@@ -639,24 +663,39 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     case Screen::Result: add(116,274,180,50,"HOME",Again); break;
     case Screen::Collection: {
         const auto* member=selectedMember(state);
-        const bool active=member && member->id==state.activeCreatureId;
-        const bool companion=member && isPartyMember(state,member->id);
-        const auto action=companion ? Action::PartyRemove : Action::PartyAdd;
-        const char* label=active ? "ACTIVE PARTNER" : companion ? "REMOVE FROM SQUAD" :
-            partyCount(state)==kPartyCapacity ? "SQUAD FULL" : "ADD TO SQUAD";
-        add(100,240,212,36,label,PartyToggle,member && !active && legal(state,model,action,member->id));
-        left(1,"STATS + EVOLVE",MemberStats,member);
-        right(1,"MAKE PARTNER",MemberSelect,member && !active && legal(state,model,Action::Select,member->id));
+        if(member) {
+            const bool active=member->id==state.activeCreatureId;
+            const bool squad=isPartyMember(state,member->id);
+            // One primary, first match: TREAT, MAKE PARTNER, REMOVE, ADD, then a disabled full squad.
+            const char* primary=nullptr; int primaryId=0; bool primaryOn=false;
+            if(active && isInjured(*member) && legal(state,model,Action::Treat)) {
+                primary="TREAT"; primaryId=Treat; primaryOn=true;
+            } else if(!active && legal(state,model,Action::Select,member->id)) {
+                primary="MAKE PARTNER"; primaryId=MemberSelect; primaryOn=true;
+            } else if(squad && !active && legal(state,model,Action::PartyRemove,member->id)) {
+                primary="REMOVE FROM SQUAD"; primaryId=PartyToggle; primaryOn=true;
+            } else if(legal(state,model,Action::PartyAdd,member->id)) {
+                primary="ADD TO SQUAD"; primaryId=PartyToggle; primaryOn=true;
+            } else if(!active && !squad && partyCount(state)==kPartyCapacity) {
+                primary="SQUAD FULL"; primaryId=PartyToggle; primaryOn=false;
+            }
+            add(kDetailX,kDetailY,kDetailW,kDetailH,"DETAILS",MemberStats);
+            if(primary) add(kPrimaryX,kPrimaryY,kPrimaryW,kPrimaryH,primary,primaryId,primaryOn);
+        }
         back(); break;
     }
     case Screen::Squad: case Screen::Box:
         // The whole tile is the target. An empty squad slot opens Box to choose who joins.
         for(std::size_t i=0;i<kTiles;++i) {
-            const auto* member=tileMember(state,i);
+            const auto* member=tileMember(state,model,i);
             if(member) add(kTileX[i%2],kTileY[i/2],kTileW,kTileH,memberName(*member),Tile0+static_cast<int>(i));
             else if(screen_==Screen::Squad && i) add(kTileX[i%2],kTileY[i/2],kTileW,kTileH,"ADD TO SQUAD",Tile0+static_cast<int>(i),state.collectionCount>1);
         }
-        if(screen_==Screen::Squad) add(116,284,180,40,"ALL DIGIMON",BoxOpen,state.collectionCount>0);
+        if(screen_==Screen::Squad) add(kRosterX,kRosterY,kRosterW,kRosterH,"ALL DIGIMON",BoxOpen,state.collectionCount>0);
+        if(screen_==Screen::Box) {
+            const char* sorts[]{"NEW","LV","READY","HURT"};
+            add(kSortX,kSortY,kSortW,kSortH,sorts[boxOrder_<4?boxOrder_:0],BoxSort);
+        }
         back(); break;
     case Screen::Stats: {
         const auto* member=selectedMember(state);
@@ -841,7 +880,11 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         if (screen_==Screen::Stats) return navigate(Screen::Collection);
         if (screen_==Screen::Collection) {
             if (memberReturn_!=Screen::Box) return navigate(Screen::Squad);
-            boxPage_=static_cast<std::uint8_t>(std::min<std::size_t>(memberIndex_/kTiles,boxPages(state)-1));
+            std::uint8_t order[kCollectionCapacity];
+            const auto count=sortedBox(state,model,order);
+            std::size_t index=count;
+            for(std::size_t i=0;i<count;++i) if(state.collection[order[i]].id==memberId_) { index=i; break; }
+            boxPage_=static_cast<std::uint8_t>(std::min(index/kTiles,boxPages(state)-1));
             return navigate(Screen::Box);
         }
         if (screen_==Screen::Box) return navigate(Screen::Squad);
@@ -858,8 +901,12 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case Explore: return navigate(Screen::Explore);
     case Team: boxPage_=0; memberReturn_=Screen::Squad; return navigate(Screen::Squad);
     case BoxOpen: boxPage_=0; return navigate(Screen::Box);
+    case BoxSort:
+        boxOrder_=static_cast<std::uint8_t>((boxOrder_+1)%4);
+        boxPage_=0;
+        return {IntentKind::Navigation};
     case Tile0: case Tile1: case Tile2: case Tile3: {
-        const auto* member=tileMember(state,static_cast<std::size_t>(id-Tile0));
+        const auto* member=tileMember(state,model,static_cast<std::size_t>(id-Tile0));
         if(!member) { boxPage_=0; return navigate(Screen::Box); }
         const auto index=displayIndexForMember(state,member->id);
         memberIndex_=index<state.collectionCount ? static_cast<std::uint8_t>(index) : 0;
@@ -1211,21 +1258,57 @@ ArtRequest Controller::partnerArtRequest(const State& state,const Model& model,s
     return request;
 }
 
-const CreatureMember* Controller::tileMember(const State& state,std::size_t tile) const {
+std::size_t Controller::sortedBox(const State& state,const Model& model,std::uint8_t* order) const {
+    const auto count=std::min<std::size_t>(state.collectionCount,kCollectionCapacity);
+    for(std::size_t i=0;i<count;++i) order[i]=static_cast<std::uint8_t>(i);
+    bool ready[kCollectionCapacity]{};
+    if(boxOrder_==2) for(std::size_t i=0;i<count;++i) ready[i]=anyRouteReady(state,model,state.collection[i]);
+    const auto newer=[&](std::size_t a,std::size_t b) {
+        const auto& ma=state.collection[a]; const auto& mb=state.collection[b];
+        if(ma.capturedAtSequence!=mb.capturedAtSequence) return ma.capturedAtSequence>mb.capturedAtSequence;
+        return ma.id<mb.id;
+    };
+    const auto before=[&](std::size_t a,std::size_t b) {
+        if(boxOrder_==1) {
+            if(state.collection[a].level!=state.collection[b].level) return state.collection[a].level>state.collection[b].level;
+            return state.collection[a].id<state.collection[b].id;
+        }
+        if(boxOrder_==2 && ready[a]!=ready[b]) return ready[a];
+        if(boxOrder_==3) {
+            const auto ah=isInjured(state.collection[a]), bh=isInjured(state.collection[b]);
+            if(ah!=bh) return ah;
+        }
+        return newer(a,b);
+    };
+    for(std::size_t i=1;i<count;++i) {
+        const auto key=order[i];
+        std::size_t j=i;
+        while(j>0 && before(key,order[j-1])) { order[j]=order[j-1]; --j; }
+        order[j]=key;
+    }
+    return count;
+}
+const CreatureMember* Controller::tileMember(const State& state,const Model& model,std::size_t tile) const {
     if(tile>=kTiles) return nullptr;
     if(screen_==Screen::Squad) {
         if(!tile) return activeMember(state);
         const auto id=state.partyMemberIds[tile-1];
         return id ? findMember(state,id) : nullptr;
     }
-    if(screen_==Screen::Box) return collectionMemberAtDisplayIndex(state,boxPage_*kTiles+tile);
+    if(screen_==Screen::Box) {
+        std::uint8_t order[kCollectionCapacity];
+        const auto count=sortedBox(state,model,order);
+        const auto slot=static_cast<std::size_t>(boxPage_)*kTiles+tile;
+        if(slot>=count) return nullptr;
+        return &state.collection[order[slot]];
+    }
     return nullptr;
 }
 
 ArtRequest Controller::tileArtRequest(const State& state,const Model& model,std::size_t tile,std::uint64_t now) const {
     if(model.encounterRecoveryRequired) return {};
     ArtRequest request; request.elapsedMs=now;
-    const auto* member=tileMember(state,tile);
+    const auto* member=tileMember(state,model,tile);
     request.formId=member ? member->formId : 0;
     return request;
 }
@@ -1511,15 +1594,31 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::Collection:
         if(selectedMember(state)) {
             const auto& member=*selectedMember(state);
-            c.badge(72,memberName(member),std::strlen(memberName(member))<=24 ? 2 : 1,mint,36);
-            std::snprintf(label,sizeof(label),"XP COMPANIONS %u/%u",static_cast<unsigned>(partyCount(state)),static_cast<unsigned>(kPartyCapacity));
-            c.badge(94,label,1,partyCount(state)==kPartyCapacity ? amber : dim);
-            actor(206+tx,162,7); // Fixed vertical stage keeps roster controls clear at any gyro tilt.
-            std::snprintf(label,sizeof(label),"%u/%u  LV %u%s",memberIndex_+1,static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(member.level),
-                member.id==state.activeCreatureId ? "  ACTIVE" : isPartyMember(state,member.id) ? "  XP" : "");
-            c.badge(209,label,1,member.id==state.activeCreatureId || isPartyMember(state,member.id) ? mint : dim);
-            // Ends at y234, clear of the companion toggle at y240.
-            std::snprintf(label,sizeof(label),"OWNED ID %u",static_cast<unsigned>(member.id)); c.badge(223,label,1,dim);
+            c.badge(60,memberName(member),std::strlen(memberName(member))<=24 ? 2 : 1,mint,36);
+            const auto maximum=forms::stats(member.formId,member.level).maxHp;
+            constexpr int barX=128, barW=108;
+            c.bar(barX,86,barW,member.hp,maximum,isInjured(member)?red:mint);
+            std::snprintf(label,sizeof(label),"%u/%u",static_cast<unsigned>(member.hp),static_cast<unsigned>(maximum));
+            c.text(barX+barW+8,86,label,1,dim,8);
+            constexpr int heartW=9, heartGap=8, heartCount=4;
+            const auto filled=std::min<std::uint32_t>(4,member.bond/50);
+            int hx=(kSize-(heartCount*heartW+(heartCount-1)*heartGap))/2;
+            for(int i=0;i<heartCount;++i) {
+                c.heart(hx,98,static_cast<std::uint32_t>(i)<filled,static_cast<std::uint32_t>(i)<filled?red:dim);
+                hx+=heartW+heartGap;
+            }
+            const auto* first=forms::outgoing(member.formId,0);
+            const auto* second=forms::outgoing(member.formId,1);
+            if(first && second) std::snprintf(label,sizeof(label),"CARE %u/%u",static_cast<unsigned>(careMistakes(member)),static_cast<unsigned>(cleanRouteMistakeLimit(first->to)));
+            else std::snprintf(label,sizeof(label),"CARE %u",static_cast<unsigned>(careMistakes(member)));
+            const auto hurtLevel=injuryLevel(member);
+            const char* hurt=hurtLevel==1?"HURT":hurtLevel==2?"WORSE":hurtLevel==3?"NEGLECTED":nullptr;
+            const auto careN=std::strlen(label), hurtN=hurt?std::strlen(hurt):0;
+            const auto total=careN+(hurt?hurtN+2:0);
+            const int textX=(kSize-static_cast<int>(total)*6+1)/2;
+            c.text(textX,112,label,1,dim,16);
+            if(hurt) c.text(textX+static_cast<int>(careN+2)*6,112,hurt,1,hurtLevel==1?amber:red,12);
+            actor(206+tx,168+ty,4); // Stays above DETAILS; gyro tilt stays clear of the buttons.
         }
         break;
     case Screen::Squad: case Screen::Box: {
@@ -1528,7 +1627,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         else std::snprintf(label,sizeof(label),"SQUAD %u/%u",static_cast<unsigned>(partyCount(state)),static_cast<unsigned>(kPartyCapacity));
         c.badge(60,label,2,mint);
         for(std::size_t i=0;i<kTiles;++i) {
-            const auto* member=tileMember(state,i);
+            const auto* member=tileMember(state,model,i);
             if(!member && (box || !i)) continue;
             const int x=kTileX[i%2], y=kTileY[i/2];
             const bool pressed=down_ && downButton_==Tile0+static_cast<int>(i);
@@ -1555,8 +1654,8 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.text(x+64,y+74,label,1,dim,9);
         }
         if(box) {
-            std::snprintf(label,sizeof(label),"PAGE %u/%u",static_cast<unsigned>(boxPage_+1),static_cast<unsigned>(boxPages(state)));
-            c.badge(292,label,1,dim);
+            std::snprintf(label,sizeof(label),"%u/%u",static_cast<unsigned>(boxPage_+1),static_cast<unsigned>(boxPages(state)));
+            c.text(78,64,label,1,dim,5); // Beside the title; the sort chip owns the row under the tiles.
         }
         break;
     }

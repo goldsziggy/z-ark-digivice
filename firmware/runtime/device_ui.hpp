@@ -145,8 +145,9 @@ public:
     ArtRequest partnerArtRequest(const State& state, const Model& model, std::uint64_t nowMs) const;
     // Squad/Box tile i (0..kTiles-1); zero formId when that tile shows no member.
     ArtRequest tileArtRequest(const State& state, const Model& model, std::size_t tile, std::uint64_t nowMs) const;
-    // Member shown on tile i: Squad is the active partner then the XP companions; Box pages every member.
-    const CreatureMember* tileMember(const State& state, std::size_t tile) const;
+    // Member shown on tile i: Squad is the active partner then the XP companions.
+    // Box pages the current sort only (NEW, level, ready, hurt) and never reorders the save.
+    const CreatureMember* tileMember(const State& state, const Model& model, std::size_t tile) const;
     std::uint8_t boxPage() const { return boxPage_; }
     static constexpr int kCaptureX=102, kCaptureY=76, kCaptureWidth=208, kCaptureHeight=208;
     bool captureAnimating(const State&, const Model&) const;
@@ -181,6 +182,8 @@ private:
     // Exact hit on any button wins; otherwise the padded bottom button; -1 for none.
     static int hitIndex(const Button* choices, std::size_t n, int x, int y);
     std::size_t buttons(const State&, const Model&, Button* out) const;
+    // Fills collection-slot indexes in the current Box sort. Display order only.
+    std::size_t sortedBox(const State& state, const Model& model, std::uint8_t* order) const;
     Intent activate(int id, const State&, const Model&);
     Intent propose(const State&, const Model&, Action, std::uint32_t value = 0);
     Intent navigate(Screen);
@@ -197,7 +200,7 @@ private:
     std::uint32_t sequence_ = UINT32_MAX, starterForm_ = 0, memberId_ = 0;
     std::uint8_t starterCount_ = 8;
     std::uint8_t selectedId_ = 0, memberIndex_ = 0, proposedMode_ = 255;
-    std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0, boxPage_ = 0;
+    std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0, boxPage_ = 0, boxOrder_ = 0;
     Screen memberReturn_ = Screen::Squad; // Where BACK from one member goes: Squad or Box.
     trade::Identity tradePeer_{};
     std::uint32_t tradeMemberId_ = 0, tradeFingerprint_ = 0, tradeContext_ = 0, tradePeerNonce_ = 0;

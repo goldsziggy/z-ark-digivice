@@ -15,6 +15,8 @@ using namespace digivice;
 using namespace digivice::deviceui;
 unsigned checks=0;
 #define CHECK(value) do { ++checks; if(!(value)) { std::fprintf(stderr,"FAIL %s:%d %s\n",__FILE__,__LINE__,#value); std::exit(1); } } while(false)
+// Member-card targets. DETAILS sits above the contextual primary; both end above BACK.
+constexpr int kDetailTapX=206, kDetailTapY=246, kPrimaryTapX=206, kPrimaryTapY=292;
 
 struct Harness {
     State state=newDevice(12345);
@@ -335,7 +337,7 @@ void walkingCheckpoints() {
     const auto* edge=forms::outgoing(67,0); CHECK(edge);
     meetRoute(evolution.state, 19, edge); evolution.sync();
     evolution.openPartners(); evolution.browseMember(evolution.state.activeCreatureId);
-    evolution.dispatch(evolution.tap(120,312)); evolution.dispatch(evolution.tap(206,312));
+    evolution.dispatch(evolution.tap(kDetailTapX,kDetailTapY)); evolution.dispatch(evolution.tap(206,312));
     evolution.dispatch(evolution.tap(280,312)); CHECK(evolution.ui.screen()==Screen::EvolutionReview);
     CHECK(!evolution.event(TouchKind::Down,206,302));
     checkpoint(evolution,Action::EncounterSeed,2468); checkpoint(evolution,Action::AccrueSteps,1);
@@ -346,7 +348,7 @@ void walkingCheckpoints() {
     evolution.dispatch(evolve); CHECK(evolution.ui.screen()==Screen::EvolutionResult);
 
     Harness release; release.state=stableMemberFixture(67); release.sync();
-    release.openPartners(); release.browseMember(1); release.dispatch(release.tap(120,312));
+    release.openPartners(); release.browseMember(1); release.dispatch(release.tap(kDetailTapX,kDetailTapY));
     release.dispatch(release.tap(206,312)); CHECK(release.ui.screen()==Screen::ReleaseReview);
     const auto released=release.state.collection[0].id;
     CHECK(!release.event(TouchKind::Down,206,302)); checkpoint(release,Action::AccrueSteps,1);
@@ -441,7 +443,7 @@ void horizontalTaps() {
     CHECK(!one.tap(55,180) && !one.tap(355,180));
     Harness partners;partners.choose();partners.state=stableMemberFixture(18);partners.sync();partners.openPartners();equivalent(partners,2);
     partners.browseMember(partners.state.activeCreatureId);CHECK(partners.ui.artRequest(partners.state,partners.model,0).formId==18);
-    partners.dispatch(partners.tap(120,312));CHECK(partners.ui.screen()==Screen::Stats);equivalent(partners,4);
+    partners.dispatch(partners.tap(kDetailTapX,kDetailTapY));CHECK(partners.ui.screen()==Screen::Stats);equivalent(partners,4);
     partners.dispatch(partners.tap(206,312));CHECK(partners.ui.screen()==Screen::Evolution);equivalent(partners,2);
     partners.dispatch(partners.tap(120,312));equivalent(partners,2); // Stats/skills info pages.
     partners.dispatch(partners.tap(355,180));equivalent(partners,2);
@@ -850,6 +852,21 @@ void partnerRoster(Harness& h,unsigned count,unsigned squad) {
     CHECK(isValid(h.state));h.sync();
 }
 void tapTile(Harness& h,std::size_t tile) { h.dispatch(h.tap(kTileX[tile%2]+kTileW/2,kTileY[tile/2]+kTileH/2)); }
+const Controller::Button* findLabel(const Controller::Button* buttons,std::size_t count,const char* label) {
+    for(std::size_t i=0;i<count;++i) if(std::strcmp(buttons[i].label,label)==0) return &buttons[i];
+    return nullptr;
+}
+// Box NEW order: capturedAtSequence descending, then member id ascending.
+std::size_t boxNewIndex(const State& state,std::uint32_t id) {
+    const auto* member=findMember(state,id); CHECK(member);
+    std::size_t index=0;
+    for(std::size_t i=0;i<state.collectionCount;++i) {
+        const auto& other=state.collection[i];
+        if(other.capturedAtSequence>member->capturedAtSequence ||
+           (other.capturedAtSequence==member->capturedAtSequence && other.id<member->id)) ++index;
+    }
+    return index;
+}
 
 // Partners lands on a 2x2 Squad (partner top-left, three squad slots); Box pages everyone four at a time.
 void partnersGrid() {
@@ -859,7 +876,7 @@ void partnersGrid() {
         CHECK(n==6 && b[0].enabled && !b[1].enabled && !b[2].enabled && !b[3].enabled && b[4].enabled && b[5].padded);
         CHECK(!h.tap(kTileX[1]+kTileW/2,kTileY[0]+kTileH/2) && h.ui.screen()==Screen::Squad);
         h.dispatch(h.tap(206,304)); CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==0);
-        CHECK(h.ui.tileMember(h.state,0)==activeMember(h.state) && !h.ui.tileMember(h.state,1));
+        CHECK(h.ui.tileMember(h.state,h.model,0)==activeMember(h.state) && !h.ui.tileMember(h.state,h.model,1));
         h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Squad);
         h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Home && h.ui.homePanel()==HomePanel::Partners);
     }
@@ -868,7 +885,7 @@ void partnersGrid() {
         h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad);
         const std::uint32_t ids[]{1,2,3,4};
         for(std::size_t i=0;i<kTiles;++i) {
-            CHECK(h.ui.tileMember(h.state,i) && h.ui.tileMember(h.state,i)->id==ids[i]);
+            CHECK(h.ui.tileMember(h.state,h.model,i) && h.ui.tileMember(h.state,h.model,i)->id==ids[i]);
             CHECK(h.ui.tileArtRequest(h.state,h.model,i,h.now).formId==findMember(h.state,ids[i])->formId);
         }
         CHECK(!h.ui.artRequest(h.state,h.model,h.now).formId); // Tiles carry the creature art.
@@ -879,36 +896,50 @@ void partnersGrid() {
         CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0 && !h.ui.pending()); // Browsing never writes.
         // An empty slot opens Box to choose who joins.
         Harness gap; partnerRoster(gap,6,1); gap.openHome(HomePanel::Partners);
-        CHECK(gap.ui.tileMember(gap.state,1)->id==2 && !gap.ui.tileMember(gap.state,2));
+        CHECK(gap.ui.tileMember(gap.state,gap.model,1)->id==2 && !gap.ui.tileMember(gap.state,gap.model,2));
         tapTile(gap,2); CHECK(gap.ui.screen()==Screen::Box && gap.ui.boxPage()==0);
         tapTile(gap,3); CHECK(gap.ui.screen()==Screen::Collection);
-        const auto picked=gap.ui.selectedMemberId(); CHECK(picked==collectionMemberAtDisplayIndex(gap.state,3)->id);
-        const auto add=gap.tap(206,258); CHECK(add.kind==IntentKind::GameAction && add.action==Action::PartyAdd && add.value==picked);
+        const auto picked=gap.ui.selectedMemberId(); CHECK(boxNewIndex(gap.state,picked)==3);
+        const auto savedPick=gap.state;
+        Controller::Button pickedButtons[Controller::kMaxButtons];
+        const auto pickedCount=gap.ui.layout(gap.state,gap.model,pickedButtons,Controller::kMaxButtons);
+        const auto* make=findLabel(pickedButtons,pickedCount,"MAKE PARTNER");
+        CHECK(make && make->enabled);
+        const auto select=gap.tap(make->x+make->w/2,make->y+make->h/2);
+        CHECK(select.kind==IntentKind::GameAction && select.action==Action::Select && select.value==picked);
+        CHECK(std::memcmp(&savedPick,&gap.state,sizeof(State))==0 && gap.ui.pending());
     }
     { // Box: 13 members are four pages. Swipes (even from a tile), edge arrows and quick taps all work.
         Harness h; partnerRoster(h,13,0); h.openHome(HomePanel::Partners); h.dispatch(h.tap(206,304));
         CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==0);
         h.dispatch(h.swipe(kTileX[1]+kTileW/2,kTileY[0]+kTileH/2,kTileX[0]+20,kTileY[0]+kTileH/2));
         CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==1);
-        CHECK(h.ui.tileMember(h.state,0)==collectionMemberAtDisplayIndex(h.state,4));
+        CHECK(h.ui.tileMember(h.state,h.model,0) && boxNewIndex(h.state,h.ui.tileMember(h.state,h.model,0)->id)==4);
         h.dispatch(h.tap(50,180)); CHECK(h.ui.boxPage()==0);
         h.dispatch(h.tap(360,180)); h.dispatch(h.tap(360,180)); h.dispatch(h.tap(360,180)); CHECK(h.ui.boxPage()==3);
-        CHECK(h.ui.tileMember(h.state,0) && !h.ui.tileMember(h.state,1)); // 13th member alone on the last page.
+        CHECK(h.ui.tileMember(h.state,h.model,0) && !h.ui.tileMember(h.state,h.model,1)); // 13th member alone on the last page.
         h.dispatch(h.tap(360,180)); CHECK(h.ui.boxPage()==0); // Wraps.
         // A quick 25 ms tap on a tile, inside the edge-arrow strip, opens that member rather than paging.
         CHECK(!h.event(TouchKind::Down,kTileX[1]+kTileW-6,kTileY[1]+kTileH/2));
         h.dispatch(h.event(TouchKind::Up,kTileX[1]+kTileW-6,kTileY[1]+kTileH/2,25));
-        CHECK(h.ui.screen()==Screen::Collection && h.ui.selectedMemberId()==collectionMemberAtDisplayIndex(h.state,3)->id);
-        // Browsing members one at a time, then BACK, lands on that member's page.
+        const auto opened=h.ui.selectedMemberId();
+        CHECK(h.ui.screen()==Screen::Collection && boxNewIndex(h.state,opened)==3);
+        const auto core=displayIndexForMember(h.state,opened);
+        // Browsing still walks the core roster. BACK returns to that member's page in the current Box sort.
         for(unsigned i=0;i<5;++i) h.dispatch(h.tap(355,180));
-        CHECK(h.ui.selectedMemberId()==collectionMemberAtDisplayIndex(h.state,8)->id);
-        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==2);
+        CHECK(h.ui.selectedMemberId()==collectionMemberAtDisplayIndex(h.state,(core+5)%h.state.collectionCount)->id);
+        const auto browsed=h.ui.selectedMemberId();
+        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==boxNewIndex(h.state,browsed)/kTiles);
         h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Squad);
         // Releasing the only member on the last page clamps Box to the new last page.
         h.dispatch(h.tap(206,304)); for(unsigned i=0;i<3;++i) h.dispatch(h.tap(360,180)); CHECK(h.ui.boxPage()==3);
-        const auto last=h.ui.tileMember(h.state,0)->id;
-        CHECK(apply(h.state,Action::Release,last)==Error::None); h.sync();
-        CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==2 && h.ui.tileMember(h.state,3));
+        const auto last=h.ui.tileMember(h.state,h.model,0)->id;
+        CHECK(h.ui.tileMember(h.state,h.model,0) && !h.ui.tileMember(h.state,h.model,1));
+        // NEW puts the founder last, and an active partner cannot be released. Dropping any bench member removes the page.
+        const auto releaseId=last==h.state.activeCreatureId ? 2u : last;
+        CHECK(apply(h.state,Action::Release,releaseId)==Error::None); h.sync();
+        CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==2 && h.ui.tileMember(h.state,h.model,3));
+        CHECK(!findMember(h.state,releaseId));
     }
     { // Tile sprites stay inside their tile; the partner tile's frame is mint.
         Harness h; partnerRoster(h,6,3); h.openHome(HomePanel::Partners);
@@ -916,7 +947,7 @@ void partnersGrid() {
         std::array<std::uint8_t,128> mask; mask.fill(0xFF);
         for(std::size_t i=0;i<kTiles;++i) {
             auto& art=h.model.tileArtwork[i];
-            art.formId=h.ui.tileMember(h.state,i)->formId; art.pixels=pixels.data(); art.mask=mask.data();
+            art.formId=h.ui.tileMember(h.state,h.model,i)->formId; art.pixels=pixels.data(); art.mask=mask.data();
             art.width=art.height=32; art.pixelCount=32*32; art.maskBytes=128;
         }
         std::array<std::uint16_t,kPixels> output{};
@@ -933,6 +964,121 @@ void partnersGrid() {
     }
 }
 
+void setInjury(State& state,std::uint32_t id,std::uint32_t level) {
+    auto* member=const_cast<CreatureMember*>(findMember(state,id)); CHECK(member && level<4);
+    member->careState=(member->careState & ~(3u<<30)) | (level<<30);
+}
+void memberCard() {
+    { // Injured active partner: TREAT proposes and does not apply.
+        Harness h; h.choose(); setInjury(h.state,h.state.activeCreatureId,1); CHECK(isValid(h.state)); h.sync(); h.openPartners();
+        const auto saved=h.state;
+        Controller::Button buttons[Controller::kMaxButtons];
+        const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        const auto* treat=findLabel(buttons,n,"TREAT");
+        CHECK(treat && treat->enabled && !findLabel(buttons,n,"MAKE PARTNER") && !findLabel(buttons,n,"OWNED ID"));
+        const auto intent=h.tap(treat->x+treat->w/2,treat->y+treat->h/2);
+        CHECK(intent.kind==IntentKind::GameAction && intent.action==Action::Treat && !intent.value);
+        CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0 && h.ui.pending() && injuryLevel(*activeMember(h.state))==1);
+        CHECK(!h.tap(treat->x+treat->w/2,treat->y+treat->h/2));
+    }
+    { // A hurt bench member is not treatable. Select wins, and OWNED ID is not a target.
+        Harness h; partnerRoster(h,4,0); setInjury(h.state,2,2); CHECK(isValid(h.state)); h.sync(); h.openPartners(); h.browseMember(2);
+        Controller::Button buttons[Controller::kMaxButtons];
+        const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        CHECK(findLabel(buttons,n,"MAKE PARTNER") && !findLabel(buttons,n,"TREAT"));
+        bool owned=false, details=false;
+        for(std::size_t i=0;i<n;++i) {
+            owned=owned || std::strstr(buttons[i].label,"OWNED");
+            details=details || std::strcmp(buttons[i].label,"DETAILS")==0;
+        }
+        CHECK(details && !owned);
+        const auto* make=findLabel(buttons,n,"MAKE PARTNER");
+        const auto saved=h.state;
+        const auto intent=h.tap(make->x+make->w/2,make->y+make->h/2);
+        CHECK(intent.action==Action::Select && intent.value==2 && std::memcmp(&saved,&h.state,sizeof(State))==0);
+    }
+    { // Healthy active partner: DETAILS and BACK only.
+        Harness h; h.choose(); h.openPartners();
+        Controller::Button buttons[Controller::kMaxButtons];
+        const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        CHECK(n==2 && findLabel(buttons,n,"DETAILS") && buttons[n-1].padded);
+        CHECK(!h.tap(kPrimaryTapX,kPrimaryTapY));
+        h.dispatch(h.tap(kDetailTapX,kDetailTapY)); CHECK(h.ui.screen()==Screen::Stats);
+    }
+    { // Squad actions show only when MAKE PARTNER is not legal. A disabled full squad does not navigate.
+        Harness add; partnerRoster(add,4,0);
+        auto* member=const_cast<CreatureMember*>(findMember(add.state,2));
+        const auto* form=forms::find(4); CHECK(form);
+        member->formId=form->id; member->species=static_cast<Species>(form->lineage);
+        member->level=form->minLevel; member->xp=xpForLevel(member->level); member->bond=form->minBond;
+        member->hp=forms::stats(form->id,member->level).maxHp;
+        add.state.journal[(form->id-1)/32]|=1u<<((form->id-1)%32);
+        CHECK(isValid(add.state)); add.sync(); add.openPartners(); add.browseMember(2);
+        Controller::Button buttons[Controller::kMaxButtons];
+        auto n=add.ui.layout(add.state,add.model,buttons,Controller::kMaxButtons);
+        const auto* join=findLabel(buttons,n,"ADD TO SQUAD");
+        CHECK(join && join->enabled && !findLabel(buttons,n,"MAKE PARTNER"));
+        const auto saved=add.state;
+        const auto intent=add.tap(join->x+join->w/2,join->y+join->h/2);
+        CHECK(intent.action==Action::PartyAdd && intent.value==2 && std::memcmp(&saved,&add.state,sizeof(State))==0);
+        Harness remove; partnerRoster(remove,4,1);
+        member=const_cast<CreatureMember*>(findMember(remove.state,2));
+        member->formId=form->id; member->species=static_cast<Species>(form->lineage);
+        member->level=form->minLevel; member->xp=xpForLevel(member->level); member->bond=form->minBond;
+        member->hp=forms::stats(form->id,member->level).maxHp;
+        remove.state.journal[(form->id-1)/32]|=1u<<((form->id-1)%32);
+        CHECK(isValid(remove.state)); remove.sync(); remove.openPartners(); remove.browseMember(2);
+        n=remove.ui.layout(remove.state,remove.model,buttons,Controller::kMaxButtons);
+        const auto* drop=findLabel(buttons,n,"REMOVE FROM SQUAD");
+        CHECK(drop && drop->enabled);
+        const auto dropped=remove.tap(drop->x+drop->w/2,drop->y+drop->h/2);
+        CHECK(dropped.action==Action::PartyRemove && dropped.value==2 && isPartyMember(remove.state,2));
+        Harness full; partnerRoster(full,6,3);
+        member=const_cast<CreatureMember*>(findMember(full.state,5));
+        member->formId=form->id; member->species=static_cast<Species>(form->lineage);
+        member->level=form->minLevel; member->xp=xpForLevel(member->level); member->bond=form->minBond;
+        member->hp=forms::stats(form->id,member->level).maxHp;
+        full.state.journal[(form->id-1)/32]|=1u<<((form->id-1)%32);
+        CHECK(isValid(full.state)); full.sync(); full.openPartners(); full.browseMember(5);
+        n=full.ui.layout(full.state,full.model,buttons,Controller::kMaxButtons);
+        const auto* blocked=findLabel(buttons,n,"SQUAD FULL");
+        CHECK(blocked && !blocked->enabled);
+        CHECK(!full.tap(blocked->x+blocked->w/2,blocked->y+blocked->h/2) && full.ui.screen()==Screen::Collection);
+    }
+    { // Sort chip cycles display order and never rewrites the collection.
+        Harness h; partnerRoster(h,6,0);
+        std::uint32_t readyId=0;
+        for(auto id:{5u,2u}) if(forms::outgoing(findMember(h.state,id)->formId,0)) { readyId=id; break; }
+        CHECK(readyId);
+        meetRoute(h.state,readyId,forms::outgoing(findMember(h.state,readyId)->formId,0));
+        auto* leveled=const_cast<CreatureMember*>(findMember(h.state,4));
+        leveled->level=50; leveled->xp=xpForLevel(50); leveled->hp=forms::stats(leveled->formId,50).maxHp;
+        CHECK(findMember(h.state,readyId)->level<50);
+        setInjury(h.state,3,1);
+        CHECK(isValid(h.state)); h.sync();
+        const auto saved=h.state;
+        h.openHome(HomePanel::Partners); h.dispatch(h.tap(206,304)); CHECK(h.ui.screen()==Screen::Box);
+        const char* names[]{"NEW","LV","READY","HURT","NEW"};
+        const std::uint32_t leaders[]{6u,4u,readyId,3u,6u};
+        auto chipOf=[&](const char* name) {
+            Controller::Button buttons[Controller::kMaxButtons];
+            const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+            const auto* chip=findLabel(buttons,n,name); CHECK(chip && chip->enabled); return *chip;
+        };
+        CHECK(std::strcmp(chipOf("NEW").label,"NEW")==0);
+        CHECK(h.ui.tileMember(h.state,h.model,0)->id==6);
+        h.dispatch(h.swipe(250,180,160,180)); CHECK(h.ui.boxPage()==1);
+        for(unsigned step=0;step<4;++step) {
+            const auto chip=chipOf(names[step]);
+            h.dispatch(h.tap(chip.x+chip.w/2,chip.y+chip.h/2));
+            CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==0);
+            CHECK(std::strcmp(chipOf(names[step+1]).label,names[step+1])==0);
+            CHECK(h.ui.tileMember(h.state,h.model,0)->id==leaders[step+1]);
+        }
+        CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0);
+    }
+}
+
 void xpCompanionControls() {
     Harness h;h.choose();
     h.state.sequence=h.state.foregroundSequence=100;
@@ -943,17 +1089,28 @@ void xpCompanionControls() {
         h.state.collection[i].id=i+1;h.state.collection[i].capturedAtSequence=i;
         h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);
     }
+    // Select is legal for every production form, so MAKE PARTNER wins over squad actions.
+    // A legacy non-production form keeps PartyAdd/PartyRemove as the primary.
+    auto legacy=[&](std::uint32_t id) {
+        auto* member=const_cast<CreatureMember*>(findMember(h.state,id)); CHECK(member);
+        const auto* form=forms::find(4); CHECK(form && !forms::productionForm(form->id));
+        member->formId=form->id; member->species=static_cast<Species>(form->lineage);
+        member->level=form->minLevel; member->xp=xpForLevel(member->level); member->bond=form->minBond;
+        member->hp=forms::stats(form->id,member->level).maxHp;
+        h.state.journal[(form->id-1)/32]|=1u<<((form->id-1)%32);
+    };
+    for(auto id:{2u,3u,5u,6u}) legacy(id);
     CHECK(isValid(h.state));h.sync();h.openPartners();
-    CHECK(h.ui.selectedMemberId()==1 && !h.tap(206,266)); // Active cannot be an extra companion.
+    CHECK(h.ui.selectedMemberId()==1 && !h.tap(kPrimaryTapX,kPrimaryTapY)); // Healthy active partner has no primary.
     const auto original=h.state;
-    h.browseMember(3);auto add=h.tap(206,266);
+    h.browseMember(3);auto add=h.tap(kPrimaryTapX,kPrimaryTapY);
     CHECK(add.kind==IntentKind::GameAction && add.action==Action::PartyAdd && add.value==3);
-    CHECK(!h.tap(206,266));h.dispatch(add,false);
+    CHECK(!h.tap(kPrimaryTapX,kPrimaryTapY));h.dispatch(add,false);
     CHECK(trade::sameState(h.state,original) && h.ui.selectedMemberId()==3);
-    add=h.tap(206,266);h.dispatch(add);
+    add=h.tap(kPrimaryTapX,kPrimaryTapY);h.dispatch(add);
     CHECK(isPartyMember(h.state,3) && partyCount(h.state)==1 && h.ui.selectedMemberId()==3);
     CHECK(collectionMemberAtDisplayIndex(h.state,1)->id==3);
-    for(auto id:{5u,2u}){h.browseMember(id);add=h.tap(206,266);CHECK(add.action==Action::PartyAdd && add.value==id);h.dispatch(add);CHECK(h.ui.selectedMemberId()==id);}
+    for(auto id:{5u,2u}){h.browseMember(id);add=h.tap(kPrimaryTapX,kPrimaryTapY);CHECK(add.action==Action::PartyAdd && add.value==id);h.dispatch(add);CHECK(h.ui.selectedMemberId()==id);}
     CHECK(partyCount(h.state)==3 && h.state.partyMemberIds[0]==3 && h.state.partyMemberIds[1]==5 && h.state.partyMemberIds[2]==2);
     const unsigned order[]{1,3,5,2,6,4};
     for(unsigned i=0;i<6;++i){
@@ -961,30 +1118,31 @@ void xpCompanionControls() {
         CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==findMember(h.state,order[i])->formId);
     }
     h.browseMember(6);const auto full=h.state;const auto writes=h.gameWrites;
-    CHECK(!h.tap(206,266) && !h.ui.pending() && trade::sameState(full,h.state) && h.gameWrites==writes);
-    h.browseMember(5);auto remove=h.tap(206,266);CHECK(remove.action==Action::PartyRemove && remove.value==5);
+    CHECK(!h.tap(kPrimaryTapX,kPrimaryTapY) && !h.ui.pending() && trade::sameState(full,h.state) && h.gameWrites==writes);
+    h.browseMember(5);auto remove=h.tap(kPrimaryTapX,kPrimaryTapY);CHECK(remove.action==Action::PartyRemove && remove.value==5);
     h.dispatch(remove,false);CHECK(trade::sameState(full,h.state) && h.ui.selectedMemberId()==5);
-    h.dispatch(h.tap(206,266));CHECK(!isPartyMember(h.state,5) && partyCount(h.state)==2 && h.ui.selectedMemberId()==5);
+    h.dispatch(h.tap(kPrimaryTapX,kPrimaryTapY));CHECK(!isPartyMember(h.state,5) && partyCount(h.state)==2 && h.ui.selectedMemberId()==5);
     CHECK(h.state.partyMemberIds[0]==3 && h.state.partyMemberIds[1]==2 && !h.state.partyMemberIds[2]);
     for(unsigned i=0;i<6;++i)CHECK(h.state.collection[i].id==original.collection[i].id);
     // A model lock, read-only state, live Nearby, or concurrent save revokes a
     // held assignment. None can leak an accepted party command to persistence.
     for(unsigned gate=0;gate<4;++gate){
-        CHECK(!h.event(TouchKind::Down,206,266));
+        CHECK(!h.event(TouchKind::Down,kPrimaryTapX,kPrimaryTapY));
         nearby::View wire;
         if(gate==0)h.model.partyEditable=false;
         if(gate==1)h.model.writable=false;
         if(gate==2){wire.stage=nearby::Stage::Playing;h.model.nearby=&wire;}
         if(gate==3)CHECK(apply(h.state,Action::Feed)==Error::None);
-        const auto saved=h.state;h.sync();CHECK(!h.event(TouchKind::Up,206,266) && !h.ui.pending());
+        const auto saved=h.state;h.sync();CHECK(!h.event(TouchKind::Up,kPrimaryTapX,kPrimaryTapY) && !h.ui.pending());
         CHECK(trade::sameState(saved,h.state));
         h.model.partyEditable=h.model.writable=true;h.model.nearby=nullptr;h.sync();
     }
     // Becoming active removes that member from the extras while the UI keeps
     // showing the same owned ID at its new first position.
-    h.browseMember(3);auto select=h.tap(280,312);CHECK(select.action==Action::Select && select.value==3);h.dispatch(select);
-    CHECK(h.ui.selectedMemberId()==3 && h.state.activeCreatureId==3 && !isPartyMember(h.state,3));
-    CHECK(collectionMemberAtDisplayIndex(h.state,0)->id==3 && !h.tap(206,266));
+    CHECK(apply(h.state,Action::PartyAdd,4)==Error::None); h.sync();
+    h.browseMember(4);auto select=h.tap(kPrimaryTapX,kPrimaryTapY);CHECK(select.action==Action::Select && select.value==4);h.dispatch(select);
+    CHECK(h.ui.selectedMemberId()==4 && h.state.activeCreatureId==4 && !isPartyMember(h.state,4));
+    CHECK(collectionMemberAtDisplayIndex(h.state,0)->id==4 && !h.tap(kPrimaryTapX,kPrimaryTapY));
     // The added controls leave a full opaque sprite clear of the count, name,
     // identity and buttons, even at the maximum gyro tilt in either direction.
     h.ui.notice(nullptr);h.model.gyroEnabled=true;
@@ -996,8 +1154,8 @@ void xpCompanionControls() {
     for(int tilt:{-8,8}){
         h.model.tiltX=h.model.tiltY=tilt;CHECK(h.ui.render(h.state,h.model,frame.data(),frame.size(),h.now+10000));
         unsigned count=0;
-        for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x)if(frame[y*kSize+x]==0xf81f){++count;CHECK(y>=106&&y<218&&x>=142&&x<270);}
-        CHECK(count>5000);
+        for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x)if(frame[y*kSize+x]==0xf81f){++count;CHECK(y>=128&&y<208&&x>=166&&x<246);}
+        CHECK(count>4000);
     }
 }
 
@@ -1354,8 +1512,9 @@ void tapAudit() {
     audit("Squad (open slot)",[](Harness& h){ partnerRoster(h,6,1); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad); });
     audit("Box",[](Harness& h){ partnerRoster(h,13,0); h.openHome(HomePanel::Partners); h.dispatch(h.tap(206,304)); CHECK(h.ui.screen()==Screen::Box); });
     audit("Partners member",[](Harness& h){ h.choose(); h.openPartners(); });
-    audit("Stats",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(120,304)); CHECK(h.ui.screen()==Screen::Stats); });
-    audit("Evolution",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(120,304)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::Evolution); });
+    audit("Member",[](Harness& h){ partnerRoster(h,4,0); h.openPartners(); h.browseMember(2); CHECK(h.ui.screen()==Screen::Collection); });
+    audit("Stats",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(kDetailTapX,kDetailTapY)); CHECK(h.ui.screen()==Screen::Stats); });
+    audit("Evolution",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(kDetailTapX,kDetailTapY)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::Evolution); });
     audit("Settings",[](Harness& h){ h.choose(); h.model.motionAvailable=true; h.sync(); h.openHome(HomePanel::Settings); CHECK(h.ui.screen()==Screen::Settings); });
     audit("Sound",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,252)); CHECK(h.ui.screen()==Screen::Sound); });
     audit("Encounter settings",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(206,194)); CHECK(h.ui.screen()==Screen::EncounterSettings); });
@@ -1379,6 +1538,7 @@ int main(int argc,char** argv) {
     fullRosterCaptureControls();
     fullRosterNavigation();
     partnersGrid();
+    memberCard();
     xpCompanionControls();
     soundSettings();
     tradingScreens();
@@ -1713,7 +1873,7 @@ int main(int argc,char** argv) {
     auto openEvolution=[&]() {
         evolution.openPartners(); CHECK(evolution.ui.screen()==Screen::Collection);
         evolution.browseMember(19); // Active member is first; its stable ID is not its slot index.
-        evolution.dispatch(evolution.tap(120,312)); CHECK(evolution.ui.screen()==Screen::Stats);
+        evolution.dispatch(evolution.tap(kDetailTapX,kDetailTapY)); CHECK(evolution.ui.screen()==Screen::Stats);
         CHECK(evolution.ui.artRequest(evolution.state,evolution.model,0).formId==18);
         CHECK(!evolution.ui.walkingEligible());
         for (unsigned page=0;page<4;++page) {
@@ -1782,10 +1942,10 @@ int main(int argc,char** argv) {
     CHECK(isValid(roster.state)); roster.sync(); roster.openPartners();
     CHECK(roster.ui.screen()==Screen::Collection);
     CHECK(!roster.tap(280,312)); // Already equipped instance cannot be selected again.
-    roster.dispatch(roster.tap(120,312)); roster.dispatch(roster.tap(206,312));
+    roster.dispatch(roster.tap(kDetailTapX,kDetailTapY)); roster.dispatch(roster.tap(206,312));
     CHECK(roster.ui.screen()==Screen::Evolution); // Active partner never shows Release.
     roster.dispatch(roster.tap(206,365)); roster.dispatch(roster.tap(206,365));
-    roster.browseMember(2); roster.dispatch(roster.tap(120,312));
+    roster.browseMember(2); roster.dispatch(roster.tap(kDetailTapX,kDetailTapY));
     CHECK(roster.ui.screen()==Screen::Stats);
     CHECK(roster.ui.artRequest(roster.state,roster.model,0).formId==roster.state.collection[1].formId);
     const auto beforeRelease=roster.state;
@@ -1812,14 +1972,14 @@ int main(int argc,char** argv) {
     CHECK(restoredRoster.screen()==Screen::Home && roster.state.activeCreatureId==3);
     // Read-only saves still allow browsing; mutation buttons remain disabled.
     roster.model.writable=false; roster.sync(); roster.dispatch(roster.swipe(250,180,160,180));
-    CHECK(!roster.tap(280,312)); roster.dispatch(roster.tap(120,312));
+    CHECK(!roster.tap(280,312)); roster.dispatch(roster.tap(kDetailTapX,kDetailTapY));
     CHECK(!roster.tap(206,312));
 
     // Actual graph-only baby route works even though historical children[] is empty.
     Harness baby; baby.state=stableMemberFixture(67); baby.sync();
     const auto* babyRoute=forms::outgoing(67,0); CHECK(babyRoute && !forms::find(67)->children[0]);
     meetRoute(baby.state, 19, babyRoute); baby.sync();
-    baby.openPartners(); baby.browseMember(19); baby.dispatch(baby.tap(120,312));
+    baby.openPartners(); baby.browseMember(19); baby.dispatch(baby.tap(kDetailTapX,kDetailTapY));
     baby.dispatch(baby.tap(206,312)); CHECK(baby.ui.artRequest(baby.state,baby.model,0).formId==babyRoute->to);
     baby.dispatch(baby.tap(280,312)); baby.dispatch(baby.tap(206,302));
     CHECK(activeMember(baby.state)->id==19 && activeMember(baby.state)->formId==babyRoute->to);
