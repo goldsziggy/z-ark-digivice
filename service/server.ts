@@ -20,7 +20,7 @@ type Receipt = { batchId: string; bodyHash: string; revision: number; eventEnd: 
 type LegacyHistory = { events: Event[]; receipts: Receipt[]; snapshotBase64: string };
 type OldDevice = { deviceId: string; tokenHash: string; seed: number; revision: number; events: Event[]; receipts: Receipt[] };
 type V2Device = OldDevice & { legacy: LegacyHistory | null };
-type HistoricalEvents = { rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18; events: Event[]; receipts: Receipt[] };
+type HistoricalEvents = { rulesVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19; events: Event[]; receipts: Receipt[] };
 type Baseline = { histories: HistoricalEvents[]; snapshotBase64: string; autoTrace?: AutoTrace };
 type InitialMode = 'legacy' | 'onboarding';
 type V3Device = OldDevice & { legacy: Baseline | null };
@@ -262,6 +262,12 @@ function validSnapshot(value: unknown, format?: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
   return (format === undefined ? [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27].includes(actualFormat) && actualFormat <= maximumFormat : actualFormat === format) &&
     bytes.length === (actualFormat === 27 ? 6860 : actualFormat >= 23 ? 3216 : actualFormat === 22 ? 2964 : actualFormat === 21 ? 2952 : actualFormat === 20 ? 664 : actualFormat === 19 ? 660 : actualFormat === 18 ? 656 : actualFormat >= 16 ? 652 : actualFormat === 15 ? 636 : actualFormat === 14 ? 600 : actualFormat >= 8 ? 576 : actualFormat === 7 ? 500 : actualFormat === 6 ? 428 : actualFormat === 5 ? 412 : 404) && bytes.readUInt32LE(8) === (actualFormat === 3 ? 2 : actualFormat === 27 || actualFormat === 26 ? 19 : actualFormat === 25 ? 18 : actualFormat === 24 ? 17 : actualFormat === 23 ? 16 : actualFormat === 22 ? 15 : actualFormat === 21 ? 14 : actualFormat >= 17 ? 13 : actualFormat >= 15 ? 12 : actualFormat === 14 ? 11 : actualFormat === 13 ? 10 : actualFormat === 12 ? 9 : actualFormat === 11 ? 8 : actualFormat === 10 ? 7 : actualFormat === 9 ? 6 : actualFormat === 8 ? 5 : actualFormat === 7 ? 4 : 3);
 }
+function acceptedFormat21Snapshot(snapshot: unknown, gameSchema: unknown): boolean {
+  if (typeof snapshot !== 'string') return false;
+  const actual = Buffer.from(snapshot, 'base64').readUInt16LE(4);
+  if (gameSchema === 26) return actual === 26;
+  return gameSchema === 27 && (actual === 26 || actual === 27);
+}
 
 function baseSequence(legacy: Baseline | null): number { return legacy?.histories.reduce((total, history) => total + history.events.length, 0) ?? 0; }
 function traceMatches(state: State, trace: AutoTrace): boolean {
@@ -314,13 +320,13 @@ function validateStore(value: unknown): asserts value is StoredData {
     }
     if ((Number(value.formatVersion) >= 3) && device.legacy !== null) {
       const legacy = device.legacy;
-      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 21 ? (value.gameSchemaVersion === 27 ? 27 : 26) : value.formatVersion === 20 ? 25 : value.formatVersion === 19 ? 24 : value.formatVersion === 18 ? 23 : value.formatVersion === 17 ? 22 : value.formatVersion === 16 ? 21 : value.formatVersion === 15 ? undefined : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 15 && ![17, 18, 19, 20].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2)) throw new Error('Corrupt migration baseline.');
+      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 21 ? undefined : value.formatVersion === 20 ? 25 : value.formatVersion === 19 ? 24 : value.formatVersion === 18 ? 23 : value.formatVersion === 17 ? 22 : value.formatVersion === 16 ? 21 : value.formatVersion === 15 ? undefined : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 15 && ![17, 18, 19, 20].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 21 ? 19 : Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2) || (value.formatVersion === 21 && !acceptedFormat21Snapshot(legacy.snapshotBase64, value.gameSchemaVersion))) throw new Error('Corrupt migration baseline.');
       if (Object.hasOwn(legacy, 'autoTrace') && (Buffer.byteLength(JSON.stringify(legacy.autoTrace)) > 16 * 1024 || !parseAutoTrace(legacy.autoTrace, 'wild'))) throw new Error('Corrupt archived Auto trace.');
       let lastRules = 0;
       for (const history of legacy.histories) {
-        if (!object(history) || !keysExactly(history, ['rulesVersion', 'events', 'receipts']) || (![1, 2, ...(Number(value.formatVersion) >= 6 ? [3] : []), ...(Number(value.formatVersion) >= 7 ? [4] : []), ...(Number(value.formatVersion) >= 8 ? [5] : []), ...(Number(value.formatVersion) >= 9 ? [6] : []), ...(Number(value.formatVersion) >= 10 ? [7] : []), ...(Number(value.formatVersion) >= 11 ? [8] : []), ...(Number(value.formatVersion) >= 12 ? [9] : []), ...(Number(value.formatVersion) >= 13 ? [10] : []), ...(Number(value.formatVersion) >= 14 ? [11] : []), ...(Number(value.formatVersion) >= 15 ? [12] : []), ...(Number(value.formatVersion) >= 16 ? [13] : []), ...(Number(value.formatVersion) >= 17 ? [14] : []), ...(Number(value.formatVersion) >= 18 ? [15] : []), ...(Number(value.formatVersion) >= 19 ? [16] : []), ...(Number(value.formatVersion) >= 20 ? [17] : []), ...(Number(value.formatVersion) >= 21 ? [18] : [])].includes(Number(history.rulesVersion))) || Number(history.rulesVersion) <= lastRules) throw new Error('Corrupt archived rule history.');
+        if (!object(history) || !keysExactly(history, ['rulesVersion', 'events', 'receipts']) || (![1, 2, ...(Number(value.formatVersion) >= 6 ? [3] : []), ...(Number(value.formatVersion) >= 7 ? [4] : []), ...(Number(value.formatVersion) >= 8 ? [5] : []), ...(Number(value.formatVersion) >= 9 ? [6] : []), ...(Number(value.formatVersion) >= 10 ? [7] : []), ...(Number(value.formatVersion) >= 11 ? [8] : []), ...(Number(value.formatVersion) >= 12 ? [9] : []), ...(Number(value.formatVersion) >= 13 ? [10] : []), ...(Number(value.formatVersion) >= 14 ? [11] : []), ...(Number(value.formatVersion) >= 15 ? [12] : []), ...(Number(value.formatVersion) >= 16 ? [13] : []), ...(Number(value.formatVersion) >= 17 ? [14] : []), ...(Number(value.formatVersion) >= 18 ? [15] : []), ...(Number(value.formatVersion) >= 19 ? [16] : []), ...(Number(value.formatVersion) >= 20 ? [17] : []), ...(Number(value.formatVersion) >= 21 ? [18, 19] : [])].includes(Number(history.rulesVersion))) || Number(history.rulesVersion) <= lastRules) throw new Error('Corrupt archived rule history.');
         if (device.initialMode === 'onboarding' && Number(history.rulesVersion) < 3) throw new Error('An onboarding identity cannot contain pre-onboarding history.');
-        legacyRevisions += validateHistory(history.events, history.receipts, legacyRevisions, history.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18, batches);
+        legacyRevisions += validateHistory(history.events, history.receipts, legacyRevisions, history.rulesVersion as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19, batches);
         legacyEvents += (history.events as Event[]).length;
         lastRules = Number(history.rulesVersion);
       }
@@ -569,6 +575,11 @@ function createUnlockedApp(options: AppOptions = {}) {
   // Probe the executable without consuming device entropy or creating a profile.
   replay([], 1, null, 'onboarding');
   function persist(next: Store): void {
+    for (const device of next.devices) {
+      if (!device.legacy) continue;
+      const bytes = Buffer.from(device.legacy.snapshotBase64, 'base64');
+      if (bytes.length !== 6860 || bytes.readUInt16LE(4) !== 27) throw new Error('Refusing to label a store schema 27 while a snapshot still uses an older layout.');
+    }
     const serialized = JSON.stringify(next);
     if (Buffer.byteLength(serialized) > MAX_STORE) throw new HttpError(507, 'storage_limit', 'The development store is full.');
     // Both copies contain each acknowledged save. An interrupted write may recover
@@ -639,6 +650,37 @@ function createUnlockedApp(options: AppOptions = {}) {
     if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
     persist(next);
     migratedLegacyStore = true;
+  } else if (loaded.formatVersion === 21 && loaded.devices.some(device => (device.legacy ? Buffer.from(device.legacy.snapshotBase64, 'base64').readUInt16LE(4) !== 27 : loaded.gameSchemaVersion === 26 && (device.events.length > 0 || device.receipts.length > 0)))) {
+    const previous = loaded;
+    const devices = previous.devices.map((device): Device => {
+      const snapshotSchema = device.legacy ? Buffer.from(device.legacy.snapshotBase64, 'base64').readUInt16LE(4) : 0;
+      const foldSnapshot = snapshotSchema !== 0 && snapshotSchema !== 27;
+      const foldEvents = !device.legacy && previous.gameSchemaVersion === 26 && (device.events.length > 0 || device.receipts.length > 0);
+      if (!foldSnapshot && !foldEvents) return device;
+      // Replay the saved suffix at the 60-slot roster, then store a real schema-27 snapshot.
+      const args = device.legacy ? ['--fold-v19-snapshot', device.legacy.snapshotBase64] : [`--fold-v19${device.initialMode === 'onboarding' ? '-onboarding' : ''}`, String(device.seed)];
+      const migrated = runCore(args, device.events);
+      if (!object(migrated) || !validSnapshot(migrated.snapshotBase64, 27) || !stateSupported(migrated.state)) throw new Error('Rules-19 roster fold returned an unsupported baseline.');
+      const histories: HistoricalEvents[] = [...(device.legacy?.histories ?? [])];
+      if (device.events.length > 0 || device.receipts.length > 0) histories.push({ rulesVersion: 19, events: device.events, receipts: device.receipts });
+      if (histories.length < 1) throw new Error('Rules-19 roster fold lost the archived history.');
+      const legacy: Baseline = { histories, snapshotBase64: migrated.snapshotBase64 };
+      if (device.legacy?.autoTrace && traceMatches(migrated.state, device.legacy.autoTrace)) legacy.autoTrace = device.legacy.autoTrace;
+      if (migrated.state.sequence !== baseSequence(legacy)) throw new Error('Rules-19 roster fold changed the event sequence.');
+      const restored = replay([], device.seed, legacy, device.initialMode);
+      if (JSON.stringify(restored) !== JSON.stringify(migrated.state)) throw new Error('Rules-19 roster fold baseline did not restore identically.');
+      return { ...device, legacy, events: [], receipts: [] };
+    });
+    const next: Store = { formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices };
+    validateStore(next);
+    const archivePath = join(dataDir, 'store.schema-26.json');
+    if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
+    persist(next);
+    migratedLegacyStore = true;
+    for (const device of store.devices) {
+      if (device.legacy?.autoTrace && !traceMatches(replay([], device.seed, device.legacy, device.initialMode), device.legacy.autoTrace)) throw new Error('Archived Auto trace does not match its baseline summary.');
+      replay(device.events, device.seed, device.legacy, device.initialMode);
+    }
   } else {
     store = loaded;
     // Unknown versions or invalid snapshots fail closed before the server listens.

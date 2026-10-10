@@ -228,6 +228,9 @@ bool validStarterOfferForm(std::uint32_t formId);
 combat::Defense wildGuard(const State& state);
 // Native capture odds; zero outside a legal attempt. Auto may use the same helper.
 std::uint32_t captureChance(const State& state);
+// Rules-19 saves were recorded with a 60-Digimon roster. Replay pins that cap
+// so a full box still continues; zero selects the live 250-Digimon roster.
+void setHistoricalRosterCap(std::size_t cap);
 // Timing-input v1: phaseMs is 0..2399, graded against this state's actual foe.
 // One factor on captureChance: red10%, orange50%, green100%; floor with minimum
 // one only for an eligible positive base. Invalid phase/ineligible state returns0.

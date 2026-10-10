@@ -6,6 +6,7 @@
 #include "encounters.hpp"
 #include "combat.hpp"
 #include "legacy_v18.hpp"
+#include "snapshot_test_helpers.hpp"
 #include <cstdio>
 #include <cstring>
 #include <iterator>
@@ -150,10 +151,90 @@ void migrationMidEncounter() {
     CHECK(migrated >= 100 && finished == migrated && newWild > 0);
     std::printf("Rules 19 migration: %u mid-encounter rules-18 saves finished their fight; %u next encounters met new forms\n", migrated, newWild);
 }
+
+std::uint32_t crc32(const std::uint8_t* bytes, std::size_t length) {
+    std::uint32_t crc = 0xffffffffu;
+    for (std::size_t i = 0; i < length; ++i) {
+        crc ^= bytes[i];
+        for (unsigned bit = 0; bit < 8; ++bit) crc = (crc >> 1) ^ (0xedb88320u & (0u - (crc & 1u)));
+    }
+    return ~crc;
+}
+
+struct RosterCapGuard {
+    explicit RosterCapGuard(std::size_t cap) { setHistoricalRosterCap(cap); }
+    ~RosterCapGuard() { setHistoricalRosterCap(0); }
+};
+
+void historicalFullBox() {
+    State fight = newDevice(3);
+    CHECK(apply(fight, Action::Hatch, 1) == Error::None);
+    CHECK(apply(fight, Action::Mode, 1) == Error::None);
+    CHECK(apply(fight, Action::Explore, 1000) == Error::None && fight.phase == Phase::Encounter);
+    const auto founder = fight.collection[0];
+    CHECK(founder.formId != 18);
+    fight.collectionCount = 60;
+    fight.captures = 59;
+    fight.steps = 6000;
+    fight.stepCredit = 0;
+    fight.encounters = 60 + fight.walkingEncounters;
+    fight.sequence = fight.foregroundSequence = 80;
+    fight.nextMemberId = 61;
+    for (unsigned i = 1; i < 60; ++i) {
+        fight.collection[i] = founder;
+        fight.collection[i].id = i + 1;
+        fight.collection[i].capturedAtSequence = i + 1;
+    }
+    fight.wildFormId = 18;
+    fight.wildSpecies = Species::Agumon;
+    fight.wildLevel = 1;
+    fight.wildRules = 19;
+    fight.wildMaxHp = fight.wildHp = combat::formProfile(18, 1).stats.maxHp;
+    CHECK(isValid(fight) && fight.collection[0].formId != fight.wildFormId);
+    Snapshot current;
+    CHECK(encodeSnapshot(fight, current));
+    std::uint8_t schema26[kSchema26SnapshotSize];
+    snapshot_test::schema26Image(current.bytes, schema26);
+    schema26[4] = 26;
+    schema26[5] = 0;
+    schema26[6] = static_cast<std::uint8_t>(3204);
+    schema26[7] = static_cast<std::uint8_t>(3204 >> 8);
+    snapshot_test::put32(schema26 + kSchema26SnapshotSize - 4, crc32(schema26, kSchema26SnapshotSize - 4));
+    State migrated;
+    CHECK(decodeSnapshot(schema26, sizeof(schema26), migrated) == SnapshotStatus::Migrated);
+    CHECK(migrated.dungeonKeys == 3 && migrated.collectionCount == 60 && migrated.wildRules == 19);
+    fight.wildHp = fight.wildMaxHp / 2;
+    {
+        RosterCapGuard guard(kRoster60Capacity);
+        CHECK(captureChance(fight) == 0);
+        auto blocked = fight;
+        blocked.battleMode = BattleMode::Tactical;
+        CHECK(apply(blocked, Action::Capture, 0) == Error::CollectionFull && blocked.collectionCount == 60);
+    }
+    CHECK(captureChance(fight) > 0);
+    auto continued = fight;
+    continued.wildHp = continued.wildMaxHp;
+    {
+        RosterCapGuard guard(kRoster60Capacity);
+        for (unsigned guardTurn = 0; guardTurn < 16 && continued.phase == Phase::Encounter; ++guardTurn) {
+            const bool focus = continued.autoCapture == AutoCapture::FocusStrike || continued.autoCapture == AutoCapture::FocusBlock;
+            CHECK((focus ? applyFocus(continued, kFocusNoTap) : applyAutoFight(continued)) == Error::None);
+            CHECK(continued.autoCapture != AutoCapture::Awaiting && continued.collectionCount == 60 && continued.captures == 59);
+        }
+        CHECK(continued.phase == Phase::Home && continued.captures == 59);
+    }
+    auto paused = fight;
+    paused.wildHp = paused.wildMaxHp;
+    for (unsigned guardTurn = 0; guardTurn < 16 && paused.phase == Phase::Encounter && paused.autoCapture != AutoCapture::Awaiting; ++guardTurn) {
+        const bool focus = paused.autoCapture == AutoCapture::FocusStrike || paused.autoCapture == AutoCapture::FocusBlock;
+        CHECK((focus ? applyFocus(paused, kFocusNoTap) : applyAutoFight(paused)) == Error::None);
+    }
+    CHECK(paused.autoCapture == AutoCapture::Awaiting && paused.collectionCount == 60 && paused.captures == 59);
+}
 } // namespace
 
 int main() {
-    versions(); retiredDuplicates(); frozenPool(); rosterAndKeys(); migrationMidEncounter();
+    versions(); retiredDuplicates(); frozenPool(); rosterAndKeys(); migrationMidEncounter(); historicalFullBox();
     std::printf("rules 19: %u checks, %u failures\n", checks, failures);
     return failures ? 1 : 0;
 }

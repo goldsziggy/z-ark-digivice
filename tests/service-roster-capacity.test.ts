@@ -112,3 +112,92 @@ esac
   await writeFile(stalePath, script, { mode: 0o700 });
   assert.throws(() => createApp({ rootDir, dataDir, corePath: stalePath }), /XP companion contract/);
 });
+
+function crc32(bytes: Buffer): number {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (0xedb88320 & (0 - (crc & 1)));
+  }
+  return (~crc) >>> 0;
+}
+function schema26Snapshot(current: Buffer): string {
+  const out = Buffer.alloc(3216);
+  current.copy(out, 0, 0, 112);
+  for (let i = 0; i < 60; i += 1) {
+    const packed = 112 + i * 26, words = 112 + i * 48;
+    const formSpecies = current.readUInt32LE(packed + 8), xpHp = current.readUInt32LE(packed + 12);
+    const values = [current.readUInt32LE(packed), formSpecies >>> 16, xpHp >>> 16, current[packed + 17], current[packed + 18],
+      current[packed + 19], current[packed + 20], current[packed + 16], current.readUInt32LE(packed + 4), xpHp & 0xffff,
+      formSpecies & 0xffff, current.readUInt32LE(packed + 22)];
+    for (let word = 0; word < 12; word += 1) out.writeUInt32LE(values[word] >>> 0, words + word * 4);
+  }
+  current.copy(out, 2992, 112 + 250 * 26, 112 + 250 * 26 + 220);
+  out.writeUInt16LE(26, 4);
+  out.writeUInt16LE(3204, 6);
+  out.writeUInt32LE(crc32(out.subarray(0, 3212)), 3212);
+  return out.toString('base64');
+}
+
+test('a schema 26 save is rewritten before the schema 27 label and keeps its three dungeon keys', async t => {
+  const folded = JSON.parse(execFileSync(corePath, ['--fold-v19-onboarding', '12345'], {
+    input: 'hatch 1\n', encoding: 'utf8', maxBuffer: 1024 * 1024,
+  }));
+  assert.equal(folded.state.sequence, 1);
+  assert.equal(folded.state.expeditions.dungeonKeys, 0);
+  const events = [{ type: 'hatch', value: 1 }];
+  const snapshotBase64 = schema26Snapshot(Buffer.from(folded.snapshotBase64, 'base64'));
+  assert.equal(Buffer.from(snapshotBase64, 'base64').readUInt16LE(4), 26);
+  const storeFor = (gameSchemaVersion: 26 | 27) => ({
+    formatVersion: 21, gameSchemaVersion, rulesVersion: 19, devices: [{
+      deviceId: `dv_${'ab'.repeat(12)}`, tokenHash: hash(token), seed: 12345, initialMode: 'onboarding', revision: 1,
+      legacy: { histories: [{ rulesVersion: 18, events, receipts: [{ batchId: 'schema26-hatch-001', revision: 1, eventEnd: 1, bodyHash: hash(JSON.stringify({ rulesVersion: 18, baseRevision: 0, events })) }] }], snapshotBase64 },
+      events: [], receipts: [],
+    }],
+  });
+  const open = async (gameSchemaVersion: 26 | 27) => {
+    const original = storeFor(gameSchemaVersion);
+    const dataDir = await mkdtemp(join(tmpdir(), 'digivice-schema26-'));
+    const originalText = JSON.stringify(original);
+    for (const name of ['store.json', 'store.backup.json']) await writeFile(join(dataDir, name), originalText);
+    const options = { rootDir, corePath, battleCorePath: process.env.DIGIVICE_TEST_BATTLE_PATH, dataDir, port: 0 };
+    let app = await startServer(options);
+    const close = async () => { await new Promise<void>((resolve, reject) => app.server.close(error => error ? reject(error) : resolve())); app.close(); };
+    t.after(async () => { if (app.server.listening) await close(); await rm(dataDir, { recursive: true, force: true }); });
+    const request = async (body?: unknown) => {
+      const response = await fetch(`http://127.0.0.1:${(app.server.address() as { port: number }).port}${body === undefined ? '/api/save' : '/api/save-sync'}`, {
+        method: body === undefined ? 'GET' : 'POST', headers: { authorization: `Bearer ${token}`, ...(body === undefined ? {} : { 'content-type': 'application/json' }) },
+        body: body === undefined ? undefined : JSON.stringify(body),
+      });
+      return { status: response.status, body: await response.json() as any };
+    };
+    return { dataDir, originalText, request, restart: async () => { await close(); app = await startServer(options); } };
+  };
+  for (const gameSchemaVersion of [26, 27] as const) {
+    const opened = await open(gameSchemaVersion);
+    const saved = await opened.request();
+    assert.equal(saved.status, 200);
+    assert.equal(saved.body.state.expeditions.dungeonKeys, 3);
+    assert.equal(saved.body.state.collection.length, 1);
+    assert.deepEqual(saved.body.events, []);
+    assert.equal(saved.body.baseSequence, 1);
+    for (const name of ['store.json', 'store.backup.json']) {
+      const stored = JSON.parse(await readFile(join(opened.dataDir, name), 'utf8'));
+      const bytes = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64');
+      assert.equal(stored.gameSchemaVersion, 27);
+      assert.equal(bytes.length, 6860);
+      assert.equal(bytes.readUInt16LE(4), 27);
+    }
+    assert.equal(await readFile(join(opened.dataDir, 'store.schema-26.json'), 'utf8'), opened.originalText);
+    const fed = await opened.request({ rulesVersion: 19, baseRevision: 1, batchId: `schema26-feed-${gameSchemaVersion}`, events: [{ type: 'feed', value: 0 }] });
+    assert.equal(fed.status, 200);
+    assert.equal(fed.body.state.expeditions.dungeonKeys, 3);
+    const afterFeed = JSON.parse(await readFile(join(opened.dataDir, 'store.json'), 'utf8'));
+    assert.equal(Buffer.from(afterFeed.devices[0].legacy.snapshotBase64, 'base64').readUInt16LE(4), 27);
+    await opened.restart();
+    const again = await opened.request();
+    assert.equal(again.status, 200);
+    assert.equal(again.body.state.expeditions.dungeonKeys, 3);
+    assert.equal(again.body.revision, 2);
+  }
+});

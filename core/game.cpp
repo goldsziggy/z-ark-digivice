@@ -116,11 +116,16 @@ bool ownsExactForm(const State& state, std::uint32_t formId) {
         if (state.collection[i].formId == formId) return true;
     return false;
 }
+std::size_t historicalRosterCap = 0;
+std::size_t rosterCap(const State&) {
+    return historicalRosterCap ? historicalRosterCap : kCollectionCapacity;
 }
+}
+void setHistoricalRosterCap(std::size_t cap) { historicalRosterCap = cap; }
 std::uint32_t captureChance(const State& state) {
     const bool mergeable = state.wildRules >= 16 && ownsExactForm(state, state.wildFormId);
     if(!isValid(state) || state.phase!=Phase::Encounter || state.captureDeferred ||
-       (state.collectionCount>=kCollectionCapacity && !mergeable) ||
+       (state.collectionCount>=rosterCap(state) && !mergeable) ||
        state.nextMemberId==std::numeric_limits<std::uint32_t>::max() || state.captures==std::numeric_limits<std::uint32_t>::max() ||
        state.sequence==std::numeric_limits<std::uint32_t>::max() || state.captureAttempts>=3 || state.wildHp>state.wildMaxHp/2) return 0;
     if(state.wildRules<8) return 70u+(state.level<3?state.level:3u)*5u;
@@ -619,7 +624,7 @@ static bool validForVersion(const State& s,bool) {
     if(s.captureDeferred && (s.phase!=Phase::Encounter || !s.captureAttempts))return false;
     const bool duplicateReady=s.wildRules>=16 && ownsExactForm(s,s.wildFormId);
     if(s.autoCapture==AutoCapture::Awaiting && (s.phase!=Phase::Encounter || s.battleMode!=BattleMode::Auto ||
-       (s.collectionCount>=kCollectionCapacity && !duplicateReady) || s.nextMemberId==kMax || s.captures==kMax ||
+       (s.collectionCount>=rosterCap(s) && !duplicateReady) || s.nextMemberId==kMax || s.captures==kMax ||
        !s.wildHp || s.wildHp>s.wildMaxHp/2 || !s.wildTurn || s.captureAttempts>=3 || s.captureDeferred))return false;
     const auto& capture=s.lastCapture;
     if(static_cast<unsigned>(capture.result)>3)return false;
@@ -1082,7 +1087,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
     case Action::RingCapture: {
         if (next.phase != Phase::Encounter) return Error::WrongPhase;
         const bool mergeable=next.wildRules>=16 && ownsExactForm(next,next.wildFormId);
-        if (next.collectionCount >= kCollectionCapacity && !mergeable) return Error::CollectionFull;
+        if (next.collectionCount >= rosterCap(next) && !mergeable) return Error::CollectionFull;
         if(next.nextMemberId==kMax || next.captures==kMax) return Error::CounterOverflow;
         if (next.captureDeferred) return Error::InvalidAction;
         if (next.wildHp > next.wildMaxHp / 2) return Error::WildTooStrong;
@@ -1250,10 +1255,9 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
             state=next;return Error::None;
         }
         Action chosen;
-        // The historical one-event Auto policy in an old encounter keeps its
-        // original eight-slot decisions. Current AutoFight/manual throws use
-        // all60 slots immediately, including when continuing an old encounter.
-        const auto autoCapacity=state.wildRules<=13?kLegacyCollectionCapacity:kCollectionCapacity;
+        // The one-event Auto action keeps its original eight-slot choice. A
+        // rules-19 replay can pin the 60-slot roster. Live AutoFight uses 250.
+        const auto autoCapacity=flow==AutoFlow::Legacy && next.wildRules<=13 ? kLegacyCollectionCapacity : rosterCap(next);
         if (flow==AutoFlow::Legacy && !next.captureDeferred && next.collectionCount < autoCapacity && next.wildHp <= next.wildMaxHp / 2 && next.captureAttempts < 3)
             chosen = Action::Capture;
         else {

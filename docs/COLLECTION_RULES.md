@@ -1,6 +1,6 @@
 # Individual collection and journal
 
-> **Current roster (rules 19, schema 27):** 250 carried Digimon, a 6,860-byte snapshot, and 465 form IDs (451 playable). Existing saves receive three dungeon keys when they migrate. A newly created game starts with none. Rules 13–18 keep the smaller historical rosters described below. See [ROSTER_RULES19.md](ROSTER_RULES19.md) and [co-op expeditions](COOP_EXPEDITIONS.md).
+> **Current roster (rules 19, schema 27):** 250 carried Digimon, a 6,860-byte snapshot, and 465 form IDs (451 playable). Existing saves receive three dungeon keys when a pre-27 snapshot is read. The server rewrites that snapshot into schema 27 before labeling the store, and replays a rules-19 battle at the 60-Digimon roster it was saved with. A newly created game starts with none. Rules 13–18 keep the smaller historical rosters described below. See [ROSTER_RULES19.md](ROSTER_RULES19.md) and [co-op expeditions](COOP_EXPEDITIONS.md).
 
 The shared native core is **schema 27, rules 19**. Browser and firmware execute the same transitions. [Gameplay review](GAMEPLAY_REVIEW.md) · [Roster and provenance](WORLD_DS_ROSTER.md) · [HTTP contract](../service/API.md).
 
