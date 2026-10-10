@@ -22,10 +22,11 @@ enum class Screen : std::uint8_t {
     Egg, Starter, StarterReview, Home, Care, Explore,
     Encounter, Battle, Capture, Result, Collection, Stats, ReleaseReview, Evolution, EvolutionReview, EvolutionResult,
     Settings, EncounterSettings, ModeReview, Nearby, NearbyReview, Sound, TradeChoose, TradeReview,
-    Squad, Box // Partners: 2x2 squad landing and 2x2 pages of every member; Collection is one member.
+    Squad, Box, // Partners: 2x2 squad landing and 2x2 pages of every member; Collection is one member.
+    Expeditions, ExpeditionLobby // Dungeon and boss list, then a wait-or-solo lobby. No save write.
 };
 enum class TouchKind : std::uint8_t { Down, Move, Up, Cancel };
-enum class HomePanel : std::uint8_t { Care, Partners, Settings, Nearby };
+enum class HomePanel : std::uint8_t { Care, Partners, Settings, Nearby, Dungeons };
 enum class SpriteFacing : std::uint8_t { Unknown, Left, Right, Front };
 struct Touch { TouchKind kind; std::int16_t x, y; std::uint64_t atMs; };
 // Views borrow immutable, caller-owned decoded buffers until render returns.
@@ -192,6 +193,7 @@ private:
     void resetTouch();
     std::uint64_t captureElapsed(std::uint64_t now) const;
     void cancelEvolution();
+    void rollExpeditionVariant();
     const CreatureMember* selectedMember(const State& state) const { return findMember(state,memberId_); }
     Screen screen_ = Screen::Egg;
     HomePanel homePanel_ = HomePanel::Care;
@@ -200,7 +202,7 @@ private:
     std::uint32_t sequence_ = UINT32_MAX, starterForm_ = 0, memberId_ = 0;
     std::uint8_t starterCount_ = 8;
     std::uint8_t selectedId_ = 0, memberIndex_ = 0, proposedMode_ = 255;
-    std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0, boxPage_ = 0, boxOrder_ = 0;
+    std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0, boxPage_ = 0, boxOrder_ = 0, expeditionIndex_ = 0, expeditionVariant_ = 0;
     Screen memberReturn_ = Screen::Squad; // Where BACK from one member goes: Squad or Box.
     trade::Identity tradePeer_{};
     std::uint32_t tradeMemberId_ = 0, tradeFingerprint_ = 0, tradeContext_ = 0, tradePeerNonce_ = 0;
@@ -218,7 +220,7 @@ private:
     std::uint8_t nearbyRole_ = 255;
     controls::EvolutionChoice evolution_{};
     std::uint32_t evolutionMember_ = 0, evolutionForm_ = 0, evolutionTarget_ = 0, releaseMember_ = 0;
-    bool writable_ = false, enabled_ = false, partyEditable_ = true, initialized_ = false, battleLocked_ = false;
+    bool writable_ = false, enabled_ = false, partyEditable_ = true, initialized_ = false, battleLocked_ = false, expeditionSolo_ = false;
     bool down_ = false, battleGesture_ = false, browseGesture_ = false, cancelled_ = false, pending_ = false, tapMoved_ = false;
     combat::Move battleSelection_ = combat::Move::Physical;
     std::uint8_t defenseSelection_ = 0;

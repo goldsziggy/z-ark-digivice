@@ -4,8 +4,11 @@
 #include <cstdint>
 
 // Boss and dungeon scenarios share one catalog. A dungeon key opens one
-// three-floor raid. A boss sigil opens one boss. Play is still ahead of this
-// catalog: holding a key never starts a fight by itself.
+// three-floor raid. A boss sigil opens one boss. The device menu can open a
+// waiting lobby or a solo start. Neither spends a key or sigil, and neither
+// begins the raid fight. Holding a key never starts a fight by itself.
+// The six names below stay in saves and state JSON. A device visit may show
+// another title from that theme's pool.
 namespace digivice::expeditions {
 
 enum class Theme : std::uint8_t { Grove, Tide, Ember };
@@ -38,5 +41,31 @@ inline const char* themeName(Theme theme) {
     return theme == Theme::Grove ? "grove" : theme == Theme::Tide ? "tide" : "ember";
 }
 inline const char* kindName(Kind kind) { return kind == Kind::Dungeon ? "dungeon" : "boss"; }
+
+// Presentation titles. Index 0 is the saved catalog name. The rest are visit variants.
+inline void variantList(Kind kind, Theme theme, const char* const*& names, std::uint8_t& count) {
+    static constexpr const char* groveDungeon[]{"Grove Dungeon","MOSS HOLLOW","THORN VAULT","FERN CRYPT","ROOT SANCTUM","BRIAR DEPTHS","CANOPY RUIN","VERDANT GALLERY"};
+    static constexpr const char* tideDungeon[]{"Tide Dungeon","CORAL VAULT","REEF CRYPT","KELP HOLLOW","BRINE DEPTHS","SHELL SANCTUM","FOAM GALLERY","ABYSS STAIR"};
+    static constexpr const char* emberDungeon[]{"Ember Dungeon","CINDER VAULT","ASH CRYPT","MAGMA HOLLOW","COAL DEPTHS","FLAME SANCTUM","SPARK GALLERY","BASALT RUIN"};
+    static constexpr const char* groveBoss[]{"Grove Boss","MOSS WARDEN","THORN TYRANT","ROOT COLOSSUS","BRIAR BEAST","CANOPY LORD","FERN GIANT","VERDANT KING"};
+    static constexpr const char* tideBoss[]{"Tide Boss","CORAL WARDEN","REEF TYRANT","KELP COLOSSUS","BRINE BEAST","SHELL LORD","FOAM GIANT","ABYSS KING"};
+    static constexpr const char* emberBoss[]{"Ember Boss","CINDER WARDEN","ASH TYRANT","MAGMA COLOSSUS","COAL BEAST","FLAME LORD","SPARK GIANT","BASALT KING"};
+    const bool dungeon = kind == Kind::Dungeon;
+    const auto* list = theme == Theme::Tide ? (dungeon ? tideDungeon : tideBoss) : theme == Theme::Ember ? (dungeon ? emberDungeon : emberBoss) : (dungeon ? groveDungeon : groveBoss);
+    names = list;
+    count = 8;
+}
+inline std::uint8_t variantCount(const Scenario& scenario) {
+    const char* const* names = nullptr;
+    std::uint8_t count = 0;
+    variantList(scenario.kind, scenario.theme, names, count);
+    return count;
+}
+inline const char* variantName(const Scenario& scenario, std::uint8_t index) {
+    const char* const* names = nullptr;
+    std::uint8_t count = 0;
+    variantList(scenario.kind, scenario.theme, names, count);
+    return count ? names[index % count] : scenario.name;
+}
 
 } // namespace digivice::expeditions

@@ -20,6 +20,20 @@ unsigned checks = 0, failures = 0;
 void versions() {
     CHECK(kSchemaVersion == 27 && kRulesVersion == 19 && kSnapshotSize == 6860 && kCollectionCapacity == 250);
     CHECK(std::size(expeditions::kScenarios) == 6);
+    for (const auto& scenario : expeditions::kScenarios) {
+        const auto count = expeditions::variantCount(scenario);
+        CHECK(count >= 8 && std::strcmp(expeditions::variantName(scenario, 0), scenario.name) == 0);
+        for (std::uint8_t i = 0; i < count; ++i) {
+            const auto* name = expeditions::variantName(scenario, i);
+            CHECK(name && name[0] && std::strlen(name) <= 22);
+            for (const auto* letter = name; *letter; ++letter) {
+                const char upper = *letter >= 'a' && *letter <= 'z' ? static_cast<char>(*letter - 32) : *letter;
+                CHECK(upper == ' ' || (upper >= 'A' && upper <= 'Z'));
+            }
+            for (std::uint8_t earlier = 0; earlier < i; ++earlier)
+                CHECK(std::strcmp(name, expeditions::variantName(scenario, earlier)) != 0);
+        }
+    }
     CHECK(legacy_v18::kSchemaVersion == 25 && legacy_v18::kRulesVersion == 18);
     CHECK(forms::kFormCount == 465 && forms::kProductionFormCount == 451 && forms::kRules18FormCount == 276);
 }

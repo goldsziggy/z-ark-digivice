@@ -431,8 +431,16 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  NearbyPhysical, NearbyMagic, NearbyHeavy, NearbyCommit, NearbyBrace, NearbyCounter, NearbyWard,
  HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
  TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat, FocusSkip,
- Tile0, Tile1, Tile2, Tile3, BoxOpen, BoxSort };
+ Tile0, Tile1, Tile2, Tile3, BoxOpen, BoxSort, ExpeditionOpen, ExpeditionEnter, ExpeditionSolo };
 std::size_t boxPages(const State& state) { return std::max<std::size_t>(1,(state.collectionCount+kTiles-1)/kTiles); }
+constexpr unsigned kHomePanelCount = 5;
+constexpr std::size_t kExpeditionCount = sizeof(expeditions::kScenarios) / sizeof(expeditions::kScenarios[0]);
+const expeditions::Scenario& selectedExpedition(std::uint8_t index) {
+    return expeditions::kScenarios[index % kExpeditionCount];
+}
+bool expeditionReady(const State& state, const expeditions::Scenario& scenario) {
+    return scenario.kind == expeditions::Kind::Dungeon ? state.dungeonKeys > 0 : state.bossSigils > 0;
+}
 // Member card and the Squad/Box controls sit above y 320, clear of the shared BACK spot.
 constexpr int kDetailX=116, kDetailY=228, kDetailW=180, kDetailH=36;
 constexpr int kPrimaryX=116, kPrimaryY=270, kPrimaryW=180, kPrimaryH=44;
@@ -445,8 +453,8 @@ const char* tileStatus(const State& state,const Model& model,const CreatureMembe
     color=dim;
     return member.id==state.activeCreatureId ? "PARTNER" : isPartyMember(state,member.id) ? "SQUAD" : "";
 }
-constexpr const char* homeTitles[]{"CARE","PARTNERS","SETTINGS","NEARBY"};
-constexpr const char* homeActions[]{"OPEN CARE","PARTNERS","SETTINGS","FIND NEARBY"};
+constexpr const char* homeTitles[]{"CARE","PARTNERS","SETTINGS","NEARBY","DUNGEONS"};
+constexpr const char* homeActions[]{"OPEN CARE","PARTNERS","SETTINGS","FIND NEARBY","DUNGEONS"};
 } // namespace
 
 int Controller::hitIndex(const Button* choices, std::size_t n, int x, int y) {
@@ -469,6 +477,11 @@ std::uint64_t Controller::captureElapsed(std::uint64_t now) const {
 void Controller::cancelEvolution() {
     evolution_.cancel(); evolutionMember_=evolutionForm_=evolutionTarget_=0;
     if (screen_==Screen::EvolutionReview) screen_=Screen::Evolution;
+}
+void Controller::rollExpeditionVariant() {
+    const auto count=expeditions::variantCount(selectedExpedition(expeditionIndex_));
+    const auto mix=lastAt_*0x9E3779B97F4A7C15ull ^ (static_cast<std::uint64_t>(expeditionIndex_+1)<<17);
+    expeditionVariant_=count ? static_cast<std::uint8_t>(mix%count) : 0;
 }
 void Controller::cancelTouch() {
     resetTouch(); cancelEvolution(); releaseMember_=0;
@@ -816,6 +829,12 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     case Screen::ModeReview:
         add(116,262,180,50,"CONFIRM",ModeConfirm,proposedMode_<=1 && legal(state,model,Action::Mode,proposedMode_));
         back(); break;
+    case Screen::Expeditions:
+        add(116,270,180,44,"ENTER",ExpeditionEnter,state.phase==Phase::Home); back(); break;
+    case Screen::ExpeditionLobby:
+        if(!expeditionSolo_) add(116,270,180,44,"START SOLO",ExpeditionSolo,
+            state.phase==Phase::Home && expeditionReady(state,selectedExpedition(expeditionIndex_)));
+        back(); break;
     }
     return count;
 }
@@ -844,6 +863,10 @@ Intent Controller::navigateHorizontal(bool next,const State& state,const Model& 
         return {};
     }
     if(screen_==Screen::Home) return activate(next ? HomeNext : HomePrevious,state,model);
+    if(screen_==Screen::Expeditions) {
+        expeditionIndex_=static_cast<std::uint8_t>((expeditionIndex_+(next ? 1 : kExpeditionCount-1))%kExpeditionCount);
+        expeditionSolo_=false; rollExpeditionVariant(); return {IntentKind::Navigation};
+    }
     if(screen_==Screen::Starter) return activate(next ? Next : Prev,state,model);
     if(screen_==Screen::Collection) return activate(next ? MemberNext : MemberPrev,state,model);
     if(screen_==Screen::Box) {
@@ -892,12 +915,19 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case Prev: return {IntentKind::StarterPrevious};
     case Next: return {IntentKind::StarterNext};
     case HomePrevious: case HomeNext:
-        homePanel_=static_cast<HomePanel>((static_cast<unsigned>(homePanel_)+(id==HomeNext ? 1 : 3))%4);
+        homePanel_=static_cast<HomePanel>((static_cast<unsigned>(homePanel_)+(id==HomeNext ? 1 : kHomePanelCount-1))%kHomePanelCount);
         return navigate(Screen::Home);
     case HomeOpen: {
-        constexpr int actions[]{Care,Team,Settings,NearbyOpen};
+        constexpr int actions[]{Care,Team,Settings,NearbyOpen,ExpeditionOpen};
         return activate(actions[static_cast<unsigned>(homePanel_)],state,model);
     }
+    case ExpeditionOpen:
+        expeditionIndex_=0; expeditionSolo_=false; rollExpeditionVariant(); return navigate(Screen::Expeditions);
+    case ExpeditionEnter:
+        expeditionSolo_=false; return navigate(Screen::ExpeditionLobby);
+    case ExpeditionSolo:
+        if(expeditionSolo_ || state.phase!=Phase::Home || !expeditionReady(state,selectedExpedition(expeditionIndex_))) return {};
+        expeditionSolo_=true; return {IntentKind::Navigation};
     case Back:
         if(screen_==Screen::TradeChoose) return navigate(activeTrade(model.trade) ? Screen::TradeReview : Screen::Nearby);
         if (!state.onboardingComplete) return {IntentKind::StarterBack};
@@ -919,6 +949,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         if (screen_==Screen::Evolution) { if(evolutionPage_) { evolutionPage_=0; return navigate(Screen::Evolution); } return navigate(Screen::Stats); }
         if (screen_==Screen::EvolutionReview) { cancelEvolution(); return navigate(Screen::Evolution); }
         if (screen_==Screen::EvolutionResult) return navigate(Screen::Home);
+        if (screen_==Screen::ExpeditionLobby) { expeditionSolo_=false; return navigate(Screen::Expeditions); }
         if (screen_==Screen::EncounterSettings) return navigate(Screen::Settings);
         if (screen_==Screen::Sound) return navigate(Screen::Settings);
         if (screen_==Screen::ModeReview) { proposedMode_=255; return navigate(Screen::Settings); }
@@ -1134,7 +1165,7 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
             (screen_==Screen::Box && event.y>=kTileY[0] && event.y<kTileY[1]+kTileH && boxPages(state)>1) ||
             (!buttonOrigin && event.y>=100 && event.y<280 &&
             (screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats || screen_==Screen::Sound || screen_==Screen::TradeChoose || screen_==Screen::TradeReview ||
-             (screen_==Screen::Evolution && evolutionPage_!=3) ||
+             (screen_==Screen::Evolution && evolutionPage_!=3) || screen_==Screen::Expeditions ||
              (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Discovering)));
         return {};
     }
@@ -1222,12 +1253,27 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
         request.formId=state.message==Message::Captured ? capturedFormId(state) : member ? member->formId : 0;
         request.sceneId=scenes[(state.encounters ? state.encounters-1 : 0)%8];
         request.animation=sprite::Animation::Celebrate; break;
-    case Screen::Evolution: case Screen::EvolutionReview: {
-        const auto* route=member ? forms::outgoing(member->formId,evolutionIndex_) : nullptr;
-        request.formId=route ? route->to : member ? member->formId : 0; break;
+    case Screen::Evolution: {
+        const auto* evolving=selectedMember(state);
+        const auto* route=evolving ? forms::outgoing(evolving->formId,evolutionIndex_) : nullptr;
+        request.formId=route ? route->to : evolving ? evolving->formId : 0; break;
     }
-    case Screen::EvolutionResult:
-        request.formId=member ? member->formId : 0; request.animation=sprite::Animation::Celebrate; break;
+    case Screen::EvolutionReview:
+        request.formId=evolutionTarget_ ? evolutionTarget_ : evolutionForm_; break;
+    case Screen::EvolutionResult: {
+        const auto* evolved=findMember(state,evolutionMember_);
+        request.formId=evolved ? evolved->formId : evolutionTarget_;
+        request.animation=sprite::Animation::Celebrate; break;
+    }
+    case Screen::Expeditions: case Screen::ExpeditionLobby: {
+        const auto theme=selectedExpedition(expeditionIndex_).theme;
+        request.sceneId=theme==expeditions::Theme::Tide ? scenes[2] : theme==expeditions::Theme::Ember ? scenes[6] : scenes[1];
+        if(screen_==Screen::ExpeditionLobby) {
+            request.formId=member ? member->formId : 0;
+            if(expeditionSolo_) request.animation=sprite::Animation::Celebrate;
+        }
+        break;
+    }
     case Screen::ReleaseReview: case Screen::Stats: case Screen::Collection:
         request.formId=selectedMember(state) ? selectedMember(state)->formId : 0; break;
     case Screen::Squad: case Screen::Box: break; // Each tile has its own request.
@@ -1408,11 +1454,13 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::Nearby:
         if(!model.nearby || (model.nearby->stage!=nearby::Stage::Playing && model.nearby->stage!=nearby::Stage::Finished && model.nearby->stage!=nearby::Stage::Reconnecting && model.nearby->stage!=nearby::Stage::Discovering)) plate(50,90,312,180);
         break;
+    case Screen::Expeditions: case Screen::ExpeditionLobby: plate(48,58,316,200); break;
     }
     const bool browse=screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats || screen_==Screen::Sound ||
         (screen_==Screen::Box && boxPages(state)>1) ||
         (screen_==Screen::TradeChoose && tradeMemberId_ && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::TradeReview && model.trade && trade::valid(model.trade->transcript)) ||
-        (screen_==Screen::Evolution && evolutionPage_!=3) || (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Discovering && peerCount(model.nearby)>1);
+        (screen_==Screen::Evolution && evolutionPage_!=3) || screen_==Screen::Expeditions ||
+        (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Discovering && peerCount(model.nearby)>1);
     const bool picker=!battleLocked_ && ((screen_==Screen::Battle && state.battleMode==BattleMode::Tactical) ||
         (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Playing && model.nearby->match.mode==nearby::Mode::Tactical && !model.nearby->localChoicePending && !nearbyFeedback(model)));
     const bool fullRosterBattle=screen_==Screen::Battle && !(model.battle && model.battle->locked) &&
@@ -1458,7 +1506,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         c.badge(84,creatureName(state),std::strlen(creatureName(state))<=24 ? 2 : 1,ink,36);
         if(!c.spriteFrame(206+tx/2,196+ty/2,176,model.artwork.sprite,art))
             c.missingArt(206+tx/2,196+ty/2);
-        for(unsigned i=0;i<4;++i) c.circle(179+static_cast<int>(i)*18,354,4,
+        for(unsigned i=0;i<kHomePanelCount;++i) c.circle(206+(static_cast<int>(i)-2)*16,354,4,
             i==static_cast<unsigned>(homePanel_) ? mint : edge);
         std::snprintf(label,sizeof(label),"STEPS %llu",static_cast<unsigned long long>(model.lifetimeSteps));
         c.badge(369,label,1,dim,27);
@@ -1466,11 +1514,11 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const char* status=model.stepStatus && std::strcmp(model.stepStatus,"STEP SAVE RECOVERY")==0 ? "STEP SAVE RECOVERY" :
             model.stepsRecovering ? "SENSOR RECOVERING" : !model.stepsAvailable ? "SENSOR UNAVAILABLE" :
             state.encounterRate==EncounterRate::Off ? "ENCOUNTERS PAUSED" : "LIFETIME TOTAL";
-        if(homePanel_==HomePanel::Nearby && std::strcmp(status,"LIFETIME TOTAL")==0) {
+        if((homePanel_==HomePanel::Nearby || homePanel_==HomePanel::Dungeons) && std::strcmp(status,"LIFETIME TOTAL")==0) {
             std::snprintf(keys,sizeof(keys),"DUNGEON KEYS %u",static_cast<unsigned>(state.dungeonKeys));
             status=keys;
         }
-        c.badge(384,status,1,homePanel_==HomePanel::Nearby && status==keys ? mint : dim,24);
+        c.badge(384,status,1,(homePanel_==HomePanel::Nearby || homePanel_==HomePanel::Dungeons) && status==keys ? mint : dim,24);
         break;
     }
     case Screen::Care: {
@@ -2073,6 +2121,41 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         if(!picker) c.badge(kNavY+kNavH+6,"WIFI PAUSED - NO XP",1,dim,32);
         break;
     }
+    case Screen::Expeditions: {
+        const auto& scenario=selectedExpedition(expeditionIndex_);
+        const bool dungeon=scenario.kind==expeditions::Kind::Dungeon;
+        c.center(74,dungeon ? "DUNGEON" : "BOSS",2,mint);
+        c.center(108,expeditions::variantName(scenario,expeditionVariant_),2);
+        std::snprintf(label,sizeof(label),"FLOORS %u",static_cast<unsigned>(scenario.floors));
+        c.center(148,label,2);
+        if(scenario.minPlayers==scenario.maxPlayers) std::snprintf(label,sizeof(label),"PLAYERS %u",static_cast<unsigned>(scenario.minPlayers));
+        else std::snprintf(label,sizeof(label),"PLAYERS %u-%u",static_cast<unsigned>(scenario.minPlayers),static_cast<unsigned>(scenario.maxPlayers));
+        c.center(180,label,2);
+        c.center(214,dungeon ? "COSTS 1 KEY" : "COSTS 1 SIGIL",1,dim);
+        if(dungeon) std::snprintf(label,sizeof(label),"KEYS %u",static_cast<unsigned>(state.dungeonKeys));
+        else std::snprintf(label,sizeof(label),"SIGILS %u",static_cast<unsigned>(state.bossSigils));
+        c.center(236,label,1,mint);
+        break;
+    }
+    case Screen::ExpeditionLobby: {
+        const auto& scenario=selectedExpedition(expeditionIndex_);
+        const bool dungeon=scenario.kind==expeditions::Kind::Dungeon;
+        const bool ready=expeditionReady(state,scenario);
+        c.center(74,expeditions::variantName(scenario,expeditionVariant_),2,mint);
+        if(expeditionSolo_) {
+            actor(206,128,5);
+            c.center(176,"SOLO RUN OPEN",2,amber);
+            std::snprintf(label,sizeof(label),"FLOOR 1 OF %u",static_cast<unsigned>(scenario.floors));
+            c.center(208,label,2);
+            c.center(236,dungeon ? "DUNGEON KEY STAYS" : "BOSS SIGIL STAYS",1,dim);
+        } else {
+            c.center(118,"WAITING",2,amber);
+            c.center(150,"FOR ANOTHER PLAYER",2);
+            c.center(190,"BOTH DEVICES STAY HERE",1,dim);
+            c.center(214,ready ? "OR START SOLO" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
+        }
+        break;
+    }
     case Screen::ModeReview:
         c.center(78,proposedMode_==1 ? "SWITCH TO AUTO?" : "SWITCH TO TACTICAL?",2,amber);
         c.center(127,proposedMode_==1 ? "ATTACKS RUN FOR YOU" : "YOU CHOOSE EACH",2);
@@ -2083,7 +2166,8 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     if(browse || picker) {
         const bool multiple=picker || screen_==Screen::Starter || screen_==Screen::Stats || screen_==Screen::Sound || screen_==Screen::TradeReview ||
             (screen_==Screen::TradeChoose && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::Collection && state.collectionCount>1) ||
-            (screen_==Screen::Box && boxPages(state)>1) || (screen_==Screen::Evolution && (evolutionPage_ || (selectedMember(state) && forms::outgoing(selectedMember(state)->formId,1)))) || screen_==Screen::Nearby;
+            (screen_==Screen::Box && boxPages(state)>1) || (screen_==Screen::Evolution && (evolutionPage_ || (selectedMember(state) && forms::outgoing(selectedMember(state)->formId,1)))) ||
+            screen_==Screen::Nearby || screen_==Screen::Expeditions;
         if(multiple) {
             c.chevron(49,180,-1,screen_==Screen::Sound && !model.volumePercent ? dim : arrowColor);
             c.chevron(352,180,1,screen_==Screen::Sound && model.volumePercent>=100 ? dim : arrowColor);
@@ -2170,6 +2254,8 @@ const char* screenName(Screen screen) {
     case Screen::NearbyReview: return "nearby-review";
     case Screen::Squad: return "squad";
     case Screen::Box: return "box";
+    case Screen::Expeditions: return "expeditions";
+    case Screen::ExpeditionLobby: return "expedition-lobby";
     }
     return "unknown";
 }

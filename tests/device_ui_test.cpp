@@ -233,9 +233,9 @@ void homeCarousel() {
     h.dispatch(h.event(TouchKind::Up,355,190,60));
     CHECK(h.ui.homePanel()==HomePanel::Partners && h.ui.interactionIdle());
     h.dispatch(h.tap(55,190)); CHECK(h.ui.homePanel()==HomePanel::Care);
-    h.dispatch(h.tap(55,190)); CHECK(h.ui.homePanel()==HomePanel::Nearby);
+    h.dispatch(h.tap(55,190)); CHECK(h.ui.homePanel()==HomePanel::Dungeons);
     h.dispatch(h.swipe(260,190,160,190)); CHECK(h.ui.homePanel()==HomePanel::Care);
-    h.dispatch(h.swipe(160,190,260,190)); CHECK(h.ui.homePanel()==HomePanel::Nearby);
+    h.dispatch(h.swipe(160,190,260,190)); CHECK(h.ui.homePanel()==HomePanel::Dungeons);
     // Swipes may start on a chevron; release changes one panel, never opens it.
     h.dispatch(h.swipe(355,190,220,190)); CHECK(h.ui.homePanel()==HomePanel::Care);
     CHECK(!h.swipe(200,180,210,250)); CHECK(h.ui.homePanel()==HomePanel::Care);
@@ -245,9 +245,9 @@ void homeCarousel() {
     CHECK(!h.event(TouchKind::Down,355,190)); h.model.inputEnabled=false; h.sync();
     CHECK(!h.event(TouchKind::Up,355,190)); h.model.inputEnabled=true; h.sync();
     CHECK(h.ui.homePanel()==HomePanel::Care && h.ui.interactionIdle());
-    constexpr HomePanel panels[]{HomePanel::Care,HomePanel::Partners,HomePanel::Settings,HomePanel::Nearby};
-    constexpr Screen destinations[]{Screen::Care,Screen::Squad,Screen::Settings,Screen::Nearby};
-    for(unsigned i=0;i<4;++i) {
+    constexpr HomePanel panels[]{HomePanel::Care,HomePanel::Partners,HomePanel::Settings,HomePanel::Nearby,HomePanel::Dungeons};
+    constexpr Screen destinations[]{Screen::Care,Screen::Squad,Screen::Settings,Screen::Nearby,Screen::Expeditions};
+    for(unsigned i=0;i<5;++i) {
         h.selectHome(panels[i]); CHECK(h.ui.walkingEligible() && h.ui.interactionIdle());
         const auto request=h.ui.artRequest(h.state,h.model,1000);
         CHECK(request.formId==activeMember(h.state)->formId);
@@ -481,13 +481,13 @@ void horizontalTaps() {
     Harness edges;edges.choose();
     for(auto p:{display::Point{29,180},{84,180},{327,180},{382,180},{55,133},{55,246},{206,180}})
         CHECK(!edges.tap(p.x,p.y));
-    edges.dispatch(edges.tap(30,134));CHECK(edges.ui.homePanel()==HomePanel::Nearby);
+    edges.dispatch(edges.tap(30,134));CHECK(edges.ui.homePanel()==HomePanel::Dungeons);
     edges.dispatch(edges.tap(381,245));CHECK(edges.ui.homePanel()==HomePanel::Care);
     CHECK(!edges.event(TouchKind::Down,355,180));CHECK(!edges.event(TouchKind::Move,250,180,60));CHECK(!edges.event(TouchKind::Up,355,180,60));
     CHECK(edges.ui.homePanel()==HomePanel::Care);
     CHECK(!edges.event(TouchKind::Down,355,180));CHECK(!edges.event(TouchKind::Up,355,180,1501));
     CHECK(!edges.event(TouchKind::Down,355,180));CHECK(!edges.event(TouchKind::Cancel,355,180));CHECK(!edges.event(TouchKind::Up,355,180));
-    edges.dispatch(edges.swipe(55,180,355,180));CHECK(edges.ui.homePanel()==HomePanel::Nearby);
+    edges.dispatch(edges.swipe(55,180,355,180));CHECK(edges.ui.homePanel()==HomePanel::Dungeons);
     CHECK(!edges.event(TouchKind::Up,355,180));
     CHECK(!edges.event(TouchKind::Down,355,180));CHECK(!edges.event(TouchKind::Move,351,184,40));edges.dispatch(edges.event(TouchKind::Up,355,180,40));
     CHECK(edges.ui.homePanel()==HomePanel::Care);
@@ -1543,7 +1543,7 @@ void tapAudit() {
     audit("Egg",[](Harness&){});
     audit("Starter",[](Harness& h){ h.dispatch(h.tap(206,285)); CHECK(h.ui.screen()==Screen::Starter); });
     audit("Hatch review",[](Harness& h){ h.dispatch(h.tap(206,285)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::StarterReview); });
-    for(const auto panel:{HomePanel::Care,HomePanel::Partners,HomePanel::Settings,HomePanel::Nearby})
+    for(const auto panel:{HomePanel::Care,HomePanel::Partners,HomePanel::Settings,HomePanel::Nearby,HomePanel::Dungeons})
         audit("Home",[panel](Harness& h){ h.choose(); h.selectHome(panel); });
     audit("Care",[](Harness& h){ h.choose(); h.openHome(HomePanel::Care); CHECK(h.ui.screen()==Screen::Care); });
     audit("Squad (new partner)",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad); });
@@ -1559,6 +1559,11 @@ void tapAudit() {
     audit("Encounter settings",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(206,194)); CHECK(h.ui.screen()==Screen::EncounterSettings); });
     audit("Mode review",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,304)); CHECK(h.ui.screen()==Screen::ModeReview); });
     audit("Nearby",[](Harness& h){ h.choose(); h.openHome(HomePanel::Nearby); CHECK(h.ui.screen()==Screen::Nearby); });
+    audit("Dungeons",[](Harness& h){ h.choose(); h.openHome(HomePanel::Dungeons); CHECK(h.ui.screen()==Screen::Expeditions); });
+    audit("Dungeon lobby",[](Harness& h){
+        h.choose(); h.state.dungeonKeys=1; CHECK(isValid(h.state)); h.sync();
+        h.openHome(HomePanel::Dungeons); h.dispatch(h.tap(206,292)); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    });
     audit("Encounter",[](Harness& h){ h.choose(); CHECK(apply(h.state,Action::Walk,100)==Error::None); h.sync(); CHECK(h.ui.screen()==Screen::Encounter); });
     audit("Battle (tactical)",[](Harness& h){ h.choose(); h.encounter(); });
     audit("Capture",[](Harness& h){ h.choose(); h.encounter(); h.state.wildHp=h.state.wildMaxHp/2; h.sync(); h.dispatch(h.tap(312,305)); CHECK(h.ui.screen()==Screen::Capture); });
@@ -1600,6 +1605,83 @@ void mergedCaptureShowsCaughtForm() {
     }
     CHECK(found);
 }
+void tapLabel(Harness& h,const char* label) {
+    Controller::Button buttons[Controller::kMaxButtons];
+    const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+    const auto* button=findLabel(buttons,n,label);
+    CHECK(button && button->enabled);
+    h.dispatch(h.tap(button->x+button->w/2,button->y+button->h/2));
+}
+void benchEvolutionArt() {
+    Harness h; partnerRoster(h,2,0);
+    const auto* partner=activeMember(h.state);
+    auto* bench=const_cast<CreatureMember*>(findMember(h.state,2));
+    CHECK(partner && bench && partner->id!=bench->id);
+    const auto* partnerRoute=forms::outgoing(partner->formId,0);
+    const forms::EvolutionEdge* route=nullptr;
+    std::uint32_t formId=0;
+    for(std::uint32_t candidate=forms::kFirstProductionFormId; candidate<forms::kFirstProductionFormId+forms::kProductionFormCount; ++candidate) {
+        const auto* edge=forms::outgoing(candidate,0);
+        if(!edge || edge->to==partner->formId || edge->to==candidate) continue;
+        if(partnerRoute && (partnerRoute->to==edge->to || partnerRoute->to==candidate)) continue;
+        formId=candidate; route=edge; break;
+    }
+    CHECK(route && formId);
+    const auto* form=forms::find(formId); CHECK(form);
+    bench->formId=formId; bench->species=static_cast<Species>(form->lineage);
+    h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);
+    meetRoute(h.state,bench->id,route);
+    CHECK(isValid(h.state)); h.sync();
+    const auto partnerForm=partner->formId;
+    h.openPartners(); h.browseMember(bench->id);
+    h.dispatch(h.tap(kDetailTapX,kDetailTapY)); CHECK(h.ui.screen()==Screen::Stats);
+    tapLabel(h,"DIGIVOLVE"); CHECK(h.ui.screen()==Screen::Evolution);
+    CHECK(h.ui.artRequest(h.state,h.model,0).formId==route->to);
+    CHECK(h.ui.artRequest(h.state,h.model,0).formId!=partnerForm);
+    tapLabel(h,"SELECT"); CHECK(h.ui.screen()==Screen::EvolutionReview);
+    CHECK(h.ui.artRequest(h.state,h.model,0).formId==route->to);
+    CHECK(activeMember(h.state)->formId==partnerForm);
+    tapLabel(h,"DIGIVOLVE"); CHECK(h.ui.screen()==Screen::EvolutionResult);
+    CHECK(findMember(h.state,bench->id)->formId==route->to);
+    CHECK(activeMember(h.state)->formId==partnerForm);
+    CHECK(h.ui.artRequest(h.state,h.model,0).formId==route->to);
+    CHECK(h.ui.artRequest(h.state,h.model,0).animation==sprite::Animation::Celebrate);
+    std::array<std::uint16_t,kPixels+2> frame{}; frame.front()=frame.back()=0xBEEF;
+    CHECK(h.ui.render(h.state,h.model,frame.data()+1,kPixels,1000));
+    CHECK(frame.front()==0xBEEF && frame.back()==0xBEEF);
+}
+void expeditionMenu() {
+    Harness h; h.choose();
+    h.state.dungeonKeys=2; h.state.bossSigils=0; CHECK(isValid(h.state)); h.sync();
+    h.openHome(HomePanel::Dungeons); CHECK(h.ui.screen()==Screen::Expeditions);
+    const auto saved=h.state; const auto writes=h.gameWrites;
+    std::array<std::uint16_t,kPixels+2> frame{}; frame.front()=frame.back()=0xBEEF;
+    for(unsigned i=0;i<6;++i) {
+        CHECK(h.ui.render(h.state,h.model,frame.data()+1,kPixels,1000));
+        CHECK(frame.front()==0xBEEF && frame.back()==0xBEEF);
+        h.dispatch(h.swipe(260,180,160,180));
+    }
+    CHECK(h.ui.screen()==Screen::Expeditions);
+    tapLabel(h,"ENTER"); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    CHECK(h.ui.artRequest(h.state,h.model,0).formId==activeMember(h.state)->formId);
+    tapLabel(h,"START SOLO");
+    CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    CHECK(h.ui.artRequest(h.state,h.model,0).animation==sprite::Animation::Celebrate);
+    CHECK(h.state.dungeonKeys==2 && trade::sameState(saved,h.state) && h.gameWrites==writes);
+    h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Expeditions);
+    for(unsigned i=0;i<3;++i) h.dispatch(h.swipe(260,180,160,180));
+    tapLabel(h,"ENTER"); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    Controller::Button buttons[Controller::kMaxButtons];
+    const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+    const auto* solo=findLabel(buttons,n,"START SOLO");
+    CHECK(solo && !solo->enabled);
+    h.state.bossSigils=1; CHECK(isValid(h.state)); h.sync();
+    CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    tapLabel(h,"START SOLO");
+    CHECK(h.state.bossSigils==1 && h.ui.screen()==Screen::ExpeditionLobby);
+    h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Expeditions);
+    h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Home && h.ui.homePanel()==HomePanel::Dungeons);
+}
 int main(int argc,char** argv) {
     backTargets();
     tapAudit();
@@ -1619,6 +1701,8 @@ int main(int argc,char** argv) {
     autoCaptureChoice();
     battleArtworkSequence();
     homeCarousel();
+    benchEvolutionArt();
+    expeditionMenu();
     walkingCheckpoints();
     Harness h; const auto egg=h.state;
     // Exact cached Nearby consent fields add 56 host bytes to the prior512 B controller.
