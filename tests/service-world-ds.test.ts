@@ -123,9 +123,9 @@ test('capture/release retains journal history, stable IDs beyond eight and durab
 
 test('paged roster, journal-ID lookup and detail use bounded authoritative tables with private art behind auth', async t => {
   const f = await fixture(t), identity = await f.pair();
-  const first = await f.request('/api/roster?limit=16', undefined, ''); assert.equal(first.status, 200); assert.equal(first.body.total, 255); assert.equal(first.body.entries.length, 16);
+  const first = await f.request('/api/roster?limit=16', undefined, ''); assert.equal(first.status, 200); assert.equal(first.body.total, 444); assert.equal(first.body.entries.length, 16);
   assert.ok(Buffer.byteLength(JSON.stringify(first.body)) < 16384);
-  const seen = new Set<number>(); for (let offset = 0; offset < 255; offset += 16) { const page = (await f.request(`/api/roster?offset=${offset}&limit=16`, undefined, '')).body; for (const entry of page.entries) { assert.equal(seen.has(entry.formId), false); seen.add(entry.formId); } } assert.equal(seen.size, 255);
+  const seen = new Set<number>(); for (let offset = 0; offset < 444; offset += 16) { const page = (await f.request(`/api/roster?offset=${offset}&limit=16`, undefined, '')).body; for (const entry of page.entries) { assert.equal(seen.has(entry.formId), false); seen.add(entry.formId); } } assert.equal(seen.size, 444);
   const filtered = (await f.request('/api/roster?prefix=a&stage=Rookie&q=agu', undefined, '')).body; assert.ok(filtered.entries.length > 0); assert.ok(filtered.entries.every((e: any) => e.stage === 'Rookie' && e.sourceName.toLowerCase().startsWith('a')));
   const ids = (await f.request('/api/roster?ids=11,67,18&limit=3', undefined, '')).body; assert.deepEqual(ids.entries.map((e: any) => e.formId), [11, 67, 18]); assert.equal(ids.entries[0].entryKey, 'impmon');
   for (const path of ['/api/roster?limit=17', '/api/roster?limit=0', '/api/roster?offset=-1', '/api/roster?offset=0&offset=1', '/api/roster?prefix=AA', '/api/roster?stage=Rookie%00', '/api/roster?ids=1,1', '/api/roster?ids=1&q=Mote', `/api/roster?q=${'x'.repeat(65)}`]) assert.equal((await f.request(path, undefined, '')).status, 400, path);
@@ -150,12 +150,12 @@ test('test forms remain decode-only and are excluded from production roster endp
     assert.equal(runtime.forms.find((form: any) => form.formId === id).preserved, true, 'stable historical identity remains available to old save decoding');
   }
   const ids = new Set<number>();
-  for (let offset = 0; offset < 266; offset += 16) {
+  for (let offset = 0; offset < 455; offset += 16) {
     const page = JSON.parse(execFileSync(process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/digivice-core'), ['--catalog-page', String(offset), '16'], { encoding: 'utf8' }));
-    assert.equal(page.total, 266); assert.equal(page.rulesVersion, 18);
+    assert.equal(page.total, 455); assert.equal(page.rulesVersion, 18);
     for (const form of page.forms) { assert.ok(form.formId >= 11 && !ids.has(form.formId)); ids.add(form.formId); }
   }
-  assert.equal(ids.size, 266);
+  assert.equal(ids.size, 455);
 });
 
 test('old practice3 Auto receipts retain exact snapshots and trace, while current starts use practice7', async t => {

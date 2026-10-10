@@ -2831,6 +2831,916 @@
       "reviewStatus": "reviewed-for-prototype",
       "canonicalClaim": false,
       "rationale": "Curated red-dragon-to-knight route for this game; no exclusive canonical-path claim."
+    },
+    {
+      "fromFormId": 117,
+      "toFormId": 328,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "veemon -> vdramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 81,
+      "toFormId": 307,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "biyomon -> saberdramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 79,
+      "toFormId": 308,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "aruraumon -> woodmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 90,
+      "toFormId": 308,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "floramon -> woodmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 80,
+      "toFormId": 298,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "betamon -> gesomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 96,
+      "toFormId": 277,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "hagurumon -> mechanorimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 118,
+      "toFormId": 309,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "wormmon -> snimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 93,
+      "toFormId": 293,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "goburimon -> fugamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 112,
+      "toFormId": 301,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "snowagumon -> yukidarumon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 328,
+      "toFormId": 356,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "vdramon -> aerovdramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 332,
+      "toFormId": 365,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "firamon -> flaremon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 29,
+      "toFormId": 357,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "leomon -> grappleomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 321,
+      "toFormId": 353,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "monochromon -> vermilimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 308,
+      "toFormId": 347,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "woodmon -> jureimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 164,
+      "toFormId": 313,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "vegiemon -> redvegiemon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 318,
+      "toFormId": 358,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "clockmon -> knightmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 322,
+      "toFormId": 334,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "mojyamon -> mammon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 124,
+      "toFormId": 354,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "bakemon -> phantomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 326,
+      "toFormId": 194,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "devidramon -> megadramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 326,
+      "toFormId": 184,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "devidramon -> gigadramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 167,
+      "toFormId": 389,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "angewomon -> holydramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 167,
+      "toFormId": 375,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "angewomon -> orphanimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 191,
+      "toFormId": 394,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "machgaogamon -> miragegaogamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 205,
+      "toFormId": 393,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "rizegreymon -> shinegreymon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 365,
+      "toFormId": 399,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "flaremon -> apollomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 366,
+      "toFormId": 400,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "crescemon -> dianamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 354,
+      "toFormId": 386,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "phantomon -> pharaohmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 334,
+      "toFormId": 385,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "mammothmon -> skullmammon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 49,
+      "toFormId": 407,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "rosemon -> rosemonburst uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 33,
+      "toFormId": 368,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "angemon -> shakkoumon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 121,
+      "toFormId": 368,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "ankylomon -> shakkoumon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 278,
+      "toFormId": 201,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "xvmon -> paildramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 305,
+      "toFormId": 188,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "ice devimon -> ladydevimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 307,
+      "toFormId": 339,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "saberdramon -> karatenmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 357,
+      "toFormId": 31,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "grappleomon -> bancholeomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 319,
+      "toFormId": 166,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "tankmon -> andromon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 318,
+      "toFormId": 166,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "clockmon -> andromon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 324,
+      "toFormId": 184,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "revolmon -> gigadramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 300,
+      "toFormId": 450,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "shellmon -> scorpiomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 298,
+      "toFormId": 338,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "gesomon -> marine devimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 313,
+      "toFormId": 347,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "redvegiemon -> cherrymon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 310,
+      "toFormId": 44,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "flymon -> okuwamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 309,
+      "toFormId": 44,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "snimon -> okuwamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 325,
+      "toFormId": 337,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "centarumon -> pandamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 322,
+      "toFormId": 337,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "mojyamon -> pandamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 301,
+      "toFormId": 55,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "yukidarumon -> zudomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 345,
+      "toFormId": 358,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "shadramon -> knightmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 448,
+      "toFormId": 203,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "nefertimon -> piximon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 368,
+      "toFormId": 378,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "shakkoumon -> slashangemon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 14,
+      "toFormId": 406,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "beelzemon -> beelzebumonblast uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 212,
+      "toFormId": 392,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "wargrowlmon -> megidramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 34,
+      "toFormId": 382,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "magnaangemon -> goddramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 125,
+      "toFormId": 382,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "birdramon -> goddramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 357,
+      "toFormId": 264,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "grappleomon -> saberleomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 115,
+      "toFormId": 319,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "toyagumon -> tankmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 141,
+      "toFormId": 362,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "gwappamon -> shawujingmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 100,
+      "toFormId": 329,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "kotemon -> musyamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 108,
+      "toFormId": 330,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "pawnchessmonwhite -> knightchessmonwhite uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 107,
+      "toFormId": 331,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "pawnchessmonblack -> knightchessmonblack uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 330,
+      "toFormId": 363,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "knightchessmonwhite -> bishopchessmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 331,
+      "toFormId": 364,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "knightchessmonblack -> rookchessmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 363,
+      "toFormId": 397,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "bishopchessmon -> queenchessmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 364,
+      "toFormId": 398,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "rookchessmon -> kingchessmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 338,
+      "toFormId": 372,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "marine devimon -> pukumon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 297,
+      "toFormId": 336,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "octomon -> dagomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 299,
+      "toFormId": 335,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "coelamon -> anomalocarimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 296,
+      "toFormId": 335,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "ebidramon -> anomalocarimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 99,
+      "toFormId": 279,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "keramon -> chrysalimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 279,
+      "toFormId": 185,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "chrysalimon -> infermon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 146,
+      "toFormId": 279,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "kurisarimon -> chrysalimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 120,
+      "toFormId": 340,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "akatorimon -> sinduramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 306,
+      "toFormId": 55,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "rukamon -> zudomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 145,
+      "toFormId": 340,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "kokatorimon -> sinduramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 325,
+      "toFormId": 334,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "centarumon -> mammothmon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 302,
+      "toFormId": 181,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "geremon -> etemon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 352,
+      "toFormId": 263,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "bigmamemon -> prince mamemon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 324,
+      "toFormId": 166,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "revolmon -> andromon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 277,
+      "toFormId": 166,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "mechanorimon -> andromon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 320,
+      "toFormId": 333,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "golemon -> volcamon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 321,
+      "toFormId": 210,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "monochromon -> triceramon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 299,
+      "toFormId": 59,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "coelamon -> plesiomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 335,
+      "toFormId": 59,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "anomalocarimon -> plesiomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 298,
+      "toFormId": 336,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "gesomon -> dagomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 300,
+      "toFormId": 59,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "shellmon -> plesiomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 175,
+      "toFormId": 373,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "deramon -> gryphomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 213,
+      "toFormId": 396,
+      "minimumLevel": 15,
+      "minimumBond": 80,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "yatagaramon -> ravemon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 301,
+      "toFormId": 334,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "yukidarumon -> mammon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 303,
+      "toFormId": 55,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "hyogamon -> zudomon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 293,
+      "toFormId": 181,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "fugamon -> etemon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 327,
+      "toFormId": 169,
+      "minimumLevel": 10,
+      "minimumBond": 50,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "dokugamon -> arukenimon uses the existing stage level and bond gates."
+    },
+    {
+      "fromFormId": 104,
+      "toFormId": 292,
+      "minimumLevel": 5,
+      "minimumBond": 20,
+      "origin": "dawn-dusk-sheet-line",
+      "reviewStatus": "reviewed-for-prototype",
+      "canonicalClaim": false,
+      "rationale": "lopmon -> wendimon uses the existing stage level and bond gates."
     }
   ],
   "dispositions": [
@@ -2853,11 +3763,6 @@
       "formId": 10,
       "status": "terminal",
       "reason": "Pyrel is a final form in this prototype. Care, training and battles remain available."
-    },
-    {
-      "formId": 14,
-      "status": "terminal",
-      "reason": "Beelzemon is a final form in this prototype. Care, training and battles remain available."
     },
     {
       "formId": 17,
@@ -2905,11 +3810,6 @@
       "reason": "GranKuwagamon is a final form in this prototype. Care, training and battles remain available."
     },
     {
-      "formId": 49,
-      "status": "terminal",
-      "reason": "Rosemon is a final form in this prototype. Care, training and battles remain available."
-    },
-    {
       "formId": 52,
       "status": "terminal",
       "reason": "Puppetmon is a final form in this prototype. Care, training and battles remain available."
@@ -2955,39 +3855,9 @@
       "reason": "Kumamon has no evolution route in this prototype. It remains available through encounters."
     },
     {
-      "formId": 104,
-      "status": "independent",
-      "reason": "Turuiemon and Wendigomon are not in this roster. Lopmon has no direct shortcut to Antylamon."
-    },
-    {
-      "formId": 107,
-      "status": "independent",
-      "reason": "KnightChessmon Black is not in this roster. The black chess family has no further route here."
-    },
-    {
-      "formId": 108,
-      "status": "independent",
-      "reason": "KnightChessmon White is not in this roster. The white chess family has no further route here."
-    },
-    {
       "formId": 111,
       "status": "independent",
       "reason": "ShadowToyAgumon stays a distinct form. Changing it into ordinary ToyAgumon is not an evolution option."
-    },
-    {
-      "formId": 115,
-      "status": "independent",
-      "reason": "Tankmon is not in this roster, so ToyAgumon has no further evolution here."
-    },
-    {
-      "formId": 121,
-      "status": "terminal",
-      "reason": "Shakkoumon is not in this roster, and fusion is not an evolution option here. Ankylomon remains playable."
-    },
-    {
-      "formId": 124,
-      "status": "independent",
-      "reason": "Phantomon is not in this roster, so Bakemon has no further evolution here."
     },
     {
       "formId": 126,
@@ -3005,19 +3875,9 @@
       "reason": "Flarerizamon has no further evolution in this prototype. Care, training and battles remain available."
     },
     {
-      "formId": 141,
-      "status": "terminal",
-      "reason": "Shawujinmon is not in this roster, so Gwappamon has no further evolution here."
-    },
-    {
       "formId": 142,
       "status": "independent",
       "reason": "Assaultmon is not in this roster, so Hookmon has no further evolution here."
-    },
-    {
-      "formId": 145,
-      "status": "terminal",
-      "reason": "Kokatorimon has no further evolution in this prototype. Care, training and battles remain available."
     },
     {
       "formId": 151,
@@ -3050,19 +3910,9 @@
       "reason": "Wisemon is not in this roster, so Sorcerymon has no further evolution here."
     },
     {
-      "formId": 167,
-      "status": "terminal",
-      "reason": "Ophanimon and Magnadramon are not in this roster, so Angewomon has no further evolution here."
-    },
-    {
       "formId": 168,
       "status": "independent",
       "reason": "Antylamon has no further evolution here. Its Virus and Deva variants are not treated as interchangeable."
-    },
-    {
-      "formId": 169,
-      "status": "independent",
-      "reason": "Arukenimon has no further evolution in this prototype. Care, training and battles remain available."
     },
     {
       "formId": 172,
@@ -3090,11 +3940,6 @@
       "reason": "Garbagemon has no further evolution in this prototype. Care, training and battles remain available."
     },
     {
-      "formId": 184,
-      "status": "independent",
-      "reason": "Gigadramon has no further evolution here. Combining machine forms is not an implemented evolution option."
-    },
-    {
       "formId": 186,
       "status": "independent",
       "reason": "Kimeramon remains encounterable. Creating it by combining other Digimon is not an implemented evolution option."
@@ -3103,11 +3948,6 @@
       "formId": 190,
       "status": "independent",
       "reason": "Lucemon and Lucemon Satan Mode are not in this roster. Chaos Mode has no further evolution here."
-    },
-    {
-      "formId": 191,
-      "status": "terminal",
-      "reason": "MirageGaogamon is not in this roster, so MachGaogamon has no further evolution here."
     },
     {
       "formId": 198,
@@ -3120,11 +3960,6 @@
       "reason": "Mummymon has no further evolution in this prototype. Care, training and battles remain available."
     },
     {
-      "formId": 205,
-      "status": "terminal",
-      "reason": "ShineGreymon is not in this roster, so RizeGreymon has no further evolution here."
-    },
-    {
       "formId": 206,
       "status": "terminal",
       "reason": "ShogunGekomon ends the Gekomon route in this prototype. Care, training and battles remain available."
@@ -3133,11 +3968,6 @@
       "formId": 209,
       "status": "terminal",
       "reason": "SuperStarmon ends the Starmon route in this prototype. Care, training and battles remain available."
-    },
-    {
-      "formId": 213,
-      "status": "terminal",
-      "reason": "Yatagaramon has no further evolution here. Its different Crowmon variants are not treated as interchangeable."
     },
     {
       "formId": 214,
@@ -3388,11 +4218,6 @@
       "formId": 263,
       "status": "terminal",
       "reason": "PrinceMamemon is a final form in this prototype. Care, training and battles remain available."
-    },
-    {
-      "formId": 264,
-      "status": "independent",
-      "reason": "SaberLeomon is a final form in this prototype. Care, training and battles remain available."
     },
     {
       "formId": 265,

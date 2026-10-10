@@ -119,7 +119,7 @@ void exchangeProgression(){
         }
         ++formsChecked;
     }
-    CHECK(formsChecked==266);
+    CHECK(formsChecked==forms::kProductionFormCount);
     // Trading the founder is safe: incoming never inherits local founder ID1.
     for(unsigned count:{2u,8u,60u})for(unsigned active:{1u,2u}){
         auto a=fixture(1,count),b=fixture(2,count);step(a,Action::Select,active);const auto x=transcript(a,b,1,2);

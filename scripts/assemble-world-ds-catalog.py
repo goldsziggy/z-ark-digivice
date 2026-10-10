@@ -56,7 +56,7 @@ def assemble():
         record['sheetVariantReviewRequired'] = False
         record['localSheetReview'] = review
     if set(source) != set(authored) or set(source) != set(assignments) or set(source) != set(official):
-        raise ValueError('All four inputs must represent exactly the same 255 source identities')
+        raise ValueError('All four inputs must represent exactly the same source identities')
     edge_file = ROOT / 'data/world-ds-evolutions.json'
     routes = read('data/world-ds-evolutions.json') if edge_file.exists() else {'edges': []}
     edges = routes['edges']
@@ -115,7 +115,7 @@ def assemble():
         'formatVersion': 1,
         'catalogId': 'digimon-world-ds',
         'catalogRevision': 6,
-        'scope': '255 individually named source sheets, with distinct variants retained; not a deduplicated canonical species count.',
+        'scope': f'{len(entries)} individually named source sheets, with distinct variants retained; not a deduplicated canonical species count.',
         'sourceUrl': inventory['sourceUrl'],
         'sourceEntryCount': len(entries),
         'nativeFormCount': max(by_form),

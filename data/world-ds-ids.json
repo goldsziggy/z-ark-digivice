@@ -2297,6 +2297,1707 @@
       "preservedFormId": null,
       "lineageId": 1276,
       "bindingReason": "New individually addressable source-sheet form; no canonical alias merge."
+    },
+    {
+      "entryKey": "mechanorimon",
+      "displayName": "Mechanorimon",
+      "sourceStage": "Champion",
+      "formId": 277,
+      "preservedFormId": null,
+      "lineageId": 1277,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "xv-mon",
+      "displayName": "XV-mon",
+      "sourceStage": "Champion",
+      "formId": 278,
+      "preservedFormId": null,
+      "lineageId": 1278,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "chrysalimon",
+      "displayName": "Chrysalimon",
+      "sourceStage": "Champion",
+      "formId": 279,
+      "preservedFormId": null,
+      "lineageId": 1279,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shisamon",
+      "displayName": "Shisamon",
+      "sourceStage": "Champion",
+      "formId": 280,
+      "preservedFormId": null,
+      "lineageId": 1280,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "evilmon",
+      "displayName": "Evilmon",
+      "sourceStage": "Champion",
+      "formId": 281,
+      "preservedFormId": null,
+      "lineageId": 1281,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "gokimon",
+      "displayName": "Gokimon",
+      "sourceStage": "Champion",
+      "formId": 282,
+      "preservedFormId": null,
+      "lineageId": 1282,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "raptordramon",
+      "displayName": "Raptordramon",
+      "sourceStage": "Champion",
+      "formId": 283,
+      "preservedFormId": null,
+      "lineageId": 1283,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "hanumon",
+      "displayName": "Hanumon",
+      "sourceStage": "Champion",
+      "formId": 284,
+      "preservedFormId": null,
+      "lineageId": 1284,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "bombernanimon",
+      "displayName": "BomberNanimon",
+      "sourceStage": "Champion",
+      "formId": 285,
+      "preservedFormId": null,
+      "lineageId": 1285,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "darktyranomon",
+      "displayName": "DarkTyranomon",
+      "sourceStage": "Champion",
+      "formId": 286,
+      "preservedFormId": null,
+      "lineageId": 1286,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "darklizamon",
+      "displayName": "DarkLizamon",
+      "sourceStage": "Champion",
+      "formId": 287,
+      "preservedFormId": null,
+      "lineageId": 1287,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "flarelizamon",
+      "displayName": "FlareLizamon",
+      "sourceStage": "Champion",
+      "formId": 288,
+      "preservedFormId": null,
+      "lineageId": 1288,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "drimogemon",
+      "displayName": "Drimogemon",
+      "sourceStage": "Champion",
+      "formId": 289,
+      "preservedFormId": null,
+      "lineageId": 1289,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "nisedrimogemon",
+      "displayName": "NiseDrimogemon",
+      "sourceStage": "Champion",
+      "formId": 290,
+      "preservedFormId": null,
+      "lineageId": 1290,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "morishellmon",
+      "displayName": "MoriShellmon",
+      "sourceStage": "Champion",
+      "formId": 291,
+      "preservedFormId": null,
+      "lineageId": 1291,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "wendimon",
+      "displayName": "Wendimon",
+      "sourceStage": "Champion",
+      "formId": 292,
+      "preservedFormId": null,
+      "lineageId": 1292,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "fugamon",
+      "displayName": "Fugamon",
+      "sourceStage": "Champion",
+      "formId": 293,
+      "preservedFormId": null,
+      "lineageId": 1293,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "tsuchidarumon",
+      "displayName": "Tsuchidarumon",
+      "sourceStage": "Champion",
+      "formId": 294,
+      "preservedFormId": null,
+      "lineageId": 1294,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "tortomon",
+      "displayName": "Tortomon",
+      "sourceStage": "Champion",
+      "formId": 295,
+      "preservedFormId": null,
+      "lineageId": 1295,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ebidramon",
+      "displayName": "Ebidramon",
+      "sourceStage": "Champion",
+      "formId": 296,
+      "preservedFormId": null,
+      "lineageId": 1296,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "octomon",
+      "displayName": "Octomon",
+      "sourceStage": "Champion",
+      "formId": 297,
+      "preservedFormId": null,
+      "lineageId": 1297,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "gesomon",
+      "displayName": "Gesomon",
+      "sourceStage": "Champion",
+      "formId": 298,
+      "preservedFormId": null,
+      "lineageId": 1298,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "coelamon",
+      "displayName": "Coelamon",
+      "sourceStage": "Champion",
+      "formId": 299,
+      "preservedFormId": null,
+      "lineageId": 1299,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shellmon",
+      "displayName": "Shellmon",
+      "sourceStage": "Champion",
+      "formId": 300,
+      "preservedFormId": null,
+      "lineageId": 1300,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "yukidarumon",
+      "displayName": "Yukidarumon",
+      "sourceStage": "Champion",
+      "formId": 301,
+      "preservedFormId": null,
+      "lineageId": 1301,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "geremon",
+      "displayName": "Geremon",
+      "sourceStage": "Champion",
+      "formId": 302,
+      "preservedFormId": null,
+      "lineageId": 1302,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "hyogamon",
+      "displayName": "Hyogamon",
+      "sourceStage": "Champion",
+      "formId": 303,
+      "preservedFormId": null,
+      "lineageId": 1303,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "karatsukinumemon",
+      "displayName": "KaratsukiNumemon",
+      "sourceStage": "Champion",
+      "formId": 304,
+      "preservedFormId": null,
+      "lineageId": 1304,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "icedevimon",
+      "displayName": "IceDevimon",
+      "sourceStage": "Champion",
+      "formId": 305,
+      "preservedFormId": null,
+      "lineageId": 1305,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "rukamon",
+      "displayName": "Rukamon",
+      "sourceStage": "Champion",
+      "formId": 306,
+      "preservedFormId": null,
+      "lineageId": 1306,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "saberdramon",
+      "displayName": "Saberdramon",
+      "sourceStage": "Champion",
+      "formId": 307,
+      "preservedFormId": null,
+      "lineageId": 1307,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "woodmon",
+      "displayName": "Woodmon",
+      "sourceStage": "Champion",
+      "formId": 308,
+      "preservedFormId": null,
+      "lineageId": 1308,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "snimon",
+      "displayName": "Snimon",
+      "sourceStage": "Champion",
+      "formId": 309,
+      "preservedFormId": null,
+      "lineageId": 1309,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "flymon",
+      "displayName": "Flymon",
+      "sourceStage": "Champion",
+      "formId": 310,
+      "preservedFormId": null,
+      "lineageId": 1310,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "yanmamon",
+      "displayName": "Yanmamon",
+      "sourceStage": "Champion",
+      "formId": 311,
+      "preservedFormId": null,
+      "lineageId": 1311,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "sandyanmamon",
+      "displayName": "SandYanmamon",
+      "sourceStage": "Champion",
+      "formId": 312,
+      "preservedFormId": null,
+      "lineageId": 1312,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "redvegiemon",
+      "displayName": "RedVegiemon",
+      "sourceStage": "Champion",
+      "formId": 313,
+      "preservedFormId": null,
+      "lineageId": 1313,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "zassoumon",
+      "displayName": "Zassoumon",
+      "sourceStage": "Champion",
+      "formId": 314,
+      "preservedFormId": null,
+      "lineageId": 1314,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "igamon",
+      "displayName": "Igamon",
+      "sourceStage": "Champion",
+      "formId": 315,
+      "preservedFormId": null,
+      "lineageId": 1315,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "kougamon",
+      "displayName": "Kougamon",
+      "sourceStage": "Champion",
+      "formId": 316,
+      "preservedFormId": null,
+      "lineageId": 1316,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "omekamon",
+      "displayName": "Omekamon",
+      "sourceStage": "Champion",
+      "formId": 317,
+      "preservedFormId": null,
+      "lineageId": 1317,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "clockmon",
+      "displayName": "Clockmon",
+      "sourceStage": "Champion",
+      "formId": 318,
+      "preservedFormId": null,
+      "lineageId": 1318,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "tankmon",
+      "displayName": "Tankmon",
+      "sourceStage": "Champion",
+      "formId": 319,
+      "preservedFormId": null,
+      "lineageId": 1319,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "golemon",
+      "displayName": "Golemon",
+      "sourceStage": "Champion",
+      "formId": 320,
+      "preservedFormId": null,
+      "lineageId": 1320,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "monochromon",
+      "displayName": "Monochromon",
+      "sourceStage": "Champion",
+      "formId": 321,
+      "preservedFormId": null,
+      "lineageId": 1321,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "mojyamon",
+      "displayName": "Mojyamon",
+      "sourceStage": "Champion",
+      "formId": 322,
+      "preservedFormId": null,
+      "lineageId": 1322,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "j-mojyamon",
+      "displayName": "J-Mojyamon",
+      "sourceStage": "Champion",
+      "formId": 323,
+      "preservedFormId": null,
+      "lineageId": 1323,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "revolmon",
+      "displayName": "Revolmon",
+      "sourceStage": "Champion",
+      "formId": 324,
+      "preservedFormId": null,
+      "lineageId": 1324,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "kentarumon",
+      "displayName": "Kentarumon",
+      "sourceStage": "Champion",
+      "formId": 325,
+      "preservedFormId": null,
+      "lineageId": 1325,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "devidramon",
+      "displayName": "Devidramon",
+      "sourceStage": "Champion",
+      "formId": 326,
+      "preservedFormId": null,
+      "lineageId": 1326,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "dokugamon",
+      "displayName": "Dokugamon",
+      "sourceStage": "Champion",
+      "formId": 327,
+      "preservedFormId": null,
+      "lineageId": 1327,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "v-dramon",
+      "displayName": "V-dramon",
+      "sourceStage": "Champion",
+      "formId": 328,
+      "preservedFormId": null,
+      "lineageId": 1328,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "musyamon",
+      "displayName": "Musyamon",
+      "sourceStage": "Champion",
+      "formId": 329,
+      "preservedFormId": null,
+      "lineageId": 1329,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "knightchessmonwhite",
+      "displayName": "KnightChessmonWhite",
+      "sourceStage": "Champion",
+      "formId": 330,
+      "preservedFormId": null,
+      "lineageId": 1330,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "knightchessmonblack",
+      "displayName": "KnightChessmonBlack",
+      "sourceStage": "Champion",
+      "formId": 331,
+      "preservedFormId": null,
+      "lineageId": 1331,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "firamon",
+      "displayName": "Firamon",
+      "sourceStage": "Champion",
+      "formId": 332,
+      "preservedFormId": null,
+      "lineageId": 1332,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "volcamon",
+      "displayName": "Volcamon",
+      "sourceStage": "Ultimate",
+      "formId": 333,
+      "preservedFormId": null,
+      "lineageId": 1333,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "mammon",
+      "displayName": "Mammon",
+      "sourceStage": "Ultimate",
+      "formId": 334,
+      "preservedFormId": null,
+      "lineageId": 1334,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "anomalocarimon",
+      "displayName": "Anomalocarimon",
+      "sourceStage": "Ultimate",
+      "formId": 335,
+      "preservedFormId": null,
+      "lineageId": 1335,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "dagomon",
+      "displayName": "Dagomon",
+      "sourceStage": "Ultimate",
+      "formId": 336,
+      "preservedFormId": null,
+      "lineageId": 1336,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "pandamon",
+      "displayName": "Pandamon",
+      "sourceStage": "Ultimate",
+      "formId": 337,
+      "preservedFormId": null,
+      "lineageId": 1337,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "marinedevimon",
+      "displayName": "MarineDevimon",
+      "sourceStage": "Ultimate",
+      "formId": 338,
+      "preservedFormId": null,
+      "lineageId": 1338,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "karatenmon",
+      "displayName": "Karatenmon",
+      "sourceStage": "Ultimate",
+      "formId": 339,
+      "preservedFormId": null,
+      "lineageId": 1339,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "sinduramon",
+      "displayName": "Sinduramon",
+      "sourceStage": "Ultimate",
+      "formId": 340,
+      "preservedFormId": null,
+      "lineageId": 1340,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "pipismon",
+      "displayName": "Pipismon",
+      "sourceStage": "Armor",
+      "formId": 341,
+      "preservedFormId": null,
+      "lineageId": 1341,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "tucanmon",
+      "displayName": "Tucanmon",
+      "sourceStage": "Ultimate",
+      "formId": 342,
+      "preservedFormId": null,
+      "lineageId": 1342,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "owlmon",
+      "displayName": "Owlmon",
+      "sourceStage": "Ultimate",
+      "formId": 343,
+      "preservedFormId": null,
+      "lineageId": 1343,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "qilinmon",
+      "displayName": "Qilinmon",
+      "sourceStage": "Ultimate",
+      "formId": 344,
+      "preservedFormId": null,
+      "lineageId": 1344,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shadramon",
+      "displayName": "Shadramon",
+      "sourceStage": "Armor",
+      "formId": 345,
+      "preservedFormId": null,
+      "lineageId": 1345,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "kabukimon",
+      "displayName": "Kabukimon",
+      "sourceStage": "Armor",
+      "formId": 346,
+      "preservedFormId": null,
+      "lineageId": 1346,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "jureimon",
+      "displayName": "Jureimon",
+      "sourceStage": "Ultimate",
+      "formId": 347,
+      "preservedFormId": null,
+      "lineageId": 1347,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "mametyranomon",
+      "displayName": "MameTyranomon",
+      "sourceStage": "Ultimate",
+      "formId": 348,
+      "preservedFormId": null,
+      "lineageId": 1348,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "giromon",
+      "displayName": "Giromon",
+      "sourceStage": "Ultimate",
+      "formId": 349,
+      "preservedFormId": null,
+      "lineageId": 1349,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "vademon",
+      "displayName": "Vademon",
+      "sourceStage": "Ultimate",
+      "formId": 350,
+      "preservedFormId": null,
+      "lineageId": 1350,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "metaltyranomon",
+      "displayName": "MetalTyranomon",
+      "sourceStage": "Ultimate",
+      "formId": 351,
+      "preservedFormId": null,
+      "lineageId": 1351,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "bigmamemon",
+      "displayName": "BigMamemon",
+      "sourceStage": "Ultimate",
+      "formId": 352,
+      "preservedFormId": null,
+      "lineageId": 1352,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "vermilimon",
+      "displayName": "Vermilimon",
+      "sourceStage": "Ultimate",
+      "formId": 353,
+      "preservedFormId": null,
+      "lineageId": 1353,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "phantomon",
+      "displayName": "Phantomon",
+      "sourceStage": "Ultimate",
+      "formId": 354,
+      "preservedFormId": null,
+      "lineageId": 1354,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "vajiramon",
+      "displayName": "Vajiramon",
+      "sourceStage": "Ultimate",
+      "formId": 355,
+      "preservedFormId": null,
+      "lineageId": 1355,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "aerov-dramon",
+      "displayName": "AeroV-Dramon",
+      "sourceStage": "Ultimate",
+      "formId": 356,
+      "preservedFormId": null,
+      "lineageId": 1356,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "grappleomon",
+      "displayName": "GrappLeomon",
+      "sourceStage": "Ultimate",
+      "formId": 357,
+      "preservedFormId": null,
+      "lineageId": 1357,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "knightmon",
+      "displayName": "Knightmon",
+      "sourceStage": "Ultimate",
+      "formId": 358,
+      "preservedFormId": null,
+      "lineageId": 1358,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "brachimon",
+      "displayName": "Brachimon",
+      "sourceStage": "Ultimate",
+      "formId": 359,
+      "preservedFormId": null,
+      "lineageId": 1359,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "allomon",
+      "displayName": "Allomon",
+      "sourceStage": "Ultimate",
+      "formId": 360,
+      "preservedFormId": null,
+      "lineageId": 1360,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "lynxmon",
+      "displayName": "Lynxmon",
+      "sourceStage": "Ultimate",
+      "formId": 361,
+      "preservedFormId": null,
+      "lineageId": 1361,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shawujingmon",
+      "displayName": "Shawujingmon",
+      "sourceStage": "Ultimate",
+      "formId": 362,
+      "preservedFormId": null,
+      "lineageId": 1362,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "bishopchessmon",
+      "displayName": "BishopChessmon",
+      "sourceStage": "Ultimate",
+      "formId": 363,
+      "preservedFormId": null,
+      "lineageId": 1363,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "rookchessmon",
+      "displayName": "RookChessmon",
+      "sourceStage": "Ultimate",
+      "formId": 364,
+      "preservedFormId": null,
+      "lineageId": 1364,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "flaremon",
+      "displayName": "Flaremon",
+      "sourceStage": "Ultimate",
+      "formId": 365,
+      "preservedFormId": null,
+      "lineageId": 1365,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "crescemon",
+      "displayName": "Crescemon",
+      "sourceStage": "Ultimate",
+      "formId": 366,
+      "preservedFormId": null,
+      "lineageId": 1366,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "argomonperfect",
+      "displayName": "ArgomonPerfect",
+      "sourceStage": "Ultimate",
+      "formId": 367,
+      "preservedFormId": null,
+      "lineageId": 1367,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shakkoumon",
+      "displayName": "Shakkoumon",
+      "sourceStage": "Ultimate",
+      "formId": 368,
+      "preservedFormId": null,
+      "lineageId": 1368,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "lampmon",
+      "displayName": "Lampmon",
+      "sourceStage": "Mega",
+      "formId": 369,
+      "preservedFormId": null,
+      "lineageId": 1369,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "deathmon",
+      "displayName": "Deathmon",
+      "sourceStage": "Mega",
+      "formId": 370,
+      "preservedFormId": null,
+      "lineageId": 1370,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "devitamamon",
+      "displayName": "Devitamamon",
+      "sourceStage": "Mega",
+      "formId": 371,
+      "preservedFormId": null,
+      "lineageId": 1371,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "pukumon",
+      "displayName": "Pukumon",
+      "sourceStage": "Mega",
+      "formId": 372,
+      "preservedFormId": null,
+      "lineageId": 1372,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "gryphomon",
+      "displayName": "Gryphomon",
+      "sourceStage": "Mega",
+      "formId": 373,
+      "preservedFormId": null,
+      "lineageId": 1373,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "boltmon",
+      "displayName": "Boltmon",
+      "sourceStage": "Mega",
+      "formId": 374,
+      "preservedFormId": null,
+      "lineageId": 1374,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "orphanimon",
+      "displayName": "Orphanimon",
+      "sourceStage": "Mega",
+      "formId": 375,
+      "preservedFormId": null,
+      "lineageId": 1375,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "zanbamon",
+      "displayName": "Zanbamon",
+      "sourceStage": "Mega",
+      "formId": 376,
+      "preservedFormId": null,
+      "lineageId": 1376,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "anubismon",
+      "displayName": "Anubismon",
+      "sourceStage": "Mega",
+      "formId": 377,
+      "preservedFormId": null,
+      "lineageId": 1377,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "slashangemon",
+      "displayName": "SlashAngemon",
+      "sourceStage": "Mega",
+      "formId": 378,
+      "preservedFormId": null,
+      "lineageId": 1378,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "apocalymon",
+      "displayName": "Apocalymon",
+      "sourceStage": "Mega",
+      "formId": 379,
+      "preservedFormId": null,
+      "lineageId": 1379,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ebemon",
+      "displayName": "Ebemon",
+      "sourceStage": "Mega",
+      "formId": 380,
+      "preservedFormId": null,
+      "lineageId": 1380,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "galfmon",
+      "displayName": "Galfmon",
+      "sourceStage": "Mega",
+      "formId": 381,
+      "preservedFormId": null,
+      "lineageId": 1381,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "goddramon",
+      "displayName": "Goddramon",
+      "sourceStage": "Mega",
+      "formId": 382,
+      "preservedFormId": null,
+      "lineageId": 1382,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "zeedmilleniumon",
+      "displayName": "ZeedMilleniumon",
+      "sourceStage": "Mega",
+      "formId": 383,
+      "preservedFormId": null,
+      "lineageId": 1383,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "deathmonblack",
+      "displayName": "DeathmonBlack",
+      "sourceStage": "Mega",
+      "formId": 384,
+      "preservedFormId": null,
+      "lineageId": 1384,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "skullmammon",
+      "displayName": "SkullMammon",
+      "sourceStage": "Mega",
+      "formId": 385,
+      "preservedFormId": null,
+      "lineageId": 1385,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "pharaohmon",
+      "displayName": "Pharaohmon",
+      "sourceStage": "Mega",
+      "formId": 386,
+      "preservedFormId": null,
+      "lineageId": 1386,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "susanoomon",
+      "displayName": "Susanoomon",
+      "sourceStage": "Mega",
+      "formId": 387,
+      "preservedFormId": null,
+      "lineageId": 1387,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "alphamon",
+      "displayName": "Alphamon",
+      "sourceStage": "Mega",
+      "formId": 388,
+      "preservedFormId": null,
+      "lineageId": 1388,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "holydramon",
+      "displayName": "Holydramon",
+      "sourceStage": "Mega",
+      "formId": 389,
+      "preservedFormId": null,
+      "lineageId": 1389,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "milleniumon",
+      "displayName": "Milleniumon",
+      "sourceStage": "Mega",
+      "formId": 390,
+      "preservedFormId": null,
+      "lineageId": 1390,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "moonmilleniumon",
+      "displayName": "MoonMilleniumon",
+      "sourceStage": "Mega",
+      "formId": 391,
+      "preservedFormId": null,
+      "lineageId": 1391,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "megidramon",
+      "displayName": "Megidramon",
+      "sourceStage": "Mega",
+      "formId": 392,
+      "preservedFormId": null,
+      "lineageId": 1392,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shinegreymon",
+      "displayName": "ShineGreymon",
+      "sourceStage": "Mega",
+      "formId": 393,
+      "preservedFormId": null,
+      "lineageId": 1393,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "miragegaogamon",
+      "displayName": "MirageGaogamon",
+      "sourceStage": "Mega",
+      "formId": 394,
+      "preservedFormId": null,
+      "lineageId": 1394,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "jumbogamemon",
+      "displayName": "JumboGamemon",
+      "sourceStage": "Mega",
+      "formId": 395,
+      "preservedFormId": null,
+      "lineageId": 1395,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ravemon",
+      "displayName": "Ravemon",
+      "sourceStage": "Mega",
+      "formId": 396,
+      "preservedFormId": null,
+      "lineageId": 1396,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "queenchessmon",
+      "displayName": "QueenChessmon",
+      "sourceStage": "Mega",
+      "formId": 397,
+      "preservedFormId": null,
+      "lineageId": 1397,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "kingchessmon",
+      "displayName": "KingChessmon",
+      "sourceStage": "Mega",
+      "formId": 398,
+      "preservedFormId": null,
+      "lineageId": 1398,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "apollomon",
+      "displayName": "Apollomon",
+      "sourceStage": "Mega",
+      "formId": 399,
+      "preservedFormId": null,
+      "lineageId": 1399,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "dianamon",
+      "displayName": "Dianamon",
+      "sourceStage": "Mega",
+      "formId": 400,
+      "preservedFormId": null,
+      "lineageId": 1400,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shinegreymonburst",
+      "displayName": "ShineGreymonBurst",
+      "sourceStage": "Mega",
+      "formId": 401,
+      "preservedFormId": null,
+      "lineageId": 1401,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shinegreymonruin",
+      "displayName": "ShineGreymonRuin",
+      "sourceStage": "Mega",
+      "formId": 402,
+      "preservedFormId": null,
+      "lineageId": 1402,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "miragegaogamonburst",
+      "displayName": "MirageGaogamonBurst",
+      "sourceStage": "Mega",
+      "formId": 403,
+      "preservedFormId": null,
+      "lineageId": 1403,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ravemonburst",
+      "displayName": "RavemonBurst",
+      "sourceStage": "Mega",
+      "formId": 404,
+      "preservedFormId": null,
+      "lineageId": 1404,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "lotusmon",
+      "displayName": "Lotusmon",
+      "sourceStage": "Mega",
+      "formId": 405,
+      "preservedFormId": null,
+      "lineageId": 1405,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "beelzebumonblast",
+      "displayName": "BeelzebumonBlast",
+      "sourceStage": "Mega",
+      "formId": 406,
+      "preservedFormId": null,
+      "lineageId": 1406,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "rosemonburst",
+      "displayName": "RosemonBurst",
+      "sourceStage": "Mega",
+      "formId": 407,
+      "preservedFormId": null,
+      "lineageId": 1407,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "argomonultimate",
+      "displayName": "ArgomonUltimate",
+      "sourceStage": "Mega",
+      "formId": 408,
+      "preservedFormId": null,
+      "lineageId": 1408,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "minervamon",
+      "displayName": "Minervamon",
+      "sourceStage": "Mega",
+      "formId": 409,
+      "preservedFormId": null,
+      "lineageId": 1409,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "duftmon",
+      "displayName": "Duftmon",
+      "sourceStage": "Mega",
+      "formId": 410,
+      "preservedFormId": null,
+      "lineageId": 1410,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "chaosmon",
+      "displayName": "Chaosmon",
+      "sourceStage": "Mega",
+      "formId": 411,
+      "preservedFormId": null,
+      "lineageId": 1411,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "mercurimon",
+      "displayName": "Mercurimon",
+      "sourceStage": "Mega",
+      "formId": 412,
+      "preservedFormId": null,
+      "lineageId": 1412,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "aegisdramon",
+      "displayName": "Aegisdramon",
+      "sourceStage": "Mega",
+      "formId": 413,
+      "preservedFormId": null,
+      "lineageId": 1413,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "agnimon",
+      "displayName": "Agnimon",
+      "sourceStage": "Champion",
+      "formId": 414,
+      "preservedFormId": null,
+      "lineageId": 1414,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "alforcev-dramon",
+      "displayName": "AlforceV-dramon",
+      "sourceStage": "Mega",
+      "formId": 415,
+      "preservedFormId": null,
+      "lineageId": 1415,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientbeetmon",
+      "displayName": "AncientBeetmon",
+      "sourceStage": "Mega",
+      "formId": 416,
+      "preservedFormId": null,
+      "lineageId": 1416,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientgarurumon",
+      "displayName": "AncientGarurumon",
+      "sourceStage": "Mega",
+      "formId": 417,
+      "preservedFormId": null,
+      "lineageId": 1417,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientgreymon",
+      "displayName": "AncientGreymon",
+      "sourceStage": "Mega",
+      "formId": 418,
+      "preservedFormId": null,
+      "lineageId": 1418,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientirismon",
+      "displayName": "AncientIrismon",
+      "sourceStage": "Mega",
+      "formId": 419,
+      "preservedFormId": null,
+      "lineageId": 1419,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientmegatheriummon",
+      "displayName": "AncientMegatheriummon",
+      "sourceStage": "Mega",
+      "formId": 420,
+      "preservedFormId": null,
+      "lineageId": 1420,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientmermaimon",
+      "displayName": "AncientMermaimon",
+      "sourceStage": "Mega",
+      "formId": 421,
+      "preservedFormId": null,
+      "lineageId": 1421,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientsphinxmon",
+      "displayName": "AncientSphinxmon",
+      "sourceStage": "Mega",
+      "formId": 422,
+      "preservedFormId": null,
+      "lineageId": 1422,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancienttroiamon",
+      "displayName": "AncientTroiamon",
+      "sourceStage": "Mega",
+      "formId": 423,
+      "preservedFormId": null,
+      "lineageId": 1423,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientvolcamon",
+      "displayName": "AncientVolcamon",
+      "sourceStage": "Mega",
+      "formId": 424,
+      "preservedFormId": null,
+      "lineageId": 1424,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ancientwisemon",
+      "displayName": "AncientWisemon",
+      "sourceStage": "Mega",
+      "formId": 425,
+      "preservedFormId": null,
+      "lineageId": 1425,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "armamon",
+      "displayName": "Armamon",
+      "sourceStage": "Ultimate",
+      "formId": 426,
+      "preservedFormId": null,
+      "lineageId": 1426,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "ballistamon",
+      "displayName": "Ballistamon",
+      "sourceStage": "Champion",
+      "formId": 427,
+      "preservedFormId": null,
+      "lineageId": 1427,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "bastemon",
+      "displayName": "Bastemon",
+      "sourceStage": "Ultimate",
+      "formId": 428,
+      "preservedFormId": null,
+      "lineageId": 1428,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "bluemeramon",
+      "displayName": "BlueMeramon",
+      "sourceStage": "Champion",
+      "formId": 429,
+      "preservedFormId": null,
+      "lineageId": 1429,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "buraimon",
+      "displayName": "Buraimon",
+      "sourceStage": "Champion",
+      "formId": 430,
+      "preservedFormId": null,
+      "lineageId": 1430,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "butenmon",
+      "displayName": "Butenmon",
+      "sourceStage": "Mega",
+      "formId": 431,
+      "preservedFormId": null,
+      "lineageId": 1431,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "cerberumon",
+      "displayName": "Cerberumon",
+      "sourceStage": "Ultimate",
+      "formId": 432,
+      "preservedFormId": null,
+      "lineageId": 1432,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "chaosdramon",
+      "displayName": "Chaosdramon",
+      "sourceStage": "Mega",
+      "formId": 433,
+      "preservedFormId": null,
+      "lineageId": 1433,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "craniummon",
+      "displayName": "Craniummon",
+      "sourceStage": "Mega",
+      "formId": 434,
+      "preservedFormId": null,
+      "lineageId": 1434,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "daipenmon",
+      "displayName": "Daipenmon",
+      "sourceStage": "Mega",
+      "formId": 435,
+      "preservedFormId": null,
+      "lineageId": 1435,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "darkknightmon",
+      "displayName": "DarkKnightmon",
+      "sourceStage": "Mega",
+      "formId": 436,
+      "preservedFormId": null,
+      "lineageId": 1436,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "deadlyaxemon",
+      "displayName": "DeadlyAxemon",
+      "sourceStage": "Champion",
+      "formId": 437,
+      "preservedFormId": null,
+      "lineageId": 1437,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "dorulucannonshoutmon",
+      "displayName": "DoruluCannonShoutmon",
+      "sourceStage": "Mega",
+      "formId": 438,
+      "preservedFormId": null,
+      "lineageId": 1438,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "dorulumon",
+      "displayName": "Dorulumon",
+      "sourceStage": "Champion",
+      "formId": 439,
+      "preservedFormId": null,
+      "lineageId": 1439,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "dynasmon",
+      "displayName": "Dynasmon",
+      "sourceStage": "Mega",
+      "formId": 440,
+      "preservedFormId": null,
+      "lineageId": 1440,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "examon",
+      "displayName": "Examon",
+      "sourceStage": "Mega",
+      "formId": 441,
+      "preservedFormId": null,
+      "lineageId": 1441,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "grademon",
+      "displayName": "Grademon",
+      "sourceStage": "Ultimate",
+      "formId": 442,
+      "preservedFormId": null,
+      "lineageId": 1442,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "greyknightsmon",
+      "displayName": "GreyKnightsmon",
+      "sourceStage": "Mega",
+      "formId": 443,
+      "preservedFormId": null,
+      "lineageId": 1443,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "greymonxros",
+      "displayName": "GreymonXros",
+      "sourceStage": "Champion",
+      "formId": 444,
+      "preservedFormId": null,
+      "lineageId": 1444,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "madleomon",
+      "displayName": "MadLeomon",
+      "sourceStage": "Ultimate",
+      "formId": 445,
+      "preservedFormId": null,
+      "lineageId": 1445,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "mailbirdramon",
+      "displayName": "Mailbirdramon",
+      "sourceStage": "Champion",
+      "formId": 446,
+      "preservedFormId": null,
+      "lineageId": 1446,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "metalgreymonxros",
+      "displayName": "MetalGreymonXros",
+      "sourceStage": "Ultimate",
+      "formId": 447,
+      "preservedFormId": null,
+      "lineageId": 1447,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "nefertimon",
+      "displayName": "Nefertimon",
+      "sourceStage": "Armor",
+      "formId": 448,
+      "preservedFormId": null,
+      "lineageId": 1448,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "rhodoknightmon",
+      "displayName": "RhodoKnightmon",
+      "sourceStage": "Mega",
+      "formId": 449,
+      "preservedFormId": null,
+      "lineageId": 1449,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "scorpiomon",
+      "displayName": "Scorpiomon",
+      "sourceStage": "Ultimate",
+      "formId": 450,
+      "preservedFormId": null,
+      "lineageId": 1450,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx2",
+      "displayName": "ShoutmonX2",
+      "sourceStage": "Champion",
+      "formId": 451,
+      "preservedFormId": null,
+      "lineageId": 1451,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx3",
+      "displayName": "ShoutmonX3",
+      "sourceStage": "Ultimate",
+      "formId": 452,
+      "preservedFormId": null,
+      "lineageId": 1452,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx3gm",
+      "displayName": "ShoutmonX3GM",
+      "sourceStage": "Ultimate",
+      "formId": 453,
+      "preservedFormId": null,
+      "lineageId": 1453,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx3sd",
+      "displayName": "ShoutmonX3SD",
+      "sourceStage": "Ultimate",
+      "formId": 454,
+      "preservedFormId": null,
+      "lineageId": 1454,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx4",
+      "displayName": "ShoutmonX4",
+      "sourceStage": "Mega",
+      "formId": 455,
+      "preservedFormId": null,
+      "lineageId": 1455,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx4b",
+      "displayName": "ShoutmonX4B",
+      "sourceStage": "Mega",
+      "formId": 456,
+      "preservedFormId": null,
+      "lineageId": 1456,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx4s",
+      "displayName": "ShoutmonX4S",
+      "sourceStage": "Mega",
+      "formId": 457,
+      "preservedFormId": null,
+      "lineageId": 1457,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx5",
+      "displayName": "ShoutmonX5",
+      "sourceStage": "Mega",
+      "formId": 458,
+      "preservedFormId": null,
+      "lineageId": 1458,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "shoutmonx5s",
+      "displayName": "ShoutmonX5S",
+      "sourceStage": "Mega",
+      "formId": 459,
+      "preservedFormId": null,
+      "lineageId": 1459,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "sparrowmon",
+      "displayName": "Sparrowmon",
+      "sourceStage": "Champion",
+      "formId": 460,
+      "preservedFormId": null,
+      "lineageId": 1460,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "starswordshoutmon",
+      "displayName": "StarSwordShoutmon",
+      "sourceStage": "Mega",
+      "formId": 461,
+      "preservedFormId": null,
+      "lineageId": 1461,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "strikedramon",
+      "displayName": "Strikedramon",
+      "sourceStage": "Champion",
+      "formId": 462,
+      "preservedFormId": null,
+      "lineageId": 1462,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "tigervespamon",
+      "displayName": "TigerVespamon",
+      "sourceStage": "Mega",
+      "formId": 463,
+      "preservedFormId": null,
+      "lineageId": 1463,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "troopmon",
+      "displayName": "Troopmon",
+      "sourceStage": "Champion",
+      "formId": 464,
+      "preservedFormId": null,
+      "lineageId": 1464,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
+    },
+    {
+      "entryKey": "wisemon",
+      "displayName": "Wisemon",
+      "sourceStage": "Ultimate",
+      "formId": 465,
+      "preservedFormId": null,
+      "lineageId": 1465,
+      "bindingReason": "Dawn/Dusk sprite sheet with battle idle, attack, and walk frames."
     }
   ]
 }

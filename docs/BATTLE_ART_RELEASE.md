@@ -7,7 +7,7 @@ The reported Flicker encounter and sprite flashes were reproducible from both in
 
 ## Confirmed causes and corrections
 
-The previous encounter selector forced form 4, Flicker, as the first opponent. Later encounter and practice pools also included the ten original test forms. Production selectors now use only the **266 Digimon forms, IDs 11–276**, including the first encounter. Existing level/stage eligibility and 70/25/5 rarity weights remain; there is no longer a guaranteed test opponent.
+The previous encounter selector forced form 4, Flicker, as the first opponent. Later encounter and practice pools also included the ten original test forms. Production selectors now use only the **455 Digimon forms, IDs 11–465**, including the first encounter. Existing level/stage eligibility and 70/25/5 rarity weights remain; there is no longer a guaranteed test opponent.
 
 The native runtime loaded the partner's Attack clip during its turn, while the renderer required Idle or Hurt. The strict animation check rejected that valid artwork and drew a procedural placeholder. Between turns, ordinary Battle did not load the partner artwork at all. The loader and renderer now use the same request for each actor in both waiting and animated battle states. Wrong-form frames remain rejected.
 

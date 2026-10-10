@@ -28,13 +28,17 @@ test('untrusted or malformed move metadata never becomes an encyclopedia referen
     const form = structuredClone(original); mutate(form); assert.deepEqual(rosterEncyclopediaMoves(form), []);
   }
 });
-test('all255 entries remain individually paged and high form IDs retain native authored metadata', () => {
+test('all source entries remain individually paged and high form IDs retain native authored metadata', () => {
   const ids = [];
-  for (let offset = 0; offset < 255; offset += 8) {
+  let total = 0;
+  for (let offset = 0; offset < 512; offset += 8) {
     const page = validateRosterPage(service.list(new URLSearchParams({ offset: String(offset), limit: '8' })));
-    assert.equal(page.total, 255); assert.ok(page.entries.length <= 8); ids.push(...page.entries.map(row => row.formId));
+    if (offset === 0) total = page.total;
+    assert.equal(page.total, total); assert.ok(page.entries.length <= 8); ids.push(...page.entries.map(row => row.formId));
+    if (ids.length >= total) break;
   }
-  assert.equal(new Set(ids).size, 255);
+  assert.equal(total, 444);
+  assert.equal(new Set(ids).size, total);
   const raw = service.detail(276, new URLSearchParams());
   const form = validateRosterDetail(raw, 276);
   assert.equal(form.name, 'Calumon'); assert.equal(form.art.status, 'unavailable'); assert.equal(form.canonicalEvolutionClaim, false);

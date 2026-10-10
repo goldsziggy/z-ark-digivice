@@ -283,7 +283,7 @@ void founderCrossLineage() {
 }
 void rules5Migration() {
  namespace old=legacy_v5;
- for(unsigned id=1;id<=forms::kFormCount;++id){
+ for(unsigned id=1;id<=old::forms::kFormCount;++id){
   const auto* f=old::forms::find(id);auto prior=old::newGame();prior.sequence=2;prior.steps=100;prior.encounters=prior.captures=1;prior.nextMemberId=3;prior.collectionCount=2;prior.activeCreatureId=2;
   prior.collection[1]={2,static_cast<old::Species>(f->lineage),old::combat::formProfile(id,20).stats.maxHp,80,70,80,200,20,1,7600,id};
   prior.hp=prior.collection[1].hp;prior.energy=80;prior.fullness=70;prior.mood=80;prior.bond=200;prior.level=20;prior.journal[(id-1)/32]|=1u<<((id-1)%32);
@@ -305,7 +305,7 @@ void rules5Migration() {
 }
 void rules6Migration() {
  namespace old=legacy_v6;
- for(unsigned id=1;id<=forms::kFormCount;++id){
+ for(unsigned id=1;id<=old::forms::kFormCount;++id){
   const auto* f=old::forms::find(id);auto prior=old::newGame();prior.sequence=2;prior.steps=100;prior.encounters=prior.captures=1;prior.nextMemberId=3;prior.collectionCount=2;prior.activeCreatureId=2;
   prior.collection[1]={2,static_cast<old::Species>(f->lineage),old::combat::formProfile(id,20).stats.maxHp,80,70,80,200,20,1,7600,id};
   prior.hp=prior.collection[1].hp;prior.energy=80;prior.fullness=70;prior.mood=80;prior.bond=200;prior.level=20;prior.journal[(id-1)/32]|=1u<<((id-1)%32);
@@ -327,7 +327,7 @@ void rules6Migration() {
 }
 void rules7Migration() {
  namespace old=legacy_v7;
- for(unsigned id=1;id<=forms::kFormCount;++id){
+ for(unsigned id=1;id<=old::forms::kFormCount;++id){
   const auto* f=old::forms::find(id);auto prior=old::newGame();prior.sequence=2;prior.steps=100;prior.encounters=prior.captures=1;prior.nextMemberId=3;prior.collectionCount=2;prior.activeCreatureId=2;
   prior.collection[1]={2,static_cast<old::Species>(f->lineage),old::combat::formProfile(id,20).stats.maxHp,80,70,80,200,20,1,7600,id};
   prior.hp=prior.collection[1].hp;prior.energy=80;prior.fullness=70;prior.mood=80;prior.bond=200;prior.level=20;prior.journal[(id-1)/32]|=1u<<((id-1)%32);
@@ -348,19 +348,22 @@ void rules7Migration() {
  }
 }
 void newGraphEpochGuards() {
- unsigned added=0, founderPaths=0;
+ unsigned added=0, founderPaths=0, sheetRoutes=0;
  for(unsigned id=1;id<=forms::kFormCount;++id)for(unsigned n=0;n<2;++n)if(const auto* edge=forms::outgoing(id,n)) {
   bool existed=false;for(unsigned j=0;j<2;++j)if(const auto* old=legacy_v6::forms::outgoing(id,j))if(old->to==edge->to)existed=true;
   if(existed)continue;
-  ++added;const auto* f=forms::find(id);const auto level=edge->minLevel>f->minLevel?edge->minLevel:f->minLevel;
+  const bool parentKnown=legacy_v6::forms::find(id);const bool childKnown=legacy_v6::forms::find(edge->to);
+  if(!parentKnown){++sheetRoutes;continue;}
+  const auto* f=forms::find(id);const auto level=edge->minLevel>f->minLevel?edge->minLevel:f->minLevel;
   const auto bond=edge->minBond>f->minBond?edge->minBond:f->minBond;
   auto now=capturedFixture(id,level,bond);Snapshot saved;CHECK(encodeSnapshot(now,saved));
   legacyHeader(saved,9,6);
   legacy_v6::State prior;CHECK(legacy_v6::decodeSnapshot(saved.bytes,kV13SnapshotSize,prior)==legacy_v6::SnapshotStatus::Ok);
   legacy_v6::Snapshot a,b;CHECK(legacy_v6::encodeSnapshot(prior,a));
-  CHECK(legacy_v6::apply(prior,legacy_v6::Action::Evolve,edge->to)==legacy_v6::Error::EvolutionUnavailable);
+  const auto rejected=legacy_v6::apply(prior,legacy_v6::Action::Evolve,edge->to);
+  CHECK(childKnown?rejected==legacy_v6::Error::EvolutionUnavailable:rejected==legacy_v6::Error::InvalidValue);
   CHECK(legacy_v6::encodeSnapshot(prior,b)&&!std::memcmp(a.bytes,b.bytes,sizeof(a.bytes)));
-  step(now,Action::Evolve,edge->to);
+  if(childKnown){++added;step(now,Action::Evolve,edge->to);}else ++sheetRoutes;
  }
  for(unsigned starter=1;starter<=8;++starter){const auto root=11+7*(starter-1);
   for(unsigned id=1;id<=forms::kFormCount;++id)if(forms::canReach(root,id)&&!legacy_v6::forms::canReach(root,id)) {
@@ -373,23 +376,26 @@ void newGraphEpochGuards() {
  auto s=newGame();step(s,Action::Walk,100);Snapshot bytes;CHECK(encodeSnapshot(s,bytes));
  legacyHeader(bytes,9,6);const auto before=s;
  CHECK(decodeSnapshot(bytes.bytes,kV13SnapshotSize,s)==SnapshotStatus::InvalidState&&same(s,before));
- CHECK(added>=16&&founderPaths>0);
- std::printf("Rules6 freeze: 276 progress-byte migrations, 72 active Auto continuations, %u new routes rejected, %u future founder paths rejected\n",added,founderPaths);
+ CHECK(added>=16&&founderPaths>0&&sheetRoutes==91);
+ std::printf("Rules6 freeze: 276 progress-byte migrations, 72 active Auto continuations, %u historical routes rejected, %u sheet routes unavailable, %u future founder paths rejected\n",added,sheetRoutes,founderPaths);
 }
 void newRules8EpochGuards() {
- unsigned added=0, founderPaths=0;
+ unsigned added=0, founderPaths=0, sheetRoutes=0;
  for(unsigned id=1;id<=forms::kFormCount;++id)for(unsigned n=0;n<2;++n)if(const auto* edge=forms::outgoing(id,n)) {
   bool existed=false;for(unsigned j=0;j<2;++j)if(const auto* old=legacy_v7::forms::outgoing(id,j))if(old->to==edge->to)existed=true;
   if(existed)continue;
-  ++added;const auto* f=forms::find(id);const auto level=edge->minLevel>f->minLevel?edge->minLevel:f->minLevel;
+  const bool parentKnown=legacy_v7::forms::find(id);const bool childKnown=legacy_v7::forms::find(edge->to);
+  if(!parentKnown){++sheetRoutes;continue;}
+  const auto* f=forms::find(id);const auto level=edge->minLevel>f->minLevel?edge->minLevel:f->minLevel;
   const auto bond=edge->minBond>f->minBond?edge->minBond:f->minBond;
   auto now=capturedFixture(id,level,bond);Snapshot saved;CHECK(encodeSnapshot(now,saved));
   legacyHeader(saved,10,7);
   legacy_v7::State prior;CHECK(legacy_v7::decodeSnapshot(saved.bytes,kV13SnapshotSize,prior)==legacy_v7::SnapshotStatus::Ok);
   legacy_v7::Snapshot a,b;CHECK(legacy_v7::encodeSnapshot(prior,a));
-  CHECK(legacy_v7::apply(prior,legacy_v7::Action::Evolve,edge->to)==legacy_v7::Error::EvolutionUnavailable);
+  const auto rejected=legacy_v7::apply(prior,legacy_v7::Action::Evolve,edge->to);
+  CHECK(childKnown?rejected==legacy_v7::Error::EvolutionUnavailable:rejected==legacy_v7::Error::InvalidValue);
   CHECK(legacy_v7::encodeSnapshot(prior,b)&&!std::memcmp(a.bytes,b.bytes,sizeof(a.bytes)));
-  step(now,Action::Evolve,edge->to);
+  if(childKnown){++added;step(now,Action::Evolve,edge->to);}else ++sheetRoutes;
  }
  for(unsigned starter=1;starter<=8;++starter){const auto root=11+7*(starter-1);
   for(unsigned id=1;id<=forms::kFormCount;++id)if(forms::canReach(root,id)&&!legacy_v7::forms::canReach(root,id)) {
@@ -402,8 +408,8 @@ void newRules8EpochGuards() {
  auto s=newGame();step(s,Action::Walk,100);Snapshot bytes;CHECK(encodeSnapshot(s,bytes));
  legacyHeader(bytes,10,7);const auto before=s;
  CHECK(decodeSnapshot(bytes.bytes,kV13SnapshotSize,s)==SnapshotStatus::InvalidState&&same(s,before));
- CHECK(added==9);
- std::printf("Rules7 freeze: 276 progress-byte migrations, 72 active Auto continuations, %u new routes rejected, %u future founder paths rejected\n",added,founderPaths);
+ CHECK(added==9&&sheetRoutes==91);
+ std::printf("Rules7 freeze: 276 progress-byte migrations, 72 active Auto continuations, %u historical routes rejected, %u sheet routes unavailable, %u future founder paths rejected\n",added,sheetRoutes,founderPaths);
 }
 
 
@@ -495,7 +501,7 @@ State migrate8(const legacy_v8::State& old) {
 void rules9ProfilesAndMigration() {
  namespace old=legacy_v8;
  unsigned changed=0;
- for(unsigned id=1;id<=forms::kFormCount;++id)for(unsigned level=forms::find(id)->minLevel;level<=20;++level){
+ for(unsigned id=1;id<=old::forms::kFormCount;++id)for(unsigned level=forms::find(id)->minLevel;level<=20;++level){
   const auto a=combat::formProfile(id,level);const auto b=old::combat::formProfile(id,level);
   const bool equal=a.stats.maxHp==b.stats.maxHp&&a.stats.attack==b.stats.attack&&a.stats.defense==b.stats.defense&&a.stats.magic==b.stats.magic&&a.stats.resistance==b.stats.resistance;
   CHECK(equal==(id!=3&&id!=7));CHECK(!std::strcmp(a.name,b.name)&&!std::strcmp(a.type,b.type)&&!std::strcmp(a.physicalSkill,b.physicalSkill)&&!std::strcmp(a.heavySkill,b.heavySkill)&&!std::strcmp(a.magicSkill,b.magicSkill));
@@ -550,7 +556,7 @@ void rules9ProfilesAndMigration() {
 
 void parkSelectionAndRecovery() {
  unsigned table[4]{};for(unsigned id=1;id<=forms::kFormCount;++id){const auto rarity=encounters::rarityForForm(id);CHECK(rarity>=encounters::Rarity::Common&&rarity<=encounters::Rarity::Rare);CHECK(encounters::rarityName(rarity));++table[static_cast<unsigned>(rarity)];}
- CHECK(table[1]==123&&table[2]==112&&table[3]==41);CHECK(!encounters::rarityName(encounters::Rarity::Unknown));CHECK(encounters::rarityForForm(0)==encounters::Rarity::Unknown&&encounters::rarityForForm(277)==encounters::Rarity::Unknown);
+ CHECK(table[1]==212&&table[2]==186&&table[3]==67);CHECK(!encounters::rarityName(encounters::Rarity::Unknown));CHECK(encounters::rarityForForm(0)==encounters::Rarity::Unknown&&encounters::rarityForForm(forms::kFormCount+1)==encounters::Rarity::Unknown);
  for(unsigned player:{11u,12u,13u,14u}){
   unsigned bucket[4]{};const auto level=forms::find(player)->minLevel;
   CHECK(selectWildForm(1,0,player,level)==4);CHECK(!selectWildForm(0,1,player,level));

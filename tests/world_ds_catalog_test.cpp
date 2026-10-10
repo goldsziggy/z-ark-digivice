@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     unsigned productionDetails = 0, publishedRoutes = 0, retainedFixtureRoutes = 0;
     const bool dump = argc == 2 && std::strcmp(argv[1], "--dump") == 0;
     // Stable historical IDs remain decodable, but release catalogs contain
-    // only IDs11..276 and their 166 authored routes.
+    // only IDs 11..465 and their authored routes.
     for (unsigned id = 1; id <= f::kFormCount; ++id) {
         const auto* form = f::find(id);
         check(form && form->id == id, "all IDs addressable");
@@ -68,30 +68,32 @@ int main(int argc, char** argv) {
         check(storage[exact + 1] == 'Z', "detail respects undersized boundary");
         check(c::writeFormCatalogJson(id, storage.data() + 1, exact + 1) == exact, "exact detail capacity succeeds");
     }
-    check(productionDetails == 266 && publishedRoutes == 166, "complete production roster and routes are published");
-    check(retainedFixtureRoutes == 6 && f::edgeCount() == 172, "six historical routes remain available for old replay");
+    check(productionDetails == f::kProductionFormCount && publishedRoutes == 257, "complete production roster and routes are published");
+    check(retainedFixtureRoutes == 6 && f::edgeCount() == 263, "six historical routes remain available for old replay");
     for (unsigned offset = 0; offset <= f::kProductionFormCount; ++offset) {
         storage.fill('Z');
         const auto n = c::writeCatalogPageJson(offset, 16, storage.data() + 1, c::kCatalogPageJsonCapacity);
         check(n > 0 && n < c::kCatalogPageJsonCapacity, "every possible page fits bound");
         check(storage.front() == 'Z' && storage.back() == 'Z', "page canaries intact");
-        check(std::strstr(storage.data() + 1, "\"rulesVersion\":18") && std::strstr(storage.data() + 1, "\"total\":266,"), "page identifies the current production projection");
+        char totalKey[32];
+        std::snprintf(totalKey, sizeof(totalKey), "\"total\":%u,", f::kProductionFormCount);
+        check(std::strstr(storage.data() + 1, "\"rulesVersion\":18") && std::strstr(storage.data() + 1, totalKey), "page identifies the current production projection");
         unsigned count = 0;
         for (const char* p = storage.data() + 1; (p = std::strstr(p, "\"formId\":")); ++p) {
             unsigned id = 0;
             check(std::sscanf(p, "\"formId\":%u", &id) == 1 && id == offset + count + 11 && f::productionForm(id), "page IDs are consecutive production forms only");
             ++count;
         }
-        const auto remaining = 266u - offset;
+        const auto remaining = f::kProductionFormCount - offset;
         check(count == (remaining < 16 ? remaining : 16), "page has the exact remaining production count");
-        if (offset + count == 266) check(std::strstr(storage.data() + 1, "\"nextOffset\":null") != nullptr, "last and empty pages terminate pagination");
+        if (offset + count == f::kProductionFormCount) check(std::strstr(storage.data() + 1, "\"nextOffset\":null") != nullptr, "last and empty pages terminate pagination");
         if (n > maximumPage) maximumPage = n;
         check(c::writeCatalogPageJson(offset, 16, storage.data() + 1, n) == 0 && storage[1] == '\0', "short page clears output");
     }
     storage.fill('Z');
     check(c::writeCatalogPageJson(0, 0, storage.data() + 1, capacity) == 0, "zero page size rejected");
     check(c::writeCatalogPageJson(0, 17, storage.data() + 1, capacity) == 0, "oversized page rejected");
-    check(c::writeCatalogPageJson(267, 16, storage.data() + 1, capacity) == 0 && storage[1] == '\0', "offset past production roster rejected");
+    check(c::writeCatalogPageJson(f::kProductionFormCount + 1, 16, storage.data() + 1, capacity) == 0 && storage[1] == '\0', "offset past production roster rejected");
     check(c::writeCatalogPageJson(std::numeric_limits<unsigned>::max(), 16, storage.data() + 1, capacity) == 0, "page offset overflow rejected");
     check(c::writeFormCatalogJson(0, storage.data() + 1, capacity) == 0, "zero form rejected");
     check(c::writeFormCatalogJson(f::kFormCount + 1, storage.data() + 1, capacity) == 0, "future form rejected");

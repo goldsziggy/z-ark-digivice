@@ -34,8 +34,8 @@ void productionPool(){
  for(unsigned seed=1;seed<=8192;++seed){const auto id=encounters::selectProduction(1,seed,11,1);++counts[unsigned(encounters::rarityForForm(id))];}
  CHECK(!counts[0]&&counts[1]>5000&&counts[2]>1500&&counts[3]>200);
  unsigned covered=0;for(unsigned id=1;id<=forms::kFormCount;++id)covered+=seen[id];
- for(unsigned seed=0;seed<16384&&covered<266;++seed){const auto id=encounters::selectProduction(17,seed,14,20);CHECK(forms::productionForm(id));if(!seen[id]){seen[id]=true;++covered;}}
- CHECK(covered==266);
+ for(unsigned seed=0;seed<65536&&covered<forms::kProductionFormCount;++seed){const auto id=encounters::selectProduction(17,seed,14,20);CHECK(forms::productionForm(id));if(!seen[id]){seen[id]=true;++covered;}}
+ CHECK(covered==forms::kProductionFormCount);
  for(unsigned encounter=1;encounter<=100;++encounter)CHECK(encounters::select(encounter,42,11,1)==old::selectWildForm(encounter,42,11,1));
  CHECK(encounters::select(1,42,11,1)==4); // Existing rules12 histories still reproduce exactly.
  CHECK(!encounters::selectProduction(0,1,11,1)&&!encounters::selectProduction(1,1,0,1)&&!encounters::selectProduction(1,1,11,0));
@@ -58,7 +58,7 @@ void releaseEvolutionEdges(){
   CHECK(s.collection[1].id==2&&s.collection[1].formId==to->id&&unsigned(s.collection[1].species)==to->lineage&&s.collection[1].xp==before.collection[1].xp);
   CHECK(s.hp==(17*combat::formProfile(to->id,level).stats.maxHp+maxBefore-1)/maxBefore&&s.rngState==before.rngState&&hasObtained(s,to->id));restore(s);
  }
- CHECK(released==166&&retainedOnly==6);std::printf("All%u released evolution routes preserve partner identity/XP and HP fraction; %u original-only routes remain historical\n",released,retainedOnly);
+ CHECK(released==257&&retainedOnly==6&&released+retainedOnly==forms::edgeCount());std::printf("All%u released evolution routes preserve partner identity/XP and HP fraction; %u original-only routes remain historical\n",released,retainedOnly);
 }
 void firstStepsAndStarters(){
  auto egg=newDevice();reject(egg,Action::ResolveTestEncounter,Error::WrongPhase);

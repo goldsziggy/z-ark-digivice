@@ -10,9 +10,9 @@
 namespace digivice::forms {
 
 constexpr std::uint32_t kPreservedFormCount = 66;
-constexpr std::uint32_t kFormCount = 276; // Stable ID space includes decode-only original fixtures.
+constexpr std::uint32_t kFormCount = 465; // Stable ID space includes decode-only original fixtures.
 constexpr std::uint32_t kFirstProductionFormId = 11;
-constexpr std::uint32_t kProductionFormCount = 266;
+constexpr std::uint32_t kProductionFormCount = 455;
 constexpr std::uint32_t kCatalogVersion = 6;
 constexpr std::uint32_t kMaxRpgLevel = 50;
 enum class Stage : std::uint8_t { Original, Rookie, Champion, Ultimate, Mega, Fresh, InTraining, Armor, NoLevel };
@@ -39,7 +39,7 @@ struct Form {
 
 // Preserved IDs: originals 1..10; eight seven-form starter blocks 11..66. Each
 // block is Rookie, Champion A, Ultimate A, Mega A, Champion B, Ultimate B, Mega B.
-// Generated DS additions occupy 67..276; the ID ledger is append-only.
+// Generated DS additions occupy 67..465; the ID ledger is append-only.
 // No allocation, mutable cache, hardware or filesystem dependencies.
 const Form* find(std::uint32_t formId);
 struct EvolutionEdge { std::uint16_t from, to; std::uint8_t minLevel, minBond; };

@@ -39,8 +39,8 @@ class GeneratorTest(unittest.TestCase):
         for path, value in a.items():
             self.assertEqual((ROOT / path).read_text(), value, path)
         runtime = json.loads(a['data/world-ds-runtime.json'])
-        self.assertEqual(len(runtime['forms']), 276)
-        self.assertEqual(len(runtime['entries']), 255)
+        self.assertEqual(len(runtime['forms']), 465)
+        self.assertEqual(len(runtime['entries']), 444)
         self.assertEqual(runtime['catalogVersion'], 6)
         self.assertEqual(runtime['rulesVersion'], 10)
 
@@ -68,6 +68,8 @@ class GeneratorTest(unittest.TestCase):
             self.assertEqual(form['skills'][binding['category']], binding['name'])
             form['skills'][binding['category']] = binding['previousName']
         self.restore_original_anchors(profiles)
+        profiles = profiles[:276]
+        self.assertEqual(len(profiles), 276)
         fingerprint = hashlib.sha256(json.dumps(profiles, sort_keys=True, separators=(',', ':'),
                                                ensure_ascii=False).encode()).hexdigest()
         self.assertEqual(fingerprint, baseline['all276ProfileSha256'])
@@ -134,10 +136,14 @@ class GeneratorTest(unittest.TestCase):
         for binding in self.inputs[0]['battleSkillBindings']:
             profiles[binding['formId'] - 1]['skills'][binding['category']] = binding['previousName']
         self.restore_original_anchors(profiles)
-        self.assertEqual(hashlib.sha256(json.dumps(profiles, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest(), baseline['all276ProfileSha256'])
+        original_profiles = profiles[:276]
+        self.assertEqual(len(original_profiles), 276)
+        self.assertEqual(hashlib.sha256(json.dumps(original_profiles, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest(), baseline['all276ProfileSha256'])
         routes = {(f['formId'], e['toFormId']): (e['requiredLevel'], e['requiredBond']) for f in runtime['forms'] for e in f['evolution']['edges']}
+        old_routes = {pair: gates for pair, gates in routes.items() if pair[0] <= 276 and pair[1] <= 276}
         self.assertEqual(len(baseline['edges']), 163)
-        self.assertEqual(len(routes), 172)
+        self.assertEqual(len(old_routes), 172)
+        self.assertEqual(len(routes), 263)
         for edge in baseline['edges']:
             self.assertEqual(routes[(edge['fromFormId'], edge['toFormId'])], (edge['minimumLevel'], edge['minimumBond']))
 
@@ -308,7 +314,7 @@ class GeneratorTest(unittest.TestCase):
     def test_export_uses_actual_edges_and_gates_and_keeps_stats(self):
         assembled, runtime = self.assembled_cross_family_fixture()
         rows = list(csv.DictReader(io.StringIO(EXPORTER.export(assembled, runtime))))
-        self.assertEqual(len(rows), 255)
+        self.assertEqual(len(rows), len(assembled['entries']))
         row = next(row for row in rows if row['form_id'] == '67')
         self.assertEqual(row['children_ids'], '1')
         self.assertEqual(row['historical_family_children_ids'], '')

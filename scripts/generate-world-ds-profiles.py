@@ -132,11 +132,13 @@ def evolution_graph(edges, anchors, required_edges, dispositions=None):
 def generate(catalog, ledger, preserved, inventory, families):
     check(catalog.get('formatVersion') == ledger.get('formatVersion') == preserved.get('formatVersion') == inventory.get('formatVersion') == 1, 'unsupported input format')
     rows = catalog.get('entries')
-    check(isinstance(rows, list) and len(rows) == 255, 'expected255 individually named inventory entries')
+    check(isinstance(rows, list) and 255 <= len(rows) <= 512, 'source inventory must stay within the append-only form bound')
     check(integer(catalog.get('catalogRevision'), 2, 65535), 'invalid catalog revision')
     check(families.get('formatVersion') == 1 and isinstance(families.get('identities'), list), 'invalid family identity file')
     frozen = {row['formId']: row for row in families['identities']}
-    check(len(frozen) == len(families['identities']) == 210 and set(frozen) == set(range(67, 277)), 'frozen family identity set changed')
+    identity_ids = [row['formId'] for row in families['identities']]
+    check(len(frozen) == len(identity_ids) and identity_ids == list(range(67, identity_ids[-1] + 1)), 'family identities must stay a contiguous append-only set')
+    check(set(range(67, 277)) <= set(frozen), 'frozen family identity prefix changed')
     old = {f['id']: f for f in preserved['forms']}
     adjustments = original_ultimate_adjustments(preserved)
     check(catalog.get('originalProfileAdjustments') == adjustments,
@@ -145,7 +147,7 @@ def generate(catalog, ledger, preserved, inventory, families):
     check(set(old) == set(range(1, 67)), 'preserved66 ID set changed')
     reserved = {e['entryKey']: e for e in ledger['entries']}
     named = {e['entryKey']: e for e in inventory['entries']}
-    check(len(reserved) == len(named) == 255 and set(reserved) == set(named), 'inventory/ledger keys differ')
+    check(len(reserved) == len(named) == len(rows) and set(reserved) == set(named), 'inventory/ledger keys differ')
     by_key, by_id = {}, {}
     new_labels = set()
     old_labels = {label.casefold() for form in old.values() for label in form['skills'].values()}

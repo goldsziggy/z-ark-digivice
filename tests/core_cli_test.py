@@ -183,7 +183,7 @@ while True:
  ids.extend(row['formId'] for row in page['forms'])
  if page['nextOffset'] is None:break
  offset=page['nextOffset']
-assert ids==list(range(11,277))
+assert ids==list(range(11,466))
 assert accepted(args=['--form','276'])['formId']==276
 for argv in [['--catalog-page','0','17'],['--catalog-page','-1'],['--form','513']]:rejected(args=argv)
 print('Full roster CLI: frozen rules4 migration, stable IDs, catalog paging and new guard traces passed')
@@ -216,7 +216,7 @@ graph_ids=[];offset=0
 while True:
  page=accepted(args=['--evolution-graph','18',str(offset),'16'])
  assert page['formatVersion']==2 and page['rulesVersion']==18 and page['focusFormId']==18
- assert 1<=len(page['forms'])<=16 and page['total']<=276
+ assert 1<=len(page['forms'])<=16 and page['total']<=512
  for node in page['forms']:
   assert len(node['children'])<=2 and len(node['edges'])==len(node['children'])
   assert [e['toFormId'] for e in node['edges']]==node['children']

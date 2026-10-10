@@ -2038,6 +2038,2841 @@
       },
       "roleRationale": "An authored low-tier companion guardian uses Rookie-tier stats; No Level remains its source category.",
       "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mechanorimon",
+      "displayName": "Mechanorimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Mechanorimon Jab",
+        "heavy": "Mechanorimon Rush",
+        "magic": "Mechanorimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Mechanorimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "xv-mon",
+      "displayName": "XV-mon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "XVmon Jab",
+        "heavy": "XVmon Rush",
+        "magic": "XVmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of XV-mon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "chrysalimon",
+      "displayName": "Chrysalimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Chrysalimon Jab",
+        "heavy": "Chrysalimon Rush",
+        "magic": "Chrysalimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Chrysalimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shisamon",
+      "displayName": "Shisamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Shisamon Jab",
+        "heavy": "Shisamon Rush",
+        "magic": "Shisamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Shisamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "evilmon",
+      "displayName": "Evilmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Evilmon Jab",
+        "heavy": "Evilmon Rush",
+        "magic": "Evilmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Evilmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "gokimon",
+      "displayName": "Gokimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Gokimon Jab",
+        "heavy": "Gokimon Rush",
+        "magic": "Gokimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Gokimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "raptordramon",
+      "displayName": "Raptordramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Raptordramon Jab",
+        "heavy": "Raptordramon Rush",
+        "magic": "Raptordramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Raptordramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "hanumon",
+      "displayName": "Hanumon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Hanumon Jab",
+        "heavy": "Hanumon Rush",
+        "magic": "Hanumon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Hanumon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "bombernanimon",
+      "displayName": "BomberNanimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "BomberNanimon Jab",
+        "heavy": "BomberNanimon Rush",
+        "magic": "BomberNanimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of BomberNanimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "darktyranomon",
+      "displayName": "DarkTyranomon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "DarkTyranomon Jab",
+        "heavy": "DarkTyranomon Rush",
+        "magic": "DarkTyranomon Hex"
+      },
+      "roleRationale": "An authored Striker reading of DarkTyranomon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "darklizamon",
+      "displayName": "DarkLizamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "DarkLizamon Jab",
+        "heavy": "DarkLizamon Rush",
+        "magic": "DarkLizamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of DarkLizamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "flarelizamon",
+      "displayName": "FlareLizamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "FlareLizamon Jab",
+        "heavy": "FlareLizamon Rush",
+        "magic": "FlareLizamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of FlareLizamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "drimogemon",
+      "displayName": "Drimogemon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Drimogemon Jab",
+        "heavy": "Drimogemon Rush",
+        "magic": "Drimogemon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Drimogemon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "nisedrimogemon",
+      "displayName": "NiseDrimogemon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "NiseDrimogemon Jab",
+        "heavy": "NiseDrimogemon Rush",
+        "magic": "NiseDrimogemon Hex"
+      },
+      "roleRationale": "An authored Striker reading of NiseDrimogemon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "morishellmon",
+      "displayName": "MoriShellmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "MoriShellmon Jab",
+        "heavy": "MoriShellmon Rush",
+        "magic": "MoriShellmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of MoriShellmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "wendimon",
+      "displayName": "Wendimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Wendimon Jab",
+        "heavy": "Wendimon Rush",
+        "magic": "Wendimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Wendimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "fugamon",
+      "displayName": "Fugamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Fugamon Jab",
+        "heavy": "Fugamon Rush",
+        "magic": "Fugamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Fugamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "tsuchidarumon",
+      "displayName": "Tsuchidarumon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tsuchidarumon Jab",
+        "heavy": "Tsuchidarumon Rush",
+        "magic": "Tsuchidarumon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Tsuchidarumon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "tortomon",
+      "displayName": "Tortomon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tortomon Jab",
+        "heavy": "Tortomon Rush",
+        "magic": "Tortomon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Tortomon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ebidramon",
+      "displayName": "Ebidramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Ebidramon Jab",
+        "heavy": "Ebidramon Rush",
+        "magic": "Ebidramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Ebidramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "octomon",
+      "displayName": "Octomon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Octomon Jab",
+        "heavy": "Octomon Rush",
+        "magic": "Octomon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Octomon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "gesomon",
+      "displayName": "Gesomon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Gesomon Jab",
+        "heavy": "Gesomon Rush",
+        "magic": "Gesomon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Gesomon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "coelamon",
+      "displayName": "Coelamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "Coelamon Jab",
+        "heavy": "Coelamon Rush",
+        "magic": "Coelamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Coelamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shellmon",
+      "displayName": "Shellmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Shellmon Jab",
+        "heavy": "Shellmon Rush",
+        "magic": "Shellmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Shellmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "yukidarumon",
+      "displayName": "Yukidarumon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Yukidarumon Jab",
+        "heavy": "Yukidarumon Rush",
+        "magic": "Yukidarumon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Yukidarumon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "geremon",
+      "displayName": "Geremon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Geremon Jab",
+        "heavy": "Geremon Rush",
+        "magic": "Geremon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Geremon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "hyogamon",
+      "displayName": "Hyogamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "Hyogamon Jab",
+        "heavy": "Hyogamon Rush",
+        "magic": "Hyogamon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Hyogamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "karatsukinumemon",
+      "displayName": "KaratsukiNumemon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "KaratsukiNumemon Jab",
+        "heavy": "KaratsukiNumemon Rush",
+        "magic": "KaratsukiNumemon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of KaratsukiNumemon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "icedevimon",
+      "displayName": "IceDevimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "tide",
+      "skills": {
+        "physical": "IceDevimon Jab",
+        "heavy": "IceDevimon Rush",
+        "magic": "IceDevimon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of IceDevimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "rukamon",
+      "displayName": "Rukamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Rukamon Jab",
+        "heavy": "Rukamon Rush",
+        "magic": "Rukamon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Rukamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "saberdramon",
+      "displayName": "Saberdramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Saberdramon Jab",
+        "heavy": "Saberdramon Rush",
+        "magic": "Saberdramon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Saberdramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "woodmon",
+      "displayName": "Woodmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "Woodmon Jab",
+        "heavy": "Woodmon Rush",
+        "magic": "Woodmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Woodmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "snimon",
+      "displayName": "Snimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Snimon Jab",
+        "heavy": "Snimon Rush",
+        "magic": "Snimon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Snimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "flymon",
+      "displayName": "Flymon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Flymon Jab",
+        "heavy": "Flymon Rush",
+        "magic": "Flymon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Flymon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "yanmamon",
+      "displayName": "Yanmamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Yanmamon Jab",
+        "heavy": "Yanmamon Rush",
+        "magic": "Yanmamon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Yanmamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "sandyanmamon",
+      "displayName": "SandYanmamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "SandYanmamon Jab",
+        "heavy": "SandYanmamon Rush",
+        "magic": "SandYanmamon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of SandYanmamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "redvegiemon",
+      "displayName": "RedVegiemon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Mystic",
+      "type": "grove",
+      "skills": {
+        "physical": "RedVegiemon Jab",
+        "heavy": "RedVegiemon Rush",
+        "magic": "RedVegiemon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of RedVegiemon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "zassoumon",
+      "displayName": "Zassoumon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Zassoumon Jab",
+        "heavy": "Zassoumon Rush",
+        "magic": "Zassoumon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Zassoumon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "igamon",
+      "displayName": "Igamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Igamon Jab",
+        "heavy": "Igamon Rush",
+        "magic": "Igamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Igamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kougamon",
+      "displayName": "Kougamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kougamon Jab",
+        "heavy": "Kougamon Rush",
+        "magic": "Kougamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Kougamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "omekamon",
+      "displayName": "Omekamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Omekamon Jab",
+        "heavy": "Omekamon Rush",
+        "magic": "Omekamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Omekamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "clockmon",
+      "displayName": "Clockmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Clockmon Jab",
+        "heavy": "Clockmon Rush",
+        "magic": "Clockmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Clockmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "tankmon",
+      "displayName": "Tankmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tankmon Jab",
+        "heavy": "Tankmon Rush",
+        "magic": "Tankmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Tankmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "golemon",
+      "displayName": "Golemon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Golemon Jab",
+        "heavy": "Golemon Rush",
+        "magic": "Golemon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Golemon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "monochromon",
+      "displayName": "Monochromon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Monochromon Jab",
+        "heavy": "Monochromon Rush",
+        "magic": "Monochromon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Monochromon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mojyamon",
+      "displayName": "Mojyamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Mojyamon Jab",
+        "heavy": "Mojyamon Rush",
+        "magic": "Mojyamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Mojyamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "j-mojyamon",
+      "displayName": "J-Mojyamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "JMojyamon Jab",
+        "heavy": "JMojyamon Rush",
+        "magic": "JMojyamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of J-Mojyamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "revolmon",
+      "displayName": "Revolmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Revolmon Jab",
+        "heavy": "Revolmon Rush",
+        "magic": "Revolmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Revolmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kentarumon",
+      "displayName": "Kentarumon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kentarumon Jab",
+        "heavy": "Kentarumon Rush",
+        "magic": "Kentarumon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of Kentarumon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "devidramon",
+      "displayName": "Devidramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Devidramon Jab",
+        "heavy": "Devidramon Rush",
+        "magic": "Devidramon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of Devidramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dokugamon",
+      "displayName": "Dokugamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dokugamon Jab",
+        "heavy": "Dokugamon Rush",
+        "magic": "Dokugamon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of Dokugamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "v-dramon",
+      "displayName": "V-dramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Balanced",
+      "type": "ember",
+      "skills": {
+        "physical": "Vdramon Jab",
+        "heavy": "Vdramon Rush",
+        "magic": "Vdramon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of V-dramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "musyamon",
+      "displayName": "Musyamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Musyamon Jab",
+        "heavy": "Musyamon Rush",
+        "magic": "Musyamon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of Musyamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "knightchessmonwhite",
+      "displayName": "KnightChessmonWhite",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "KnightChessmonWhite Jab",
+        "heavy": "KnightChessmonWhite Rush",
+        "magic": "KnightChessmonWhite Hex"
+      },
+      "roleRationale": "An authored Balanced reading of KnightChessmonWhite on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "knightchessmonblack",
+      "displayName": "KnightChessmonBlack",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "KnightChessmonBlack Jab",
+        "heavy": "KnightChessmonBlack Rush",
+        "magic": "KnightChessmonBlack Hex"
+      },
+      "roleRationale": "An authored Balanced reading of KnightChessmonBlack on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "firamon",
+      "displayName": "Firamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Firamon Jab",
+        "heavy": "Firamon Rush",
+        "magic": "Firamon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Firamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "volcamon",
+      "displayName": "Volcamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Volcamon Jab",
+        "heavy": "Volcamon Rush",
+        "magic": "Volcamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Volcamon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mammon",
+      "displayName": "Mammon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Mammon Jab",
+        "heavy": "Mammon Rush",
+        "magic": "Mammon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Mammon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "anomalocarimon",
+      "displayName": "Anomalocarimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Anomalocarimon Jab",
+        "heavy": "Anomalocarimon Rush",
+        "magic": "Anomalocarimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Anomalocarimon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dagomon",
+      "displayName": "Dagomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dagomon Jab",
+        "heavy": "Dagomon Rush",
+        "magic": "Dagomon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Dagomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "pandamon",
+      "displayName": "Pandamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Pandamon Jab",
+        "heavy": "Pandamon Rush",
+        "magic": "Pandamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Pandamon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "marinedevimon",
+      "displayName": "MarineDevimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "tide",
+      "skills": {
+        "physical": "MarineDevimon Jab",
+        "heavy": "MarineDevimon Rush",
+        "magic": "MarineDevimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of MarineDevimon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "karatenmon",
+      "displayName": "Karatenmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Karatenmon Jab",
+        "heavy": "Karatenmon Rush",
+        "magic": "Karatenmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Karatenmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "sinduramon",
+      "displayName": "Sinduramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Sinduramon Jab",
+        "heavy": "Sinduramon Rush",
+        "magic": "Sinduramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Sinduramon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "pipismon",
+      "displayName": "Pipismon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Pipismon Jab",
+        "heavy": "Pipismon Rush",
+        "magic": "Pipismon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Pipismon on the existing Armor budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "tucanmon",
+      "displayName": "Tucanmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Tucanmon Jab",
+        "heavy": "Tucanmon Rush",
+        "magic": "Tucanmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Tucanmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "owlmon",
+      "displayName": "Owlmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Owlmon Jab",
+        "heavy": "Owlmon Rush",
+        "magic": "Owlmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Owlmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "qilinmon",
+      "displayName": "Qilinmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Qilinmon Jab",
+        "heavy": "Qilinmon Rush",
+        "magic": "Qilinmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Qilinmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shadramon",
+      "displayName": "Shadramon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Shadramon Jab",
+        "heavy": "Shadramon Rush",
+        "magic": "Shadramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Shadramon on the existing Armor budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kabukimon",
+      "displayName": "Kabukimon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Kabukimon Jab",
+        "heavy": "Kabukimon Rush",
+        "magic": "Kabukimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Kabukimon on the existing Armor budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "jureimon",
+      "displayName": "Jureimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Jureimon Jab",
+        "heavy": "Jureimon Rush",
+        "magic": "Jureimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Jureimon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mametyranomon",
+      "displayName": "MameTyranomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "MameTyranomon Jab",
+        "heavy": "MameTyranomon Rush",
+        "magic": "MameTyranomon Hex"
+      },
+      "roleRationale": "An authored Striker reading of MameTyranomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "giromon",
+      "displayName": "Giromon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Giromon Jab",
+        "heavy": "Giromon Rush",
+        "magic": "Giromon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Giromon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "vademon",
+      "displayName": "Vademon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Vademon Jab",
+        "heavy": "Vademon Rush",
+        "magic": "Vademon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Vademon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "metaltyranomon",
+      "displayName": "MetalTyranomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "MetalTyranomon Jab",
+        "heavy": "MetalTyranomon Rush",
+        "magic": "MetalTyranomon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of MetalTyranomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "bigmamemon",
+      "displayName": "BigMamemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "BigMamemon Jab",
+        "heavy": "BigMamemon Rush",
+        "magic": "BigMamemon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of BigMamemon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "vermilimon",
+      "displayName": "Vermilimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Vermilimon Jab",
+        "heavy": "Vermilimon Rush",
+        "magic": "Vermilimon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Vermilimon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "phantomon",
+      "displayName": "Phantomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Phantomon Jab",
+        "heavy": "Phantomon Rush",
+        "magic": "Phantomon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Phantomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "vajiramon",
+      "displayName": "Vajiramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Vajiramon Jab",
+        "heavy": "Vajiramon Rush",
+        "magic": "Vajiramon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Vajiramon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "aerov-dramon",
+      "displayName": "AeroV-Dramon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "AeroVDramon Jab",
+        "heavy": "AeroVDramon Rush",
+        "magic": "AeroVDramon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of AeroV-Dramon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "grappleomon",
+      "displayName": "GrappLeomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "GrappLeomon Jab",
+        "heavy": "GrappLeomon Rush",
+        "magic": "GrappLeomon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of GrappLeomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "knightmon",
+      "displayName": "Knightmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Knightmon Jab",
+        "heavy": "Knightmon Rush",
+        "magic": "Knightmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Knightmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "brachimon",
+      "displayName": "Brachimon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Brachimon Jab",
+        "heavy": "Brachimon Rush",
+        "magic": "Brachimon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Brachimon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "allomon",
+      "displayName": "Allomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Allomon Jab",
+        "heavy": "Allomon Rush",
+        "magic": "Allomon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Allomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "lynxmon",
+      "displayName": "Lynxmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Lynxmon Jab",
+        "heavy": "Lynxmon Rush",
+        "magic": "Lynxmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Lynxmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shawujingmon",
+      "displayName": "Shawujingmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Shawujingmon Jab",
+        "heavy": "Shawujingmon Rush",
+        "magic": "Shawujingmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Shawujingmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "bishopchessmon",
+      "displayName": "BishopChessmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "BishopChessmon Jab",
+        "heavy": "BishopChessmon Rush",
+        "magic": "BishopChessmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of BishopChessmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "rookchessmon",
+      "displayName": "RookChessmon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "RookChessmon Jab",
+        "heavy": "RookChessmon Rush",
+        "magic": "RookChessmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of RookChessmon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "flaremon",
+      "displayName": "Flaremon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "Flaremon Jab",
+        "heavy": "Flaremon Rush",
+        "magic": "Flaremon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Flaremon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "crescemon",
+      "displayName": "Crescemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Crescemon Jab",
+        "heavy": "Crescemon Rush",
+        "magic": "Crescemon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Crescemon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "argomonperfect",
+      "displayName": "ArgomonPerfect",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "ArgomonPerfect Jab",
+        "heavy": "ArgomonPerfect Rush",
+        "magic": "ArgomonPerfect Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of ArgomonPerfect on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shakkoumon",
+      "displayName": "Shakkoumon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Shakkoumon Jab",
+        "heavy": "Shakkoumon Rush",
+        "magic": "Shakkoumon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Shakkoumon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "lampmon",
+      "displayName": "Lampmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Lampmon Jab",
+        "heavy": "Lampmon Rush",
+        "magic": "Lampmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Lampmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "deathmon",
+      "displayName": "Deathmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Deathmon Jab",
+        "heavy": "Deathmon Rush",
+        "magic": "Deathmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Deathmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "devitamamon",
+      "displayName": "Devitamamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Devitamamon Jab",
+        "heavy": "Devitamamon Rush",
+        "magic": "Devitamamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Devitamamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "pukumon",
+      "displayName": "Pukumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Pukumon Jab",
+        "heavy": "Pukumon Rush",
+        "magic": "Pukumon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Pukumon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "gryphomon",
+      "displayName": "Gryphomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Gryphomon Jab",
+        "heavy": "Gryphomon Rush",
+        "magic": "Gryphomon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Gryphomon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "boltmon",
+      "displayName": "Boltmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Boltmon Jab",
+        "heavy": "Boltmon Rush",
+        "magic": "Boltmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Boltmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "orphanimon",
+      "displayName": "Orphanimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Orphanimon Jab",
+        "heavy": "Orphanimon Rush",
+        "magic": "Orphanimon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Orphanimon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "zanbamon",
+      "displayName": "Zanbamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Zanbamon Jab",
+        "heavy": "Zanbamon Rush",
+        "magic": "Zanbamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Zanbamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "anubismon",
+      "displayName": "Anubismon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Anubismon Jab",
+        "heavy": "Anubismon Rush",
+        "magic": "Anubismon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Anubismon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "slashangemon",
+      "displayName": "SlashAngemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "SlashAngemon Jab",
+        "heavy": "SlashAngemon Rush",
+        "magic": "SlashAngemon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of SlashAngemon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "apocalymon",
+      "displayName": "Apocalymon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Apocalymon Jab",
+        "heavy": "Apocalymon Rush",
+        "magic": "Apocalymon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Apocalymon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ebemon",
+      "displayName": "Ebemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Ebemon Jab",
+        "heavy": "Ebemon Rush",
+        "magic": "Ebemon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Ebemon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "galfmon",
+      "displayName": "Galfmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Galfmon Jab",
+        "heavy": "Galfmon Rush",
+        "magic": "Galfmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Galfmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "goddramon",
+      "displayName": "Goddramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "Goddramon Jab",
+        "heavy": "Goddramon Rush",
+        "magic": "Goddramon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Goddramon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "zeedmilleniumon",
+      "displayName": "ZeedMilleniumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "ZeedMilleniumon Jab",
+        "heavy": "ZeedMilleniumon Rush",
+        "magic": "ZeedMilleniumon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of ZeedMilleniumon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "deathmonblack",
+      "displayName": "DeathmonBlack",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "DeathmonBlack Jab",
+        "heavy": "DeathmonBlack Rush",
+        "magic": "DeathmonBlack Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of DeathmonBlack on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "skullmammon",
+      "displayName": "SkullMammon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "SkullMammon Jab",
+        "heavy": "SkullMammon Rush",
+        "magic": "SkullMammon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of SkullMammon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "pharaohmon",
+      "displayName": "Pharaohmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Pharaohmon Jab",
+        "heavy": "Pharaohmon Rush",
+        "magic": "Pharaohmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Pharaohmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "susanoomon",
+      "displayName": "Susanoomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Susanoomon Jab",
+        "heavy": "Susanoomon Rush",
+        "magic": "Susanoomon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Susanoomon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "alphamon",
+      "displayName": "Alphamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Alphamon Jab",
+        "heavy": "Alphamon Rush",
+        "magic": "Alphamon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Alphamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "holydramon",
+      "displayName": "Holydramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Holydramon Jab",
+        "heavy": "Holydramon Rush",
+        "magic": "Holydramon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Holydramon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "milleniumon",
+      "displayName": "Milleniumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Milleniumon Jab",
+        "heavy": "Milleniumon Rush",
+        "magic": "Milleniumon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Milleniumon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "moonmilleniumon",
+      "displayName": "MoonMilleniumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "MoonMilleniumon Jab",
+        "heavy": "MoonMilleniumon Rush",
+        "magic": "MoonMilleniumon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of MoonMilleniumon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "megidramon",
+      "displayName": "Megidramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "Megidramon Jab",
+        "heavy": "Megidramon Rush",
+        "magic": "Megidramon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Megidramon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shinegreymon",
+      "displayName": "ShineGreymon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "ShineGreymon Jab",
+        "heavy": "ShineGreymon Rush",
+        "magic": "ShineGreymon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of ShineGreymon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "miragegaogamon",
+      "displayName": "MirageGaogamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "MirageGaogamon Jab",
+        "heavy": "MirageGaogamon Rush",
+        "magic": "MirageGaogamon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of MirageGaogamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "jumbogamemon",
+      "displayName": "JumboGamemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "JumboGamemon Jab",
+        "heavy": "JumboGamemon Rush",
+        "magic": "JumboGamemon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of JumboGamemon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ravemon",
+      "displayName": "Ravemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Ravemon Jab",
+        "heavy": "Ravemon Rush",
+        "magic": "Ravemon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Ravemon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "queenchessmon",
+      "displayName": "QueenChessmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "QueenChessmon Jab",
+        "heavy": "QueenChessmon Rush",
+        "magic": "QueenChessmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of QueenChessmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "kingchessmon",
+      "displayName": "KingChessmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "KingChessmon Jab",
+        "heavy": "KingChessmon Rush",
+        "magic": "KingChessmon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of KingChessmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "apollomon",
+      "displayName": "Apollomon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Apollomon Jab",
+        "heavy": "Apollomon Rush",
+        "magic": "Apollomon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Apollomon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dianamon",
+      "displayName": "Dianamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dianamon Jab",
+        "heavy": "Dianamon Rush",
+        "magic": "Dianamon Hex"
+      },
+      "roleRationale": "An authored Mystic reading of Dianamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shinegreymonburst",
+      "displayName": "ShineGreymonBurst",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "ShineGreymonBurst Jab",
+        "heavy": "ShineGreymonBurst Rush",
+        "magic": "ShineGreymonBurst Hex"
+      },
+      "roleRationale": "An authored Mystic reading of ShineGreymonBurst on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shinegreymonruin",
+      "displayName": "ShineGreymonRuin",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "ember",
+      "skills": {
+        "physical": "ShineGreymonRuin Jab",
+        "heavy": "ShineGreymonRuin Rush",
+        "magic": "ShineGreymonRuin Hex"
+      },
+      "roleRationale": "An authored Mystic reading of ShineGreymonRuin on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "miragegaogamonburst",
+      "displayName": "MirageGaogamonBurst",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Mystic",
+      "type": "neutral",
+      "skills": {
+        "physical": "MirageGaogamonBurst Jab",
+        "heavy": "MirageGaogamonBurst Rush",
+        "magic": "MirageGaogamonBurst Hex"
+      },
+      "roleRationale": "An authored Mystic reading of MirageGaogamonBurst on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ravemonburst",
+      "displayName": "RavemonBurst",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "RavemonBurst Jab",
+        "heavy": "RavemonBurst Rush",
+        "magic": "RavemonBurst Hex"
+      },
+      "roleRationale": "An authored Striker reading of RavemonBurst on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "lotusmon",
+      "displayName": "Lotusmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Lotusmon Jab",
+        "heavy": "Lotusmon Rush",
+        "magic": "Lotusmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Lotusmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "beelzebumonblast",
+      "displayName": "BeelzebumonBlast",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "BeelzebumonBlast Jab",
+        "heavy": "BeelzebumonBlast Rush",
+        "magic": "BeelzebumonBlast Hex"
+      },
+      "roleRationale": "An authored Striker reading of BeelzebumonBlast on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "rosemonburst",
+      "displayName": "RosemonBurst",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "RosemonBurst Jab",
+        "heavy": "RosemonBurst Rush",
+        "magic": "RosemonBurst Hex"
+      },
+      "roleRationale": "An authored Striker reading of RosemonBurst on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "argomonultimate",
+      "displayName": "ArgomonUltimate",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "ArgomonUltimate Jab",
+        "heavy": "ArgomonUltimate Rush",
+        "magic": "ArgomonUltimate Hex"
+      },
+      "roleRationale": "An authored Striker reading of ArgomonUltimate on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "minervamon",
+      "displayName": "Minervamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Minervamon Jab",
+        "heavy": "Minervamon Rush",
+        "magic": "Minervamon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Minervamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "duftmon",
+      "displayName": "Duftmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Duftmon Jab",
+        "heavy": "Duftmon Rush",
+        "magic": "Duftmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Duftmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "chaosmon",
+      "displayName": "Chaosmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Chaosmon Jab",
+        "heavy": "Chaosmon Rush",
+        "magic": "Chaosmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Chaosmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mercurimon",
+      "displayName": "Mercurimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Mercurimon Jab",
+        "heavy": "Mercurimon Rush",
+        "magic": "Mercurimon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Mercurimon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "aegisdramon",
+      "displayName": "Aegisdramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Aegisdramon Jab",
+        "heavy": "Aegisdramon Rush",
+        "magic": "Aegisdramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Aegisdramon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "agnimon",
+      "displayName": "Agnimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Warden",
+      "type": "ember",
+      "skills": {
+        "physical": "Agnimon Jab",
+        "heavy": "Agnimon Rush",
+        "magic": "Agnimon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Agnimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "alforcev-dramon",
+      "displayName": "AlforceV-dramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "AlforceVdramon Jab",
+        "heavy": "AlforceVdramon Rush",
+        "magic": "AlforceVdramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of AlforceV-dramon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientbeetmon",
+      "displayName": "AncientBeetmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientBeetmon Jab",
+        "heavy": "AncientBeetmon Rush",
+        "magic": "AncientBeetmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of AncientBeetmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientgarurumon",
+      "displayName": "AncientGarurumon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientGarurumon Jab",
+        "heavy": "AncientGarurumon Rush",
+        "magic": "AncientGarurumon Hex"
+      },
+      "roleRationale": "An authored Striker reading of AncientGarurumon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientgreymon",
+      "displayName": "AncientGreymon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "AncientGreymon Jab",
+        "heavy": "AncientGreymon Rush",
+        "magic": "AncientGreymon Hex"
+      },
+      "roleRationale": "An authored Striker reading of AncientGreymon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientirismon",
+      "displayName": "AncientIrismon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientIrismon Jab",
+        "heavy": "AncientIrismon Rush",
+        "magic": "AncientIrismon Hex"
+      },
+      "roleRationale": "An authored Striker reading of AncientIrismon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientmegatheriummon",
+      "displayName": "AncientMegatheriummon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientMegatheriummon Jab",
+        "heavy": "AncientMegatheriummon Rush",
+        "magic": "AncientMegatheriummon Hex"
+      },
+      "roleRationale": "An authored Warden reading of AncientMegatheriummon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientmermaimon",
+      "displayName": "AncientMermaimon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientMermaimon Jab",
+        "heavy": "AncientMermaimon Rush",
+        "magic": "AncientMermaimon Hex"
+      },
+      "roleRationale": "An authored Warden reading of AncientMermaimon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientsphinxmon",
+      "displayName": "AncientSphinxmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientSphinxmon Jab",
+        "heavy": "AncientSphinxmon Rush",
+        "magic": "AncientSphinxmon Hex"
+      },
+      "roleRationale": "An authored Warden reading of AncientSphinxmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancienttroiamon",
+      "displayName": "AncientTroiamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientTroiamon Jab",
+        "heavy": "AncientTroiamon Rush",
+        "magic": "AncientTroiamon Hex"
+      },
+      "roleRationale": "An authored Warden reading of AncientTroiamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientvolcamon",
+      "displayName": "AncientVolcamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "ember",
+      "skills": {
+        "physical": "AncientVolcamon Jab",
+        "heavy": "AncientVolcamon Rush",
+        "magic": "AncientVolcamon Hex"
+      },
+      "roleRationale": "An authored Warden reading of AncientVolcamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ancientwisemon",
+      "displayName": "AncientWisemon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "AncientWisemon Jab",
+        "heavy": "AncientWisemon Rush",
+        "magic": "AncientWisemon Hex"
+      },
+      "roleRationale": "An authored Warden reading of AncientWisemon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "armamon",
+      "displayName": "Armamon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Armamon Jab",
+        "heavy": "Armamon Rush",
+        "magic": "Armamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Armamon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "ballistamon",
+      "displayName": "Ballistamon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Ballistamon Jab",
+        "heavy": "Ballistamon Rush",
+        "magic": "Ballistamon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Ballistamon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "bastemon",
+      "displayName": "Bastemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Bastemon Jab",
+        "heavy": "Bastemon Rush",
+        "magic": "Bastemon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Bastemon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "bluemeramon",
+      "displayName": "BlueMeramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Warden",
+      "type": "ember",
+      "skills": {
+        "physical": "BlueMeramon Jab",
+        "heavy": "BlueMeramon Rush",
+        "magic": "BlueMeramon Hex"
+      },
+      "roleRationale": "An authored Warden reading of BlueMeramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "buraimon",
+      "displayName": "Buraimon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Buraimon Jab",
+        "heavy": "Buraimon Rush",
+        "magic": "Buraimon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Buraimon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "butenmon",
+      "displayName": "Butenmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Butenmon Jab",
+        "heavy": "Butenmon Rush",
+        "magic": "Butenmon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Butenmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "cerberumon",
+      "displayName": "Cerberumon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Cerberumon Jab",
+        "heavy": "Cerberumon Rush",
+        "magic": "Cerberumon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Cerberumon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "chaosdramon",
+      "displayName": "Chaosdramon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "ember",
+      "skills": {
+        "physical": "Chaosdramon Jab",
+        "heavy": "Chaosdramon Rush",
+        "magic": "Chaosdramon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Chaosdramon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "craniummon",
+      "displayName": "Craniummon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Craniummon Jab",
+        "heavy": "Craniummon Rush",
+        "magic": "Craniummon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Craniummon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "daipenmon",
+      "displayName": "Daipenmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Daipenmon Jab",
+        "heavy": "Daipenmon Rush",
+        "magic": "Daipenmon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Daipenmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "darkknightmon",
+      "displayName": "DarkKnightmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "DarkKnightmon Jab",
+        "heavy": "DarkKnightmon Rush",
+        "magic": "DarkKnightmon Hex"
+      },
+      "roleRationale": "An authored Warden reading of DarkKnightmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "deadlyaxemon",
+      "displayName": "DeadlyAxemon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "DeadlyAxemon Jab",
+        "heavy": "DeadlyAxemon Rush",
+        "magic": "DeadlyAxemon Hex"
+      },
+      "roleRationale": "An authored Striker reading of DeadlyAxemon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dorulucannonshoutmon",
+      "displayName": "DoruluCannonShoutmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "DoruluCannonShoutmon Jab",
+        "heavy": "DoruluCannonShoutmon Rush",
+        "magic": "DoruluCannonShoutmon Hex"
+      },
+      "roleRationale": "An authored Warden reading of DoruluCannonShoutmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dorulumon",
+      "displayName": "Dorulumon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dorulumon Jab",
+        "heavy": "Dorulumon Rush",
+        "magic": "Dorulumon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Dorulumon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "dynasmon",
+      "displayName": "Dynasmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Dynasmon Jab",
+        "heavy": "Dynasmon Rush",
+        "magic": "Dynasmon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Dynasmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "examon",
+      "displayName": "Examon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "Examon Jab",
+        "heavy": "Examon Rush",
+        "magic": "Examon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of Examon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "grademon",
+      "displayName": "Grademon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Grademon Jab",
+        "heavy": "Grademon Rush",
+        "magic": "Grademon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Grademon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "greyknightsmon",
+      "displayName": "GreyKnightsmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "GreyKnightsmon Jab",
+        "heavy": "GreyKnightsmon Rush",
+        "magic": "GreyKnightsmon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of GreyKnightsmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "greymonxros",
+      "displayName": "GreymonXros",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "GreymonXros Jab",
+        "heavy": "GreymonXros Rush",
+        "magic": "GreymonXros Hex"
+      },
+      "roleRationale": "An authored Striker reading of GreymonXros on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "madleomon",
+      "displayName": "MadLeomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "MadLeomon Jab",
+        "heavy": "MadLeomon Rush",
+        "magic": "MadLeomon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of MadLeomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "mailbirdramon",
+      "displayName": "Mailbirdramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Mailbirdramon Jab",
+        "heavy": "Mailbirdramon Rush",
+        "magic": "Mailbirdramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Mailbirdramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "metalgreymonxros",
+      "displayName": "MetalGreymonXros",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Bulwark",
+      "type": "ember",
+      "skills": {
+        "physical": "MetalGreymonXros Jab",
+        "heavy": "MetalGreymonXros Rush",
+        "magic": "MetalGreymonXros Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of MetalGreymonXros on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "nefertimon",
+      "displayName": "Nefertimon",
+      "sourceStage": "Armor",
+      "combatTier": "Champion",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "Nefertimon Jab",
+        "heavy": "Nefertimon Rush",
+        "magic": "Nefertimon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of Nefertimon on the existing Armor budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "rhodoknightmon",
+      "displayName": "RhodoKnightmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "RhodoKnightmon Jab",
+        "heavy": "RhodoKnightmon Rush",
+        "magic": "RhodoKnightmon Hex"
+      },
+      "roleRationale": "An authored Balanced reading of RhodoKnightmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "scorpiomon",
+      "displayName": "Scorpiomon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Scorpiomon Jab",
+        "heavy": "Scorpiomon Rush",
+        "magic": "Scorpiomon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Scorpiomon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx2",
+      "displayName": "ShoutmonX2",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX2 Jab",
+        "heavy": "ShoutmonX2 Rush",
+        "magic": "ShoutmonX2 Hex"
+      },
+      "roleRationale": "An authored Striker reading of ShoutmonX2 on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx3",
+      "displayName": "ShoutmonX3",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX3 Jab",
+        "heavy": "ShoutmonX3 Rush",
+        "magic": "ShoutmonX3 Hex"
+      },
+      "roleRationale": "An authored Warden reading of ShoutmonX3 on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx3gm",
+      "displayName": "ShoutmonX3GM",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX3GM Jab",
+        "heavy": "ShoutmonX3GM Rush",
+        "magic": "ShoutmonX3GM Hex"
+      },
+      "roleRationale": "An authored Warden reading of ShoutmonX3GM on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx3sd",
+      "displayName": "ShoutmonX3SD",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX3SD Jab",
+        "heavy": "ShoutmonX3SD Rush",
+        "magic": "ShoutmonX3SD Hex"
+      },
+      "roleRationale": "An authored Warden reading of ShoutmonX3SD on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx4",
+      "displayName": "ShoutmonX4",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX4 Jab",
+        "heavy": "ShoutmonX4 Rush",
+        "magic": "ShoutmonX4 Hex"
+      },
+      "roleRationale": "An authored Balanced reading of ShoutmonX4 on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx4b",
+      "displayName": "ShoutmonX4B",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Balanced",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX4B Jab",
+        "heavy": "ShoutmonX4B Rush",
+        "magic": "ShoutmonX4B Hex"
+      },
+      "roleRationale": "An authored Balanced reading of ShoutmonX4B on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx4s",
+      "displayName": "ShoutmonX4S",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX4S Jab",
+        "heavy": "ShoutmonX4S Rush",
+        "magic": "ShoutmonX4S Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of ShoutmonX4S on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx5",
+      "displayName": "ShoutmonX5",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX5 Jab",
+        "heavy": "ShoutmonX5 Rush",
+        "magic": "ShoutmonX5 Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of ShoutmonX5 on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "shoutmonx5s",
+      "displayName": "ShoutmonX5S",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "ShoutmonX5S Jab",
+        "heavy": "ShoutmonX5S Rush",
+        "magic": "ShoutmonX5S Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of ShoutmonX5S on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "sparrowmon",
+      "displayName": "Sparrowmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Sparrowmon Jab",
+        "heavy": "Sparrowmon Rush",
+        "magic": "Sparrowmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Sparrowmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "starswordshoutmon",
+      "displayName": "StarSwordShoutmon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "StarSwordShoutmon Jab",
+        "heavy": "StarSwordShoutmon Rush",
+        "magic": "StarSwordShoutmon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of StarSwordShoutmon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "strikedramon",
+      "displayName": "Strikedramon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "ember",
+      "skills": {
+        "physical": "Strikedramon Jab",
+        "heavy": "Strikedramon Rush",
+        "magic": "Strikedramon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Strikedramon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "tigervespamon",
+      "displayName": "TigerVespamon",
+      "sourceStage": "Mega",
+      "combatTier": "Mega",
+      "role": "Bulwark",
+      "type": "neutral",
+      "skills": {
+        "physical": "TigerVespamon Jab",
+        "heavy": "TigerVespamon Rush",
+        "magic": "TigerVespamon Hex"
+      },
+      "roleRationale": "An authored Bulwark reading of TigerVespamon on the existing Mega budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "troopmon",
+      "displayName": "Troopmon",
+      "sourceStage": "Champion",
+      "combatTier": "Champion",
+      "role": "Striker",
+      "type": "neutral",
+      "skills": {
+        "physical": "Troopmon Jab",
+        "heavy": "Troopmon Rush",
+        "magic": "Troopmon Hex"
+      },
+      "roleRationale": "An authored Striker reading of Troopmon on the existing Champion budget.",
+      "skillLabelOrigin": "authored"
+    },
+    {
+      "entryKey": "wisemon",
+      "displayName": "Wisemon",
+      "sourceStage": "Ultimate",
+      "combatTier": "Ultimate",
+      "role": "Warden",
+      "type": "neutral",
+      "skills": {
+        "physical": "Wisemon Jab",
+        "heavy": "Wisemon Rush",
+        "magic": "Wisemon Hex"
+      },
+      "roleRationale": "An authored Warden reading of Wisemon on the existing Ultimate budget.",
+      "skillLabelOrigin": "authored"
     }
   ],
   "proposedEdges": [
