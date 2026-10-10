@@ -1,6 +1,6 @@
 # Co-op expeditions: boss raids and dungeon raids — design (proposed, not implemented)
 
-Status: design for review; nothing here is in the core. Builds on rules 17 ([care mistakes and injury](CARE_MISTAKES_INJURY.md)), rules 18 ([auto-battle balance and focus taps](AUTO_BALANCE.md)) and the Nearby transport ([protocol](NEARBY_PROTOCOL.md)), which is now confirmed working between two real devices. Supersedes the earlier boss-only draft. **Revision 2:** co-op is capped at **two players**; Partners uses a **2×2 tile grid**; BACK/LEAVE is raised and enlarged.
+Status: design for review; nothing here is in the core. Builds on rules 17 ([care mistakes and injury](CARE_MISTAKES_INJURY.md)), rules 18 ([auto-battle balance and focus taps](AUTO_BALANCE.md)) and the Nearby transport ([protocol](NEARBY_PROTOCOL.md)), which is now confirmed working between two real devices. Supersedes the earlier boss-only draft. **Revision 2:** co-op is capped at **two players**; Partners uses a **2×2 tile grid**; BACK/LEAVE has one shared spot fully inside the touch circle, with a padded hit area (shipped in firmware).
 
 ## Goal
 
@@ -46,7 +46,7 @@ flowchart LR
 | Choices are the existing **3-option icon carousel** (attack *or* guard set) | Tactical battle, Nearby duel |
 | Anything that saves or costs shows a review screen first; review text in amber | ModeReview, ReleaseReview, Trade |
 | Status words, not just color: HURT, READY, LINK, COVER, CHEER | capture grade words |
-| Every screen has BACK/LEAVE in the same spot: **200×52 at x 106–306, y 292–344**, hit area padded 12 px, release anywhere inside the padded box counts | Replaces the old 124×38 at y=348, which sat in the bezel curve |
+| Every screen has BACK/LEAVE/DONE in the same spot: **180×48 at x 116–296, y 332–380** (`kNav*` in `device_ui.hpp`), entirely inside the 204 px touch circle. The hit area is padded 12 px (bezel-edge contacts count), and release anywhere inside the padded box counts | Replaces BACK at y 340–392, whose bottom corners were outside the touch circle, and LEAVE/DONE at 124×38, y 348 |
 
 ## Entry points
 
@@ -179,9 +179,9 @@ Co-op makes the squad matter, so Partners becomes **squad-first** instead of a 6
 | Status split across 4 stats pages | Injury, mistakes, evolve-readiness not visible while choosing | **MEMBER** card shows HP bar, bond (4 hearts = bond/50), care mistakes vs. route limit, injury word |
 | No sorting | Finding a hurt or ready Digimon is a hunt | **BOX** 2×2 grid pages (15 pages for 60), page dots + swipe, sort chip cycles NEW · LV · READY · HURT |
 | OWNED ID on every screen | Developer detail in a kid's UI | Moved to DETAILS |
-| BACK is 124×38 low on the round edge | Users miss it; its lower corners are outside the touch circle | Raised, 200×52 BACK in the shared spot (see UI rules) |
+| BACK sits low on the round edge | Users miss it; its lower corners are outside the touch circle | Shared padded BACK spot (see UI rules); new screens put content above y 320 |
 
-Why 2×2: the 412 px round panel is about 37 mm across, roughly 11 px/mm. A 128×96 tile is ≈ 11.5 × 8.6 mm — comfortably above the ~9 mm thumb target — and the grid (264×200 at left 74, top 80) sits entirely inside the circle, clear of the bezel curve. A 3×3 grid would need ≈ 80 px (7 mm) tiles.
+Why 2×2: the 412 px round panel is about 37 mm across, roughly 11 px/mm. A 128×96 tile is ≈ 11.5 × 8.6 mm — comfortably above the ~9 mm thumb target — and the grid (264×192 at left 74, top 86–278) sits entirely inside the circle, clear of the bezel curve. A 3×3 grid would need ≈ 80 px (7 mm) tiles.
 
 The co-op **Squad check** reuses the SQUAD layout with readiness words, so preparing at home and checking in the lobby are the same screen.
 

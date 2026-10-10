@@ -117,6 +117,9 @@ inline bool autoFightReady(const State& state, const Model& model) {
     State copy = state;
     return apply(copy, Action::AutoFight) == Error::None;
 }
+// One bottom spot for BACK/LEAVE/DONE/skip, fully inside the 204 px touch circle.
+inline constexpr int kNavX=116, kNavY=332, kNavW=180, kNavH=48, kNavPad=12;
+
 class Controller {
 public:
     void update(const State& state, const Model& model);
@@ -150,7 +153,14 @@ public:
     bool interactionIdle() const { return !down_ && !captureContactBlocked_ && !pending_; }
     static bool inside(int x, int y);
 private:
-    struct Button { int x, y, w, h; const char* label; int id; bool enabled; };
+    // BACK, LEAVE, DONE and the Capture skip share one bottom spot, fully inside the
+    // touch circle, with a padded hit area that also forgives release drift.
+    struct Button { int x, y, w, h; const char* label; int id; bool enabled; bool padded=false; };
+    static bool hits(const Button& b, int x, int y, int pad=0) {
+        return x>=b.x-pad && x<b.x+b.w+pad && y>=b.y-pad && y<b.y+b.h+pad;
+    }
+    // Exact hit on any button wins; otherwise the padded bottom button; -1 for none.
+    static int hitIndex(const Button* choices, std::size_t n, int x, int y);
     std::size_t buttons(const State&, const Model&, Button* out) const;
     Intent activate(int id, const State&, const Model&);
     Intent propose(const State&, const Model&, Action, std::uint32_t value = 0);
@@ -193,6 +203,7 @@ private:
     mutable std::uint64_t hintAt_ = UINT64_MAX;
     mutable std::uint8_t hintSeen_ = 0, hintContext_ = 0;
     int downButton_ = 0;
+    bool downPadded_ = false;
     std::uint32_t captureEpochForm_ = 0;
     // Survives resolve/context changes until an observed physical release.
     bool captureContactBlocked_ = false;

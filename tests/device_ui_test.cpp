@@ -541,7 +541,7 @@ void captureTimingControls() {
     };
     // Main play-area Down commits the sampled intent immediately. Frame polling
     // and subsequent movement/release never change that accepted proposal.
-    for(bool hit:{false,true}) for(const auto point:std::array<std::array<int,2>,6>{{{206,176},{403,206},{95,200},{206,330},{206,80},{206,306}}}) {
+    for(bool hit:{false,true}) for(const auto point:std::array<std::array<int,2>,6>{{{206,176},{403,206},{95,200},{206,319},{206,80},{206,306}}}) {
         Harness sparse,dense;ready(sparse);ready(dense);const auto before=sparse.state;
         nextCapturePhase(sparse,hit);dense.now=sparse.now;
         std::array<std::uint16_t,kPixels> frame;
@@ -1163,7 +1163,38 @@ void battleArtworkSequence() {
     CHECK(std::memcmp(&saved,&h.state,sizeof(saved))==0);
 }
 
+// BACK sits in one spot fully inside the touch circle, with a padded hit area
+// that forgives the bezel edge and release drift; exact buttons still win.
+void backTargets() {
+    CHECK(kNavX==116 && kNavY==332 && kNavW==180 && kNavH==48 && kNavPad==12);
+    for(int x:{kNavX,kNavX+kNavW-1}) { const int dx=x-206,dy=kNavY+kNavH-1-206; CHECK(dx*dx+dy*dy<=204*204); }
+    auto settings=[](Harness& h) { h.openHome(HomePanel::Settings); CHECK(h.ui.screen()==Screen::Settings); };
+    auto backed=[](Harness& h,Intent i) { if(!i) return false; h.dispatch(i); return h.ui.screen()==Screen::Home; };
+    { Harness h; h.choose(); settings(h); CHECK(backed(h,h.tap(206,356))); }        // centre
+    { Harness h; h.choose(); settings(h); CHECK(backed(h,h.tap(206,388))); }        // below the drawn button, in pad
+    { Harness h; h.choose(); settings(h); CHECK(backed(h,h.tap(108,390))); }        // bezel corner just outside the circle
+    { Harness h; h.choose(); settings(h); CHECK(!h.tap(206,396)); CHECK(h.ui.screen()==Screen::Settings); } // outside pad
+    { // Release drift anywhere inside the padded box still counts, even beyond 24 px slop.
+        Harness h; h.choose(); settings(h);
+        CHECK(!h.event(TouchKind::Down,140,350)); CHECK(!h.event(TouchKind::Move,250,386,40));
+        CHECK(backed(h,h.event(TouchKind::Up,300,388,40)));
+    }
+    { // Drifting out of the pad cancels.
+        Harness h; h.choose(); settings(h);
+        CHECK(!h.event(TouchKind::Down,206,356)); CHECK(!h.event(TouchKind::Move,206,300,40));
+        CHECK(!h.event(TouchKind::Up,206,356,40)); CHECK(h.ui.screen()==Screen::Settings);
+    }
+    { // An exact hit on a neighbouring button beats BACK's pad.
+        Harness h; h.choose(); settings(h); const auto i=h.tap(150,324);
+        CHECK(i && i.kind==IntentKind::Navigation); h.dispatch(i); CHECK(h.ui.screen()==Screen::ModeReview);
+    }
+    { // A contact outside the circle that is not on the padded button is still ignored.
+        Harness h; h.choose(); settings(h); CHECK(!h.tap(20,20) && h.ui.screen()==Screen::Settings);
+    }
+}
+
 int main(int argc,char** argv) {
+    backTargets();
     orientationGestures();
     horizontalTaps();
     nearbyModeConsent();
@@ -1777,15 +1808,15 @@ int main(int argc,char** argv) {
     CHECK(std::memcmp(&starterState,&browsing.state,sizeof(State))==0);
     CHECK(browsing.ui.render(browsing.state,browsing.model,stepScreen.data(),stepScreen.size(),1000));
     CHECK(browsing.ui.render(browsing.state,browsing.model,framebuffer.data()+1,kPixels,7000));
-    CHECK(std::memcmp(stepScreen.data()+334*kSize,framebuffer.data()+1+334*kSize,13*kSize*sizeof(std::uint16_t))!=0); // Hint fades.
+    CHECK(std::memcmp(stepScreen.data()+382*kSize,framebuffer.data()+1+382*kSize,13*kSize*sizeof(std::uint16_t))!=0); // Hint fades.
     CHECK(browsing.ui.render(browsing.state,browsing.model,stepScreen.data(),stepScreen.size(),8000));
     CHECK(browsing.ui.render(browsing.state,browsing.model,framebuffer.data()+1,kPixels,9000));
-    CHECK(std::memcmp(stepScreen.data()+334*kSize,framebuffer.data()+1+334*kSize,13*kSize*sizeof(std::uint16_t))==0); // Expired, not perpetual.
+    CHECK(std::memcmp(stepScreen.data()+382*kSize,framebuffer.data()+1+382*kSize,13*kSize*sizeof(std::uint16_t))==0); // Expired, not perpetual.
     browsing.dispatch(browsing.tap(206,365));
     CHECK(browsing.ui.render(browsing.state,browsing.model,framebuffer.data()+1,kPixels,9100));
     browsing.dispatch(browsing.tap(206,285));
     CHECK(browsing.ui.render(browsing.state,browsing.model,framebuffer.data()+1,kPixels,9200));
-    CHECK(std::memcmp(stepScreen.data()+334*kSize,framebuffer.data()+1+334*kSize,13*kSize*sizeof(std::uint16_t))==0); // Re-entry cannot restart first-use hint.
+    CHECK(std::memcmp(stepScreen.data()+382*kSize,framebuffer.data()+1+382*kSize,13*kSize*sizeof(std::uint16_t))==0); // Re-entry cannot restart first-use hint.
 
     // A changed Nearby role/mode at the same sequence revokes held commits.
     Harness roles; roles.choose(); roles.openHome(HomePanel::Nearby); nearby::View roleView;
