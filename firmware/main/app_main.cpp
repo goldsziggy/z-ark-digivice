@@ -25,10 +25,25 @@
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
+#include <new>
 #include <unistd.h>
+#include <utility>
 
 namespace {
 using namespace digivice;
+
+// The 64 KiB main stack is reserved from internal RAM before app_main. The
+// 250-member runtime no longer leaves a contiguous internal block that large,
+// so the long-lived game objects are created in PSRAM after the scheduler starts.
+template <typename T, typename... Args>
+T& permanentPsram(Args&&... args) {
+    void* memory = heap_caps_aligned_alloc(alignof(T), sizeof(T), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    if (!memory) {
+        std::printf("PSRAM allocation failed (%zu bytes). Existing saves were not erased.\n", sizeof(T));
+        for (;;) vTaskDelay(portMAX_DELAY);
+    }
+    return *new (memory) T(std::forward<Args>(args)...);
+}
 
 // Keep the return-by-value initialization temporary out of app_main's frame,
 // which remains live beneath every save/trade call for the lifetime of the task.
@@ -245,8 +260,8 @@ extern "C" void app_main() {
         std::printf("NVS initialization failed (%s). Recovery mode; partition was NOT erased.\n",
                     esp_err_to_name(initialization));
     }
-    static digivice::storage::SaveStore saves(backend);
-    static digivice::State state;
+    static auto& saves = permanentPsram<digivice::storage::SaveStore>(backend);
+    static auto& state = permanentPsram<digivice::State>();
     initializeBootState(state, false, 0); // Inspection fallback; never enroll or save this default.
     const auto boot = saves.restore(state);
     std::printf("Boot storage: %s\n", saves.diagnostic());
@@ -268,7 +283,7 @@ extern "C" void app_main() {
         std::puts("RECOVERY: snapshot/status are inspection only; do not erase or downgrade storage.");
         std::puts("Shown state is the newest valid fallback, or a temporary default if none exists.");
     }
-    static digivice::HandheldRuntime runtime(state, saves, startupSeeds);
+    static auto& runtime = permanentPsram<digivice::HandheldRuntime>(state, saves, startupSeeds);
     runtime.begin();
     printState(state);
     help();
