@@ -53,7 +53,9 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
     const identity = await pair();
     const prepared = await request('/api/save-sync', identity.token, batch(0, 'ring-quality-prepare', prepare));
     assert.equal(prepared.status, 200); assert.equal(prepared.body.state.wildFormId, 102);
-    assert.equal(prepared.body.state.wildCaptureChance, 64);
+    // Seed 12345 is one level above the partner, so the eligible chance is 55.
+    assert.equal(prepared.body.state.wildLevel, 2);
+    assert.equal(prepared.body.state.wildCaptureChance, 55);
     return { ...identity, prepared };
   };
   return { dataDir, request, pair, ready, dropAcknowledgement, restart: async () => { await close(); app = await startServer(options); } };
@@ -84,10 +86,10 @@ test('timing grades apply once to eligible mon odds and the displayed chance mat
     assert.equal(result.body.autoTrace, null);
     states.set(grade, result.body.state);
   }
-  assert.equal(states.get('red').lastCapture.chance, 6);
-  assert.equal(states.get('orange').lastCapture.chance, 32);
+  assert.equal(states.get('red').lastCapture.chance, 5);
+  assert.equal(states.get('orange').lastCapture.chance, 27);
   assert.equal(states.get('orange').lastCapture.result, 'escaped', 'the capture roll remains above the orange threshold');
-  assert.equal(states.get('green').lastCapture.chance, 64, 'green retains the full eligible chance, not guaranteed success');
+  assert.equal(states.get('green').lastCapture.chance, 55, 'green retains the full eligible chance, not guaranteed success');
   const legacy = await f.ready();
   const oldHit = await f.request('/api/save-sync', legacy.token, batch(1, 'existing-flick-hit', [{ type: 'flick', value: 41140 }]));
   assert.equal(oldHit.status, 200); assert.deepEqual(oldHit.body.state, states.get('green'), 'green matches the previous eligible aimed capture exactly');
@@ -96,8 +98,8 @@ test('timing grades apply once to eligible mon odds and the displayed chance mat
 test('inclusive quality boundaries and adjacent phases preserve matching browser and authoritative odds', async t => {
   const f = await fixture(t);
   // Kumamon form102 targets radius68. Green is +/-12, orange extends to +/-24.
-  for (const [phase, grade, chance] of [[239, 'red', 6], [240, 'orange', 32], [599, 'orange', 32], [600, 'green', 64],
-    [1320, 'green', 64], [1321, 'orange', 32], [1680, 'orange', 32], [1681, 'red', 6]] as const) {
+  for (const [phase, grade, chance] of [[239, 'red', 5], [240, 'orange', 27], [599, 'orange', 27], [600, 'green', 55],
+    [1320, 'green', 55], [1321, 'orange', 27], [1680, 'orange', 27], [1681, 'red', 5]] as const) {
     const identity = await f.ready(), before = identity.prepared.body.state;
     const shown = sampleCaptureRing(phase, before.wildFormId); assert.equal(shown.grade, grade);
     assert.equal(captureRingChance(before.wildCaptureChance, grade), chance);
@@ -140,7 +142,7 @@ test('lost ACK, simultaneous duplicate posts and service restart never spend ano
   const f = await fixture(t), identity = await f.ready(); const first = batch(1, 'ring-lost-ack-one', [ring(0)]);
   await f.dropAcknowledgement(identity.token, first);
   const committed = await f.request('/api/save', identity.token);
-  assert.equal(committed.body.state.captureAttempts, 1); checkRoll(identity.prepared.body.state, committed.body.state, 6);
+  assert.equal(committed.body.state.captureAttempts, 1); checkRoll(identity.prepared.body.state, committed.body.state, 5);
   const receipt = await f.request('/api/save-sync', identity.token, first);
   assert.deepEqual(receipt.body.state, committed.body.state);
   const duplicates = await Promise.all(Array.from({ length: 4 }, () => f.request('/api/save-sync', identity.token, first)));
