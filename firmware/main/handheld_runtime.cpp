@@ -735,6 +735,7 @@ bool HandheldRuntime::stopUsbTransfer(bool restoreInterface) {
     usbTransferLease_ = false;
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
     art_.retry(); // Also refresh completed assets after surviving-power standby.
+    for (auto& tile : tileArt_) tile.retry();
 #endif
     if (restoreInterface && !powerFrozen()) {
         assets_.pause(usbTransferPreviousAssetsPaused_);

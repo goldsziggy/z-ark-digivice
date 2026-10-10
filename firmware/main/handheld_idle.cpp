@@ -1,14 +1,17 @@
 #include "handheld_runtime.hpp"
 
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
+#include <algorithm>
 #include <cstdio>
+#include <iterator>
 
 namespace digivice {
 bool HandheldRuntime::idleBlocked() const {
     using S = deviceui::Screen;
     const auto screen = ui_.screen();
     const bool quietScreen = screen == S::Egg || screen == S::Home || screen == S::Result ||
-        screen == S::Collection || screen == S::Stats || screen == S::Settings || screen == S::Sound;
+        screen == S::Collection || screen == S::Squad || screen == S::Box || screen == S::Stats ||
+        screen == S::Settings || screen == S::Sound;
     const auto& network = network_.status();
     return !quietScreen || state_.phase == Phase::Encounter || ui_.pending() || touchPressed() ||
         battle_.locked() || !practice_.allowsCareAction(Action::Explore) || nearbyBusy() ||
@@ -18,6 +21,7 @@ bool HandheldRuntime::idleBlocked() const {
         network_.radioLeased() || network_.scanStatus().busy || network.state == net::State::Joining ||
         network.state == net::State::Backoff ||
         network.probePending || assets_.status().busy || !art_.quiescent() || !partnerArt_.quiescent() ||
+        std::any_of(std::begin(tileArt_), std::end(tileArt_), [](const auto& tile) { return !tile.quiescent(); }) ||
         !audio_.effectsQuiescent() || !display::quiescent() || !display::displayReady() ||
         !display::touchReady() || !imu_.ready() || !saves_.writable() || !usage_.writable() ||
         walkingFault_ || !idleSettings_.writable();

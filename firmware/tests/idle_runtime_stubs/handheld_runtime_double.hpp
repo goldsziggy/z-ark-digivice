@@ -82,7 +82,7 @@ public:
     touchstream::Sample flushTouch_[kFlushTouchQueue]{};
     std::size_t flushTouchCount_=0;
     IdleUiDouble ui_;IdleSetupDouble setup_;IdleImuDouble imu_;IdleAudioDouble audio_;
-    IdleArtDouble art_,partnerArt_;IdleAssetsDouble assets_;IdleNetworkDouble network_;
+    IdleArtDouble art_,partnerArt_,tileArt_[deviceui::kTiles];IdleAssetsDouble assets_;IdleNetworkDouble network_;
     IdleUsbDouble usbTransfer_;IdlePowerDouble power_;IdleBattleDouble battle_;
     IdlePracticeDouble practice_;IdleSettingsDouble idleSettings_;
     IdleTradeSessionDouble tradeSession_;

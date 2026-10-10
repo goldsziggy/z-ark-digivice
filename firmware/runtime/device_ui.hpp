@@ -21,7 +21,8 @@ constexpr std::uint32_t kNearbyFeedbackMs = 2400;
 enum class Screen : std::uint8_t {
     Egg, Starter, StarterReview, Home, Care, Explore,
     Encounter, Battle, Capture, Result, Collection, Stats, ReleaseReview, Evolution, EvolutionReview, EvolutionResult,
-    Settings, EncounterSettings, ModeReview, Nearby, NearbyReview, Sound, TradeChoose, TradeReview
+    Settings, EncounterSettings, ModeReview, Nearby, NearbyReview, Sound, TradeChoose, TradeReview,
+    Squad, Box // Partners: 2x2 squad landing and 2x2 pages of every member; Collection is one member.
 };
 enum class TouchKind : std::uint8_t { Down, Move, Up, Cancel };
 enum class HomePanel : std::uint8_t { Care, Partners, Settings, Nearby };
@@ -72,6 +73,7 @@ struct Model {
     std::int16_t tiltX = 0, tiltY = 0;
     Artwork artwork{};
     SpriteFrame partnerArtwork{}; // Exact second actor; unavailable art uses a neutral indicator.
+    SpriteFrame tileArtwork[4]{}; // Squad/Box tiles, matched to tileArtRequest(); missing art shows a neutral mark.
     const battlepresentation::View* battle = nullptr; // Immutable runtime-owned presentation snapshot.
     const nearby::View* nearby = nullptr;
     nearby::Fighter nearbyLocalFighter{}; // Frozen when this live Nearby session opens.
@@ -121,6 +123,9 @@ inline bool autoFightReady(const State& state, const Model& model) {
 inline constexpr int kNavX=116, kNavY=332, kNavW=180, kNavH=48, kNavPad=12;
 // Release margin for every other button once pressed (roll-off drift), never a Down target.
 inline constexpr int kHoldPad=8, kHoldSlop=44; // 44 px = 4 mm of drift; a longer drag is a swipe
+// Partners 2x2 grid: 128x92 tiles (11.5 x 8.3 mm), 8 px gaps, entirely inside the touch circle.
+inline constexpr std::size_t kTiles=4;
+inline constexpr int kTileW=128, kTileH=92, kTileX[2]{74,210}, kTileY[2]{84,184};
 
 class Controller {
 public:
@@ -138,6 +143,11 @@ public:
     // Use this same request for loading and rendering the second actor, including
     // the unlocked move picker between turns. Never guess animation in the HAL.
     ArtRequest partnerArtRequest(const State& state, const Model& model, std::uint64_t nowMs) const;
+    // Squad/Box tile i (0..kTiles-1); zero formId when that tile shows no member.
+    ArtRequest tileArtRequest(const State& state, const Model& model, std::size_t tile, std::uint64_t nowMs) const;
+    // Member shown on tile i: Squad is the active partner then the XP companions; Box pages every member.
+    const CreatureMember* tileMember(const State& state, std::size_t tile) const;
+    std::uint8_t boxPage() const { return boxPage_; }
     static constexpr int kCaptureX=102, kCaptureY=76, kCaptureWidth=208, kCaptureHeight=208;
     bool captureAnimating(const State&, const Model&) const;
     // Reconstruct only this fixed region in an already rendered framebuffer.
@@ -187,7 +197,8 @@ private:
     std::uint32_t sequence_ = UINT32_MAX, starterForm_ = 0, memberId_ = 0;
     std::uint8_t starterCount_ = 8;
     std::uint8_t selectedId_ = 0, memberIndex_ = 0, proposedMode_ = 255;
-    std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0;
+    std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0, boxPage_ = 0;
+    Screen memberReturn_ = Screen::Squad; // Where BACK from one member goes: Squad or Box.
     trade::Identity tradePeer_{};
     std::uint32_t tradeMemberId_ = 0, tradeFingerprint_ = 0, tradeContext_ = 0, tradePeerNonce_ = 0;
     std::uint8_t tradePage_ = 0;

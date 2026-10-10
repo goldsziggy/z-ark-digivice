@@ -393,7 +393,16 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  NearbyOpen, NearbyPrevious, NearbyNext, NearbyReview, NearbyChallenge, NearbyAccept, NearbyCancel, NearbyClose,
  NearbyPhysical, NearbyMagic, NearbyHeavy, NearbyCommit, NearbyBrace, NearbyCounter, NearbyWard,
  HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
- TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat, FocusSkip };
+ TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat, FocusSkip,
+ Tile0, Tile1, Tile2, Tile3, BoxOpen };
+std::size_t boxPages(const State& state) { return std::max<std::size_t>(1,(state.collectionCount+kTiles-1)/kTiles); }
+// Status word under a tile's level: injury first, then a ready route, then its role.
+const char* tileStatus(const State& state,const Model& model,const CreatureMember& member,std::uint16_t& color) {
+    if(isInjured(member)) { color=red; return "HURT"; }
+    if(anyRouteReady(state,model,member)) { color=mint; return "READY"; }
+    color=dim;
+    return member.id==state.activeCreatureId ? "PARTNER" : isPartyMember(state,member.id) ? "SQUAD" : "";
+}
 constexpr const char* homeTitles[]{"CARE","PARTNERS","SETTINGS","NEARBY"};
 constexpr const char* homeActions[]{"OPEN CARE","PARTNERS","SETTINGS","FIND NEARBY"};
 } // namespace
@@ -575,6 +584,7 @@ void Controller::update(const State& state, const Model& model) {
         const auto* selected=collectionMemberAtDisplayIndex(state,memberIndex_);
         memberId_=selected ? selected->id : 0;
     }
+    if(boxPage_>=boxPages(state)) boxPage_=static_cast<std::uint8_t>(boxPages(state)-1); // Release can remove the last page.
     const bool captureEligible=screen_==Screen::Capture && !presentationLocked && !pending_ && (canCapture(state,model) || canFocus(state,model));
     if(!captureEligible || captureEligible!=captureEligible_ || contextChanged || captureEpochForm_!=state.wildFormId)
         captureEpoch_=UINT64_MAX;
@@ -632,13 +642,22 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         const bool active=member && member->id==state.activeCreatureId;
         const bool companion=member && isPartyMember(state,member->id);
         const auto action=companion ? Action::PartyRemove : Action::PartyAdd;
-        const char* label=active ? "ACTIVE PARTNER" : companion ? "REMOVE XP COMPANION" :
-            partyCount(state)==kPartyCapacity ? "XP COMPANIONS FULL" : "ADD XP COMPANION";
+        const char* label=active ? "ACTIVE PARTNER" : companion ? "REMOVE FROM SQUAD" :
+            partyCount(state)==kPartyCapacity ? "SQUAD FULL" : "ADD TO SQUAD";
         add(100,240,212,36,label,PartyToggle,member && !active && legal(state,model,action,member->id));
         left(1,"STATS + EVOLVE",MemberStats,member);
         right(1,"MAKE PARTNER",MemberSelect,member && !active && legal(state,model,Action::Select,member->id));
         back(); break;
     }
+    case Screen::Squad: case Screen::Box:
+        // The whole tile is the target. An empty squad slot opens Box to choose who joins.
+        for(std::size_t i=0;i<kTiles;++i) {
+            const auto* member=tileMember(state,i);
+            if(member) add(kTileX[i%2],kTileY[i/2],kTileW,kTileH,memberName(*member),Tile0+static_cast<int>(i));
+            else if(screen_==Screen::Squad && i) add(kTileX[i%2],kTileY[i/2],kTileW,kTileH,"ADD TO SQUAD",Tile0+static_cast<int>(i),state.collectionCount>1);
+        }
+        if(screen_==Screen::Squad) add(116,284,180,40,"ALL DIGIMON",BoxOpen,state.collectionCount>0);
+        back(); break;
     case Screen::Stats: {
         const auto* member=selectedMember(state);
         const bool active=member && member->id==state.activeCreatureId;
@@ -762,6 +781,12 @@ Intent Controller::navigateHorizontal(bool next,const State& state,const Model& 
     if(screen_==Screen::Home) return activate(next ? HomeNext : HomePrevious,state,model);
     if(screen_==Screen::Starter) return activate(next ? Next : Prev,state,model);
     if(screen_==Screen::Collection) return activate(next ? MemberNext : MemberPrev,state,model);
+    if(screen_==Screen::Box) {
+        const auto pages=boxPages(state);
+        if(pages<2) return {};
+        boxPage_=static_cast<std::uint8_t>((boxPage_+(next ? 1 : pages-1))%pages);
+        return {IntentKind::Navigation};
+    }
     if(screen_==Screen::Stats) return activate(next ? StatsNext : StatsPrevious,state,model);
     if(screen_==Screen::Evolution) {
         if(evolutionPage_) { evolutionPage_=evolutionPage_==1 ? 2 : 1; return {IntentKind::Navigation}; }
@@ -814,6 +839,12 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         if (screen_==Screen::Capture) return navigate(Screen::Battle);
         if (screen_==Screen::Battle) return navigate(Screen::Encounter);
         if (screen_==Screen::Stats) return navigate(Screen::Collection);
+        if (screen_==Screen::Collection) {
+            if (memberReturn_!=Screen::Box) return navigate(Screen::Squad);
+            boxPage_=static_cast<std::uint8_t>(std::min<std::size_t>(memberIndex_/kTiles,boxPages(state)-1));
+            return navigate(Screen::Box);
+        }
+        if (screen_==Screen::Box) return navigate(Screen::Squad);
         if (screen_==Screen::NearbyReview) return navigate(Screen::Nearby);
         if (screen_==Screen::ReleaseReview) { releaseMember_=0; return navigate(Screen::Stats); }
         if (screen_==Screen::Evolution) { if(evolutionPage_) { evolutionPage_=0; return navigate(Screen::Evolution); } return navigate(Screen::Stats); }
@@ -825,7 +856,15 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         return navigate(Screen::Home);
     case Care: return navigate(Screen::Care);
     case Explore: return navigate(Screen::Explore);
-    case Team: memberIndex_=0; memberId_=state.activeCreatureId; return navigate(Screen::Collection);
+    case Team: boxPage_=0; memberReturn_=Screen::Squad; return navigate(Screen::Squad);
+    case BoxOpen: boxPage_=0; return navigate(Screen::Box);
+    case Tile0: case Tile1: case Tile2: case Tile3: {
+        const auto* member=tileMember(state,static_cast<std::size_t>(id-Tile0));
+        if(!member) { boxPage_=0; return navigate(Screen::Box); }
+        const auto index=displayIndexForMember(state,member->id);
+        memberIndex_=index<state.collectionCount ? static_cast<std::uint8_t>(index) : 0;
+        memberId_=member->id; memberReturn_=screen_; return navigate(Screen::Collection);
+    }
     case Settings: return navigate(Screen::Settings);
     case SoundOpen: return navigate(Screen::Sound);
     case TradeOpen: {
@@ -1017,7 +1056,9 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
             model.nearby->match.mode==nearby::Mode::Tactical && !model.nearby->localChoicePending;
         battleGesture_=!buttonOrigin && event.y>=130 && event.y<336 && (nearbyPicker ||
             (screen_==Screen::Battle && state.battleMode==BattleMode::Tactical && state.phase==Phase::Encounter));
+        // Box tiles cover the page, so a swipe that starts on a tile still turns it.
         browseGesture_=(screen_==Screen::Home && event.y>=112 && event.y<282) ||
+            (screen_==Screen::Box && event.y>=kTileY[0] && event.y<kTileY[1]+kTileH && boxPages(state)>1) ||
             (!buttonOrigin && event.y>=100 && event.y<280 &&
             (screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats || screen_==Screen::Sound || screen_==Screen::TradeChoose || screen_==Screen::TradeReview ||
              (screen_==Screen::Evolution && evolutionPage_!=3) ||
@@ -1049,13 +1090,15 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
     if (event.kind!=TouchKind::Up) return {};
     const bool battleGesture=battleGesture_, browseGesture=browseGesture_; const int pressed=downButton_;
     down_=false; battleGesture_=browseGesture_=false; downButton_=0;
+    const bool tileOrigin=pressed && screen_==Screen::Box;
     if (battleGesture || browseGesture) {
         const int dx=event.x-downX_,dy=event.y-downY_;
         const auto elapsed=event.atMs-downAt_;
-        if (elapsed<40 || elapsed>1500) return {};
+        const bool swipeTiming=elapsed>=40 && elapsed<=1500;
+        if (!swipeTiming && !tileOrigin) return {};
         const int ax=std::abs(dx),ay=std::abs(dy);
         // A clear axis is mandatory: diagonal or downward movement is no action.
-        if (ax>=40 && ax*2>=ay*3) return navigateHorizontal(dx<0,state,model);
+        if (swipeTiming && ax>=40 && ax*2>=ay*3) return navigateHorizontal(dx<0,state,model);
         if (battleGesture && dy<=-40 && ay*2>=ax*3) {
             const bool heavy=battleSelection_==combat::Move::Heavy && (screen_!=Screen::Nearby ||
                 (model.nearby && model.nearby->match.attacker==(model.nearby->host ? 0 : 1)));
@@ -1066,10 +1109,13 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
                 battleSelection_==combat::Move::Heavy ? Action::Heavy : Action::Attack;
             return propose(state,model,action);
         }
-        const auto direction=horizontalTap(downX_,downY_,battleGesture);
-        if(!tapMoved_ && direction && direction==horizontalTap(event.x,event.y,battleGesture))
-            return navigateHorizontal(direction>0,state,model);
-        return {};
+        // A Box tile that was not swiped stays a tile tap, even inside an edge-arrow strip.
+        if (!tileOrigin) {
+            const auto direction=horizontalTap(downX_,downY_,battleGesture);
+            if(!tapMoved_ && direction && direction==horizontalTap(event.x,event.y,battleGesture))
+                return navigateHorizontal(direction>0,state,model);
+            return {};
+        }
     }
     if (!pressed || event.atMs-downAt_<20 || event.atMs-downAt_>1800 ||
         (!padHold && (event.x-downX_)*(event.x-downX_)+(event.y-downY_)*(event.y-downY_)>24*24)) return {};
@@ -1112,6 +1158,7 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
         request.formId=member ? member->formId : 0; request.animation=sprite::Animation::Celebrate; break;
     case Screen::ReleaseReview: case Screen::Stats: case Screen::Collection:
         request.formId=selectedMember(state) ? selectedMember(state)->formId : 0; break;
+    case Screen::Squad: case Screen::Box: break; // Each tile has its own request.
     case Screen::TradeChoose: {
         const auto* offered=findMember(state,tradeMemberId_);request.formId=offered ? offered->formId : 0;
         request.sceneId=scenes[7];break;
@@ -1164,6 +1211,25 @@ ArtRequest Controller::partnerArtRequest(const State& state,const Model& model,s
     return request;
 }
 
+const CreatureMember* Controller::tileMember(const State& state,std::size_t tile) const {
+    if(tile>=kTiles) return nullptr;
+    if(screen_==Screen::Squad) {
+        if(!tile) return activeMember(state);
+        const auto id=state.partyMemberIds[tile-1];
+        return id ? findMember(state,id) : nullptr;
+    }
+    if(screen_==Screen::Box) return collectionMemberAtDisplayIndex(state,boxPage_*kTiles+tile);
+    return nullptr;
+}
+
+ArtRequest Controller::tileArtRequest(const State& state,const Model& model,std::size_t tile,std::uint64_t now) const {
+    if(model.encounterRecoveryRequired) return {};
+    ArtRequest request; request.elapsedMs=now;
+    const auto* member=tileMember(state,tile);
+    request.formId=member ? member->formId : 0;
+    return request;
+}
+
 bool Controller::captureAnimating(const State& state,const Model& model) const {
     return screen_==Screen::Capture && downButton_==0 && !pending_ && !battleLocked_ && !notice_[0] && (canCapture(state,model) || canFocus(state,model));
 }
@@ -1212,6 +1278,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::Care: plate(62,61,288,51); plate(62,199,288,30); break;
     case Screen::Explore: plate(62,66,288,32); plate(52,168,308,92); break;
     case Screen::Collection: break;
+    case Screen::Squad: case Screen::Box: break; // Tiles are opaque plates.
     case Screen::Stats: plate(50,60,312,169); break;
     case Screen::Evolution:
         if(evolutionPage_) plate(50,61,312,218);
@@ -1235,6 +1302,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         break;
     }
     const bool browse=screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats || screen_==Screen::Sound ||
+        (screen_==Screen::Box && boxPages(state)>1) ||
         (screen_==Screen::TradeChoose && tradeMemberId_ && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::TradeReview && model.trade && trade::valid(model.trade->transcript)) ||
         (screen_==Screen::Evolution && evolutionPage_!=3) || (screen_==Screen::Nearby && model.nearby && model.nearby->stage==nearby::Stage::Discovering && peerCount(model.nearby)>1);
     const bool picker=!battleLocked_ && ((screen_==Screen::Battle && state.battleMode==BattleMode::Tactical) ||
@@ -1454,6 +1522,44 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             std::snprintf(label,sizeof(label),"OWNED ID %u",static_cast<unsigned>(member.id)); c.badge(223,label,1,dim);
         }
         break;
+    case Screen::Squad: case Screen::Box: {
+        const bool box=screen_==Screen::Box;
+        if(box) std::snprintf(label,sizeof(label),"ALL DIGIMON %u",static_cast<unsigned>(state.collectionCount));
+        else std::snprintf(label,sizeof(label),"SQUAD %u/%u",static_cast<unsigned>(partyCount(state)),static_cast<unsigned>(kPartyCapacity));
+        c.badge(60,label,2,mint);
+        for(std::size_t i=0;i<kTiles;++i) {
+            const auto* member=tileMember(state,i);
+            if(!member && (box || !i)) continue;
+            const int x=kTileX[i%2], y=kTileY[i/2];
+            const bool pressed=down_ && downButton_==Tile0+static_cast<int>(i);
+            const bool active=member && member->id==state.activeCreatureId;
+            c.rect(x,y,kTileW,kTileH,active ? mint : edge);
+            c.rect(x+2,y+2,kTileW-4,kTileH-4,pressed ? edge : panel);
+            if(!member) {
+                const auto color=state.collectionCount>1 ? dim : edge;
+                c.text(x+kTileW/2-8,y+20,"+",3,color);
+                c.text(x+(kTileW-71)/2,y+58,"ADD TO SQUAD",1,color);
+                continue;
+            }
+            c.text(x+6,y+6,memberName(*member),1,active ? mint : ink,20);
+            const auto request=tileArtRequest(state,model,i,now);
+            if(!c.spriteFrame(x+34,y+52,56,model.tileArtwork[i],request)) c.text(x+27,y+38,"?",3,dim);
+            std::snprintf(label,sizeof(label),"LV %u",static_cast<unsigned>(member->level));
+            c.text(x+64,y+22,label,2,ink,5); // "LV 50" is 58 px, inside the 124 px tile face.
+            std::uint16_t statusColor=dim;
+            const char* status=tileStatus(state,model,*member,statusColor);
+            c.text(x+64,y+44,status,1,statusColor,9);
+            const auto maximum=forms::stats(member->formId,member->level).maxHp;
+            c.bar(x+64,y+60,56,member->hp,maximum,isInjured(*member) ? red : mint);
+            std::snprintf(label,sizeof(label),"%u/%u",static_cast<unsigned>(member->hp),static_cast<unsigned>(maximum));
+            c.text(x+64,y+74,label,1,dim,9);
+        }
+        if(box) {
+            std::snprintf(label,sizeof(label),"PAGE %u/%u",static_cast<unsigned>(boxPage_+1),static_cast<unsigned>(boxPages(state)));
+            c.badge(292,label,1,dim);
+        }
+        break;
+    }
     case Screen::ReleaseReview: {
         const auto* member=findMember(state,releaseMember_);
         c.center(75,"RELEASE THIS DIGIMON?",2,amber);
@@ -1840,7 +1946,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     if(browse || picker) {
         const bool multiple=picker || screen_==Screen::Starter || screen_==Screen::Stats || screen_==Screen::Sound || screen_==Screen::TradeReview ||
             (screen_==Screen::TradeChoose && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::Collection && state.collectionCount>1) ||
-            (screen_==Screen::Evolution && (evolutionPage_ || (selectedMember(state) && forms::outgoing(selectedMember(state)->formId,1)))) || screen_==Screen::Nearby;
+            (screen_==Screen::Box && boxPages(state)>1) || (screen_==Screen::Evolution && (evolutionPage_ || (selectedMember(state) && forms::outgoing(selectedMember(state)->formId,1)))) || screen_==Screen::Nearby;
         if(multiple) {
             c.chevron(49,180,-1,screen_==Screen::Sound && !model.volumePercent ? dim : arrowColor);
             c.chevron(352,180,1,screen_==Screen::Sound && model.volumePercent>=100 ? dim : arrowColor);
@@ -1864,6 +1970,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.chevron(b.x+b.w/2,190,b.id==HomePrevious ? -1 : 1,color);
             continue;
         }
+        if(b.id>=Tile0 && b.id<=Tile3) continue; // Drawn with their sprite, level and status above.
         const bool modeSelected=(b.id==NearbyTactical && nearbyMode_==nearby::Mode::Tactical) ||
             (b.id==NearbyAuto && nearbyMode_==nearby::Mode::Auto);
         c.rect(b.x,b.y,b.w,b.h,b.enabled ? (modeSelected ? mint : edge) : panel);
@@ -1924,6 +2031,8 @@ const char* screenName(Screen screen) {
     case Screen::ModeReview: return "mode-review";
     case Screen::Nearby: return "nearby";
     case Screen::NearbyReview: return "nearby-review";
+    case Screen::Squad: return "squad";
+    case Screen::Box: return "box";
     }
     return "unknown";
 }

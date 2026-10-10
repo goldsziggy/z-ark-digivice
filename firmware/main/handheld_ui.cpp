@@ -329,6 +329,10 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
             model.artwork = art_.prepare(ui_.artRequest(state_, model, now), artReady);
             const auto partnerRequest = ui_.partnerArtRequest(state_, model, now);
             if (partnerRequest.formId) model.partnerArtwork = partnerArt_.prepare(partnerRequest, artReady).sprite;
+            for (std::size_t tile = 0; tile < deviceui::kTiles; ++tile) {
+                const auto tileRequest = ui_.tileArtRequest(state_, model, tile, now);
+                if (tileRequest.formId) model.tileArtwork[tile] = tileArt_[tile].prepare(tileRequest, artReady).sprite;
+            }
         }
         bool drawnFrame = setup_.active() ? setup_.render(frame_, deviceui::kPixels) :
             partial ? ui_.renderCaptureRegion(state_, model, frame_, deviceui::kPixels, now) :
@@ -389,6 +393,7 @@ void HandheldRuntime::pauseInterface(bool paused) {
     captureFrameActive_ = captureFrameValid_ = false;
     ui_.cancelTouch(); requireTouchRelease();
     art_.pause(paused); partnerArt_.pause(paused);
+    for (auto& tile : tileArt_) tile.pause(paused);
     if (paused) audio_.setMusicScene(device::MusicScene::Quiet);
     audio_.pause(paused);
     const auto motion = imu_.pause(paused);
@@ -401,6 +406,7 @@ void HandheldRuntime::pauseInterface(bool paused) {
 bool HandheldRuntime::interfaceQuiescent() const {
     // A failed flush may retain an outstanding DMA transfer. Require its real
     // completion as well as the audio worker and sensor suspension barrier.
+    for (const auto& tile : tileArt_) if (!tile.quiescent()) return false;
     return display::quiescent() && audio_.quiescent() && art_.quiescent() && partnerArt_.quiescent() && (!interfacePaused_ || imu_.quiescent());
 }
 

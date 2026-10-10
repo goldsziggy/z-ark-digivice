@@ -92,6 +92,12 @@ struct Harness {
     void openHome(HomePanel panel) {
         selectHome(panel); dispatch(tap(206,323));
     }
+    // Partners lands on the 2x2 Squad; the top-left tile is the active partner.
+    void openPartners() {
+        openHome(HomePanel::Partners); CHECK(ui.screen()==Screen::Squad);
+        dispatch(tap(kTileX[0]+kTileW/2,kTileY[0]+kTileH/2));
+        CHECK(ui.screen()==Screen::Collection && ui.selectedMemberId()==state.activeCreatureId);
+    }
     void browseMember(std::uint32_t id) {
         CHECK(ui.screen()==Screen::Collection && findMember(state,id));
         for(unsigned i=0;i<state.collectionCount && ui.selectedMemberId()!=id;++i) dispatch(tap(355,180));
@@ -237,7 +243,7 @@ void homeCarousel() {
     CHECK(!h.event(TouchKind::Up,355,190)); h.model.inputEnabled=true; h.sync();
     CHECK(h.ui.homePanel()==HomePanel::Care && h.ui.interactionIdle());
     constexpr HomePanel panels[]{HomePanel::Care,HomePanel::Partners,HomePanel::Settings,HomePanel::Nearby};
-    constexpr Screen destinations[]{Screen::Care,Screen::Collection,Screen::Settings,Screen::Nearby};
+    constexpr Screen destinations[]{Screen::Care,Screen::Squad,Screen::Settings,Screen::Nearby};
     for(unsigned i=0;i<4;++i) {
         h.selectHome(panels[i]); CHECK(h.ui.walkingEligible() && h.ui.interactionIdle());
         const auto request=h.ui.artRequest(h.state,h.model,1000);
@@ -286,7 +292,7 @@ void homeCarousel() {
         CHECK(!event(TouchKind::Down,r.start)); CHECK(!n.ui.interactionIdle());
         CHECK(!event(TouchKind::Move,r.middle,50)); n.dispatch(event(TouchKind::Up,r.end,50));
         CHECK(n.ui.homePanel()==HomePanel::Partners);
-        n.dispatch(tap(r.primary)); CHECK(n.ui.screen()==Screen::Collection);
+        n.dispatch(tap(r.primary)); CHECK(n.ui.screen()==Screen::Squad);
         CHECK(!event(TouchKind::Up,r.primary));
         n.dispatch(tap(r.back)); CHECK(n.ui.screen()==Screen::Home && n.ui.homePanel()==HomePanel::Partners);
         CHECK(std::memcmp(&before,&n.state,sizeof(State))==0 && n.gameWrites==1);
@@ -328,7 +334,7 @@ void walkingCheckpoints() {
     Harness evolution; evolution.state=stableMemberFixture(67);
     const auto* edge=forms::outgoing(67,0); CHECK(edge);
     meetRoute(evolution.state, 19, edge); evolution.sync();
-    evolution.openHome(HomePanel::Partners); evolution.browseMember(evolution.state.activeCreatureId);
+    evolution.openPartners(); evolution.browseMember(evolution.state.activeCreatureId);
     evolution.dispatch(evolution.tap(120,312)); evolution.dispatch(evolution.tap(206,312));
     evolution.dispatch(evolution.tap(280,312)); CHECK(evolution.ui.screen()==Screen::EvolutionReview);
     CHECK(!evolution.event(TouchKind::Down,206,302));
@@ -340,7 +346,7 @@ void walkingCheckpoints() {
     evolution.dispatch(evolve); CHECK(evolution.ui.screen()==Screen::EvolutionResult);
 
     Harness release; release.state=stableMemberFixture(67); release.sync();
-    release.openHome(HomePanel::Partners); release.browseMember(1); release.dispatch(release.tap(120,312));
+    release.openPartners(); release.browseMember(1); release.dispatch(release.tap(120,312));
     release.dispatch(release.tap(206,312)); CHECK(release.ui.screen()==Screen::ReleaseReview);
     const auto released=release.state.collection[0].id;
     CHECK(!release.event(TouchKind::Down,206,302)); checkpoint(release,Action::AccrueSteps,1);
@@ -431,9 +437,9 @@ void horizontalTaps() {
     starter.dispatch(starter.tap(206,312));CHECK(starter.ui.screen()==Screen::StarterReview);
     CHECK(!starter.tap(55,180) && !starter.tap(355,180));
     Harness home;home.choose();equivalent(home,4);
-    Harness one;one.choose();one.openHome(HomePanel::Partners);equivalent(one,1);
+    Harness one;one.choose();one.openPartners();equivalent(one,1);
     CHECK(!one.tap(55,180) && !one.tap(355,180));
-    Harness partners;partners.choose();partners.state=stableMemberFixture(18);partners.sync();partners.openHome(HomePanel::Partners);equivalent(partners,2);
+    Harness partners;partners.choose();partners.state=stableMemberFixture(18);partners.sync();partners.openPartners();equivalent(partners,2);
     partners.browseMember(partners.state.activeCreatureId);CHECK(partners.ui.artRequest(partners.state,partners.model,0).formId==18);
     partners.dispatch(partners.tap(120,312));CHECK(partners.ui.screen()==Screen::Stats);equivalent(partners,4);
     partners.dispatch(partners.tap(206,312));CHECK(partners.ui.screen()==Screen::Evolution);equivalent(partners,2);
@@ -806,7 +812,7 @@ void fullRosterNavigation() {
         h.state.collection[i].id=h.state.collection[i].capturedAtSequence=i+released+1;
         h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);
     }
-    CHECK(isValid(h.state));h.sync();h.openHome(HomePanel::Partners);
+    CHECK(isValid(h.state));h.sync();h.openPartners();
     const auto saved=h.state;const auto writes=h.gameWrites;
     for(unsigned i=0;i<kCollectionCapacity;++i) {
         CHECK(h.ui.screen()==Screen::Collection && !h.ui.pending());
@@ -829,6 +835,104 @@ void fullRosterNavigation() {
     CHECK(h.gameWrites==writes+1 && h.ui.artRequest(h.state,h.model,h.now).formId==lastForm);
 }
 
+// A hatched save with `count` members (active is ID 1) and the first `squad` others as XP companions.
+void partnerRoster(Harness& h,unsigned count,unsigned squad) {
+    h.choose();
+    h.state.sequence=h.state.foregroundSequence=100;
+    h.state.collectionCount=count;h.state.captures=h.state.encounters=count-1;h.state.steps=100*(count-1);h.state.nextMemberId=count+1;
+    for(unsigned i=1;i<count;++i){
+        const auto formId=forms::kFirstProductionFormId+i;
+        h.state.collection[i]=stableMemberFixture(formId).collection[1];
+        h.state.collection[i].id=i+1;h.state.collection[i].capturedAtSequence=i;
+        h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);
+    }
+    for(unsigned i=0;i<squad;++i) h.state.partyMemberIds[i]=i+2;
+    CHECK(isValid(h.state));h.sync();
+}
+void tapTile(Harness& h,std::size_t tile) { h.dispatch(h.tap(kTileX[tile%2]+kTileW/2,kTileY[tile/2]+kTileH/2)); }
+
+// Partners lands on a 2x2 Squad (partner top-left, three squad slots); Box pages everyone four at a time.
+void partnersGrid() {
+    { // A new partner alone: empty squad slots are inert until there is someone to add.
+        Harness h; h.choose(); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad);
+        Controller::Button b[Controller::kMaxButtons]; const auto n=h.ui.layout(h.state,h.model,b,Controller::kMaxButtons);
+        CHECK(n==6 && b[0].enabled && !b[1].enabled && !b[2].enabled && !b[3].enabled && b[4].enabled && b[5].padded);
+        CHECK(!h.tap(kTileX[1]+kTileW/2,kTileY[0]+kTileH/2) && h.ui.screen()==Screen::Squad);
+        h.dispatch(h.tap(206,304)); CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==0);
+        CHECK(h.ui.tileMember(h.state,0)==activeMember(h.state) && !h.ui.tileMember(h.state,1));
+        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Squad);
+        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Home && h.ui.homePanel()==HomePanel::Partners);
+    }
+    { // Squad tiles are the partner then the companions in slot order; each tile opens that member.
+        Harness h; partnerRoster(h,6,3); const auto saved=h.state;
+        h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad);
+        const std::uint32_t ids[]{1,2,3,4};
+        for(std::size_t i=0;i<kTiles;++i) {
+            CHECK(h.ui.tileMember(h.state,i) && h.ui.tileMember(h.state,i)->id==ids[i]);
+            CHECK(h.ui.tileArtRequest(h.state,h.model,i,h.now).formId==findMember(h.state,ids[i])->formId);
+        }
+        CHECK(!h.ui.artRequest(h.state,h.model,h.now).formId); // Tiles carry the creature art.
+        tapTile(h,3); CHECK(h.ui.screen()==Screen::Collection && h.ui.selectedMemberId()==4);
+        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Squad);
+        tapTile(h,0); CHECK(h.ui.screen()==Screen::Collection && h.ui.selectedMemberId()==1);
+        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Squad);
+        CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0 && !h.ui.pending()); // Browsing never writes.
+        // An empty slot opens Box to choose who joins.
+        Harness gap; partnerRoster(gap,6,1); gap.openHome(HomePanel::Partners);
+        CHECK(gap.ui.tileMember(gap.state,1)->id==2 && !gap.ui.tileMember(gap.state,2));
+        tapTile(gap,2); CHECK(gap.ui.screen()==Screen::Box && gap.ui.boxPage()==0);
+        tapTile(gap,3); CHECK(gap.ui.screen()==Screen::Collection);
+        const auto picked=gap.ui.selectedMemberId(); CHECK(picked==collectionMemberAtDisplayIndex(gap.state,3)->id);
+        const auto add=gap.tap(206,258); CHECK(add.kind==IntentKind::GameAction && add.action==Action::PartyAdd && add.value==picked);
+    }
+    { // Box: 13 members are four pages. Swipes (even from a tile), edge arrows and quick taps all work.
+        Harness h; partnerRoster(h,13,0); h.openHome(HomePanel::Partners); h.dispatch(h.tap(206,304));
+        CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==0);
+        h.dispatch(h.swipe(kTileX[1]+kTileW/2,kTileY[0]+kTileH/2,kTileX[0]+20,kTileY[0]+kTileH/2));
+        CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==1);
+        CHECK(h.ui.tileMember(h.state,0)==collectionMemberAtDisplayIndex(h.state,4));
+        h.dispatch(h.tap(50,180)); CHECK(h.ui.boxPage()==0);
+        h.dispatch(h.tap(360,180)); h.dispatch(h.tap(360,180)); h.dispatch(h.tap(360,180)); CHECK(h.ui.boxPage()==3);
+        CHECK(h.ui.tileMember(h.state,0) && !h.ui.tileMember(h.state,1)); // 13th member alone on the last page.
+        h.dispatch(h.tap(360,180)); CHECK(h.ui.boxPage()==0); // Wraps.
+        // A quick 25 ms tap on a tile, inside the edge-arrow strip, opens that member rather than paging.
+        CHECK(!h.event(TouchKind::Down,kTileX[1]+kTileW-6,kTileY[1]+kTileH/2));
+        h.dispatch(h.event(TouchKind::Up,kTileX[1]+kTileW-6,kTileY[1]+kTileH/2,25));
+        CHECK(h.ui.screen()==Screen::Collection && h.ui.selectedMemberId()==collectionMemberAtDisplayIndex(h.state,3)->id);
+        // Browsing members one at a time, then BACK, lands on that member's page.
+        for(unsigned i=0;i<5;++i) h.dispatch(h.tap(355,180));
+        CHECK(h.ui.selectedMemberId()==collectionMemberAtDisplayIndex(h.state,8)->id);
+        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==2);
+        h.dispatch(h.tap(206,356)); CHECK(h.ui.screen()==Screen::Squad);
+        // Releasing the only member on the last page clamps Box to the new last page.
+        h.dispatch(h.tap(206,304)); for(unsigned i=0;i<3;++i) h.dispatch(h.tap(360,180)); CHECK(h.ui.boxPage()==3);
+        const auto last=h.ui.tileMember(h.state,0)->id;
+        CHECK(apply(h.state,Action::Release,last)==Error::None); h.sync();
+        CHECK(h.ui.screen()==Screen::Box && h.ui.boxPage()==2 && h.ui.tileMember(h.state,3));
+    }
+    { // Tile sprites stay inside their tile; the partner tile's frame is mint.
+        Harness h; partnerRoster(h,6,3); h.openHome(HomePanel::Partners);
+        std::array<std::uint16_t,32*32> pixels; pixels.fill(0xF81F);
+        std::array<std::uint8_t,128> mask; mask.fill(0xFF);
+        for(std::size_t i=0;i<kTiles;++i) {
+            auto& art=h.model.tileArtwork[i];
+            art.formId=h.ui.tileMember(h.state,i)->formId; art.pixels=pixels.data(); art.mask=mask.data();
+            art.width=art.height=32; art.pixelCount=32*32; art.maskBytes=128;
+        }
+        std::array<std::uint16_t,kPixels> output{};
+        CHECK(h.ui.render(h.state,h.model,output.data(),kPixels,h.now));
+        unsigned colored=0;
+        for(int y=0;y<kSize;++y) for(int x=0;x<kSize;++x) {
+            if(output[y*kSize+x]!=0xF81F) continue;
+            ++colored;
+            const int col=x>=kTileX[1], row=y>=kTileY[1];
+            CHECK(x>=kTileX[col]+2 && x<kTileX[col]+kTileW-2 && y>=kTileY[row]+2 && y<kTileY[row]+kTileH-2);
+        }
+        CHECK(colored==4u*32*32);
+        CHECK(output[kTileY[0]*kSize+kTileX[0]+10]!=output[kTileY[0]*kSize+kTileX[1]+10]); // Partner frame differs.
+    }
+}
+
 void xpCompanionControls() {
     Harness h;h.choose();
     h.state.sequence=h.state.foregroundSequence=100;
@@ -839,7 +943,7 @@ void xpCompanionControls() {
         h.state.collection[i].id=i+1;h.state.collection[i].capturedAtSequence=i;
         h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);
     }
-    CHECK(isValid(h.state));h.sync();h.openHome(HomePanel::Partners);
+    CHECK(isValid(h.state));h.sync();h.openPartners();
     CHECK(h.ui.selectedMemberId()==1 && !h.tap(206,266)); // Active cannot be an extra companion.
     const auto original=h.state;
     h.browseMember(3);auto add=h.tap(206,266);
@@ -1245,9 +1349,13 @@ void tapAudit() {
     for(const auto panel:{HomePanel::Care,HomePanel::Partners,HomePanel::Settings,HomePanel::Nearby})
         audit("Home",[panel](Harness& h){ h.choose(); h.selectHome(panel); });
     audit("Care",[](Harness& h){ h.choose(); h.openHome(HomePanel::Care); CHECK(h.ui.screen()==Screen::Care); });
-    audit("Partners",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Collection); });
-    audit("Stats",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); h.dispatch(h.tap(120,304)); CHECK(h.ui.screen()==Screen::Stats); });
-    audit("Evolution",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); h.dispatch(h.tap(120,304)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::Evolution); });
+    audit("Squad (new partner)",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad); });
+    audit("Squad (full)",[](Harness& h){ partnerRoster(h,6,3); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad); });
+    audit("Squad (open slot)",[](Harness& h){ partnerRoster(h,6,1); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Squad); });
+    audit("Box",[](Harness& h){ partnerRoster(h,13,0); h.openHome(HomePanel::Partners); h.dispatch(h.tap(206,304)); CHECK(h.ui.screen()==Screen::Box); });
+    audit("Partners member",[](Harness& h){ h.choose(); h.openPartners(); });
+    audit("Stats",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(120,304)); CHECK(h.ui.screen()==Screen::Stats); });
+    audit("Evolution",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(120,304)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::Evolution); });
     audit("Settings",[](Harness& h){ h.choose(); h.model.motionAvailable=true; h.sync(); h.openHome(HomePanel::Settings); CHECK(h.ui.screen()==Screen::Settings); });
     audit("Sound",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,252)); CHECK(h.ui.screen()==Screen::Sound); });
     audit("Encounter settings",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(206,194)); CHECK(h.ui.screen()==Screen::EncounterSettings); });
@@ -1270,6 +1378,7 @@ int main(int argc,char** argv) {
     captureTimingControls();
     fullRosterCaptureControls();
     fullRosterNavigation();
+    partnersGrid();
     xpCompanionControls();
     soundSettings();
     tradingScreens();
@@ -1441,7 +1550,7 @@ int main(int argc,char** argv) {
     h.sync();
     CHECK(h.state.collectionCount>=2);
     CHECK(h.ui.screen()==Screen::Home);
-    h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Collection);
+    h.openPartners(); CHECK(h.ui.screen()==Screen::Collection);
     h.dispatch(h.swipe(250,180,160,180));
     CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==h.state.collection[1].formId);
     h.dispatch(h.tap(206,365));
@@ -1602,7 +1711,7 @@ int main(int argc,char** argv) {
     const auto* route=forms::outgoing(activeMember(evolution.state)->formId,0); CHECK(route);
     const auto target=route->to;
     auto openEvolution=[&]() {
-        evolution.openHome(HomePanel::Partners); CHECK(evolution.ui.screen()==Screen::Collection);
+        evolution.openPartners(); CHECK(evolution.ui.screen()==Screen::Collection);
         evolution.browseMember(19); // Active member is first; its stable ID is not its slot index.
         evolution.dispatch(evolution.tap(120,312)); CHECK(evolution.ui.screen()==Screen::Stats);
         CHECK(evolution.ui.artRequest(evolution.state,evolution.model,0).formId==18);
@@ -1670,7 +1779,7 @@ int main(int argc,char** argv) {
         roster.state.collection[i]=roster.state.collection[0];
         roster.state.collection[i].id=i+1; roster.state.collection[i].capturedAtSequence=i;
     }
-    CHECK(isValid(roster.state)); roster.sync(); roster.openHome(HomePanel::Partners);
+    CHECK(isValid(roster.state)); roster.sync(); roster.openPartners();
     CHECK(roster.ui.screen()==Screen::Collection);
     CHECK(!roster.tap(280,312)); // Already equipped instance cannot be selected again.
     roster.dispatch(roster.tap(120,312)); roster.dispatch(roster.tap(206,312));
@@ -1710,7 +1819,7 @@ int main(int argc,char** argv) {
     Harness baby; baby.state=stableMemberFixture(67); baby.sync();
     const auto* babyRoute=forms::outgoing(67,0); CHECK(babyRoute && !forms::find(67)->children[0]);
     meetRoute(baby.state, 19, babyRoute); baby.sync();
-    baby.openHome(HomePanel::Partners); baby.browseMember(19); baby.dispatch(baby.tap(120,312));
+    baby.openPartners(); baby.browseMember(19); baby.dispatch(baby.tap(120,312));
     baby.dispatch(baby.tap(206,312)); CHECK(baby.ui.artRequest(baby.state,baby.model,0).formId==babyRoute->to);
     baby.dispatch(baby.tap(280,312)); baby.dispatch(baby.tap(206,302));
     CHECK(activeMember(baby.state)->id==19 && activeMember(baby.state)->formId==babyRoute->to);

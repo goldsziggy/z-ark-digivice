@@ -56,7 +56,7 @@ public:
     static constexpr std::size_t kFlushTouchQueue=8;
     touchstream::Sample flushTouch_[kFlushTouchQueue]{};
     std::size_t flushTouchCount_=0;
-    CaptureUi ui_;CaptureSetup setup_;CaptureImu imu_;CaptureIdle idle_;CaptureAudio audio_;CaptureSd sd_;CaptureArt art_,partnerArt_;
+    CaptureUi ui_;CaptureSetup setup_;CaptureImu imu_;CaptureIdle idle_;CaptureAudio audio_;CaptureSd sd_;CaptureArt art_,partnerArt_,tileArt_[deviceui::kTiles];
     battlepresentation::Sequencer battle_;CaptureTrade tradeSession_;
     bool encounterRecoveryRequired_=false,useOwnedPlayback=false;
     State& state_;deviceui::Model model{};

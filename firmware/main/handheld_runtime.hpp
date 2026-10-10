@@ -124,6 +124,7 @@ private:
     device::Imu imu_;
     device::Art art_;
     device::Art partnerArt_;
+    device::Art tileArt_[deviceui::kTiles]; // Partners Squad/Box tiles, one exact form each.
     usage::NvsBackend usageBackend_;
     usage::Store usage_{usageBackend_};
     idle::Controller idle_;
