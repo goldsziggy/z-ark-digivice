@@ -788,8 +788,12 @@ Error apply(State& state, Action action, std::uint32_t value) {
         auto play = careCooldown(member.careState, 18);
         auto rest = careCooldown(member.careState, 21);
         auto toiletCd = careCooldown(member.careState, 24);
-        if (feed) --feed; if (play) --play; if (rest) --rest; if (toiletCd) --toiletCd;
-        if (toilet < 100) toilet += 8; if (toilet > 100) toilet = 100;
+        if (feed) { --feed; }
+        if (play) { --play; }
+        if (rest) { --rest; }
+        if (toiletCd) { --toiletCd; }
+        if (toilet < 100) { toilet += 8; }
+        if (toilet > 100) { toilet = 100; }
         if (next.fullness) --next.fullness;
         if (toilet == 100 && !missed) {
             missed = true;
