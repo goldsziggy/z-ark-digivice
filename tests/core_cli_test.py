@@ -153,7 +153,9 @@ for offset,value in [(4,24),(8,99),(104,61),(148,7601),(152,67),(464,2),(468,1),
 # Full Auto is one event; replay returns the identical persisted result/trace.
 auto=b'hatch 1\nmode 1\nwalk 100\nauto\n';args=['--replay-onboarding-trace','12345'];result=accepted(auto,args)
 assert result==accepted(auto,args);state,trace=result['state'],result['trace']
-assert state['sequence']==4 and state['xp']==26  and state['collection'][1]['capturedAtSequence']==4
+# Seed 12345 walks one level above the partner. Capture reward stays 20 + 6 * wild level.
+assert state['sequence']==4 and state['xp']==32 and state['collection'][1]['capturedAtSequence']==4
+assert trace['enemy']['level']==2
 assert 1<=len(trace['steps'])<=48 and trace['startSequence']==3 and trace['endSequence']==4 and trace['outcome']=='captured'
 assert trace['player']['name']=='Impmon' and trace['player']['formId']==11 and trace['enemy']['formId']>=11
 assert all(not step['reflected'] and step['guard'] in {'brace','ward','counter'} for step in trace['steps'])

@@ -91,7 +91,7 @@ void actualFlickOnly(){
     // Named encounters loaded from older epochs use the same manual pause, odds,
     // three-throw cap and saved reveal, while their combat profiles stay frozen.
     for(unsigned rules:{5u,8u,9u,11u,12u}){
-        auto old=start(99);old.wildFormId=18;old.wildSpecies=Species::Agumon;old.wildRules=rules;
+        auto old=start(99);old.wildFormId=18;old.wildSpecies=Species::Agumon;old.wildLevel=1;old.wildRules=rules;
         old.wildMaxHp=old.wildHp=rules<9?legacy_v8::combat::formProfile(18,1).stats.maxHp:combat::formProfile(18,1).stats.maxHp;
         old.hp=old.collection[0].hp=rules<9?legacy_v8::combat::formProfile(11,1).stats.maxHp:combat::formProfile(11,1).stats.maxHp;
         CHECK(isValid(old));CHECK(applyAutoFight(old)==Error::None&&old.autoCapture==AutoCapture::Awaiting);
@@ -102,7 +102,7 @@ void actualFlickOnly(){
 State eightMemberFight(unsigned seed,unsigned rules){
     auto s=start(seed);s.sequence=s.foregroundSequence=100;s.collectionCount=8;s.captures=7;s.encounters=8;s.steps=700;s.nextMemberId=9;
     for(unsigned i=1;i<8;++i){s.collection[i]=s.collection[0];s.collection[i].id=i+1;s.collection[i].capturedAtSequence=i+1;s.collection[i].mood=50+i;}
-    s.wildFormId=18;s.wildSpecies=Species::Agumon;s.wildRules=rules;
+    s.wildFormId=18;s.wildSpecies=Species::Agumon;s.wildLevel=1;s.wildRules=rules;
     s.wildMaxHp=s.wildHp=(rules<9?legacy_v8::combat::formProfile(18,1).stats.maxHp:combat::formProfile(18,1).stats.maxHp);
     s.hp=s.collection[0].hp=(rules<9?legacy_v8::combat::formProfile(11,1).stats.maxHp:combat::formProfile(11,1).stats.maxHp);
     CHECK(isValid(s));return s;
@@ -150,8 +150,9 @@ void boundsAndMigration(){
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.autoCapture==AutoCapture::None&&trade::sameState(fresh,migrated));
     CHECK(encodeSnapshot(migrated,bytes)&&snapshot_test::sameOldPayload(prior.data(),bytes.bytes,prior.size()));
     put32(bytes.bytes+snapshot_test::currentOffset(652),2);put32(bytes.bytes+kSnapshotSize-4,~updateCrc(~0u,bytes.bytes,kSnapshotSize-4));CHECK(decodeSnapshot(bytes.bytes,sizeof(bytes.bytes),migrated)==SnapshotStatus::InvalidState);
-    auto waiting=paused();autobattle::Trace partial;auto a=start();a.wildFormId=18;a.wildSpecies=Species::Agumon;a.wildMaxHp=combat::formProfile(18,1).stats.maxHp;a.wildHp=a.wildMaxHp/2+1;CHECK(applyAutoFight(a,&partial)==Error::None);CHECK(partial.outcome==autobattle::Outcome::None);
-    char json[autobattle::kTraceJsonCapacity];auto invalid=partial;invalid.kind=autobattle::Kind::Practice;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
+    auto waiting=paused();autobattle::Trace partial;auto a=start();a.wildFormId=18;a.wildSpecies=Species::Agumon;a.wildLevel=1;a.wildMaxHp=combat::formProfile(18,1).stats.maxHp;a.wildHp=a.wildMaxHp/2+1;CHECK(applyAutoFight(a,&partial)==Error::None);CHECK(partial.outcome==autobattle::Outcome::None);
+    char json[autobattle::kTraceJsonCapacity];
+    auto invalid=partial;invalid.kind=autobattle::Kind::Practice;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     invalid=partial;invalid.steps[0].action=autobattle::Move::Capture;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));invalid=partial;invalid.steps[0].captureAttempt=1;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     CHECK(!trade::canOffer(waiting,1));Action action;CHECK(parseAction("auto-fight",action)&&action==Action::AutoFight);CHECK(parseAction("auto-resume",action)&&action==Action::AutoResume);
     CHECK(kSchemaVersion==23&&kRulesVersion==16&&kSnapshotSize==3216);
