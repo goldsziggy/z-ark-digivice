@@ -91,10 +91,17 @@ export function awaitingAutoCapture(state) {
   return state?.battleMode === 'auto' && state?.autoCapture === 1 && captureChoice(state).available;
 }
 
+// Rules 18 focus pause: one timed Strike or Block tap, mirrored by state.focus.
+export function awaitingAutoFocus(state) {
+  return state?.phase === 'encounter' && state?.battleMode === 'auto' && [2, 3].includes(state?.autoCapture)
+    && state.focus?.kind === (state.autoCapture === 2 ? 'strike' : 'block');
+}
+
 export function pausedAutoTraceMatchesState(trace, state) {
   if (trace?.outcome !== 'none') return true;
   const last = trace.steps.at(-1);
-  return awaitingAutoCapture(state) && trace.endSequence === state.foregroundSequence
+  if (!last) return awaitingAutoFocus(state) && trace.endSequence === state.foregroundSequence;
+  return (awaitingAutoCapture(state) || awaitingAutoFocus(state)) && trace.endSequence === state.foregroundSequence
     && trace.player.formId === state.formId && trace.player.level === state.level
     && trace.enemy.formId === state.wildFormId && trace.enemy.level === state.wildLevel
     && last.playerHpAfter === state.hp && last.enemyHpAfter === state.wildHp;

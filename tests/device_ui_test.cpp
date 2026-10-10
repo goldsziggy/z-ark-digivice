@@ -40,7 +40,7 @@ struct Harness {
     Intent tap(int x,int y) {
         const auto down=event(TouchKind::Down,x,y);
         const auto up=event(TouchKind::Up,x,y,60);
-        CHECK(!down || (down.kind==IntentKind::GameAction && down.action==Action::RingCapture && !up));
+        CHECK(!down || (down.kind==IntentKind::GameAction && (down.action==Action::RingCapture || down.action==Action::Focus) && !up));
         return down ? down : up;
     }
     Intent swipe(int x,int y,int endX,int endY) {
@@ -774,6 +774,14 @@ void fullRosterCaptureControls() {
     automatic.ui.resolve(); automatic.sync();
     CHECK(autoFightReady(automatic.state,automatic.model));
     automatic.dispatch(Intent{IntentKind::GameAction,Action::AutoFight,0});
+    // Rules 18: a focus pause opens the ring screen; one play-area tap answers it.
+    for(unsigned guard=0;guard<3 && (automatic.state.autoCapture==AutoCapture::FocusStrike || automatic.state.autoCapture==AutoCapture::FocusBlock);++guard) {
+        CHECK(automatic.ui.screen()==Screen::Capture && automatic.ui.captureAnimating(automatic.state,automatic.model));
+        const auto answer=automatic.tap(206,176);
+        CHECK(answer.kind==IntentKind::GameAction && answer.action==Action::Focus && answer.value<kFocusNoTap);
+        automatic.dispatch(answer); automatic.ui.resolve(); automatic.sync();
+        if(automatic.state.phase==Phase::Encounter && automatic.state.autoCapture==AutoCapture::None) automatic.dispatch(Intent{IntentKind::GameAction,Action::AutoFight,0});
+    }
     CHECK(automatic.ui.screen()==Screen::Result && automatic.state.phase==Phase::Home);
     CHECK(automatic.state.autoCapture==AutoCapture::None && automatic.state.collectionCount==kCollectionCapacity);
     CHECK(automatic.state.captures==saved.captures && automatic.state.nextMemberId==saved.nextMemberId);
@@ -1005,7 +1013,9 @@ void autoCaptureChoice() {
     State before{},paused{};autobattle::Trace trace;bool found=false;
     for(unsigned seed=1;seed<200 && !found;++seed){
         auto candidate=newDevice(seed);CHECK(apply(candidate,Action::Hatch,1)==Error::None);CHECK(apply(candidate,Action::Mode,1)==Error::None);CHECK(apply(candidate,Action::Walk,100)==Error::None);
-        candidate.wildFormId=18;candidate.wildSpecies=Species::Agumon;candidate.wildLevel=1;candidate.wildMaxHp=candidate.wildHp=forms::stats(18,1).maxHp;CHECK(isValid(candidate));
+        candidate.wildFormId=18;candidate.wildSpecies=Species::Agumon;candidate.wildLevel=1;candidate.wildMaxHp=candidate.wildHp=forms::stats(18,1).maxHp;
+        candidate.wildRules=17; // Capture-pause flow without rules-18 focus pauses (covered above and in rules18_test).
+        CHECK(isValid(candidate));
         auto result=candidate;autobattle::Trace chunk;CHECK(applyAutoFight(result,&chunk)==Error::None);
         if(result.autoCapture==AutoCapture::Awaiting){before=candidate;paused=result;trace=chunk;found=true;}
     }

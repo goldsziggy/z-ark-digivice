@@ -68,14 +68,15 @@ Hit resolveForms(std::uint32_t attackerForm, std::uint32_t attackerLevel,
 }
 Hit resolveCareForms(std::uint32_t attackerForm,std::uint32_t attackerLevel,
                     std::uint32_t defenderForm,std::uint32_t defenderLevel,Move move,Defense defense,
-                    CareBonus attackerCare,CareBonus defenderCare,std::uint32_t minimumRawDamage){
+                    CareBonus attackerCare,CareBonus defenderCare,std::uint32_t minimumRawDamage,std::uint32_t powerBonus){
     if(!validCareBonus(attackerCare)||!validCareBonus(defenderCare))return {0,false,100};
     if (!validFormProfile(attackerForm,attackerLevel) || !validFormProfile(defenderForm,defenderLevel) ||
-        static_cast<unsigned>(move)>2 || static_cast<unsigned>(defense)>3 || minimumRawDamage<4 || minimumRawDamage>32) return {0,false,100};
+        static_cast<unsigned>(move)>2 || static_cast<unsigned>(defense)>3 || minimumRawDamage<4 || minimumRawDamage>32 || powerBonus>16) return {0,false,100};
     const auto a=careProfile(attackerForm,attackerLevel,attackerCare),d=careProfile(defenderForm,defenderLevel,defenderCare);
     const auto offense=move==Move::Magic ? a.stats.magic : a.stats.attack;
     const auto protection=move==Move::Magic ? d.stats.resistance : d.stats.defense;
-    const auto difference=static_cast<int>(offense)+(move==Move::Heavy ? 16 : 8)-static_cast<int>(protection);
+    const auto power=move==Move::Heavy ? 16+2*powerBonus : 8+powerBonus;
+    const auto difference=static_cast<int>(offense)+static_cast<int>(power)-static_cast<int>(protection);
     const auto raw=difference<static_cast<int>(minimumRawDamage) ? minimumRawDamage : static_cast<std::uint32_t>(difference);
     const auto percent=percentFor(a.type,d.type);
     auto damage=raw*percent/100;
@@ -111,7 +112,7 @@ std::size_t writeCatalogJson(char* output, std::size_t capacity) {
         if (length >= capacity - used) return false;
         std::memcpy(output + used, text, length + 1); used += length; return true;
     };
-    if (!append("{\"rulesVersion\":17,\"types\":[\"grove\",\"tide\",\"ember\",\"neutral\"],\"typeChart\":["
+    if (!append("{\"rulesVersion\":18,\"types\":[\"grove\",\"tide\",\"ember\",\"neutral\"],\"typeChart\":["
         "{\"attacker\":\"grove\",\"strongAgainst\":\"tide\",\"weakAgainst\":\"ember\"},"
         "{\"attacker\":\"tide\",\"strongAgainst\":\"ember\",\"weakAgainst\":\"grove\"},"
         "{\"attacker\":\"ember\",\"strongAgainst\":\"grove\",\"weakAgainst\":\"tide\"},"
@@ -135,7 +136,7 @@ std::size_t writeStarterJson(char* output, std::size_t capacity) {
         if (length >= capacity - used) { output[0] = '\0'; return false; }
         std::memcpy(output + used, text, length + 1); used += length; return true;
     };
-    if (!append("{\"formatVersion\":1,\"rulesVersion\":17,\"starters\":[")) return 0;
+    if (!append("{\"formatVersion\":1,\"rulesVersion\":18,\"starters\":[")) return 0;
     for (std::uint32_t id = 1; id <= kStarterCount; ++id) {
         char entry[640], stats[kProfileJsonCapacity];
         const auto s = starterSpecies(id);
@@ -159,7 +160,7 @@ std::size_t writeEvolutionJson(std::uint32_t species,char* output,std::size_t ca
         if(n<0 || static_cast<std::size_t>(n)>=capacity-used) {ok=false;return;}
         used+=static_cast<std::size_t>(n);
     };
-    append("{\"formatVersion\":1,\"rulesVersion\":17,\"species\":\"%s\",\"forms\":[",speciesName(species));
+    append("{\"formatVersion\":1,\"rulesVersion\":18,\"species\":\"%s\",\"forms\":[",speciesName(species));
     bool comma=false;
     for(std::uint32_t id=1;id<=forms::kFormCount;++id) {
         const auto* f=forms::find(id); if (!forms::productionForm(id) || f->lineage!=species) continue;
@@ -255,7 +256,7 @@ std::size_t writeEvolutionGraphJson(std::uint32_t formId, std::uint32_t offset,
     if (offset > total) return 0;
     const auto count = limit < total - offset ? limit : total - offset;
     CatalogWriter json(output, capacity);
-    json.append("{\"formatVersion\":2,\"rulesVersion\":17,\"catalogVersion\":%u,\"focusFormId\":%u,"
+    json.append("{\"formatVersion\":2,\"rulesVersion\":18,\"catalogVersion\":%u,\"focusFormId\":%u,"
                 "\"offset\":%u,\"limit\":%u,\"total\":%u,\"nextOffset\":", static_cast<unsigned>(forms::kCatalogVersion),
                 static_cast<unsigned>(formId), static_cast<unsigned>(offset), static_cast<unsigned>(limit), total);
     if (offset + count < total) json.append("%u", static_cast<unsigned>(offset + count)); else json.append("null");
@@ -281,7 +282,7 @@ std::size_t writeCatalogPageJson(std::uint32_t offset, std::uint32_t limit, char
     if (!output || !capacity || !limit || limit > 16 || offset > forms::kProductionFormCount) return 0;
     CatalogWriter json(output, capacity);
     const auto count = limit < forms::kProductionFormCount - offset ? limit : forms::kProductionFormCount - offset;
-    json.append("{\"formatVersion\":1,\"rulesVersion\":17,\"catalogVersion\":%" PRIu32
+    json.append("{\"formatVersion\":1,\"rulesVersion\":18,\"catalogVersion\":%" PRIu32
                 ",\"total\":%" PRIu32 ",\"offset\":%" PRIu32 ",\"nextOffset\":", forms::kCatalogVersion, forms::kProductionFormCount, offset);
     if (offset + count < forms::kProductionFormCount) json.append("%" PRIu32, offset + count); else json.append("%s", "null");
     json.append(",\"forms\":[");

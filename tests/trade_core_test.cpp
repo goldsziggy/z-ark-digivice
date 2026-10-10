@@ -215,7 +215,7 @@ void encodingAndMigration(){
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.receivedTrades==0&&t::sameState(a,migrated));
     CHECK(encodeSnapshot(migrated,current)&&snapshot_test::sameOldPayload(prior.data(),current.bytes,prior.size()));
     put32(current.bytes+snapshot_test::currentOffset(648),1);put32(current.bytes+kSnapshotSize-4,crc(current.bytes,kSnapshotSize-4));CHECK(decodeSnapshot(current.bytes,sizeof(current.bytes),migrated)==SnapshotStatus::InvalidState);
-    CHECK(kSchemaVersion==24&&kRulesVersion==17&&kSnapshotSize==3216&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==6604&&t::kV19RecordBytes==1492);
+    CHECK(kSchemaVersion==25&&kRulesVersion==18&&kSnapshotSize==3216&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==6604&&t::kV19RecordBytes==1492);
 }
 }
 int main(){exchangeProgression();fullCollectionsExchange();restrictionsAndConsent();walkingAndInterruptedDecisions();encodingAndMigration();installedJournalMigration();

@@ -50,7 +50,7 @@ void weaken(State& s, unsigned formId, unsigned wildLevel){
     CHECK(isValid(s));
 }
 void levelsAndRoutes(){
-    CHECK(kSchemaVersion==24&&kRulesVersion==17&&kMaxLevel==50&&kMaxXp==49000&&kSnapshotSize==3216);
+    CHECK(kSchemaVersion==25&&kRulesVersion==18&&kMaxLevel==50&&kMaxXp==49000&&kSnapshotSize==3216);
     CHECK(xpForLevel(1)==0&&xpForLevel(20)==7600&&xpForLevel(21)==20u*20u*21u&&xpForLevel(50)==49000);
     CHECK(levelForXp(0)==1&&levelForXp(7600)==20&&levelForXp(8399)==20&&levelForXp(8400)==21&&levelForXp(49000)==50);
     for(unsigned level=1;level<=20;++level)CHECK(xpForLevel(level)==20u*(level-1)*level);

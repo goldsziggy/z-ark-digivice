@@ -129,6 +129,10 @@ private:
     std::uint16_t* frame_ = nullptr;
     std::uint64_t lastTouchMs_ = 0, lastFrameMs_ = 0, careAwakeMs_ = 0;
     std::uint32_t autoStartSequence_ = UINT32_MAX;
+    // Rules 18 focus prompt clock (presentation only; the answer is a durable event).
+    static constexpr std::uint64_t kFocusTimeoutMs = 3200;
+    std::uint64_t focusSinceMs_ = 0;
+    std::uint32_t focusSequence_ = UINT32_MAX;
     std::uint32_t uiSequence_ = UINT32_MAX, touchPresses_ = 0, touchReleases_ = 0;
     std::uint32_t renderedFrames_ = 0, maxFrameUs_ = 0;
     std::uint32_t maxRenderUs_ = 0, maxFlushUs_ = 0;

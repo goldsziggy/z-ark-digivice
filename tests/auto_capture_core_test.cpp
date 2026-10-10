@@ -16,7 +16,8 @@ unsigned checks=0,failures=0;
 unsigned updateCrc(unsigned crc,const unsigned char* data,unsigned n){for(unsigned i=0;i<n;++i){crc^=data[i];for(unsigned j=0;j<8;++j)crc=(crc>>1)^((crc&1)?0xedb88320u:0);}return crc;}
 void put32(std::uint8_t* p,std::uint32_t v){for(unsigned i=0;i<4;++i)p[i]=static_cast<std::uint8_t>(v>>(8*i));}
 void step(State& s,Action a,unsigned v=0){CHECK(apply(s,a,v)==Error::None);CHECK(isValid(s));}
-State start(unsigned seed=1,unsigned starter=1){auto s=newDevice(seed);step(s,Action::Hatch,starter);step(s,Action::Mode,1);step(s,Action::Explore,1000);return s;}
+// Rules-17 encounters: the capture pause flow without rules-18 focus pauses (rules18_test covers those).
+State start(unsigned seed=1,unsigned starter=1){auto s=newDevice(seed);step(s,Action::Hatch,starter);step(s,Action::Mode,1);step(s,Action::Explore,1000);s.wildRules=17;return s;}
 void restore(State& s){Snapshot bytes;CHECK(encodeSnapshot(s,bytes));State decoded;CHECK(decodeSnapshot(bytes.bytes,sizeof(bytes.bytes),decoded)==SnapshotStatus::Ok&&trade::sameState(s,decoded));s=decoded;}
 void reject(State& s,Action a){const auto before=s;CHECK(apply(s,a)!=Error::None&&trade::sameState(s,before));}
 void attackTrace(const autobattle::Trace& trace){
@@ -155,7 +156,7 @@ void boundsAndMigration(){
     auto invalid=partial;invalid.kind=autobattle::Kind::Practice;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     invalid=partial;invalid.steps[0].action=autobattle::Move::Capture;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));invalid=partial;invalid.steps[0].captureAttempt=1;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     CHECK(!trade::canOffer(waiting,1));Action action;CHECK(parseAction("auto-fight",action)&&action==Action::AutoFight);CHECK(parseAction("auto-resume",action)&&action==Action::AutoResume);
-    CHECK(kSchemaVersion==24&&kRulesVersion==17&&kSnapshotSize==3216);
+    CHECK(kSchemaVersion==25&&kRulesVersion==18&&kSnapshotSize==3216);
 }
 }
 int main(){historicalAutoUnchanged();pausesAndResume();actualFlickOnly();priorAutoCapacityAndNewInputs();boundsAndMigration();std::printf("%u Auto manual capture checks, %u failures; State=%zu snapshot=%zu\n",checks,failures,sizeof(State),kSnapshotSize);return failures?1:0;}

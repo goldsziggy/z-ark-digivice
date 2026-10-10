@@ -223,10 +223,12 @@ std::uint16_t timingColor(capturering::Grade grade) {
 const char* timingName(capturering::Grade grade) {
     return grade==capturering::Grade::Green ? "GREEN" : grade==capturering::Grade::Orange ? "ORANGE" : "RED";
 }
-bool captureAction(Action action) { return action==Action::Flick || action==Action::RingCapture; }
+bool captureAction(Action action) { return action==Action::Flick || action==Action::RingCapture || action==Action::Focus; }
 void captureScene(Canvas& c,const State& state,const Model& model,const ArtRequest& art,const capturering::Sample& ring) {
+    const bool focus=state.autoCapture==AutoCapture::FocusStrike || state.autoCapture==AutoCapture::FocusBlock;
+    const bool strike=state.autoCapture==AutoCapture::FocusStrike;
     c.rect(62,49,288,28,panel);
-    c.center(55,"TIME THE RING",2,amber);
+    c.center(55,focus ? (strike ? "STRIKE! TIME THE RING" : "BLOCK! TIME THE RING") : "TIME THE RING",2,amber);
     // The broad target is below the exact encountered sprite; its colors never
     // obscure the creature. Only the moving timing ring is drawn above it.
     c.shadedAnnulus(206,176,ring.targetRadius-capturering::kBandHalfWidth,
@@ -237,6 +239,14 @@ void captureScene(Canvas& c,const State& state,const Model& model,const ArtReque
     c.circle(206,176,radius,color,false);
     c.circle(206,176,std::max(1,radius-1),color,false);
     char label[48];
+    if(focus) {
+        const auto percent=focusPercent(strike,ring.phaseMs,state.wildFormId);
+        if(strike) std::snprintf(label,sizeof(label),"%s HIT X%u.%u - TAP PLAY AREA",timingName(ring.grade),static_cast<unsigned>(percent/100),static_cast<unsigned>(percent%100/10));
+        else std::snprintf(label,sizeof(label),percent==0 ? "%s BLOCKS ALL - TAP PLAY AREA" : "%s TAKES %u%% - TAP PLAY AREA",timingName(ring.grade),static_cast<unsigned>(percent));
+        c.badge(269,label,1,color,32);
+        c.badge(335,"AUTO PAUSED - ONE TAP",1,dim,36);
+        return;
+    }
     std::snprintf(label,sizeof(label),"%s %u%% - TAP PLAY AREA",timingName(ring.grade),static_cast<unsigned>(ringCaptureChance(state,ring.phaseMs)));
     c.badge(269,label,1,color,32);
     std::snprintf(label,sizeof(label),"%u THROWS LEFT%s",static_cast<unsigned>(3-std::min<std::uint32_t>(3,state.captureAttempts)),
@@ -263,6 +273,13 @@ int horizontalTap(int x,int y,bool picker) {
         if(x>=238 && x<334) return 1;
     }
     return 0;
+}
+bool focusOpen(const State& state) {
+    return state.phase==Phase::Encounter && (state.autoCapture==AutoCapture::FocusStrike || state.autoCapture==AutoCapture::FocusBlock);
+}
+// Rules 18 focus prompt: the same ring and tap as capture, answering Strike or Block.
+bool canFocus(const State& state,const Model& model) {
+    return model.writable && model.inputEnabled && !model.encounterRecoveryRequired && focusOpen(state);
 }
 bool canCapture(const State& state,const Model& model) {
     // Eligibility only: never run a speculative throw or consume even a copied RNG.
@@ -376,7 +393,7 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  NearbyOpen, NearbyPrevious, NearbyNext, NearbyReview, NearbyChallenge, NearbyAccept, NearbyCancel, NearbyClose,
  NearbyPhysical, NearbyMagic, NearbyHeavy, NearbyCommit, NearbyBrace, NearbyCounter, NearbyWard,
  HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
- TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat };
+ TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat, FocusSkip };
 constexpr const char* homeTitles[]{"CARE","PARTNERS","SETTINGS","NEARBY"};
 constexpr const char* homeActions[]{"OPEN CARE","PARTNERS","SETTINGS","FIND NEARBY"};
 } // namespace
@@ -538,7 +555,7 @@ void Controller::update(const State& state, const Model& model) {
     }
     if (presentationLocked) screen_=Screen::Battle;
     else if (battleLocked_) screen_=state.phase==Phase::Encounter ? Screen::Battle : Screen::Result;
-    if(!presentationLocked && state.phase==Phase::Encounter && state.autoCapture==AutoCapture::Awaiting &&
+    if(!presentationLocked && state.phase==Phase::Encounter && (state.autoCapture==AutoCapture::Awaiting || focusOpen(state)) &&
         !activeTrade(model.trade) && (!model.nearby || model.nearby->stage==nearby::Stage::Closed)) screen_=Screen::Capture;
     if(activeTrade(model.trade) && screen_!=Screen::TradeChoose && !presentationLocked) screen_=Screen::TradeReview;
     if (revision) { notice_[0]=0; pending_=false; battleSelection_=combat::Move::Physical; }
@@ -553,7 +570,7 @@ void Controller::update(const State& state, const Model& model) {
         const auto* selected=collectionMemberAtDisplayIndex(state,memberIndex_);
         memberId_=selected ? selected->id : 0;
     }
-    const bool captureEligible=screen_==Screen::Capture && !presentationLocked && !pending_ && canCapture(state,model);
+    const bool captureEligible=screen_==Screen::Capture && !presentationLocked && !pending_ && (canCapture(state,model) || canFocus(state,model));
     if(!captureEligible || captureEligible!=captureEligible_ || contextChanged || captureEpochForm_!=state.wildFormId)
         captureEpoch_=UINT64_MAX;
     captureEligible_=captureEligible; captureEpochForm_=state.wildFormId;
@@ -600,6 +617,7 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         back(); break;
     case Screen::Capture:
         if(state.autoCapture==AutoCapture::Awaiting) add(104,348,204,38,"SKIP / RESUME FIGHT",AutoResume,legal(state,model,Action::AutoResume));
+        else if(focusOpen(state)) add(104,348,204,38,"LET AUTO PLAY",FocusSkip,legal(state,model,Action::Focus,kFocusNoTap));
         else back();
         break;
     case Screen::Result: add(116,274,180,50,"HOME",Again); break;
@@ -765,7 +783,8 @@ Intent Controller::proposeTrade(IntentKind kind,const Model& model,std::uint32_t
     pending_=true;resetTouch();return intent;
 }
 Intent Controller::propose(const State& state, const Model& model, Action action, std::uint32_t value) {
-    if (captureAction(action) ? (!canCapture(state,model) ||
+    if (action==Action::Focus ? (!canFocus(state,model) || value>kFocusNoTap || !legal(state,model,action,value)) :
+        captureAction(action) ? (!canCapture(state,model) ||
         (action==Action::Flick ? value>kFlickMaxValue : value>=capturering::kCycleMs)) : !legal(state,model,action,value)) return {};
     pending_=true; actionAt_=lastAt_; actionSequence_=state.sequence+1;
     lastAction_=action; actionValue_=value; resetTouch();
@@ -835,6 +854,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case Auto: return propose(state,model,Action::AutoFight);
     case Retreat: return propose(state,model,Action::Retreat);
     case AutoResume: return propose(state,model,Action::AutoResume);
+    case FocusSkip: return propose(state,model,Action::Focus,kFocusNoTap);
     case Again: return navigate(Screen::Home);
     case MemberNext: case MemberPrev: {
         if(state.collectionCount<2) return {};
@@ -963,14 +983,14 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
         event.y>=80 && event.y<=330 && inside(event.x,event.y)) {
         captureContactBlocked_=true;
         if(down_ || !model.inputEnabled || model.encounterRecoveryRequired || pending_ || battleLocked_ ||
-            !canCapture(state,model) || event.atMs<lastAt_ ||
+            !(canCapture(state,model) || canFocus(state,model)) || event.atMs<lastAt_ ||
             (captureAcceptedAt_!=UINT64_MAX && (event.atMs<captureAcceptedAt_ || event.atMs-captureAcceptedAt_<450))) {
             resetTouch(); return {};
         }
         lastAt_=event.atMs;
         const auto value=capturering::sample(captureElapsed(event.atMs),state.wildFormId).phaseMs;
         captureAcceptedAt_=event.atMs;
-        return propose(state,model,Action::RingCapture,value);
+        return propose(state,model,focusOpen(state) ? Action::Focus : Action::RingCapture,value);
     }
     if (event.kind==TouchKind::Cancel) { cancelTouch(); return {}; }
     if (!model.inputEnabled || model.encounterRecoveryRequired || pending_ || battleLocked_) { resetTouch(); return {}; }
@@ -1126,7 +1146,7 @@ ArtRequest Controller::partnerArtRequest(const State& state,const Model& model,s
 }
 
 bool Controller::captureAnimating(const State& state,const Model& model) const {
-    return screen_==Screen::Capture && downButton_==0 && !pending_ && !battleLocked_ && !notice_[0] && canCapture(state,model);
+    return screen_==Screen::Capture && downButton_==0 && !pending_ && !battleLocked_ && !notice_[0] && (canCapture(state,model) || canFocus(state,model));
 }
 bool Controller::renderCaptureRegion(const State& state,const Model& model,std::uint16_t* pixels,
                                      std::size_t capacity,std::uint64_t now) const {

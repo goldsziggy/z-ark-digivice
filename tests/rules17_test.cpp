@@ -51,7 +51,7 @@ unsigned singleRouteForm() {
 unsigned routeLevel(unsigned formId, unsigned index) { return forms::evolutionNeed(*forms::outgoing(formId, index)).level; }
 
 void versions() {
-    CHECK(kSchemaVersion == 24 && kRulesVersion == 17 && kSnapshotSize == 3216);
+    CHECK(kSchemaVersion == 25 && kRulesVersion == 18 && kSnapshotSize == 3216);
     CHECK(legacy_v16::kSchemaVersion == 23 && legacy_v16::kRulesVersion == 16);
     Action a; CHECK(parseAction("treat", a) && a == Action::Treat);
 }
@@ -96,7 +96,7 @@ void saturation() {
 // Starts an encounter and leaves the partner one hit from defeat by a sturdy foe.
 void doomedEncounter(State& s) {
     step(s, Action::Explore, 1000);
-    CHECK(s.phase == Phase::Encounter && s.wildRules == 17);
+    CHECK(s.phase == Phase::Encounter && s.wildRules >= 17);
     s.wildLevel = 50; s.wildMaxHp = s.wildHp = combat::formProfile(s.wildFormId, 50).stats.maxHp;
     for (unsigned g = 0; g < 4 && wildGuard(s) == combat::Defense::Counter; ++g) ++s.wildTurn;
     s.hp = 1; partner(s).hp = 1;

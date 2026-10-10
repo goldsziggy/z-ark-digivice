@@ -40,7 +40,7 @@ void rewardMember(const CreatureMember& before,const CreatureMember& after,unsig
  CHECK(trade::sameMember(before,normalized));
 }
 void contractAndSelection(){
- CHECK(kSchemaVersion==24&&kRulesVersion==17&&kPartyCapacity==3&&kCollectionCapacity==60&&kSnapshotSize==3216&&sizeof(State)==3188);
+ CHECK(kSchemaVersion==25&&kRulesVersion==18&&kPartyCapacity==3&&kCollectionCapacity==60&&kSnapshotSize==3216&&sizeof(State)==3188);
  Action parsed=Action::Feed;CHECK(!parseAction(nullptr,parsed)&&parsed==Action::Feed);CHECK(!parseAction("",parsed)&&parsed==Action::Feed);CHECK(parseAction("party-add",parsed)&&parsed==Action::PartyAdd);CHECK(parseAction("party-remove",parsed)&&parsed==Action::PartyRemove);
  auto egg=newDevice();reject(egg,Action::PartyAdd,2,Error::WrongPhase);
  auto s=roster(60);reject(s,Action::PartyAdd,0,Error::InvalidValue);reject(s,Action::PartyAdd,UINT32_MAX,Error::InvalidValue);reject(s,Action::PartyAdd,61,Error::UnknownMember);
@@ -96,7 +96,10 @@ void autoRewards(){
  unsigned wins=0,captures=0,retreats=0;
  for(unsigned seed=1;seed<=96;++seed)for(bool legacy:{false,true}){
   auto s=roster();s.seed=s.rngState=seed;party(s,3);step(s,Action::Mode,1);step(s,Action::Explore,1000);const auto before=s;const auto award=20+6*s.wildLevel;
-  if(legacy)CHECK(applyAuto(s)==Error::None);else{CHECK(applyAutoFight(s)==Error::None);if(s.autoCapture==AutoCapture::Awaiting){
+  if(legacy)CHECK(applyAuto(s)==Error::None);else{CHECK(applyAutoFight(s)==Error::None);
+    // Rules 18: a focus pause may come first; an untapped answer continues the same chunk.
+    while(s.autoCapture==AutoCapture::FocusStrike||s.autoCapture==AutoCapture::FocusBlock)CHECK(applyFocus(s,kFocusNoTap)==Error::None);
+    if(s.autoCapture==AutoCapture::Awaiting){
     for(unsigned i=1;i<4;++i)CHECK(trade::sameMember(before.collection[i],s.collection[i]));restore(s);CHECK(applyAutoResume(s)==Error::None);}}
   CHECK(isValid(s)&&s.phase==Phase::Home);const bool reward=s.lastAutoOutcome!=autobattle::Outcome::Retreated;
   wins+=s.lastAutoOutcome==autobattle::Outcome::Won;captures+=s.lastAutoOutcome==autobattle::Outcome::Captured;retreats+=!reward;

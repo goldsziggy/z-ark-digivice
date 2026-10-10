@@ -123,10 +123,11 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
             notice = "STEP SAVE RECOVERY"; break;
         }
         State candidate = state_;
-        const bool automatic = intent.action == Action::Auto || intent.action == Action::AutoFight || intent.action == Action::AutoResume;
+        const bool automatic = intent.action == Action::Auto || intent.action == Action::AutoFight || intent.action == Action::AutoResume || intent.action == Action::Focus;
         const auto error = intent.action == Action::Auto ? applyAuto(candidate, &battleTrace_) :
             intent.action == Action::AutoFight ? applyAutoFight(candidate, &battleTrace_) :
-            intent.action == Action::AutoResume ? applyAutoResume(candidate, &battleTrace_) : apply(candidate, intent.action, intent.value);
+            intent.action == Action::AutoResume ? applyAutoResume(candidate, &battleTrace_) :
+            intent.action == Action::Focus ? applyFocus(candidate, intent.value, &battleTrace_) : apply(candidate, intent.action, intent.value);
         if (error != Error::None) { notice = errorText(error); audio_.play(device::AudioCue::Error); break; }
         if (!saves_.checkpoint(candidate)) { notice = "SAVE UNCERTAIN - REBOOT TO RECOVER"; audio_.play(device::AudioCue::Error); break; }
         const auto now = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
@@ -192,6 +193,21 @@ void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
         return;
     }
     auto model = interfaceModel();
+    // Rules 18 focus prompt: one ring cycle plus a short grace, then Auto plays
+    // the exchange untapped. Never a punishment for looking away.
+    const bool focusOpen = state_.phase == Phase::Encounter &&
+        (state_.autoCapture == AutoCapture::FocusStrike || state_.autoCapture == AutoCapture::FocusBlock);
+    if (!focusOpen) focusSinceMs_ = 0;
+    else if (!focusSinceMs_ || focusSequence_ != state_.sequence) { focusSinceMs_ = now; focusSequence_ = state_.sequence; }
+    else if (!touchPressed_ && !ui_.pending() && !battle_.locked() && now - focusSinceMs_ >= kFocusTimeoutMs) {
+        focusSinceMs_ = now;
+        deviceui::Intent intent;
+        intent.kind = deviceui::IntentKind::GameAction;
+        intent.action = Action::Focus;
+        intent.value = kFocusNoTap;
+        interfaceIntent(intent);
+        model = interfaceModel();
+    }
     // Touch is already applied this frame, so Run Away wins over the next chunk.
     if (!touchPressed_ && !ui_.pending() && state_.sequence != autoStartSequence_ &&
         deviceui::autoFightReady(state_, model) && allowsCareAction(Action::AutoFight)) {

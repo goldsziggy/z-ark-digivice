@@ -1,3 +1,4 @@
+// Frozen rules 17 / schema 24 before rules 18 level-scaled wild damage, guard-aware Auto and focus moments.
 #pragma once
 
 #include <cstddef>
@@ -7,12 +8,12 @@
 #include "encounters.hpp"
 
 // This core has no heap allocation, clock, network, filesystem, or hardware dependency.
-namespace digivice {
+namespace digivice::legacy_v17 {
 
-constexpr std::uint32_t kSchemaVersion = 25;
-constexpr std::uint32_t kRulesVersion = 18;
+constexpr std::uint32_t kSchemaVersion = 24;
+constexpr std::uint32_t kRulesVersion = 17;
 constexpr std::uint32_t kDevelopmentSeed = 12345;
-constexpr std::size_t kSnapshotSize = 3216; // V23, V24 and V25 share this layout.
+constexpr std::size_t kSnapshotSize = 3216; // V23 and V24 share this layout.
 constexpr std::size_t kV22SnapshotSize = 2964;
 constexpr std::size_t kV21SnapshotSize = 2952;
 constexpr std::size_t kV20SnapshotSize = 664;
@@ -41,14 +42,13 @@ constexpr std::uint32_t kMaxReplayEvents = 10000;
 
 enum class Phase : std::uint8_t { Home, Encounter, Egg };
 enum class BattleMode : std::uint8_t { Tactical, Auto };
-// Rules 18 adds the two focus pauses: one timed tap per AutoFight encounter.
-enum class AutoCapture : std::uint8_t { None, Awaiting, FocusStrike, FocusBlock };
+enum class AutoCapture : std::uint8_t { None, Awaiting };
 enum class EncounterRate : std::uint8_t { Off, Relaxed, Normal, Frequent };
 enum class Species : std::uint16_t {
     None, Mote, Flicker, Rill, Cinder, Impmon, Agumon, Gabumon, Patamon,
     Tentomon, Palmon, Gomamon, Renamon
 };
-enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember, Treat, Focus };
+enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember, Treat };
 enum class Message : std::uint8_t {
     Welcome, Fed, Played, Rested, Walked, Encounter, AttackCard, ShieldCard,
     Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared, PartyAdded, PartyRemoved, Toileted, Treated
@@ -89,17 +89,6 @@ inline bool isInjured(const CreatureMember& member) { return injuryLevel(member)
 // Ultimate 2, Mega 1.
 constexpr std::uint32_t kInjuryNeglectMinutes = 10; // Live minutes per worsening step.
 std::uint32_t cleanRouteMistakeLimit(std::uint32_t destinationFormId);
-// Rules 18 focus moments. Once per AutoFight encounter, before exchange
-// focusTurn (1..2), Auto pauses as FocusStrike or FocusBlock. Focus(phaseMs)
-// grades one tap on the capture ring timing (0..2399); kFocusNoTap means the
-// prompt timed out. Strike scales that exchange's player hit by 200/150/100%
-// (green/orange/red or none); Block scales the wild reply by 0/50/100%.
-constexpr std::uint32_t kFocusNoTap = 2400;
-struct State;
-std::uint32_t focusTurn(const State& state);
-bool focusIsStrike(const State& state);
-// Percent applied by a graded focus tap; 100 for a red grade or no tap.
-std::uint32_t focusPercent(bool strike, std::uint32_t phaseMs, std::uint32_t wildFormId);
 // True when care quality permits this route (independent of level/bond/care points).
 bool careRouteOpen(const CreatureMember& member, std::size_t outgoingIndex);
 
@@ -281,9 +270,6 @@ Error applyAutoFight(State& state, autobattle::Trace* trace = nullptr);
 // Explicit Skip/Resume Fight: finish the remainder without any capture attempt.
 // One durable event, so no separate declined flag or prompt retry is needed.
 Error applyAutoResume(State& state, autobattle::Trace* trace = nullptr);
-// Rules 18: answers a focus pause, resolves that exchange with the graded
-// modifier, then continues exactly like AutoFight to the next pause or result.
-Error applyFocus(State& state, std::uint32_t phaseMs, autobattle::Trace* trace = nullptr);
 const char* errorText(Error error);
 const char* messageText(Message message);
 const char* creatureName(const State& state);
@@ -312,4 +298,4 @@ bool encodeSnapshot(const State& state, Snapshot& snapshot);
 SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, State& state);
 const char* snapshotStatusText(SnapshotStatus status);
 
-} // namespace digivice
+} // namespace digivice::legacy_v17

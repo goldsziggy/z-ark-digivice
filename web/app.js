@@ -12,7 +12,7 @@ import { createBattleClient } from './battle-client.js';
 import { setupTwoButtonInput } from './two-button-input.js';
 import { createBackgroundPlayer, BACKGROUND_SCENES } from './background-player.js';
 import { validateStarterCatalog, isEggState, paintStarterEgg, paintRookiePlaceholder } from './starter-onboarding.js';
-import { validateAutoTrace, autoStepText, autoResultTitle, captureChoice, awaitingAutoCapture, pausedAutoTraceMatchesState } from './auto-battle.js';
+import { validateAutoTrace, autoStepText, autoResultTitle, captureChoice, awaitingAutoCapture, awaitingAutoFocus, pausedAutoTraceMatchesState } from './auto-battle.js';
 import { validProgressCombat, validateEvolutionOptions, evolutionRequirements, paintFormPlaceholder } from './progression.js';
 import { createFormArt } from './form-art.js';
 import { fetchRosterPage, fetchRosterDetail, fetchEvolutionGraph, fetchRosterIds, rosterReferences, rosterEncyclopediaMoves, ROSTER_PAGE_SIZE, ROSTER_STAGES } from './roster-client.js';
@@ -79,8 +79,10 @@ let assetState = { ready: false, busy: false, packs: [], selectedId: 'scene-mead
 const backgroundPlayer = createBackgroundPlayer({ onChange: () => { if (deviceReady) { syncBackgroundStatus(); scheduleDraw(); } } });
 const battleClient = createBattleClient({ storage: (() => { try { return localStorage; } catch { return null; } })(), onChange: () => { if (deviceReady) render(); } });
 const formArt = createFormArt({ getCredential: () => identity, onChange: () => { artGeneration++; if (deviceReady) render(); } });
-const RULES_VERSION = 17;
-const SCHEMA_VERSION = 24;
+const RULES_VERSION = 18;
+const SCHEMA_VERSION = 25;
+const FOCUS_NO_TAP = 2400;
+let focusShownAt = 0, focusShownSequence = -1;
 const activeCareMember = () => game?.collection?.find(member => member.id === game.activeCreatureId) ?? null;
 const COLLECTION_CAPACITY = 60;
 const MAX_STATE_BYTES = 64 * 1024;
@@ -825,6 +827,14 @@ function deviceView(screen) {
       Object.assign(view, { title: 'Choose your style', eyebrow: 'WILD ENCOUNTERS', layout: 'carousel',
         items: [item('wild-tactical', 'Tactical', !act || encounter, 'Choose attacks, cards and captures', '⚔'), item('wild-auto', 'Auto', !act || encounter, 'Confirm a battle, then watch', '▶')], footer: 'CHOOSE BEFORE WALKING' }); break;
     case 'wild-auto-confirm':
+      if (awaitingAutoFocus(game)) {
+        if (focusShownSequence !== game.foregroundSequence) { focusShownSequence = game.foregroundSequence; focusShownAt = performance.now(); }
+        const strike = game.focus.kind === 'strike';
+        Object.assign(view, { title: strike ? 'Strike!' : 'Block!', eyebrow: `WILD ${game?.wildName || 'ENCOUNTER'} · AUTO PAUSED`, layout: 'auto-confirm', encounterRarity: game?.wildRarity,
+          detail: strike ? 'One timed tap. Green doubles this hit, orange adds half. No tap is fine: Auto keeps playing.' : 'One timed tap. Green blocks the whole hit, orange halves it. No tap is fine: Auto keeps playing.',
+          items: [item('focus-tap', strike ? 'Strike now' : 'Block now', !act), item('focus-skip', 'Let Auto play', !act)], footer: 'THE RING REPEATS EVERY 2.4 SECONDS', focusActions: true });
+        break;
+      }
       Object.assign(view, { title: awaitingAutoCapture(game) ? 'Capture is ready' : 'Ready for Auto?', eyebrow: `WILD ${game?.wildName || 'ENCOUNTER'} · AUTO`, layout: 'auto-confirm', encounterRarity: game?.wildRarity,
         detail: awaitingAutoCapture(game) ? 'Attacks are paused. Tap the play area at the right time, or resume fighting.' : encounter && game.collection.length >= game.collectionCapacity
           ? game.wildRules >= 10 ? 'Collection full. Make room before starting if you want to capture. Auto will fight without a capture pause.' : 'Collection full. Auto will fight without a capture pause. Finish this encounter before releasing a Digimon.'
@@ -940,7 +950,7 @@ function renderDevice() {
     } else if (selection?.type === 'release') {
       devicePendingReturn = 'release-result';
     } else if (pending.intent === 'recover') devicePendingReturn = 'care';
-    else if (['auto', 'auto-fight', 'auto-resume'].includes(selection?.type)) devicePendingReturn = 'wild-auto-result';
+    else if (['auto', 'auto-fight', 'auto-resume', 'focus'].includes(selection?.type)) devicePendingReturn = 'wild-auto-result';
     else if (selection?.type === 'mode') devicePendingReturn = 'explore';
     else devicePendingReturn = current;
     navigation.setScreen('saving'); return;
@@ -963,6 +973,7 @@ function renderDevice() {
     if (current === 'battle') { navigation.setScreen('home'); return; }
   }
   if (awaitingAutoCapture(game) && ['home', 'battle', 'wild-auto-confirm', 'wild-auto-result'].includes(current) && canAct() && !connectionError && armCaptureAim()) return;
+  if (awaitingAutoFocus(game) && ['home', 'battle', 'wild-auto-result'].includes(current) && !presentation) { navigation.setScreen('wild-auto-confirm'); return; }
   const state = navigation.state();
   backgroundPlayer.select(backgroundSceneId()); syncBackgroundStatus();
   const scene = visualScene();
@@ -1165,6 +1176,8 @@ async function deviceAction(id, event) {
   }
   if (id === 'wild-auto-start') { if (game?.phase === 'encounter' && game.battleMode === 'auto' && game.autoCapture === 0 && manualAutoCaptureSupported) return sendAction('auto-fight'); return; }
   if (id === 'wild-auto-resume') { if (awaitingAutoCapture(game)) return sendAction('auto-resume'); return; }
+  if (id === 'focus-tap') { if (awaitingAutoFocus(game)) return sendAction('focus', Math.floor(performance.now() - focusShownAt) % CAPTURE_RING.cycleMs); return; }
+  if (id === 'focus-skip') { if (awaitingAutoFocus(game)) return sendAction('focus', FOCUS_NO_TAP); return; }
   if (id === 'wild-auto-done') { presentation = null; navigation.setScreen('home'); return; }
   if (id === 'wild-auto-replay') return playAutoBattle('wild');
   if (id === 'practice-auto-start') { practiceDraftMode = 'auto'; return practiceCommand('start'); }
@@ -1413,7 +1426,7 @@ function validateSave(save) {
     && state.collection.some(member => member.id === state.activeCreatureId);
   if (!save || !Number.isSafeInteger(save.revision) || save.revision < 0 || !state || new TextEncoder().encode(JSON.stringify(state)).byteLength > MAX_STATE_BYTES || state.schemaVersion !== SCHEMA_VERSION || state.rulesVersion !== RULES_VERSION
     || !Number.isSafeInteger(state.receivedTrades) || state.receivedTrades < 0 || state.receivedTrades > 4294967295
-    || ![0, 1].includes(state.autoCapture) || state.autoCapture === 1 && !awaitingAutoCapture(state) || !pausedAutoTraceMatchesState(trace, state)
+    || ![0, 1, 2, 3].includes(state.autoCapture) || state.autoCapture === 1 && !awaitingAutoCapture(state) || state.autoCapture >= 2 && !awaitingAutoFocus(state) || !pausedAutoTraceMatchesState(trace, state)
     || !Number.isInteger(state.wildCaptureChance) || state.wildCaptureChance < 0 || state.wildCaptureChance > 100
     || !Number.isSafeInteger(state.foregroundSequence) || state.foregroundSequence < 0 || state.foregroundSequence > state.sequence
     || !Number.isInteger(state.worldSeed) || state.worldSeed < 0 || state.worldSeed > 0xffffffff
@@ -1805,7 +1818,7 @@ async function reconnect() {
       acceptSave(await api('/api/save', { authenticated: true }));
       await prepareWorldSequence();
       if (isEggState(game) && !pending) await loadStarters();
-      if (!pending && wildAutoTrace && wildAutoTrace.endSequence === game.foregroundSequence) navigation.setScreen(awaitingAutoCapture(game) ? 'wild-auto-confirm' : 'wild-auto-result');
+      if (!pending && wildAutoTrace && wildAutoTrace.endSequence === game.foregroundSequence) navigation.setScreen(awaitingAutoCapture(game) || awaitingAutoFocus(game) ? 'wild-auto-confirm' : 'wild-auto-result');
       void loadPractice();
       if (!notes.length) addNote('Welcome back, little explorer.', `Save revision ${revision} restored`);
     }
@@ -1935,6 +1948,7 @@ async function sendAction(type, value = 0, recoveryEvents = null) {
   if (['attack', 'heavy', 'magic', 'capture', 'flick', 'ring-capture', 'card'].includes(type) && game.battleMode !== 'tactical' && !(['flick', 'ring-capture'].includes(type) && awaitingAutoCapture(game))) return;
   if (type === 'auto-fight' && (!manualAutoCaptureSupported || game.phase !== 'encounter' || game.battleMode !== 'auto' || game.autoCapture !== 0)) return;
   if (type === 'auto-resume' && (!manualAutoCaptureSupported || !awaitingAutoCapture(game))) return;
+  if (type === 'focus' && (!awaitingAutoFocus(game) || !Number.isInteger(value) || value < 0 || value > FOCUS_NO_TAP)) return;
   if (type === 'flick' && (!captureFlickSupported || !decodeCaptureFlick(value) || !captureChoice(game).available)) return;
   if (type === 'ring-capture' && (!captureTimingSupported || !Number.isInteger(value) || value < 0 || value >= CAPTURE_RING.cycleMs || !captureChoice(game).available)) return;
   if (recoveryEvents && (type !== 'rest' || value !== 0 || JSON.stringify(recoveryEvents) !== JSON.stringify(reviewedRecoveryEvents(recoveryDraft, game, identity?.deviceId, revision)))) return;
@@ -2022,7 +2036,7 @@ async function retryPending() {
       if (result.revision > beforeRevision && !receiptIsOlder) await presentResult('evolve', before, game);
       presentation = null; navigation.setScreen('evolution-result');
       addNote('Digivolution confirmed.', 'The same companion and its saved XP are kept');
-    } else if (['auto', 'auto-fight', 'auto-resume'].includes(actionType)) {
+    } else if (['auto', 'auto-fight', 'auto-resume', 'focus'].includes(actionType)) {
       addNote(autoResultTitle(wildAutoTrace), 'Saved once · playback never changes the result');
       await playAutoBattle('wild', { animate: result.revision > beforeRevision && !receiptIsOlder });
     } else if (actionType === 'mode') {

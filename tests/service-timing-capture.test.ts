@@ -14,7 +14,7 @@ const corePath = process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/dig
 const battleCorePath = process.env.DIGIVICE_TEST_BATTLE_PATH ?? join(rootDir, 'build/digivice-battle');
 const prepare = [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 },
   { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }];
-const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 17, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 18, baseRevision, batchId, events });
 const ring = (value: unknown) => ({ type: 'ring-capture', value });
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const nextRoll = (input: number) => { let value = input; value ^= value << 13; value ^= value >>> 17; value ^= value << 5; return value >>> 0; };
@@ -170,7 +170,7 @@ test('lost ACK, simultaneous duplicate posts and service restart never spend ano
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, first), receipt);
   assert.deepEqual(await f.request('/api/save', identity.token), current);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [19, 24, 17]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [20, 25, 18]);
   assert.equal(stored.devices[0].events.filter((event: any) => event.type === 'ring-capture').length, 3);
   assert.equal(stored.devices[0].receipts.length, 6, 'preparation, three throws, and two attacks that reopen capture');
 });

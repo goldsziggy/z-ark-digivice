@@ -15,7 +15,8 @@ void reject(State&s,Action a,unsigned v,Error e){const auto before=s;CHECK(apply
 void restore(State&s){Snapshot bytes;CHECK(encodeSnapshot(s,bytes));State out;CHECK(decodeSnapshot(bytes.bytes,sizeof(bytes.bytes),out)==SnapshotStatus::Ok);CHECK(same(s,out));s=out;}
 void sync(State&s){auto&m=*const_cast<CreatureMember*>(activeMember(s));m.hp=s.hp;m.energy=s.energy;m.fullness=s.fullness;m.mood=s.mood;m.bond=s.bond;m.level=s.level;}
 State hatched(unsigned seed=1){auto s=newDevice(seed);step(s,Action::Hatch,1);return s;}
-State fight(unsigned seed=1){auto s=hatched(seed);step(s,Action::Explore,1000);CHECK(s.wildRules==kRulesVersion);return s;}
+// A rules-17 combat probe: rules 18 changes wild damage and Auto, covered in rules18_test.
+State fight(unsigned seed=1){auto s=hatched(seed);step(s,Action::Explore,1000);CHECK(s.wildRules==kRulesVersion);s.wildRules=17;CHECK(isValid(s));return s;}
 void target(State&s,unsigned form,unsigned level){s.wildFormId=form;s.wildSpecies=static_cast<Species>(forms::find(form)->lineage);s.wildLevel=level;s.wildHp=s.wildMaxHp=combat::formProfile(form,level).stats.maxHp;CHECK(isValid(s));}
 unsigned formWith(encounters::Rarity rarity){for(unsigned id=forms::kFirstProductionFormId;id<=forms::kFormCount;++id)if(encounters::rarityForForm(id)==rarity&&combat::validFormProfile(id,1))return id;return 0;}
 void care(){

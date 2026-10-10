@@ -90,7 +90,7 @@ bool canOffer(const State& s,std::uint32_t id){
     return false;
 }
 bool valid(const Transcript& t){
-    return (t.rules==13||t.rules==14||t.rules==15||t.rules==16||t.rules==kRulesVersion)&&validIdentity(t.peers[0])&&validIdentity(t.peers[1])&&std::memcmp(t.peers[0].bytes,t.peers[1].bytes,6)<0&&t.session&&t.nonces[0]&&t.nonces[1]&&t.revision&&
+    return (t.rules==13||t.rules==14||t.rules==15||t.rules==16||t.rules==17||t.rules==kRulesVersion)&&validIdentity(t.peers[0])&&validIdentity(t.peers[1])&&std::memcmp(t.peers[0].bytes,t.peers[1].bytes,6)<0&&t.session&&t.nonces[0]&&t.nonces[1]&&t.revision&&
         t.sourceSequences[0]!=kMax&&t.sourceSequences[1]!=kMax&&t.receivedTrades[0]<=t.sourceSequences[0]&&t.receivedTrades[1]<=t.sourceSequences[1]&&validMember(t.offers[0],t.sourceSequences[0])&&validMember(t.offers[1],t.sourceSequences[1]);
 }
 bool encodeTranscript(const Transcript& t,std::uint8_t* bytes,std::size_t capacity){

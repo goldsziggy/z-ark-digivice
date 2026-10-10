@@ -2,7 +2,7 @@
 // output. New derived care/throw/offer fields are validated separately by the
 // rules12 HTTP tests. Capacity projects back to 8 for historic fixtures;
 // collection contents, IDs and all gameplay values remain exact.
-const dropped = ['care', 'lastCapture', 'offerSeed', 'offers', 'pendingEncounter', 'foregroundSequence', 'receivedTrades', 'autoCapture', 'worldSeed', 'partyCapacity', 'partyMemberIds', 'careMinute', 'critical', 'captureDeferred', 'carePoints', 'toilet', 'careMissed', 'careMistakes', 'injury', 'maxCareMistakes', 'careRouteOpen'];
+const dropped = ['care', 'lastCapture', 'offerSeed', 'offers', 'pendingEncounter', 'foregroundSequence', 'receivedTrades', 'autoCapture', 'worldSeed', 'partyCapacity', 'partyMemberIds', 'careMinute', 'critical', 'captureDeferred', 'carePoints', 'toilet', 'careMissed', 'careMistakes', 'injury', 'maxCareMistakes', 'careRouteOpen', 'focus'];
 export function legacyFields(value: any): any {
   if (Array.isArray(value)) return value.map(legacyFields);
   if (value === null || typeof value !== 'object') return value;

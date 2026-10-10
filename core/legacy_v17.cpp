@@ -1,4 +1,5 @@
-#include "game.hpp"
+// Frozen rules 17 / schema 24 before rules 18 level-scaled wild damage, guard-aware Auto and focus moments.
+#include "legacy_v17.hpp"
 #include "capture_ring.hpp"
 #include "combat.hpp"
 #include "forms.hpp"
@@ -9,20 +10,12 @@
 #include "legacy_combat_v7.hpp"
 #include "legacy_combat_v3.hpp"
 
-#include <algorithm>
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
 #include <limits>
 
-namespace digivice {
-namespace {
-// Rules 18 wild tuning, chosen with scripts/auto-balance-sim.cpp (see docs/AUTO_BALANCE.md).
-constexpr std::uint32_t kWildPowerDivisor = 3;    // move power + attacker level / 3
-constexpr std::uint32_t kWildFloorDivisor = 24;   // raw chip floor ceil(defender max HP / 24), 4..32
-constexpr std::uint32_t kWildDamageBonusMax = 40;  // wild replies hit up to 40% harder than an equal partner,
-constexpr std::uint32_t kWildDamageBonusPerLevel = 4; // ramping in over the first ten wild levels
-}
+namespace digivice::legacy_v17 {
 const CreatureMember* findMember(const State& state,std::uint32_t id) {
     if(!id || state.collectionCount>kCollectionCapacity) return nullptr;
     for(std::size_t i=0;i<state.collectionCount;++i) if(state.collection[i].id==id) return &state.collection[i];
@@ -373,24 +366,10 @@ combat::Hit encounterHit(const State& state,std::uint32_t attacker,std::uint32_t
             static_cast<legacy_v8::combat::Move>(move),static_cast<legacy_v8::combat::Defense>(guard));
         return {hit.damage,hit.reflected,hit.typePercent};
     }
-    if(state.wildRules>=18){const auto bonus=memberCare(*activeMember(state));
-        // Rules 18: move power grows with the attacker's level so fight length
-        // stays flat from level 1 to 50, and a chip floor keeps lopsided stat
-        // matchups from dragging. Both sides use the same rule.
-        const auto power=kWildPowerDivisor ? attackerLevel/kWildPowerDivisor : 0u;
-        std::uint32_t floor=4;
-        if(kWildFloorDivisor){const auto defenderMax=combat::formProfile(defender,defenderLevel).stats.maxHp;floor=(defenderMax+kWildFloorDivisor-1)/kWildFloorDivisor;if(floor<4)floor=4;if(floor>32)floor=32;}
-        return combat::resolveCareForms(attacker,attackerLevel,defender,defenderLevel,move,guard,playerAttacking?bonus:combat::CareBonus{},playerAttacking?combat::CareBonus{}:bonus,floor,power>16?16u:power);}
     if(state.wildRules>=12){const auto bonus=memberCare(*activeMember(state));
         return combat::resolveCareForms(attacker,attackerLevel,defender,defenderLevel,move,guard,playerAttacking?bonus:combat::CareBonus{},playerAttacking?combat::CareBonus{}:bonus);}
     return combat::resolveForms(attacker,attackerLevel,defender,defenderLevel,move,guard);
 }
-// One focus modifier applies to exactly one exchange inside applyFocus; 100 otherwise.
-std::uint32_t gStrikePercent=100, gBlockPercent=100;
-struct FocusScope {
-    FocusScope(std::uint32_t strike,std::uint32_t block){gStrikePercent=strike;gBlockPercent=block;}
-    ~FocusScope(){gStrikePercent=gBlockPercent=100;}
-};
 void applyCrit(State& state, combat::Hit& hit, bool record) {
     if (state.wildRules < 16 || hit.reflected) return;
     const bool critical = random(state) % 100 < 5;
@@ -404,10 +383,6 @@ void wildResponse(State& state) {
     const auto move=state.wildTurn%2 ? combat::Move::Magic : combat::Move::Physical;
     auto hit=encounterHit(state,state.wildFormId,state.wildLevel,active(state).formId,state.level,move,combat::Defense::None,false);
     applyCrit(state, hit, false);
-    // Rules 18: wild Digimon hit harder than an equal partner so a capable Auto
-    // still has to be watched; a focus Block is the player's answer.
-    if(state.wildRules>=18){const auto bonus=std::min<std::uint32_t>(kWildDamageBonusMax,kWildDamageBonusPerLevel*state.wildLevel);hit.damage=hit.damage*(100+bonus)/100;}
-    if(gBlockPercent!=100) hit.damage=hit.damage*gBlockPercent/100; // A perfect Block can stop the hit entirely.
     ++state.wildTurn; receiveDamage(state,hit.damage);
 }
 void put32(std::uint8_t* bytes, std::uint32_t value) {
@@ -607,10 +582,7 @@ static bool validForVersion(const State& s,bool) {
         if(partyTail||!s.onboardingComplete||id==s.activeCreatureId||!findMember(s,id))return false;
         for(std::size_t j=0;j<i;++j)if(s.partyMemberIds[j]==id)return false;
     }
-    if(static_cast<unsigned>(s.autoCapture)>3)return false;
-    if((s.autoCapture==AutoCapture::FocusStrike || s.autoCapture==AutoCapture::FocusBlock) &&
-       (s.phase!=Phase::Encounter || s.battleMode!=BattleMode::Auto || s.wildRules<18 || s.wildTurn!=focusTurn(s) ||
-        (s.autoCapture==AutoCapture::FocusStrike)!=focusIsStrike(s)))return false;
+    if(static_cast<unsigned>(s.autoCapture)>1)return false;
     if(s.lastCritical>1 || s.captureDeferred>1)return false;
     if(s.captureDeferred && (s.phase!=Phase::Encounter || !s.captureAttempts))return false;
     const bool duplicateReady=s.wildRules>=16 && ownsExactForm(s,s.wildFormId);
@@ -632,7 +604,7 @@ static bool validForVersion(const State& s,bool) {
     const auto& pending=s.pendingEncounter;
     if(pending.formId) {
         if(!s.onboardingComplete || !combat::validFormProfile(pending.formId,pending.level) ||
-           (pending.rules<12||pending.rules>18) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
+           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15&&pending.rules!=16&&pending.rules!=17) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
            s.encounterProgress || s.encounters==kMax) return false;
     } else if(pending.level || pending.rules) return false;
     static_assert(forms::kFormCount<=kJournalCapacity);
@@ -677,7 +649,7 @@ static bool validForVersion(const State& s,bool) {
     if(s.phase==Phase::Home) return !s.wildHp&&!s.wildMaxHp&&!s.captureAttempts&&!s.captureDeferred&&!s.cardUsed&&!s.attackBoost&&!s.shield&&
         s.wildSpecies==Species::None&&!s.wildLevel&&!s.wildTurn&&!s.wildFormId&&!s.wildRules;
     if(s.phase!=Phase::Encounter || !s.encounters || !forms::validForLineage(s.wildFormId,static_cast<unsigned>(s.wildSpecies)) ||
-       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16&&s.wildRules!=17&&s.wildRules!=18) ||
+       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16&&s.wildRules!=17) ||
        (s.wildRules>=13&&!forms::productionForm(s.wildFormId)) ||
        (s.wildRules==4&&(s.wildSpecies<Species::Flicker||s.wildSpecies>Species::Cinder||s.wildFormId!=rootForm(s.wildSpecies))) ||
        s.wildTurn>1000 || s.wildMaxHp!=maxHpForRules(s.wildFormId,s.wildLevel,s.wildRules) || !s.wildHp || s.wildHp>s.wildMaxHp || s.captureAttempts>3 || (s.wildRules>=12&&s.wildRules<16&&s.captureAttempts==3) ||
@@ -710,7 +682,7 @@ bool needsTestEncounterResolution(const State& state) {
 
 Error apply(State& state, Action action, std::uint32_t value) {
     if (!isValid(state)) return Error::InvalidState;
-    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::Focus)) return Error::InvalidAction;
+    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::Treat)) return Error::InvalidAction;
     if (state.sequence == kMax) return Error::CounterOverflow;
     if(needsTestEncounterResolution(state)&&action!=Action::ResolveTestEncounter)return Error::InvalidAction;
     if(action==Action::StarterOfferSeed){
@@ -769,8 +741,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if(state.phase!=Phase::Home)return Error::WrongPhase;
     } else if (action == Action::CareMinute) {
         if (!value) return Error::InvalidValue;
-    } else if (action == Action::Focus) {
-        if (value > kFocusNoTap) return Error::InvalidValue;
     } else if (action == Action::EvolveMember) {
         const auto memberId = value >> 16;
         const auto formId = value & 0xffffu;
@@ -784,7 +754,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
     if (action == Action::Auto) return applyAuto(state);
     if (action == Action::AutoFight) return applyAutoFight(state);
     if (action == Action::AutoResume) return applyAutoResume(state);
-    if (action == Action::Focus) return applyFocus(state, value);
     if (state.phase == Phase::Encounter && state.battleMode == BattleMode::Auto && action != Action::Walk &&
         action != Action::AccrueSteps && action != Action::EncounterSeed && action != Action::WorldSeed && action != Action::ResolveTestEncounter &&
         action != Action::Retreat &&
@@ -1056,7 +1025,6 @@ Error apply(State& state, Action action, std::uint32_t value) {
             if(next.phase==Phase::Encounter)next.message=Message::Attacked;
             break; // Counter replaces the normal response; Spark remains prepared.
         }
-        if(!hit.reflected && gStrikePercent!=100) hit.damage=hit.damage*gStrikePercent/100;
         const auto damage=hit.damage+next.attackBoost; next.attackBoost=0;
         if (damage >= next.wildHp) {
             const auto xpReward=20+6*next.wildLevel, encounterRules=next.wildRules;
@@ -1170,21 +1138,6 @@ std::uint32_t recoveryRestCount(const State& state) {
     return 0;
 }
 
-namespace {
-std::uint32_t focusMix(const State& s) {
-    auto v=s.seed^(s.encounters*0x9e3779b9u)^0x464f4355u;
-    v^=v>>16; v*=0x7feb352du; v^=v>>15; v*=0x846ca68bu; return v^(v>>16);
-}
-}
-std::uint32_t focusTurn(const State& s) { return 1u+focusMix(s)%2u; }
-bool focusIsStrike(const State& s) { return ((focusMix(s)>>8)&1u)!=0; }
-std::uint32_t focusPercent(bool strike, std::uint32_t phaseMs, std::uint32_t wildFormId) {
-    if(phaseMs>=capturering::kCycleMs) return 100;
-    const auto grade=capturering::sample(phaseMs,wildFormId).grade;
-    if(grade==capturering::Grade::Green) return strike?200u:0u;
-    if(grade==capturering::Grade::Orange) return strike?150u:50u;
-    return 100;
-}
 std::uint32_t cleanRouteMistakeLimit(std::uint32_t destinationFormId) {
     const auto* form = forms::find(destinationFormId);
     if (!form) return 0;
@@ -1200,16 +1153,13 @@ bool careRouteOpen(const CreatureMember& member, std::size_t outgoingIndex) {
 }
 
 namespace {
-enum class AutoFlow { Legacy, PauseForFlick, ResumeWithoutCapture, FocusAnswer };
-bool focusPending(const State& s) { return s.autoCapture==AutoCapture::FocusStrike || s.autoCapture==AutoCapture::FocusBlock; }
-Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uint32_t focusPhase=kFocusNoTap) {
+enum class AutoFlow { Legacy, PauseForFlick, ResumeWithoutCapture };
+Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow) {
     if (trace) { trace->count = 0; trace->outcome = autobattle::Outcome::None; }
     if (!isValid(state)) return Error::InvalidState;
     if (state.phase != Phase::Encounter) return Error::WrongPhase;
     if (state.battleMode != BattleMode::Auto) return Error::WrongMode;
     if((flow==AutoFlow::ResumeWithoutCapture)!=(state.autoCapture==AutoCapture::Awaiting))return Error::InvalidAction;
-    if((flow==AutoFlow::FocusAnswer)!=focusPending(state))return Error::InvalidAction;
-    const bool strikeFocus=state.autoCapture==AutoCapture::FocusStrike;
     if (state.sequence == kMax) return Error::CounterOverflow;
     if(needsTestEncounterResolution(state))return Error::InvalidAction;
     const auto startSequence = state.sequence;
@@ -1234,17 +1184,6 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
         trace->enemyOffenseBonus=trace->enemyProtectionBonus=0;
     }
     for (std::uint32_t turn = 0; turn < autobattle::kMaxTraceSteps; ++turn) {
-        // Rules 18: one focus pause per encounter, before its chosen exchange.
-        // The answering event resolves that exchange, so it never pauses twice.
-        if((flow==AutoFlow::PauseForFlick || (flow==AutoFlow::FocusAnswer && turn>0)) && next.wildRules>=18 &&
-           next.autoCapture==AutoCapture::None && next.wildTurn==focusTurn(next)) {
-            next.sequence=startSequence+1; next.foregroundSequence=next.sequence;
-            if(captureRecorded)next.lastCapture.sequence=next.sequence;
-            next.battleMode=BattleMode::Auto; next.autoCapture=focusIsStrike(next)?AutoCapture::FocusStrike:AutoCapture::FocusBlock;
-            storeActive(next);
-            if(!isValid(next)){if(trace)trace->count=0;return Error::InvalidState;}
-            state=next;return Error::None;
-        }
         Action chosen;
         // The historical one-event Auto policy in an old encounter keeps its
         // original eight-slot decisions. Current AutoFight/manual throws use
@@ -1254,7 +1193,7 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
             chosen = Action::Capture;
         else {
             constexpr Action moves[]{Action::Attack, Action::Magic, Action::Heavy};
-            if(next.wildRules>=11 && next.wildRules<18) {
+            if(next.wildRules>=11) {
                 // One equal-odds draw for each attack, independent of capture RNG.
                 // The saved encounter and outer sequence make the whole trace replayable.
                 chosen=(autobattle::nextRandom(policy)&1u)?Action::Magic:Action::Attack;
@@ -1288,9 +1227,7 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
         }
         const auto opponentMove=next.wildTurn%2 ? autobattle::Move::Magic : autobattle::Move::Physical;
         const auto members = next.collectionCount;
-        const bool focusTurnNow=flow==AutoFlow::FocusAnswer && turn==0;
-        const auto focusPct=focusTurnNow ? focusPercent(strikeFocus,focusPhase,next.wildFormId) : 100u;
-        const auto result = [&]{ FocusScope scope(focusTurnNow&&strikeFocus?focusPct:100u, focusTurnNow&&!strikeFocus?focusPct:100u); return apply(next, chosen); }();
+        const auto result = apply(next, chosen);
         if (result != Error::None) { if (trace) trace->count = 0; return result; }
         frame.captured = next.collectionCount > members ||
             (chosen == Action::Capture && next.phase == Phase::Home && next.message == Message::Captured);
@@ -1320,7 +1257,7 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
             state = next;
             return Error::None;
         }
-        if((flow==AutoFlow::PauseForFlick || flow==AutoFlow::FocusAnswer) && captureChance(next)) {
+        if(flow==AutoFlow::PauseForFlick && captureChance(next)) {
             // The crossing attack AND its response have finished. No throw or
             // capture RNG draw is included in this durable attack-only chunk.
             next.battleMode=BattleMode::Auto;next.autoCapture=AutoCapture::Awaiting;
@@ -1349,11 +1286,6 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
 Error applyAuto(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::Legacy);}
 Error applyAutoFight(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::PauseForFlick);}
 Error applyAutoResume(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::ResumeWithoutCapture);}
-Error applyFocus(State& state,std::uint32_t phaseMs,autobattle::Trace* trace){
-    if(trace){trace->count=0;trace->outcome=autobattle::Outcome::None;}
-    if(phaseMs>kFocusNoTap)return Error::InvalidValue;
-    return autoEngine(state,trace,AutoFlow::FocusAnswer,phaseMs);
-}
 
 const char* errorText(Error error) {
     switch (error) {
@@ -1433,7 +1365,7 @@ const char* wildName(const State& state) {
 }
 bool parseAction(const char* name, Action& action) {
     if (!name) return false;
-    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member", "treat", "focus"};
+    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member", "treat"};
     if (std::strcmp(name, "physical") == 0) { action = Action::Attack; return true; }
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (std::strcmp(name, names[i]) == 0) {
@@ -1535,9 +1467,6 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     for(std::size_t i=0;i<partyCount(s);++i)append("%s%u",i?",":"",number(s.partyMemberIds[i]));
     append("]");
     append(",\"careMinute\":%u,\"critical\":%s,\"captureDeferred\":%u",number(s.careMinute),s.lastCritical?"true":"false",number(s.captureDeferred));
-    if(s.autoCapture==AutoCapture::FocusStrike || s.autoCapture==AutoCapture::FocusBlock)
-        append(",\"focus\":{\"kind\":\"%s\",\"turn\":%u}",s.autoCapture==AutoCapture::FocusStrike?"strike":"block",number(s.wildTurn));
-    else append(",\"focus\":null");
     append(",\"foregroundSequence\":%u",number(s.foregroundSequence));
     append(",\"autoCapture\":%u,\"worldSeed\":%u,\"receivedTrades\":%u,\"nextMemberId\":%u,\"journal\":{\"capacity\":512,\"obtainedFormIds\":[",number(static_cast<unsigned>(s.autoCapture)),number(s.worldSeed),number(s.receivedTrades),number(s.nextMemberId));
     bool obtainedComma=false;
@@ -1636,7 +1565,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     const auto payload = static_cast<unsigned>(bytes[6]) | (static_cast<unsigned>(bytes[7]) << 8);
     if (length != required || payload != length - 12) return SnapshotStatus::InvalidLength;
     if (get32(bytes + length - 4) != crc32(bytes, length - 4)) return SnapshotStatus::BadChecksum;
-    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : version==22 ? 15u : version==23 ? 16u : version==24 ? 17u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
+    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : version==22 ? 15u : version==23 ? 16u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
     std::size_t offset = 12;
     const auto read = [&]() { const auto value = get32(bytes + offset); offset += 4; return value; };
     State next;
@@ -1714,7 +1643,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     if(version>=16){next.pendingEncounter.formId=read();next.pendingEncounter.level=read();next.pendingEncounter.rules=read();next.foregroundSequence=read();}
     else next.foregroundSequence=next.sequence;
     if(version>=18)next.receivedTrades=read();
-    if(version>=19){const auto value=read();if(value>(version>=25?3u:1u))return SnapshotStatus::InvalidState;next.autoCapture=static_cast<AutoCapture>(value);}
+    if(version>=19){const auto value=read();if(value>1)return SnapshotStatus::InvalidState;next.autoCapture=static_cast<AutoCapture>(value);}
     if(version>=20)next.worldSeed=read();
     if(version>=22)for(auto& id:next.partyMemberIds)id=read();
     if(version>=23){
@@ -1763,7 +1692,6 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
         if(next.wildRules>7 || (founder&&!legacy_v7::forms::canReach(root,founder->formId)))
             return SnapshotStatus::InvalidState;
     }
-    if(version<=24 && (next.wildRules>17 || next.pendingEncounter.rules>17)) return SnapshotStatus::InvalidState;
     if(version<=23 && (next.wildRules>16 || next.pendingEncounter.rules>16)) return SnapshotStatus::InvalidState;
     // Older rules never wrote mistakes/injury bits.
     if(version<=23) for(std::size_t i=0;i<next.collectionCount && i<kCollectionCapacity;++i) if(next.collection[i].careState & ~kCareLowMask) return SnapshotStatus::InvalidState;
@@ -1797,7 +1725,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
 const char* snapshotStatusText(SnapshotStatus status) {
     switch (status) {
     case SnapshotStatus::Ok: return "ok";
-    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 25";
+    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 24";
     case SnapshotStatus::InvalidLength: return "invalid snapshot length";
     case SnapshotStatus::BadMagic: return "invalid snapshot magic";
     case SnapshotStatus::UnsupportedVersion: return "unsupported snapshot version";
@@ -1807,4 +1735,4 @@ const char* snapshotStatusText(SnapshotStatus status) {
     }
     return "unknown snapshot status";
 }
-} // namespace digivice
+} // namespace digivice::legacy_v17

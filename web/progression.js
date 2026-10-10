@@ -31,7 +31,7 @@ export function validEvolutionLinks(value, self) {
 }
 export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8) {
   if (!exact(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms'])
-    || value.formatVersion !== 2 || value.rulesVersion !== 17 || value.catalogVersion !== 6
+    || value.formatVersion !== 2 || value.rulesVersion !== 18 || value.catalogVersion !== 6
     || !integer(focusFormId, 1, 512) || value.focusFormId !== focusFormId || value.offset !== offset || value.limit !== limit
     || !integer(offset, 0, 511) || !integer(limit, 1, 16) || !integer(value.total, 1, 512) || offset > value.total
     || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, value.total - offset)

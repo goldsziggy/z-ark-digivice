@@ -118,7 +118,8 @@ void autoBalance(){
 void autoPolicy(){
  unsigned physical=0,magic=0,outcomes[4]{},longest=0;
  for(unsigned seed=1;seed<=1024;++seed){
-  auto s=hatched(seed);step(s,Action::Mode,1);step(s,Action::Explore,1000);const auto before=s;auto replay=s;
+  // Rules-17 encounters keep the equal-odds basic policy; rules18_test covers the guard-aware one.
+  auto s=hatched(seed);step(s,Action::Mode,1);step(s,Action::Explore,1000);s.wildRules=17;const auto before=s;auto replay=s;
   autobattle::Trace a,b;CHECK(applyAuto(s,&a)==Error::None&&applyAuto(replay,&b)==Error::None&&same(s,replay));
   char x[autobattle::kTraceJsonCapacity],y[autobattle::kTraceJsonCapacity];CHECK(autobattle::writeJson(a,x,sizeof(x))&&autobattle::writeJson(b,y,sizeof(y))&&!std::strcmp(x,y));
   auto policy=before.seed^0x9e3779b9u^(before.encounters*0x85ebca6bu)^before.sequence;

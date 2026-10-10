@@ -50,7 +50,7 @@ test('default loopback and device health distinguish service readiness from asse
   const f = fixture(t, undefined, true);
   const ready = await f.request('/api/device/health');
   assert.equal(ready.status, 200);
-  assert.deepEqual(ready.body, { status: 'ok', protocolVersion: 1, gameRulesVersion: 17, gameSchemaVersion: 24, assetProfile: 's3-146-v1' });
+  assert.deepEqual(ready.body, { status: 'ok', protocolVersion: 1, gameRulesVersion: 18, gameSchemaVersion: 25, assetProfile: 's3-146-v1' });
   assert.equal((await f.request('/api/device/assets/catalog')).status, 503);
   assert.equal((await f.request('/api/device/health', { peer: '192.168.1.21', headers: { 'x-forwarded-for': '127.0.0.1' } })).status, 403);
   assert.equal((await f.request('/api/device/health', { host: '192.168.1.8:8787' })).status, 403);
@@ -74,7 +74,7 @@ test('LAN policy preserves bearer save isolation and confines enrollment to actu
   const start = await f.request('/api/pairing/start', { input: {} }); assert.equal(start.status, 201);
   const paired = await f.request('/api/pairing/claim', { input: { code: start.body.code } }); assert.equal(paired.status, 201);
   const saved = await f.request('/api/save-sync', { ...network, token: paired.body.token,
-    input: { rulesVersion: 17, baseRevision: 0, batchId: 'lan-existing-token-1', events: [{ type: 'hatch', value: 1 }] } });
+    input: { rulesVersion: 18, baseRevision: 0, batchId: 'lan-existing-token-1', events: [{ type: 'hatch', value: 1 }] } });
   assert.equal(saved.status, 200); assert.equal(saved.body.deviceId, paired.body.deviceId); assert.equal(saved.body.revision, 1);
   assert.equal(saved.headers['access-control-allow-origin'], undefined);
   assert.equal((await f.request('/api/save', { ...network, token: 'a'.repeat(43) })).status, 401);

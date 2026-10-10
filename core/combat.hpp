@@ -53,7 +53,9 @@ Hit resolveForms(std::uint32_t attackerForm, std::uint32_t attackerLevel,
 Hit resolveCareForms(std::uint32_t attackerForm,std::uint32_t attackerLevel,
                      std::uint32_t defenderForm,std::uint32_t defenderLevel,
                      Move,Defense,CareBonus attackerCare,CareBonus defenderCare,
-                     std::uint32_t minimumRawDamage=4);
+                     std::uint32_t minimumRawDamage=4,std::uint32_t powerBonus=0);
+// Rules 18 wild combat adds level-scaled move power: Physical/Magic 8+bonus,
+// Heavy 16+2*bonus, bonus = attacker level / 3 (0..16). Zero keeps every older rule.
 std::size_t writeFormProfileJson(std::uint32_t formId, std::uint32_t level, char* output, std::size_t capacity);
 std::size_t writeEvolutionJson(std::uint32_t species, char* output, std::size_t capacity);
 std::size_t writeEvolutionGraphJson(std::uint32_t formId, std::uint32_t offset,
