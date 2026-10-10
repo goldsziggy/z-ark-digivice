@@ -80,12 +80,12 @@ const backgroundPlayer = createBackgroundPlayer({ onChange: () => { if (deviceRe
 const battleClient = createBattleClient({ storage: (() => { try { return localStorage; } catch { return null; } })(), onChange: () => { if (deviceReady) render(); } });
 const formArt = createFormArt({ getCredential: () => identity, onChange: () => { artGeneration++; if (deviceReady) render(); } });
 const RULES_VERSION = 19;
-const SCHEMA_VERSION = 26;
+const SCHEMA_VERSION = 27;
 const FOCUS_NO_TAP = 2400;
 let focusShownAt = 0, focusShownSequence = -1;
 const activeCareMember = () => game?.collection?.find(member => member.id === game.activeCreatureId) ?? null;
-const COLLECTION_CAPACITY = 60;
-const MAX_STATE_BYTES = 64 * 1024;
+const COLLECTION_CAPACITY = 250;
+const MAX_STATE_BYTES = 256 * 1024;
 // Save responses also carry at most 10,000 bounded history events and a trace.
 const MAX_API_RESPONSE_BYTES = 1024 * 1024;
 const MAX_MEMBER_ID = 4294967294;

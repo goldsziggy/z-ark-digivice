@@ -50,7 +50,7 @@ void weaken(State& s, unsigned formId, unsigned wildLevel){
     CHECK(isValid(s));
 }
 void levelsAndRoutes(){
-    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kMaxLevel==50&&kMaxXp==49000&&kSnapshotSize==3216);
+    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kMaxLevel==50&&kMaxXp==49000&&kSnapshotSize==6860);
     CHECK(xpForLevel(1)==0&&xpForLevel(20)==7600&&xpForLevel(21)==20u*20u*21u&&xpForLevel(50)==49000);
     CHECK(levelForXp(0)==1&&levelForXp(7600)==20&&levelForXp(8399)==20&&levelForXp(8400)==21&&levelForXp(49000)==50);
     for(unsigned level=1;level<=20;++level)CHECK(xpForLevel(level)==20u*(level-1)*level);
@@ -126,15 +126,15 @@ void duplicatesAndAttempts(){
     forceCapture(s);
     CHECK(s.collectionCount==3&&s.collection[1].xp==oldestXp+bonus&&s.collection[2].formId==otherForm&&s.collection[2].xp==otherXp);
     CHECK(s.collection[1].id==2&&s.collection[2].id==3);
-    auto full=ownedBox(60,19);
+    auto full=ownedBox(kCollectionCapacity,19);
     const auto fullXp=full.collection[1].xp;
     const auto newerXp=full.collection[5].xp;
     weaken(full,19,3);
     const auto fullBonus=20u+6u*full.wildLevel;
     forceCapture(full);
-    CHECK(full.collectionCount==60&&full.collection[1].xp==fullXp+fullBonus&&full.collection[5].xp==newerXp);
-    CHECK(full.captures==60&&full.nextMemberId==62);
-    auto blocked=ownedBox(60,19);
+    CHECK(full.collectionCount==kCollectionCapacity&&full.collection[1].xp==fullXp+fullBonus&&full.collection[5].xp==newerXp);
+    CHECK(full.captures==kCollectionCapacity&&full.nextMemberId==kCollectionCapacity+2);
+    auto blocked=ownedBox(kCollectionCapacity,19);
     weaken(blocked,21,1);
     CHECK(!captureChance(blocked));
     reject(blocked,Action::RingCapture,0,Error::CollectionFull);

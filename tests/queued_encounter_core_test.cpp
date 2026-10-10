@@ -103,7 +103,7 @@ void migrationAndBounds(){
  auto egg=newDevice();rejects(egg,Action::AccrueSteps,1,Error::WrongPhase);rejects(egg,Action::PresentEncounter,0,Error::WrongPhase);
  auto s=hatched(1);rejects(s,Action::AccrueSteps,0,Error::InvalidValue);rejects(s,Action::AccrueSteps,1001,Error::InvalidValue);rejects(s,Action::PresentEncounter,1,Error::InvalidValue);
  step(s,Action::AccrueSteps,1000);Snapshot bytes;CHECK(encodeSnapshot(s,bytes));
- constexpr unsigned pendingAt=3160; // formId, level, rules after the schema23 walking tail
+ constexpr unsigned pendingAt=kSnapshotPartyOffset-7*4; // formId, level, rules ahead of the party ids
  for(unsigned field=0;field<3;++field){auto corrupt=bytes;put32(corrupt.bytes+pendingAt+field*4,field==0?9999:0);put32(corrupt.bytes+kSnapshotSize-4,crc(corrupt.bytes,kSnapshotSize-4));auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::InvalidState&&same(dest,s));}
  for(unsigned index=pendingAt;index<sizeof(bytes.bytes);++index){auto corrupt=bytes;corrupt.bytes[index]^=1;auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),dest)==SnapshotStatus::BadChecksum&&same(dest,s));}
  auto bad=s;bad.foregroundSequence=s.sequence+1;CHECK(!isValid(bad));bad=s;bad.pendingEncounter.formId=0;CHECK(!isValid(bad));bad=s;bad.encounterProgress=1;CHECK(!isValid(bad));bad=s;bad.pendingEncounter.rules=11;CHECK(!isValid(bad));

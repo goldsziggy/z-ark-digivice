@@ -5,11 +5,12 @@
 
 namespace digivice::devicetrade {
 constexpr std::size_t kJournalBytes = 16 + trade::kRecordBytes + 4;
+constexpr std::size_t kV26JournalBytes = 16 + trade::kV26RecordBytes + 4;
 constexpr std::size_t kV19JournalBytes = 16 + trade::kV19RecordBytes + 4;
 constexpr std::size_t kV20JournalBytes = 16 + trade::kV20RecordBytes + 4;
 constexpr std::size_t kV21JournalBytes = 16 + trade::kV21RecordBytes + 4;
 constexpr std::size_t kV22JournalBytes = 16 + trade::kV22RecordBytes + 4;
-constexpr bool supportedJournalSize(std::size_t size) { return size==kJournalBytes || size==kV19JournalBytes || size==kV20JournalBytes || size==kV21JournalBytes || size==kV22JournalBytes; }
+constexpr bool supportedJournalSize(std::size_t size) { return size==kJournalBytes || size==kV26JournalBytes || size==kV19JournalBytes || size==kV20JournalBytes || size==kV21JournalBytes || size==kV22JournalBytes; }
 struct Bytes { std::uint8_t data[kJournalBytes]{}; };
 struct Slot { Bytes bytes{}; std::size_t length = 0; };
 enum class Read { Missing, Present, Unreadable };

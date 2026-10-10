@@ -39,6 +39,30 @@ def label(value, maximum):
     return isinstance(value, str) and bool(value) and value == value.strip() and len(value.encode()) <= maximum \
         and not any(ord(c) < 32 or ord(c) == 127 or c in '"\\' for c in value)
 
+def english_names():
+    """Player-facing English names. Source displayName stays the sheet identity."""
+    data = json.loads((ROOT / 'data/english-form-names.json').read_text())
+    check(data.get('formatVersion') == 1 and isinstance(data.get('names'), dict) and data['names'], 'invalid english name table')
+    names = data['names']
+    check(all(isinstance(key, str) and label(name, 64) for key, name in names.items()), 'invalid english name')
+    return names
+
+def english_skill(skill, source_name, player_name):
+    """Replace a placeholder that leads with the Japanese sheet name."""
+    if player_name == source_name:
+        return skill
+    updated = None
+    if skill == source_name or skill.startswith(source_name + ' '):
+        updated = player_name + skill[len(source_name):]
+    else:
+        token, _, rest = skill.partition(' ')
+        folded = source_name.replace('-', '').replace(' ', '').casefold()
+        if token.casefold() == folded:
+            updated = player_name + (' ' + rest if rest else '')
+    if updated and label(updated, 32) and updated.casefold() != skill.casefold():
+        return updated
+    return skill
+
 def stats(values):
     return dict(zip(STAT_KEYS, values))
 
@@ -201,6 +225,8 @@ def generate(catalog, ledger, preserved, inventory, families):
             visited.add(root['formId']); root = by_id[root['parent']]
         check(row['lineageId'] == root['formId'] + 1000, 'new lineage does not match its stable root')
     profiles = []
+    english = english_names()
+    rarity_names = {}
     for form_id in range(1, max(appended) + 1):
         source = by_id.get(form_id)
         if form_id <= 66:
@@ -218,12 +244,20 @@ def generate(catalog, ledger, preserved, inventory, families):
         else:
             f = by_id[form_id]; entry, bond, base, growth, levels = authored_profile(f)
             root_id = f['lineageId'] - 1000
-            record = dict(formId=form_id, name=f['displayName'], lineageId=f['lineageId'], lineageSlug=by_id[root_id]['entryKey'], stage=f['sourceStage'], combatTier=f['combatTier'],
-                type=f['type'], role=f['role'], parent=f['parent'], children=f['children'], minLevel=entry, minBond=bond, skills=dict(f['skills']), baseStats=base, growth=growth,
+            player = english.get(f['entryKey'], f['displayName'])
+            if f['entryKey'] in english:
+                check(player != f['displayName'], 'english name must replace the sheet name: ' + f['entryKey'])
+            skills = {kind: english_skill(text, f['displayName'], player) for kind, text in f['skills'].items()}
+            check(len({text.casefold() for text in skills.values()}) == 3, 'english skill names collide: ' + f['entryKey'])
+            record = dict(formId=form_id, name=player, lineageId=f['lineageId'], lineageSlug=by_id[root_id]['entryKey'], stage=f['sourceStage'], combatTier=f['combatTier'],
+                type=f['type'], role=f['role'], parent=f['parent'], children=f['children'], minLevel=entry, minBond=bond, skills=skills, baseStats=base, growth=growth,
                 preserved=False, statModel='linear-v1', statsByLevel=levels, artId=None)
         record['entryKey'] = source['entryKey'] if source else None
         record['obtainable'] = True
+        rarity_names[form_id] = f['displayName'] if form_id > 66 else record['name']
         profiles.append(record)
+    check(set(english) == {p['entryKey'] for p in profiles if p.get('entryKey') in english}, 'english name table does not match the roster')
+    check(len(english) == sum(1 for p in profiles if p.get('entryKey') in english), 'english name applied more than once')
     anchors = {f['formId']: (f['minLevel'], f['minBond']) for f in profiles}
     edges, graph = evolution_graph(catalog.get('evolutionEdges'), anchors, families.get('requiredEdges'), catalog.get('evolutionDispositions'))
     for row in rows:
@@ -243,7 +277,8 @@ def generate(catalog, ledger, preserved, inventory, families):
             f'static_assert(kFormCount == {len(profiles)} && kCatalogVersion == {catalog["catalogRevision"]}, "Regenerate/review catalog limits");',
             'constexpr CatalogEntry kCatalogEntries[] = {']
     for f in sorted(rows, key=lambda r: r['formId']):
-        meta.append('    {' + f'{f["formId"]},{q(f["entryKey"])},{q(f["displayName"])},{q(f["role"])}' + '},')
+        shown = english.get(f['entryKey'], f['displayName'])
+        meta.append('    {' + f'{f["formId"]},{q(f["entryKey"])},{q(shown)},{q(f["role"])}' + '},')
     meta.append('};')
     # Retired duplicates keep their append-only ID and profile row but leave play:
     # not production, never encountered, no routes in or out.
@@ -313,7 +348,7 @@ def generate(catalog, ledger, preserved, inventory, families):
                     'constexpr Rarity kRarities[forms::kFormCount] = {']
     for form, row in zip(profiles, rows_rarity):
         check(isinstance(row, dict) and set(row) == {'formId', 'name', 'combatTier', 'rarity'}
-              and row['formId'] == form['formId'] and row['name'] == form['name'] and row['combatTier'] == form['combatTier']
+              and row['formId'] == form['formId'] and row['name'] == rarity_names[form['formId']] and row['combatTier'] == form['combatTier']
               and row['rarity'] in ('common', 'uncommon', 'rare'), 'rarity identity/order/category mismatch')
         form['encounterRarity'] = row['rarity']
         rarity_lines.append('    Rarity::' + row['rarity'].title() + ', // ' + str(form['formId']) + ' ' + form['name'])

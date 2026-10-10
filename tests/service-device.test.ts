@@ -50,7 +50,7 @@ test('default loopback and device health distinguish service readiness from asse
   const f = fixture(t, undefined, true);
   const ready = await f.request('/api/device/health');
   assert.equal(ready.status, 200);
-  assert.deepEqual(ready.body, { status: 'ok', protocolVersion: 1, gameRulesVersion: 19, gameSchemaVersion: 26, assetProfile: 's3-146-v1' });
+  assert.deepEqual(ready.body, { status: 'ok', protocolVersion: 1, gameRulesVersion: 19, gameSchemaVersion: 27, assetProfile: 's3-146-v1' });
   assert.equal((await f.request('/api/device/assets/catalog')).status, 503);
   assert.equal((await f.request('/api/device/health', { peer: '192.168.1.21', headers: { 'x-forwarded-for': '127.0.0.1' } })).status, 403);
   assert.equal((await f.request('/api/device/health', { host: '192.168.1.8:8787' })).status, 403);

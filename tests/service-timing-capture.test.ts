@@ -170,7 +170,7 @@ test('lost ACK, simultaneous duplicate posts and service restart never spend ano
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, first), receipt);
   assert.deepEqual(await f.request('/api/save', identity.token), current);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 27, 19]);
   assert.equal(stored.devices[0].events.filter((event: any) => event.type === 'ring-capture').length, 3);
   assert.equal(stored.devices[0].receipts.length, 6, 'preparation, three throws, and two attacks that reopen capture');
 });

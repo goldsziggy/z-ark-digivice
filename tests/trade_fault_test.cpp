@@ -23,14 +23,16 @@ void put32(std::uint8_t* p,std::uint32_t v){for(unsigned i=0;i<4;++i)p[i]=static
 std::uint32_t crc(const std::uint8_t* p,std::size_t n){std::uint32_t v=~0u;for(std::size_t i=0;i<n;++i){v^=p[i];for(unsigned j=0;j<8;++j)v=(v>>1)^((v&1)?0xedb88320u:0);}return ~v;}
 void projectSchema22(const std::uint8_t* current,std::uint8_t* old){
  constexpr unsigned size=2964;
- snapshot_test::rules15Image(current,old);
+ std::uint8_t schema26[kSchema26SnapshotSize];snapshot_test::schema26Image(current,schema26);
+ snapshot_test::rules15Image(schema26,old);
  old[4]=22;old[5]=0;old[6]=(size-12)&255;old[7]=(size-12)>>8;put32(old+8,15);put32(old+size-4,crc(old,size-4));
 }
 void oldSnapshot(const std::uint8_t* current,std::uint8_t* old,unsigned version=19){
  CHECK(version==19||version==20||version==21||version==22);
  if(version==22){projectSchema22(current,old);return;}
  if(version==21){
-  std::uint8_t image[2964];snapshot_test::rules15Image(current,image);
+  std::uint8_t schema26[kSchema26SnapshotSize];snapshot_test::schema26Image(current,schema26);
+  std::uint8_t image[2964];snapshot_test::rules15Image(schema26,image);
   constexpr unsigned size=2952;std::memcpy(old,image,size-4);put32(old+8,14);
   old[4]=21;old[5]=0;old[6]=(size-12)&255;old[7]=(size-12)>>8;put32(old+size-4,crc(old,size-4));return;
  }
@@ -65,7 +67,7 @@ State fixture(unsigned starter=1,unsigned count=2) {
  s.captures=s.encounters=count-1;s.steps=100*(count-1);
  const auto* form=forms::find(79);
  for(unsigned i=1;i<count;++i)s.collection[i]={i+1,static_cast<Species>(form->lineage),17,63,47,30+i,100,5,i+1,xpForLevel(5)+17,79};
- s.journal[(79-1)/32]|=1u<<((79-1)%32);CHECK(isValid(s));return s;
+ s.journal[(79-1)/32]|=1u<<((79-1)%32);s.dungeonKeys=3;CHECK(isValid(s));return s;
 }
 t::Transcript transcript(const State& a,const State& b,unsigned aId=2,unsigned bId=2) {
  t::Transcript x;x.peers[0].bytes[0]=2;x.peers[1].bytes[0]=4;x.session=0xaabbccdd12345678ull;
@@ -91,8 +93,8 @@ struct Care final:digivice::storage::Backend {
  bool writeSlot(unsigned i,const Snapshot& s)override{++writes;if(writes==fail&&!landed)return false;std::memcpy(slots[i].bytes,s.bytes,kSnapshotSize);slots[i].length=kSnapshotSize;present[i]=true;return writes!=fail;}
 };
 void installedJournalRecovery(){
- CHECK(dt::kJournalBytes==6624&&dt::kV22JournalBytes==6120&&dt::kV21JournalBytes==6096&&dt::kV20JournalBytes==1520&&dt::kV19JournalBytes==1512);
- CHECK(dt::supportedJournalSize(1512)&&dt::supportedJournalSize(1520)&&dt::supportedJournalSize(6096)&&dt::supportedJournalSize(6120)&&dt::supportedJournalSize(6624));
+ CHECK(dt::kJournalBytes==13912&&dt::kV26JournalBytes==6624&&dt::kV22JournalBytes==6120&&dt::kV21JournalBytes==6096&&dt::kV20JournalBytes==1520&&dt::kV19JournalBytes==1512);
+ CHECK(dt::supportedJournalSize(1512)&&dt::supportedJournalSize(1520)&&dt::supportedJournalSize(6096)&&dt::supportedJournalSize(6120)&&dt::supportedJournalSize(6624)&&dt::supportedJournalSize(13912));
  for(const auto size:{0u,1u,1511u,1513u,1519u,1521u,6095u,6097u,6119u,6121u,6623u,6625u,UINT32_MAX})CHECK(!dt::supportedJournalSize(size));
  auto a=fixture(),b=fixture(2);auto x=transcript(a,b);x.rules=13;
  for(unsigned version:{19u,20u,21u,22u})for(unsigned side=0;side<2;++side){

@@ -52,14 +52,14 @@ test('rules7 baseline and suffix preserve progress, archive exact receipts, and 
   const history6 = { rulesVersion: 6, events: frozen.prefixEvents, receipts: receipts(6, 0, frozen.prefixEvents, 'before-seven-baseline') };
   const old = oldStore(frozen.suffixEvents, 'onboarding', { histories: [history6], snapshotBase64: frozen.baseline.snapshotBase64 });
   const f = await fixture(t, old), saved = (await f.request('/api/save')).body;
-  assert.deepEqual([saved.state.schemaVersion, saved.state.rulesVersion, saved.revision], [26, 19, old.devices[0].revision]);
+  assert.deepEqual([saved.state.schemaVersion, saved.state.rulesVersion, saved.revision], [27, 19, old.devices[0].revision]);
   assert.equal(saved.baseSequence, frozen.prefixEvents.length + frozen.suffixEvents.length); assert.deepEqual(saved.events, []); assert.equal(saved.autoTrace, null);
   for (const key of ['collection', 'activeCreatureId', 'nextMemberId', 'journal', 'rngState', 'xp', 'formId', 'hp', 'bond', 'captures', 'onboarding', 'battleMode', 'lastAutoBattle']) assert.deepEqual(withoutLabels(legacyFields(saved.state[key])), withoutLabels(frozen.suffixResult.state[key]), key);
   assert.equal(frozen.suffixResult.state.combat.skills.magic, 'Hex Spark'); assert.equal(saved.state.combat.skills.magic, 'Thunder Cloud');
   assert.equal(saved.state.wildCaptureChance, 0);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
-  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 3216); assert.equal(snapshot.readUInt16LE(4), 26); assert.equal(snapshot.readUInt32LE(8), 19);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 27, 19]);
+  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 6860); assert.equal(snapshot.readUInt16LE(4), 27); assert.equal(snapshot.readUInt32LE(8), 19);
   assert.deepEqual(stored.devices[0].legacy.histories, [history6, { rulesVersion: 7, events: old.devices[0].events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v7.json'), 'utf8')), old);
   const pending = { rulesVersion: 7, baseRevision: history6.receipts.length, batchId: old.devices[0].receipts[0].batchId, events: old.devices[0].events };

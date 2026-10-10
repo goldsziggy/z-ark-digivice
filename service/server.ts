@@ -49,7 +49,7 @@ type Schema22Store = { formatVersion: 17; gameSchemaVersion: 22; rulesVersion: 1
 type Schema23Store = { formatVersion: 18; gameSchemaVersion: 23; rulesVersion: 16; devices: Device[] };
 type Schema24Store = { formatVersion: 19; gameSchemaVersion: 24; rulesVersion: 17; devices: Device[] };
 type Schema25Store = { formatVersion: 20; gameSchemaVersion: 25; rulesVersion: 18; devices: Device[] };
-type Store = { formatVersion: 21; gameSchemaVersion: 26; rulesVersion: 19; devices: Device[] };
+type Store = { formatVersion: 21; gameSchemaVersion: 26 | 27; rulesVersion: 19; devices: Device[] };
 type StoredData = OldStore | V2Store | V3Store | V4Store | V5Store | V6Store | V7Store | V8Store | V9Store | V10Store | V11Store | V12Store | V13Store | Schema15Store | Schema16Store | Schema17Store | Schema18Store | Schema19Store | Schema20Store | Schema21Store | Schema22Store | Schema23Store | Schema24Store | Schema25Store | Store;
 export type GarageReadAdapter = {
   list(): Promise<unknown>;
@@ -216,8 +216,15 @@ function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 19): i
     return event.value === 0;
   });
 }
+function expeditionsSupported(value: unknown): boolean {
+  if (!object(value) || !keysExactly(value, ['dungeonKeys', 'bossSigils', 'dungeonWins', 'bossSteps', 'dungeonClears', 'bossClears', 'maxDungeonKeys', 'scenarios']) || !Array.isArray(value.scenarios) || value.scenarios.length !== 6) return false;
+  const bounded = (input: unknown, minimum: number, maximum: number) => Number.isSafeInteger(input) && Number(input) >= minimum && Number(input) <= maximum;
+  if (value.maxDungeonKeys !== 3 || !bounded(value.dungeonKeys, 0, 3) || !bounded(value.bossSigils, 0, 1) || !bounded(value.dungeonWins, 0, 7) || !bounded(value.bossSteps, 0, 4999) || !bounded(value.dungeonClears, 0, 0xffffffff) || !bounded(value.bossClears, 0, 0xffffffff)) return false;
+  const names = ['Grove Dungeon', 'Tide Dungeon', 'Ember Dungeon', 'Grove Boss', 'Tide Boss', 'Ember Boss'];
+  return value.scenarios.every((scenario, index) => object(scenario) && keysExactly(scenario, ['name', 'kind', 'theme', 'floors', 'minPlayers', 'maxPlayers']) && scenario.name === names[index] && ['grove', 'tide', 'ember'][index % 3] === scenario.theme && (scenario.kind === 'dungeon' ? scenario.floors === 3 && scenario.minPlayers === 2 && scenario.maxPlayers === 2 : scenario.kind === 'boss' && scenario.floors === 1 && scenario.minPlayers === 1 && scenario.maxPlayers === 2));
+}
 function stateSupported(value: unknown): value is State {
-  if (!object(value) || Buffer.byteLength(JSON.stringify(value)) >= 64 * 1024 || value.schemaVersion !== 26 || value.rulesVersion !== 19 || value.collectionCapacity !== 60 || !Number.isSafeInteger(value.sequence) || Number(value.sequence) < 0 || !Array.isArray(value.collection) || !['tactical', 'auto'].includes(String(value.battleMode)) || !object(value.onboarding) || !keysExactly(value.onboarding, ['completed', 'starterId', 'offerSeed', 'offers'])) return false;
+  if (!object(value) || Buffer.byteLength(JSON.stringify(value)) >= 256 * 1024 || value.schemaVersion !== 27 || value.rulesVersion !== 19 || value.collectionCapacity !== 250 || !expeditionsSupported(value.expeditions) || !Number.isSafeInteger(value.sequence) || Number(value.sequence) < 0 || !Array.isArray(value.collection) || !['tactical', 'auto'].includes(String(value.battleMode)) || !object(value.onboarding) || !keysExactly(value.onboarding, ['completed', 'starterId', 'offerSeed', 'offers'])) return false;
   const bounded = (input: unknown, minimum: number, maximum: number) => Number.isSafeInteger(input) && Number(input) >= minimum && Number(input) <= maximum;
   if (![0, 1, 2, 3].includes(Number(value.autoCapture)) || typeof value.autoCapture !== 'number' || (value.autoCapture === 1 && (value.phase !== 'encounter' || value.battleMode !== 'auto' || Number(value.wildCaptureChance) <= 0))) return false;
   // Rules 18 focus pause: 2 Strike, 3 Block, mirrored by a bounded focus object.
@@ -241,19 +248,19 @@ function stateSupported(value: unknown): value is State {
   if (!bounded(offerSeed, 0, 0xffffffff) || !Array.isArray(offers) || offers.length !== 3 || (offerSeed === 0 ? offers.some(id => id !== 0) : new Set(offers).size !== 3 || !offers.every(id => bounded(id, 1, 512)))) return false;
   if (typeof completed !== 'boolean' || !(starterId === null || Number.isInteger(starterId) && Number(starterId) >= 1 && Number(starterId) <= 11)) return false;
   return completed
-    ? ['home', 'encounter'].includes(String(value.phase)) && value.collection.length >= 1 && value.collection.length <= 60
+    ? ['home', 'encounter'].includes(String(value.phase)) && value.collection.length >= 1 && value.collection.length <= 250
     : starterId === null && value.phase === 'egg' && value.collection.length === 0 && value.activeCreatureId === 0 && value.creature === null && value.species === null && value.combat === null;
 }
 function supportedStoredVersion(value: unknown): boolean {
-  return object(value) && ((value.formatVersion === 1 && value.gameSchemaVersion === 2 && value.rulesVersion === 1) || (value.formatVersion === 2 && value.gameSchemaVersion === 3 && value.rulesVersion === 2) || (value.formatVersion === 3 && value.gameSchemaVersion === 4 && value.rulesVersion === 3) || (value.formatVersion === 4 && value.gameSchemaVersion === 5 && value.rulesVersion === 3) || (value.formatVersion === 5 && value.gameSchemaVersion === 6 && value.rulesVersion === 3) || (value.formatVersion === 6 && value.gameSchemaVersion === 7 && value.rulesVersion === 4) || (value.formatVersion === 7 && value.gameSchemaVersion === 8 && value.rulesVersion === 5) || (value.formatVersion === 8 && value.gameSchemaVersion === 9 && value.rulesVersion === 6) || (value.formatVersion === 9 && value.gameSchemaVersion === 10 && value.rulesVersion === 7) || (value.formatVersion === 10 && value.gameSchemaVersion === 11 && value.rulesVersion === 8) || (value.formatVersion === 11 && value.gameSchemaVersion === 12 && value.rulesVersion === 9) || (value.formatVersion === 12 && value.gameSchemaVersion === 13 && value.rulesVersion === 10) || (value.formatVersion === 13 && value.gameSchemaVersion === 14 && value.rulesVersion === 11) || (value.formatVersion === 14 && (value.gameSchemaVersion === 15 || value.gameSchemaVersion === 16) && value.rulesVersion === 12) || (value.formatVersion === 15 && (value.gameSchemaVersion === 17 || value.gameSchemaVersion === 18 || value.gameSchemaVersion === 19 || value.gameSchemaVersion === 20) && value.rulesVersion === 13) || (value.formatVersion === 16 && value.gameSchemaVersion === 21 && value.rulesVersion === 14) || (value.formatVersion === 17 && value.gameSchemaVersion === 22 && value.rulesVersion === 15) || (value.formatVersion === 18 && value.gameSchemaVersion === 23 && value.rulesVersion === 16) || (value.formatVersion === 19 && value.gameSchemaVersion === 24 && value.rulesVersion === 17) || (value.formatVersion === 20 && value.gameSchemaVersion === 25 && value.rulesVersion === 18) || (value.formatVersion === 21 && value.gameSchemaVersion === 26 && value.rulesVersion === 19));
+  return object(value) && ((value.formatVersion === 1 && value.gameSchemaVersion === 2 && value.rulesVersion === 1) || (value.formatVersion === 2 && value.gameSchemaVersion === 3 && value.rulesVersion === 2) || (value.formatVersion === 3 && value.gameSchemaVersion === 4 && value.rulesVersion === 3) || (value.formatVersion === 4 && value.gameSchemaVersion === 5 && value.rulesVersion === 3) || (value.formatVersion === 5 && value.gameSchemaVersion === 6 && value.rulesVersion === 3) || (value.formatVersion === 6 && value.gameSchemaVersion === 7 && value.rulesVersion === 4) || (value.formatVersion === 7 && value.gameSchemaVersion === 8 && value.rulesVersion === 5) || (value.formatVersion === 8 && value.gameSchemaVersion === 9 && value.rulesVersion === 6) || (value.formatVersion === 9 && value.gameSchemaVersion === 10 && value.rulesVersion === 7) || (value.formatVersion === 10 && value.gameSchemaVersion === 11 && value.rulesVersion === 8) || (value.formatVersion === 11 && value.gameSchemaVersion === 12 && value.rulesVersion === 9) || (value.formatVersion === 12 && value.gameSchemaVersion === 13 && value.rulesVersion === 10) || (value.formatVersion === 13 && value.gameSchemaVersion === 14 && value.rulesVersion === 11) || (value.formatVersion === 14 && (value.gameSchemaVersion === 15 || value.gameSchemaVersion === 16) && value.rulesVersion === 12) || (value.formatVersion === 15 && (value.gameSchemaVersion === 17 || value.gameSchemaVersion === 18 || value.gameSchemaVersion === 19 || value.gameSchemaVersion === 20) && value.rulesVersion === 13) || (value.formatVersion === 16 && value.gameSchemaVersion === 21 && value.rulesVersion === 14) || (value.formatVersion === 17 && value.gameSchemaVersion === 22 && value.rulesVersion === 15) || (value.formatVersion === 18 && value.gameSchemaVersion === 23 && value.rulesVersion === 16) || (value.formatVersion === 19 && value.gameSchemaVersion === 24 && value.rulesVersion === 17) || (value.formatVersion === 20 && value.gameSchemaVersion === 25 && value.rulesVersion === 18) || (value.formatVersion === 21 && (value.gameSchemaVersion === 26 || value.gameSchemaVersion === 27) && value.rulesVersion === 19));
 }
-function validSnapshot(value: unknown, format?: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26, maximumFormat = 26): value is string {
-  if (typeof value !== 'string' || ![540, 552, 572, 668, 768, 800, 848, 872, 876, 880, 888, 3936, 3952, 4288].includes(value.length)) return false;
+function validSnapshot(value: unknown, format?: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27, maximumFormat = 27): value is string {
+  if (typeof value !== 'string' || ![540, 552, 572, 668, 768, 800, 848, 872, 876, 880, 888, 3936, 3952, 4288, 9148].includes(value.length)) return false;
   const bytes = Buffer.from(value, 'base64');
   if (bytes.toString('base64') !== value || bytes.toString('ascii', 0, 4) !== 'DGVS') return false;
   const actualFormat = bytes.readUInt16LE(4);
-  return (format === undefined ? [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].includes(actualFormat) && actualFormat <= maximumFormat : actualFormat === format) &&
-    bytes.length === (actualFormat >= 23 ? 3216 : actualFormat === 22 ? 2964 : actualFormat === 21 ? 2952 : actualFormat === 20 ? 664 : actualFormat === 19 ? 660 : actualFormat === 18 ? 656 : actualFormat >= 16 ? 652 : actualFormat === 15 ? 636 : actualFormat === 14 ? 600 : actualFormat >= 8 ? 576 : actualFormat === 7 ? 500 : actualFormat === 6 ? 428 : actualFormat === 5 ? 412 : 404) && bytes.readUInt32LE(8) === (actualFormat === 3 ? 2 : actualFormat === 26 ? 19 : actualFormat === 25 ? 18 : actualFormat === 24 ? 17 : actualFormat === 23 ? 16 : actualFormat === 22 ? 15 : actualFormat === 21 ? 14 : actualFormat >= 17 ? 13 : actualFormat >= 15 ? 12 : actualFormat === 14 ? 11 : actualFormat === 13 ? 10 : actualFormat === 12 ? 9 : actualFormat === 11 ? 8 : actualFormat === 10 ? 7 : actualFormat === 9 ? 6 : actualFormat === 8 ? 5 : actualFormat === 7 ? 4 : 3);
+  return (format === undefined ? [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27].includes(actualFormat) && actualFormat <= maximumFormat : actualFormat === format) &&
+    bytes.length === (actualFormat === 27 ? 6860 : actualFormat >= 23 ? 3216 : actualFormat === 22 ? 2964 : actualFormat === 21 ? 2952 : actualFormat === 20 ? 664 : actualFormat === 19 ? 660 : actualFormat === 18 ? 656 : actualFormat >= 16 ? 652 : actualFormat === 15 ? 636 : actualFormat === 14 ? 600 : actualFormat >= 8 ? 576 : actualFormat === 7 ? 500 : actualFormat === 6 ? 428 : actualFormat === 5 ? 412 : 404) && bytes.readUInt32LE(8) === (actualFormat === 3 ? 2 : actualFormat === 27 || actualFormat === 26 ? 19 : actualFormat === 25 ? 18 : actualFormat === 24 ? 17 : actualFormat === 23 ? 16 : actualFormat === 22 ? 15 : actualFormat === 21 ? 14 : actualFormat >= 17 ? 13 : actualFormat >= 15 ? 12 : actualFormat === 14 ? 11 : actualFormat === 13 ? 10 : actualFormat === 12 ? 9 : actualFormat === 11 ? 8 : actualFormat === 10 ? 7 : actualFormat === 9 ? 6 : actualFormat === 8 ? 5 : actualFormat === 7 ? 4 : 3);
 }
 
 function baseSequence(legacy: Baseline | null): number { return legacy?.histories.reduce((total, history) => total + history.events.length, 0) ?? 0; }
@@ -307,7 +314,7 @@ function validateStore(value: unknown): asserts value is StoredData {
     }
     if ((Number(value.formatVersion) >= 3) && device.legacy !== null) {
       const legacy = device.legacy;
-      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 21 ? 26 : value.formatVersion === 20 ? 25 : value.formatVersion === 19 ? 24 : value.formatVersion === 18 ? 23 : value.formatVersion === 17 ? 22 : value.formatVersion === 16 ? 21 : value.formatVersion === 15 ? undefined : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 15 && ![17, 18, 19, 20].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2)) throw new Error('Corrupt migration baseline.');
+      if (!object(legacy) || !keysExactly(legacy, ['histories', 'snapshotBase64', ...(Number(value.formatVersion) >= 11 && Object.hasOwn(legacy, 'autoTrace') ? ['autoTrace'] : [])]) || !validSnapshot(legacy.snapshotBase64, value.formatVersion === 21 ? (value.gameSchemaVersion === 27 ? 27 : 26) : value.formatVersion === 20 ? 25 : value.formatVersion === 19 ? 24 : value.formatVersion === 18 ? 23 : value.formatVersion === 17 ? 22 : value.formatVersion === 16 ? 21 : value.formatVersion === 15 ? undefined : value.formatVersion === 14 ? undefined : value.formatVersion === 13 ? 14 : value.formatVersion === 12 ? 13 : value.formatVersion === 11 ? 12 : value.formatVersion === 10 ? 11 : value.formatVersion === 9 ? 10 : value.formatVersion === 8 ? 9 : value.formatVersion === 7 ? 8 : value.formatVersion === 6 ? 7 : undefined, Number(value.gameSchemaVersion)) || (value.formatVersion === 15 && ![17, 18, 19, 20].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || (value.formatVersion === 14 && ![15, 16].includes(Buffer.from(String(legacy.snapshotBase64), 'base64').readUInt16LE(4))) || !Array.isArray(legacy.histories) || legacy.histories.length < 1 || legacy.histories.length > (Number(value.formatVersion) >= 6 ? Number(value.formatVersion) - 3 : 2)) throw new Error('Corrupt migration baseline.');
       if (Object.hasOwn(legacy, 'autoTrace') && (Buffer.byteLength(JSON.stringify(legacy.autoTrace)) > 16 * 1024 || !parseAutoTrace(legacy.autoTrace, 'wild'))) throw new Error('Corrupt archived Auto trace.');
       let lastRules = 0;
       for (const history of legacy.histories) {
@@ -415,7 +422,7 @@ function createUnlockedApp(options: AppOptions = {}) {
   mkdirSync(dataDir, { recursive: true, mode: 0o700 });
   const storePath = join(dataDir, 'store.json');
   const backupPath = join(dataDir, 'store.backup.json');
-  let loaded: StoredData = { formatVersion: 21, gameSchemaVersion: 26, rulesVersion: 19, devices: [] };
+  let loaded: StoredData = { formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices: [] };
   let loadedText: string | null = null;
   let store: Store;
   let migratedLegacyStore = false;
@@ -443,7 +450,7 @@ function createUnlockedApp(options: AppOptions = {}) {
 
   function runCore(args: string[], events: Event[]): unknown {
     const input = events.map((event) => `${event.type} ${event.value}`).join('\n');
-    const result = spawnSync(corePath, args, { input: input ? `${input}\n` : '', encoding: 'utf8', timeout: 3000, maxBuffer: 128 * 1024, windowsHide: true });
+    const result = spawnSync(corePath, args, { input: input ? `${input}\n` : '', encoding: 'utf8', timeout: 3000, maxBuffer: 1024 * 1024, windowsHide: true });
     if (result.error) throw new HttpError(503, 'core_unavailable', 'The shared game core is unavailable. Run npm run build first.');
     if (result.status !== 0) throw new HttpError(422, 'invalid_transition', 'The game core rejected an action in this event history.');
     try { return JSON.parse(result.stdout); } catch { throw new HttpError(503, 'core_output_invalid', 'The game core returned invalid output.'); }
@@ -472,8 +479,8 @@ function createUnlockedApp(options: AppOptions = {}) {
   // even with an empty store before advertising XP companions.
   try {
     const budget = runCore(['--budget'], []);
-    if (!object(budget) || budget.schemaVersion !== 26 || budget.rulesVersion !== 19 || budget.collectionCapacity !== 60 || budget.partyCapacity !== 3 ||
-      budget.snapshotBytes !== 3216 || budget.jsonBufferBytes !== 65536) throw new Error('Unsupported XP companion contract.');
+    if (!object(budget) || budget.schemaVersion !== 27 || budget.rulesVersion !== 19 || budget.collectionCapacity !== 250 || budget.partyCapacity !== 3 ||
+      budget.snapshotBytes !== 6860 || budget.jsonBufferBytes !== 262144) throw new Error('Unsupported XP companion contract.');
   } catch (error) {
     throw new Error('The installed game core does not support the XP companion contract. Run npm run build before starting this service.', { cause: error });
   }
@@ -586,7 +593,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       if (JSON.stringify(restored) !== JSON.stringify(migrated.state)) throw new Error('Legacy migration baseline did not restore identically.');
       return { ...device, legacy, initialMode: 'legacy', events: [], receipts: [] };
     });
-    const next: Store = { formatVersion: 21, gameSchemaVersion: 26, rulesVersion: 19, devices };
+    const next: Store = { formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices };
     validateStore(next);
     const archivePath = join(dataDir, `store.rules-v${previous.rulesVersion}.json`);
     if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
@@ -600,7 +607,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       const args = device.legacy ? [`--migrate-v${version}-snapshot`, device.legacy.snapshotBase64] :
         [`--migrate-v${version}${initialMode === 'onboarding' ? '-onboarding' : ''}`, String(device.seed)];
       const migrated = runCore(args, device.events);
-      if (!object(migrated) || !validSnapshot(migrated.snapshotBase64, 26) || !stateSupported(migrated.state)) throw new Error('Frozen-rules migration returned an unsupported baseline.');
+      if (!object(migrated) || !validSnapshot(migrated.snapshotBase64, 27) || !stateSupported(migrated.state)) throw new Error('Frozen-rules migration returned an unsupported baseline.');
       const legacy: Baseline = { histories: [...(device.legacy?.histories ?? []), { rulesVersion: version, events: device.events, receipts: device.receipts }], snapshotBase64: migrated.snapshotBase64 };
       if (migrated.state.sequence !== baseSequence(legacy)) throw new Error('Frozen-rules migration changed the event sequence.');
       if (version === 8 || version === 9 || version === 10 || version === 11 || version === 12 || version === 13 || version === 14 || version === 15 || version === 16 || version === 17 || version === 18) {
@@ -626,7 +633,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       if (JSON.stringify(restored) !== JSON.stringify(migrated.state)) throw new Error('Frozen-rules migration baseline did not restore identically.');
       return { ...device, initialMode, legacy, events: [], receipts: [] };
     });
-    const next: Store = { formatVersion: 21, gameSchemaVersion: 26, rulesVersion: 19, devices };
+    const next: Store = { formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices };
     validateStore(next);
     const archivePath = join(dataDir, `store.rules-v${version}.json`);
     if (!existsSync(archivePath)) atomicWrite(archivePath, loadedText ?? JSON.stringify(previous));
@@ -699,7 +706,7 @@ function createUnlockedApp(options: AppOptions = {}) {
       const method = request.method;
       if (path === '/api/device/health') {
         if (method !== 'GET' || request.url !== path) throw new HttpError(400, 'invalid_request', 'Device health expects GET without parameters.');
-        return json(response, 200, { status: 'ok', protocolVersion: 1, gameRulesVersion: 19, gameSchemaVersion: 26, assetProfile: DEVICE_PROFILE });
+        return json(response, 200, { status: 'ok', protocolVersion: 1, gameRulesVersion: 19, gameSchemaVersion: 27, assetProfile: DEVICE_PROFILE });
       }
       if (path === '/api/device/assets' || path.startsWith('/api/device/assets/')) {
         if (!deviceAssets) return json(response, 503, { error: 'device_assets_unavailable', message: 'Verified device assets are not installed.' });
@@ -763,7 +770,7 @@ function createUnlockedApp(options: AppOptions = {}) {
         if (Buffer.byteLength(JSON.stringify(result)) > 64 * 1024) throw new HttpError(503, 'roster_unavailable', 'Roster response exceeds its bounded size.');
         return json(response, 200, result);
       }
-      if (method === 'GET' && path === '/api/health') return json(response, 200, { status: 'ok', mode: 'local-development', assetStatus: assetService ? 'available' : 'unavailable', schemaVersion: 26, rulesVersion: 19, collectionCapacity: 60, partyCapacity: 3, capabilities: { careInjury: 1, autoFocus: 1, captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1, ...(includeTestFixtures ? { testFixtures: 1 } : {}) }, recoveredFromBackup, migratedLegacyStore });
+      if (method === 'GET' && path === '/api/health') return json(response, 200, { status: 'ok', mode: 'local-development', assetStatus: assetService ? 'available' : 'unavailable', schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, capabilities: { careInjury: 1, autoFocus: 1, captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1, ...(includeTestFixtures ? { testFixtures: 1 } : {}) }, recoveredFromBackup, migratedLegacyStore });
       if (method === 'GET' && path === '/api/starters') return json(response, 200, starterCatalog());
       if (path === '/api/evolution-graph') {
         const query = new URL(request.url!, 'http://localhost').searchParams, keys = [...query.keys()];
@@ -816,7 +823,7 @@ function createUnlockedApp(options: AppOptions = {}) {
         const token = randomBytes(32).toString('base64url');
         const device: Device = { deviceId: `dv_${randomBytes(12).toString('hex')}`, tokenHash: sha256(token), seed: nextSeed(), revision: 0, legacy: null, initialMode: 'onboarding', events: [], receipts: [] };
         const initialState = replay([], device.seed, null, 'onboarding');
-        persist({ formatVersion: 21, gameSchemaVersion: 26, rulesVersion: 19, devices: [...store.devices, device] });
+        persist({ formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices: [...store.devices, device] });
         pairings.delete(input.code);
         return json(response, 201, { deviceId: device.deviceId, token, revision: 0, seed: device.seed, state: initialState, autoTrace: null, events: [], baseSequence: 0 });
       }
@@ -837,7 +844,7 @@ function createUnlockedApp(options: AppOptions = {}) {
           result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
           const next: Device = { ...device, revision: device.revision + 1, events: nextEvents,
             receipts: [...device.receipts, { batchId: `starter-offers-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 19), revision: device.revision + 1, eventEnd: nextEvents.length }] };
-          persist({ formatVersion: 21, gameSchemaVersion: 26, rulesVersion: 19, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
+          persist({ formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
           device = next;
         }
         return json(response, 200, { deviceId: device.deviceId, revision: device.revision, seed: device.seed, ...result, events: device.events, baseSequence: baseSequence(device.legacy) });
@@ -859,7 +866,7 @@ function createUnlockedApp(options: AppOptions = {}) {
           result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
           const next: Device = { ...device, revision: device.revision + 1, events: nextEvents,
             receipts: [...device.receipts, { batchId: `world-seed-${randomBytes(12).toString('hex')}`, bodyHash: batchHash(device.revision, events, 19), revision: device.revision + 1, eventEnd: nextEvents.length }] };
-          persist({ formatVersion: 21, gameSchemaVersion: 26, rulesVersion: 19, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
+          persist({ formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices: store.devices.map(entry => entry.deviceId === device.deviceId ? next : entry) });
           device = next;
         }
         return json(response, 200, { deviceId: device.deviceId, revision: device.revision, seed: device.seed, ...result, events: device.events, baseSequence: baseSequence(device.legacy) });
@@ -914,7 +921,7 @@ function createUnlockedApp(options: AppOptions = {}) {
         const nextEvents = [...device.events, ...events];
         const result = replayResult(nextEvents, device.seed, device.legacy, device.initialMode);
         const next: Device = { ...device, revision: device.revision + 1, events: nextEvents, receipts: [...device.receipts, { batchId: input.batchId, bodyHash, revision: device.revision + 1, eventEnd: nextEvents.length }] };
-        persist({ formatVersion: 21, gameSchemaVersion: 26, rulesVersion: 19, devices: store.devices.map((entry) => entry.deviceId === device.deviceId ? next : entry) });
+        persist({ formatVersion: 21, gameSchemaVersion: 27, rulesVersion: 19, devices: store.devices.map((entry) => entry.deviceId === device.deviceId ? next : entry) });
         return json(response, 200, { deviceId: device.deviceId, revision: next.revision, ...result });
       }
       if (method === 'GET' && ASSETS.has(path)) {

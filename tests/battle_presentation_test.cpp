@@ -313,6 +313,39 @@ void ringCaptureChecks() {
     auto invalid=reboot;invalid.lastCapture.chance=0;CHECK(!player.startSavedCapture(invalid,0));
     invalid=reboot;invalid.lastCapture.chance=91;CHECK(!player.startSavedCapture(invalid,0));
 }
+void mergedCapturePresentation() {
+    bool found=false;
+    for(unsigned seed=1; seed<=512 && !found; ++seed) {
+        State owned=newDevice(seed);
+        if(apply(owned,Action::Hatch,1)!=Error::None) continue;
+        const auto partnerForm=activeMember(owned)->formId;
+        const auto partnerSpecies=activeMember(owned)->species;
+        if(apply(owned,Action::Explore,1000)!=Error::None || owned.phase!=Phase::Encounter || owned.wildFormId==partnerForm) continue;
+        owned.wildHp=owned.wildMaxHp/2;
+        State first=owned;
+        if(apply(first,Action::Capture)!=Error::None || first.lastCapture.result!=CaptureResult::Captured || first.collectionCount!=2) continue;
+        const auto newest=first.collection[first.collectionCount-1].formId;
+        if(newest==partnerForm || apply(first,Action::Explore,1000)!=Error::None || first.phase!=Phase::Encounter) continue;
+        first.wildFormId=partnerForm; first.wildSpecies=partnerSpecies; first.wildLevel=1; first.wildTurn=0; first.captureAttempts=0;
+        first.wildRules=kRulesVersion; first.wildMaxHp=combat::formProfile(partnerForm,1).stats.maxHp; first.wildHp=first.wildMaxHp/2;
+        if(!isValid(first)) continue;
+        State before=first;
+        for(unsigned attempt=0; attempt<3 && !found; ++attempt) {
+            State after=before;
+            if(apply(after,Action::Capture)!=Error::None) break;
+            if(after.lastCapture.result!=CaptureResult::Captured) { before=after; continue; }
+            CHECK(after.phase==Phase::Home && after.message==Message::Captured && after.collectionCount==2);
+            CHECK(after.collection[after.collectionCount-1].formId==newest && after.lastCapture.targetFormId==partnerForm);
+            bp::Sequencer player;
+            CHECK(player.startTactical(before,after,Action::Capture,0,0));
+            CHECK(player.view().enemyFormId==partnerForm && player.view().outcome==autobattle::Outcome::Captured);
+            player.consumeCue(); player.poll(500); player.poll(2300);
+            CHECK(player.view().captureCaught && player.view().enemyFormId==partnerForm);
+            found=true;
+        }
+    }
+    CHECK(found);
+}
 int main() {
     CHECK(sizeof(bp::Sequencer)<=2048);
     auto t=fixture();const auto original=t;
@@ -445,6 +478,7 @@ int main() {
     CHECK(player.startTactical(before,after,Action::Attack,0,0));CHECK(player.view().damage==expected);
     player.consumeCue();player.poll(350);CHECK(player.view().enemyHp==before.wildHp-expected);player.cancel();
     captureChecks();
+    mergedCapturePresentation();
     autoFlickChecks();
     ringCaptureChecks();
     std::printf("Battle presentation: %u checks passed; sequencer %zu bytes\n",checks,sizeof(bp::Sequencer));

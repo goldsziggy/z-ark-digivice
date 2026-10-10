@@ -75,6 +75,10 @@ esp_err_t backlight(std::uint32_t percent) {
 // The single stripe remains owned until its completion callback, even after a
 // timeout. This submission path is shared by drawing and the raw zero boot clear.
 esp_err_t submitStripe(Rect native) {
+    // A previous stripe can complete after its wait timed out. Drop that stale
+    // signal so this transfer waits for its own callback, and do not mark the
+    // panel dead: one late stripe must not blank the screen for the rest of boot.
+    for (unsigned i = 0; i < 4 && xSemaphoreTake(completion, 0) == pdTRUE; ++i) {}
     portENTER_CRITICAL(&dmaStateLock);
     dmaInFlight = true;
     portEXIT_CRITICAL(&dmaStateLock);
@@ -82,7 +86,7 @@ esp_err_t submitStripe(Rect native) {
         native.x + native.width, native.y + native.height, dmaStripe);
     if (error == ESP_OK && xSemaphoreTake(completion, pdMS_TO_TICKS(100)) != pdTRUE)
         error = ESP_ERR_TIMEOUT;
-    if (error != ESP_OK) {
+    if (error != ESP_OK && error != ESP_ERR_TIMEOUT) {
         current.display = error;
         (void)backlight(0);
     }

@@ -48,17 +48,17 @@ function schema15Projection(state: any) {
 
 test('rules12 migration archives exact original bytes and frozen results; old receipts stay reserved', async t => {
   const original = oldStore(), f = await fixture(t, original), save = await f.request();
-  assert.equal(save.status, 200); assert.equal(save.body.state.schemaVersion, 26); assert.equal(save.body.state.rulesVersion, 19);
+  assert.equal(save.status, 200); assert.equal(save.body.state.schemaVersion, 27); assert.equal(save.body.state.rulesVersion, 19);
   assert.equal(save.body.state.maxLevel, 50); assert.deepEqual(schema15Projection(save.body.state), historicComparable(frozen.result.state));
   assert.deepEqual(save.body.autoTrace, frozen.result.trace);
   assert.equal(await readFile(join(f.dataDir, 'store.rules-v12.json'), 'utf8'), f.originalText);
   const current = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([current.formatVersion, current.gameSchemaVersion, current.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([current.formatVersion, current.gameSchemaVersion, current.rulesVersion], [21, 27, 19]);
   const migrated = current.devices[0];
   assert.equal(migrated.deviceId, original.devices[0].deviceId); assert.equal(migrated.tokenHash, original.devices[0].tokenHash);
   assert.equal(migrated.revision, 2); assert.deepEqual(migrated.events, []); assert.deepEqual(migrated.receipts, []);
   assert.deepEqual(migrated.legacy.histories, [...original.devices[0].legacy.histories, { rulesVersion: 12, events: frozen.events, receipts: original.devices[0].receipts }]);
-  assert.equal(Buffer.from(migrated.legacy.snapshotBase64,'base64').readUInt16LE(4), 26);
+  assert.equal(Buffer.from(migrated.legacy.snapshotBase64,'base64').readUInt16LE(4), 27);
   assert.deepEqual(await readFile(join(f.dataDir, 'store.json')), await readFile(join(f.dataDir, 'store.backup.json')));
   const retry = { ...batch(1, 'old-twelve-walk', frozen.events), rulesVersion: 12 };
   assert.equal((await f.request(retry)).body.error, 'migration_required');

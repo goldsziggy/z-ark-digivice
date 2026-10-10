@@ -20,7 +20,7 @@ void encounterRelease(bool automatic,bool uncertain) {
         state.collection[i].capturedAtSequence=static_cast<std::uint32_t>(100+i);
     }
     state.collectionCount=kCollectionCapacity;
-    state.sequence=state.foregroundSequence=200;
+    state.sequence=state.foregroundSequence=400;
     state.nextMemberId=kCollectionCapacity+19;state.captures=state.encounters=state.nextMemberId-2;state.steps=100*state.encounters;
     CHECK(isValid(state));
     if(automatic)CHECK(apply(state,Action::Mode,1)==Error::None);

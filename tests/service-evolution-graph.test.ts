@@ -33,12 +33,12 @@ test('rules5 history and released-form journal migrate once without changing XP,
   const oldHistory = { rulesVersion: 4, events: frozen.oldRule4Events, receipts: [receipt(4, 0, frozen.oldRule4Events, 'frozen-four-baseline-batch')] };
   const old = oldStore(frozen.rules5SuffixEvents, { histories: [oldHistory], snapshotBase64: frozen.rules5Baseline.snapshotBase64 }, 2);
   const f = await fixture(t, old), before = (await f.request('/api/save')).body;
-  assert.equal(before.state.schemaVersion, 26); assert.equal(before.state.rulesVersion, 19); assert.equal(before.revision, 2); assert.equal(before.baseSequence, 6); assert.deepEqual(before.events, []);
+  assert.equal(before.state.schemaVersion, 27); assert.equal(before.state.rulesVersion, 19); assert.equal(before.revision, 2); assert.equal(before.baseSequence, 6); assert.deepEqual(before.events, []);
   for (const key of ['collection', 'activeCreatureId', 'nextMemberId', 'journal', 'rngState', 'xp', 'formId', 'hp', 'bond', 'captures', 'onboarding', 'battleMode', 'lastAutoBattle']) assert.deepEqual(legacyFields(before.state[key]), frozen.rules5SuffixResult.state[key], key);
   assert.deepEqual(before.state.journal.obtainedFormIds, [4, 11]); assert.equal(before.state.collection.length, 1); assert.equal(before.autoTrace, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 26); assert.equal(stored.rulesVersion, 19);
-  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 3216); assert.equal(snapshot.readUInt16LE(4), 26); assert.equal(snapshot.readUInt32LE(8), 19);
+  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 27); assert.equal(stored.rulesVersion, 19);
+  const snapshot = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'); assert.equal(snapshot.length, 6860); assert.equal(snapshot.readUInt16LE(4), 27); assert.equal(snapshot.readUInt32LE(8), 19);
   assert.deepEqual(stored.devices[0].legacy.histories, [oldHistory, { rulesVersion: 5, events: old.devices[0].events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v5.json'), 'utf8')), old, 'archival baseline bytes, initial mode and body hashes remain exact');
   const pending = { rulesVersion: 5, baseRevision: 1, batchId: old.devices[0].receipts[0].batchId, events: old.devices[0].events };

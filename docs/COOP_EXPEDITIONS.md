@@ -1,6 +1,6 @@
-# Co-op expeditions: boss raids and dungeon raids — design (proposed, not implemented)
+# Co-op expeditions: boss raids and dungeon raids
 
-Status: design for review; nothing here is in the core. Builds on rules 17 ([care mistakes and injury](CARE_MISTAKES_INJURY.md)), rules 18 ([auto-battle balance and focus taps](AUTO_BALANCE.md)) and the Nearby transport ([protocol](NEARBY_PROTOCOL.md)), which is now confirmed working between two real devices. Supersedes the earlier boss-only draft. **Revision 2:** co-op is capped at **two players**; Partners uses a **2×2 tile grid**; BACK/LEAVE has one shared spot fully inside the touch circle, with a padded hit area (shipped in firmware).
+Status: the six-scenario catalog and the dungeon-key counter are in schema 27. Existing saves receive three dungeon keys on migration; a new game starts with zero. A player may hold three keys and one boss sigil. Earning, spending, co-op fights, and receipts are not implemented, and Nearby does not host a raid. Builds on rules 17 ([care mistakes and injury](CARE_MISTAKES_INJURY.md)), rules 18 ([auto-battle balance and focus taps](AUTO_BALANCE.md)) and the Nearby transport ([protocol](NEARBY_PROTOCOL.md)). Supersedes the earlier boss-only draft. **Revision 2:** co-op is capped at **two players**; Partners uses a **2×2 tile grid**; BACK/LEAVE has one shared spot fully inside the touch circle, with a padded hit area (shipped in firmware).
 
 ## Goal
 
@@ -17,7 +17,7 @@ Two cooperative modes that kids play **together, device to device**, that genuin
 | Where the challenge comes from | One huge foe, telegraphed attacks, phases | Attrition: HP carries between rooms, no Rest inside, knocked-out Digimon are benched |
 | Headline reward | One guaranteed capture throw at the boss **per finisher** | One guaranteed capture throw at the guardian per finisher, plus squad-wide XP and bond |
 
-One held item of each kind at a time; neither expires (overnight/off time is never punished). Holding them never blocks ordinary walking encounters.
+A player may hold three dungeon keys and one boss sigil. Neither expires (overnight/off time is never punished). Holding them never blocks ordinary walking encounters. The three-key grant is applied when an older save migrates; keys are not earned or spent yet.
 
 ## The shared co-op pattern
 

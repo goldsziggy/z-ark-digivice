@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "expeditions.hpp"
 #include "capture_ring.hpp"
 #include "combat.hpp"
 #include "forms.hpp"
@@ -11,6 +12,7 @@
 
 #include <algorithm>
 #include <cstdarg>
+#include <iterator>
 #include <cstdio>
 #include <cstring>
 #include <limits>
@@ -612,6 +614,8 @@ static bool validForVersion(const State& s,bool) {
        (s.phase!=Phase::Encounter || s.battleMode!=BattleMode::Auto || s.wildRules<18 || s.wildTurn!=focusTurn(s) ||
         (s.autoCapture==AutoCapture::FocusStrike)!=focusIsStrike(s)))return false;
     if(s.lastCritical>1 || s.captureDeferred>1)return false;
+    if(s.dungeonKeys>expeditions::kMaxDungeonKeys || s.bossSigils>expeditions::kMaxBossSigils ||
+       s.dungeonWins>=expeditions::kDungeonWinsPerKey || s.bossSteps>=expeditions::kBossStepsPerSigil)return false;
     if(s.captureDeferred && (s.phase!=Phase::Encounter || !s.captureAttempts))return false;
     const bool duplicateReady=s.wildRules>=16 && ownsExactForm(s,s.wildFormId);
     if(s.autoCapture==AutoCapture::Awaiting && (s.phase!=Phase::Encounter || s.battleMode!=BattleMode::Auto ||
@@ -1367,7 +1371,7 @@ const char* errorText(Error error) {
     case Error::WildTooStrong: return "weaken the wild creature to half health before capture";
     case Error::CaptureLimit: return "three capture attempts already used this encounter";
     case Error::CounterOverflow: return "state counter limit reached";
-    case Error::CollectionFull: return "collection is full (60 Digimon); no Digimon was replaced";
+    case Error::CollectionFull: return "collection is full (250 Digimon); no Digimon was replaced";
     case Error::UnknownMember: return "that creature is not in your collection";
     case Error::AlreadyHatched: return "starter already chosen; no Digimon was replaced";
     case Error::WrongMode: return "action unavailable in this battle mode";
@@ -1568,11 +1572,20 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
             profile(id,preview); append("}"); comma=true;
         }
     }
+    append("]},\"expeditions\":{\"dungeonKeys\":%u,\"bossSigils\":%u,\"dungeonWins\":%u,\"bossSteps\":%u,\"dungeonClears\":%u,\"bossClears\":%u,\"maxDungeonKeys\":%u,\"scenarios\":[",
+           number(s.dungeonKeys),number(s.bossSigils),number(s.dungeonWins),number(s.bossSteps),number(s.dungeonClears),number(s.bossClears),number(expeditions::kMaxDungeonKeys));
+    for(std::size_t i=0;i<std::size(expeditions::kScenarios);++i) {
+        const auto& scenario=expeditions::kScenarios[i];
+        append("%s{\"name\":\"%s\",\"kind\":\"%s\",\"theme\":\"%s\",\"floors\":%u,\"minPlayers\":%u,\"maxPlayers\":%u}",
+               i ? "," : "",scenario.name,expeditions::kindName(scenario.kind),expeditions::themeName(scenario.theme),
+               number(scenario.floors),number(scenario.minPlayers),number(scenario.maxPlayers));
+    }
     append("]}}"); if(!ok){output[0]='\0';return 0;} return used;
 }
 
 bool encodeSnapshot(const State& s, Snapshot& snapshot) {
-    static_assert(kSnapshotSize == 8 + (22 + 4 + kCollectionCapacity * 12 + 11 + kJournalWords + 6 + 9 + 4 + 3 + kPartyCapacity + 3) * 4 + 4);
+    static_assert(kSnapshotSize == kSnapshotLeadBytes + kCollectionCapacity * kMemberSnapshotBytes + kSnapshotTailBytes + kExpeditionWords * 4 + 4);
+    static_assert(kSnapshotPartyOffset + kPartyCapacity * 4 + 12 + kExpeditionWords * 4 + 4 == kSnapshotSize);
     if (!isValid(s)) return false;
     // Validation is the only failure point. Write directly afterwards so deep
     // durable trade/save calls do not stack another full collection snapshot.
@@ -1593,9 +1606,18 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
     std::size_t offset = 8;
     for (const auto value : fields) { put32(bytes + offset, value); offset += 4; }
     for (const auto& member : s.collection) {
-        const std::uint32_t values[] = {member.id, static_cast<std::uint32_t>(member.species),
-            member.hp, member.energy, member.fullness, member.mood, member.bond, member.level, member.capturedAtSequence, member.xp, member.formId, member.careState};
-        for (const auto value : values) { put32(bytes + offset, value); offset += 4; }
+        put32(bytes + offset, member.id);
+        put32(bytes + offset + 4, member.capturedAtSequence);
+        put32(bytes + offset + 8, member.formId | (static_cast<std::uint32_t>(member.species) << 16));
+        put32(bytes + offset + 12, member.xp | (member.hp << 16));
+        bytes[offset + 16] = static_cast<std::uint8_t>(member.level);
+        bytes[offset + 17] = static_cast<std::uint8_t>(member.energy);
+        bytes[offset + 18] = static_cast<std::uint8_t>(member.fullness);
+        bytes[offset + 19] = static_cast<std::uint8_t>(member.mood);
+        bytes[offset + 20] = static_cast<std::uint8_t>(member.bond);
+        bytes[offset + 21] = 0;
+        put32(bytes + offset + 22, member.careState);
+        offset += kMemberSnapshotBytes;
     }
     put32(bytes + offset, s.onboardingComplete ? 1u : 0u);
     put32(bytes + offset + 4, s.starterId);
@@ -1621,6 +1643,8 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
     offset+=28+kPartyCapacity*4;
     put32(bytes+offset,s.careMinute); put32(bytes+offset+4,s.lastCritical); put32(bytes+offset+8,s.captureDeferred);
     offset += 12;
+    const std::uint32_t expedition[]{s.dungeonKeys,s.bossSigils,s.dungeonWins,s.bossSteps,s.dungeonClears,s.bossClears};
+    for(const auto value:expedition){put32(bytes+offset,value);offset+=4;}
     if (offset + 4 != kSnapshotSize) return false;
     put32(bytes + kSnapshotSize - 4, crc32(bytes, kSnapshotSize - 4));
     return true;
@@ -1632,7 +1656,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     const auto version = static_cast<unsigned>(bytes[4]) | (static_cast<unsigned>(bytes[5]) << 8);
     if (version < 1 || version > kSchemaVersion) return SnapshotStatus::UnsupportedVersion;
     const auto required = version == 1 ? kLegacySnapshotSize : version == 2 ? kV2SnapshotSize :
-                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : version==22 ? kV22SnapshotSize : kSnapshotSize; // V23 and V24 share a layout.
+                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : version==22 ? kV22SnapshotSize : version<=26 ? kSchema26SnapshotSize : kSnapshotSize;
     const auto payload = static_cast<unsigned>(bytes[6]) | (static_cast<unsigned>(bytes[7]) << 8);
     if (length != required || payload != length - 12) return SnapshotStatus::InvalidLength;
     if (get32(bytes + length - 4) != crc32(bytes, length - 4)) return SnapshotStatus::BadChecksum;
@@ -1664,12 +1688,29 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
         storeActive(next);
     } else {
         next.legacyCaptures = read(); next.activeCreatureId = read(); next.collectionCount = read();
-        const auto savedCapacity=version<=20?kLegacyCollectionCapacity:kCollectionCapacity;
+        const auto savedCapacity=version<=20?kLegacyCollectionCapacity:version<=26?kRoster60Capacity:kCollectionCapacity;
         if(next.collectionCount>savedCapacity)return SnapshotStatus::InvalidState;
         const auto wild = read();
         if (wild > (version<8 ? static_cast<unsigned>(Species::Cinder) : 65535u)) return SnapshotStatus::InvalidState;
         next.wildSpecies = static_cast<Species>(wild);
-        for (std::size_t i=0;i<savedCapacity;++i) {
+        if(version>=27) {
+            for(std::size_t i=0;i<savedCapacity;++i) {
+                auto& member=next.collection[i];
+                const auto start=offset;
+                member.id=read(); member.capturedAtSequence=read();
+                const auto formSpecies=read(); member.formId=formSpecies & 0xffffu; member.species=static_cast<Species>(formSpecies >> 16);
+                const auto xpHp=read(); member.xp=xpHp & 0xffffu; member.hp=xpHp >> 16;
+                if(offset-start!=16 || offset+kMemberSnapshotBytes-16>length) return SnapshotStatus::InvalidState;
+                member.level=bytes[offset]; member.energy=bytes[offset+1]; member.fullness=bytes[offset+2];
+                member.mood=bytes[offset+3]; member.bond=bytes[offset+4];
+                if(bytes[offset+5]) return SnapshotStatus::InvalidState;
+                offset+=6; member.careState=read();
+                const bool empty=!member.id && !member.capturedAtSequence && !member.formId && member.species==Species::None && !member.xp && !member.hp &&
+                    !member.level && !member.energy && !member.fullness && !member.mood && !member.bond && !member.careState;
+                if(!empty && (member.level>kMaxLevel || member.energy>100 || member.fullness>100 || member.mood>100 || member.bond>200 || member.xp>kMaxXp))
+                    return SnapshotStatus::InvalidState;
+            }
+        } else for (std::size_t i=0;i<savedCapacity;++i) {
             auto& member=next.collection[i];
             member.id = read();
             const auto species = read();
@@ -1721,6 +1762,13 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
         next.careMinute=read(); next.lastCritical=read(); next.captureDeferred=read();
         if(next.lastCritical>1 || next.captureDeferred>1) return SnapshotStatus::InvalidState;
     }
+    if(version>=27) {
+        next.dungeonKeys=read(); next.bossSigils=read(); next.dungeonWins=read(); next.bossSteps=read();
+        next.dungeonClears=read(); next.bossClears=read();
+        if(next.dungeonKeys>expeditions::kMaxDungeonKeys || next.bossSigils>expeditions::kMaxBossSigils ||
+           next.dungeonWins>=expeditions::kDungeonWinsPerKey || next.bossSteps>=expeditions::kBossStepsPerSigil)
+            return SnapshotStatus::InvalidState;
+    } else next.dungeonKeys=expeditions::kMaxDungeonKeys;
     if(version==7 && !validRules4State(next,false)) return SnapshotStatus::InvalidState;
     if(version<7) {
         if(!validLegacyForVersion(next,version<4)) return SnapshotStatus::InvalidState;
@@ -1798,7 +1846,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
 const char* snapshotStatusText(SnapshotStatus status) {
     switch (status) {
     case SnapshotStatus::Ok: return "ok";
-    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 25";
+    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 27";
     case SnapshotStatus::InvalidLength: return "invalid snapshot length";
     case SnapshotStatus::BadMagic: return "invalid snapshot magic";
     case SnapshotStatus::UnsupportedVersion: return "unsupported snapshot version";

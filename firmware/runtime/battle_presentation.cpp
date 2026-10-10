@@ -108,7 +108,12 @@ bool Sequencer::startTactical(const State& before,const State& after,Action acti
     const auto guard=wildGuard(before);
     s.guard=guard==combat::Defense::Brace?Move::Brace:guard==combat::Defense::Ward?Move::Ward:guard==combat::Defense::Counter?Move::Counter:Move::None;
     s.playerHpBefore=before.hp; s.enemyHpBefore=before.wildHp;
-    s.captured=after.collectionCount>before.collectionCount;
+    // Rules 16+ merge a duplicate exact form into the oldest copy. That catch
+    // still succeeded; collection length does not grow, but the record names it.
+    const bool duplicateCaught=after.message==Message::Captured && after.lastCapture.result==CaptureResult::Captured &&
+        after.lastCapture.sequence==after.sequence && after.lastCapture.targetFormId==before.wildFormId &&
+        after.lastCapture.targetLevel==before.wildLevel;
+    s.captured=after.collectionCount>before.collectionCount || duplicateCaught;
     s.reflected=action==Action::Heavy && guard==combat::Defense::Counter;
     const bool terminal=after.phase==digivice::Phase::Home;
     if(!terminal && (after.phase!=digivice::Phase::Encounter || after.wildFormId!=before.wildFormId || after.encounters!=before.encounters)) return false;

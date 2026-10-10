@@ -32,11 +32,11 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved
 test('rules4 care migration preserves exact rewards, IDs and receipts and creates only held-form journal records', async t => {
   const old = oldCare(frozen.careAutoEvents), f = await fixture(t, old);
   const saved = (await f.request('/api/save')).body;
-  assert.equal(saved.state.schemaVersion, 26); assert.equal(saved.state.rulesVersion, 19); assert.equal(saved.revision, 1); assert.equal(saved.baseSequence, 4); assert.deepEqual(saved.events, []);
+  assert.equal(saved.state.schemaVersion, 27); assert.equal(saved.state.rulesVersion, 19); assert.equal(saved.revision, 1); assert.equal(saved.baseSequence, 4); assert.deepEqual(saved.events, []);
   for (const key of ['rngState', 'hp', 'energy', 'xp', 'level', 'formId', 'captures', 'collection', 'lastAutoBattle']) assert.deepEqual(legacyFields(saved.state[key]), frozen.careAutoState[key], key);
   assert.equal(saved.state.nextMemberId, 3); assert.deepEqual(saved.state.journal, { capacity: 512, obtainedFormIds: [4, 11] }); assert.equal(saved.autoTrace, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 21); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
+  assert.equal(stored.formatVersion, 21); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6860);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 4, events: old.devices[0].events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v4.json'), 'utf8')), old);
   const pending = { rulesVersion: 4, baseRevision: 0, batchId: old.devices[0].receipts[0].batchId, events: old.devices[0].events };

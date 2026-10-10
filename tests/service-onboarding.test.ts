@@ -34,14 +34,14 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved
 
 test('new identities start as eggs; invalid and mixed hatch batches leave them unchanged', async t => {
   const f = await fixture(t), paired = await f.pair();
-  assert.equal(paired.revision, 0); assert.equal(paired.state.schemaVersion, 26); assert.equal(paired.state.rulesVersion, 19);
+  assert.equal(paired.revision, 0); assert.equal(paired.state.schemaVersion, 27); assert.equal(paired.state.rulesVersion, 19);
   assert.equal(paired.state.phase, 'egg'); assert.equal(paired.state.sequence, 0);
   assert.deepEqual(paired.state.onboarding, { completed: false, starterId: null, offerSeed: 0, offers: [0, 0, 0] });
   assert.deepEqual(paired.state.collection, []); assert.equal(paired.state.activeCreatureId, 0);
   for (const key of ['creature', 'species', 'combat']) assert.equal(paired.state[key], null);
   const before = (await f.request('/api/save', paired.token)).body;
-  assert.equal((await f.request('/api/health')).body.schemaVersion, 26);
-  assert.equal((await f.request('/api/device/health')).body.gameSchemaVersion, 26);
+  assert.equal((await f.request('/api/health')).body.schemaVersion, 27);
+  assert.equal((await f.request('/api/device/health')).body.gameSchemaVersion, 27);
   assert.equal((await f.request('/api/save-sync', undefined, hatch(1))).status, 401);
   for (const value of [0, 9, 1.5, -1]) assert.equal((await f.request('/api/save-sync', paired.token, hatch(value))).status, 422);
   for (const type of ['feed', 'walk', 'select']) {
@@ -118,7 +118,7 @@ test('legacy zero-event pets, current receipts and archived baseline bytes survi
   const old = { formatVersion: 3, gameSchemaVersion: 4, rulesVersion: 3, devices };
   const f = await fixture(t, old);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 26);
+  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 27);
   for (let i = 0; i < devices.length; i++) {
     const current = stored.devices[i], previous = devices[i];
     assert.equal(current.deviceId, previous.deviceId); assert.equal(current.tokenHash, previous.tokenHash);
@@ -126,7 +126,7 @@ test('legacy zero-event pets, current receipts and archived baseline bytes survi
     assert.deepEqual(current.events, []); assert.deepEqual(current.receipts, []);
     const history = current.legacy.histories.find((entry: any) => entry.rulesVersion === 3);
     assert.deepEqual(history.events, previous.events); assert.deepEqual(history.receipts, previous.receipts);
-    assert.equal(Buffer.from(current.legacy.snapshotBase64, 'base64').length, 3216);
+    assert.equal(Buffer.from(current.legacy.snapshotBase64, 'base64').length, 6860);
   }
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v3.json'), 'utf8')), old);
   for (const identity of credentials) {

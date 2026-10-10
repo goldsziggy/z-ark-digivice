@@ -4,7 +4,7 @@ CONFIG_PARTITION_TABLE_CUSTOM=y
 CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
 # Sixty-member trade validation has a measured ~22 KiB static call chain.
 # Keep headroom for SDK calls; physical stack high-water remains a bench check.
-CONFIG_ESP_MAIN_TASK_STACK_SIZE=32768
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=65536
 # Native ESP32-S3 USB Serial/JTAG console, leaving expansion UART free.
 CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
 CONFIG_ESP_CONSOLE_SECONDARY_NONE=y

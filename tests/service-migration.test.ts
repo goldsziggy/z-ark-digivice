@@ -63,7 +63,7 @@ test('rules-v1 history migrates through the frozen legacy core without inventing
   assert.equal(saved.body.baseSequence, 6);
   assert.deepEqual(saved.body.events, []);
   const state = saved.body.state;
-  assert.equal(state.schemaVersion, 26); assert.equal(state.rulesVersion, 19);
+  assert.equal(state.schemaVersion, 27); assert.equal(state.rulesVersion, 19);
   // These are frozen rules-v1 results captured before this migration was written.
   for (const [key, value] of Object.entries({ sequence: 6, rngState: 1955480042, steps: 100, hp: 97, energy: 76, fullness: 85, mood: 94, bond: 19, level: 1, captures: 1 })) assert.equal(state[key], value, key);
   assert.equal(state.legacyCaptures, 1);
@@ -78,7 +78,7 @@ test('rules-v1 history migrates through the frozen legacy core without inventing
   assert.equal(migrated.devices[0].tokenHash, original.devices[0].tokenHash);
   assert.deepEqual(migrated.devices[0].legacy.histories[0].events, legacyEvents);
   assert.deepEqual(migrated.devices[0].legacy.histories[0].receipts, original.devices[0].receipts);
-  assert.equal(Buffer.from(migrated.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
+  assert.equal(Buffer.from(migrated.devices[0].legacy.snapshotBase64, 'base64').length, 6860);
 
   const oldPending = { baseRevision: 1, batchId: 'old-uncommitted-rest', events: [{ type: 'rest', value: 0 }] };
   for (const body of [oldPending, { ...oldPending, rulesVersion: 1 }, { ...oldPending, rulesVersion: 2 }]) {
@@ -118,7 +118,7 @@ test('an existing rules-v1 encounter remains the original Flicker encounter afte
 test('rules-v2 collection migrates under frozen rules while new rules reject the old capture sequence', async (t) => {
   const old = rulesTwoStore(false), f = await fixture(t, old);
   const saved = await f.request('/api/save', undefined, legacyToken);
-  assert.equal(saved.status, 200); assert.equal(saved.body.state.schemaVersion, 26); assert.equal(saved.body.state.rulesVersion, 19);
+  assert.equal(saved.status, 200); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
   assert.equal(saved.body.revision, 1); assert.equal(saved.body.baseSequence, 6); assert.deepEqual(saved.body.events, []);
   assert.equal(saved.body.state.collection.length, 2); assert.equal(saved.body.state.legacyCaptures, 0);
   assert.deepEqual(saved.body.state.collection.map((member: { species: string }) => member.species), ['mote', 'flicker']);

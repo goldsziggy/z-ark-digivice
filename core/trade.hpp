@@ -28,6 +28,7 @@ struct Record {
     State before{}, after{};
 };
 constexpr std::size_t kRecordBytes = 16 + kTranscriptBytes + 2 * kSnapshotSize + 4;
+constexpr std::size_t kV26RecordBytes = 16 + kTranscriptBytes + 2 * kSchema26SnapshotSize + 4;
 // Installed schema19/20 journals embed 660/664-byte snapshots. Their envelope
 // and transcript stay v1; decoding migrates snapshots, never consent/decision.
 constexpr std::size_t kV19RecordBytes = 16 + kTranscriptBytes + 2 * kV19SnapshotSize + 4;

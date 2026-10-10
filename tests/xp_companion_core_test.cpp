@@ -40,7 +40,7 @@ void rewardMember(const CreatureMember& before,const CreatureMember& after,unsig
  CHECK(trade::sameMember(before,normalized));
 }
 void contractAndSelection(){
- CHECK(kSchemaVersion==26&&kRulesVersion==19&&kPartyCapacity==3&&kCollectionCapacity==60&&kSnapshotSize==3216&&sizeof(State)==3188);
+ CHECK(kSchemaVersion==27&&kRulesVersion==19&&kPartyCapacity==3&&kCollectionCapacity==250&&kSnapshotSize==6860&&sizeof(State)==12332);
  Action parsed=Action::Feed;CHECK(!parseAction(nullptr,parsed)&&parsed==Action::Feed);CHECK(!parseAction("",parsed)&&parsed==Action::Feed);CHECK(parseAction("party-add",parsed)&&parsed==Action::PartyAdd);CHECK(parseAction("party-remove",parsed)&&parsed==Action::PartyRemove);
  auto egg=newDevice();reject(egg,Action::PartyAdd,2,Error::WrongPhase);
  auto s=roster(60);reject(s,Action::PartyAdd,0,Error::InvalidValue);reject(s,Action::PartyAdd,UINT32_MAX,Error::InvalidValue);reject(s,Action::PartyAdd,61,Error::UnknownMember);
@@ -133,9 +133,9 @@ void migrationAndBounds(){
  restore(migrated);
  auto s=roster();party(s,3);Snapshot current;CHECK(encodeSnapshot(s,current));
  for(const auto ids:{std::array<unsigned,3>{2,2,3},{2,0,3},{1,2,3},{2,3,99},{0,0,UINT32_MAX}}){auto corrupt=current;
-  for(unsigned i=0;i<3;++i)put(corrupt.bytes+3188+4*i,ids[i]);put(corrupt.bytes+kSnapshotSize-4,crc(corrupt.bytes,kSnapshotSize-4));
+  for(unsigned i=0;i<3;++i)put(corrupt.bytes+kSnapshotPartyOffset+4*i,ids[i]);put(corrupt.bytes+kSnapshotSize-4,crc(corrupt.bytes,kSnapshotSize-4));
   auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,kSnapshotSize,dest)==SnapshotStatus::InvalidState&&same(dest,s));}
- for(unsigned i=3188;i<kSnapshotSize;++i){auto corrupt=current;corrupt.bytes[i]^=1;auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,kSnapshotSize,dest)==SnapshotStatus::BadChecksum&&same(dest,s));}
+ for(unsigned i=kSnapshotPartyOffset;i<kSnapshotSize;++i){auto corrupt=current;corrupt.bytes[i]^=1;auto dest=s;CHECK(decodeSnapshot(corrupt.bytes,kSnapshotSize,dest)==SnapshotStatus::BadChecksum&&same(dest,s));}
  auto invalid=s;invalid.partyMemberIds[1]=invalid.partyMemberIds[0];Snapshot untouched;std::memset(untouched.bytes,0xa5,sizeof(untouched.bytes));const auto retained=untouched;
  CHECK(!encodeSnapshot(invalid,untouched)&&!std::memcmp(untouched.bytes,retained.bytes,sizeof(retained.bytes)));
  auto exhausted=s;exhausted.sequence=UINT32_MAX;reject(exhausted,Action::PartyRemove,2,Error::CounterOverflow);

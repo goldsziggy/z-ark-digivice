@@ -2,6 +2,7 @@
 #include "game.hpp"
 #include "forms.hpp"
 #include "legacy_v16.hpp"
+#include "snapshot_test_helpers.hpp"
 #include <cstdio>
 #include <cstring>
 
@@ -51,7 +52,7 @@ unsigned singleRouteForm() {
 unsigned routeLevel(unsigned formId, unsigned index) { return forms::evolutionNeed(*forms::outgoing(formId, index)).level; }
 
 void versions() {
-    CHECK(kSchemaVersion==26&&kRulesVersion==19 && kSnapshotSize == 3216);
+    CHECK(kSchemaVersion==27&&kRulesVersion==19 && kSnapshotSize == 6860);
     CHECK(legacy_v16::kSchemaVersion == 23 && legacy_v16::kRulesVersion == 16);
     Action a; CHECK(parseAction("treat", a) && a == Action::Treat);
 }
@@ -249,12 +250,16 @@ void migration() {
     // A schema-23 header claiming rules-17 bits is rejected.
     State tampered = current; tampered.collection[0].careState |= 1u << 27;
     Snapshot fresh; CHECK(encodeSnapshot(tampered, fresh));
-    fresh.bytes[4] = 23; fresh.bytes[8] = 16;
+    std::uint8_t legacy[kSchema26SnapshotSize]{};
+    snapshot_test::schema26Image(fresh.bytes, legacy);
+    legacy[4] = 23; legacy[8] = 16;
+    const unsigned payload = kSchema26SnapshotSize - 12;
+    legacy[6] = static_cast<std::uint8_t>(payload); legacy[7] = static_cast<std::uint8_t>(payload >> 8);
     std::uint32_t crc = 0xffffffffu;
-    for (std::size_t i = 0; i + 4 < sizeof(fresh.bytes); ++i) { crc ^= fresh.bytes[i]; for (unsigned b = 0; b < 8; ++b) crc = (crc >> 1) ^ (0xedb88320u & (0u - (crc & 1u))); }
-    crc = ~crc; for (unsigned i = 0; i < 4; ++i) fresh.bytes[sizeof(fresh.bytes) - 4 + i] = static_cast<std::uint8_t>(crc >> (8 * i));
+    for (std::size_t i = 0; i + 4 < sizeof(legacy); ++i) { crc ^= legacy[i]; for (unsigned b = 0; b < 8; ++b) crc = (crc >> 1) ^ (0xedb88320u & (0u - (crc & 1u))); }
+    crc = ~crc; for (unsigned i = 0; i < 4; ++i) legacy[sizeof(legacy) - 4 + i] = static_cast<std::uint8_t>(crc >> (8 * i));
     State rejected;
-    CHECK(decodeSnapshot(fresh.bytes, sizeof(fresh.bytes), rejected) == SnapshotStatus::InvalidState);
+    CHECK(decodeSnapshot(legacy, sizeof(legacy), rejected) == SnapshotStatus::InvalidState);
     // Frozen rules 16 never injures.
     auto frozen = legacy_v16::newDevice(17);
     CHECK(legacy_v16::apply(frozen, legacy_v16::Action::Hatch, 1) == legacy_v16::Error::None);

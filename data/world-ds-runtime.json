@@ -11802,7 +11802,7 @@
     },
     {
       "formId": 72,
-      "name": "Kapurimon",
+      "name": "Caprimon",
       "lineageId": 1072,
       "lineageSlug": "kapurimon",
       "stage": "In-Training",
@@ -14022,7 +14022,7 @@
     },
     {
       "formId": 82,
-      "name": "BlackAgumon",
+      "name": "Agumon (Black)",
       "lineageId": 1082,
       "lineageSlug": "blackagumon",
       "stage": "Rookie",
@@ -16413,7 +16413,7 @@
     },
     {
       "formId": 93,
-      "name": "Goburimon",
+      "name": "Goblimon",
       "lineageId": 1093,
       "lineageSlug": "goburimon",
       "stage": "Rookie",
@@ -18408,7 +18408,7 @@
     },
     {
       "formId": 102,
-      "name": "Kumamon",
+      "name": "Bearmon",
       "lineageId": 1102,
       "lineageSlug": "kumamon",
       "stage": "Rookie",
@@ -19493,7 +19493,7 @@
     },
     {
       "formId": 107,
-      "name": "PawnChessmon Black",
+      "name": "PawnChessmon (Black)",
       "lineageId": 1107,
       "lineageSlug": "pawnchessmon-black",
       "stage": "Rookie",
@@ -19710,7 +19710,7 @@
     },
     {
       "formId": 108,
-      "name": "PawnChessmon White",
+      "name": "PawnChessmon (White)",
       "lineageId": 1108,
       "lineageSlug": "pawnchessmon-white",
       "stage": "Rookie",
@@ -20371,7 +20371,7 @@
     },
     {
       "formId": 111,
-      "name": "ShadowToyAgumon",
+      "name": "ToyAgumon (Black)",
       "lineageId": 1111,
       "lineageSlug": "shadowtoyagumon",
       "stage": "Rookie",
@@ -25664,7 +25664,7 @@
     },
     {
       "formId": 138,
-      "name": "Grizzmon",
+      "name": "Grizzlymon",
       "lineageId": 1138,
       "lineageSlug": "grizzmon",
       "stage": "Champion",
@@ -26227,7 +26227,7 @@
     },
     {
       "formId": 141,
-      "name": "Gwappamon",
+      "name": "Gawappamon",
       "lineageId": 1098,
       "lineageSlug": "kamemon",
       "stage": "Champion",
@@ -27153,7 +27153,7 @@
     },
     {
       "formId": 146,
-      "name": "Kurisarimon",
+      "name": "Chrysalimon",
       "lineageId": 1099,
       "lineageSlug": "keramon",
       "stage": "Champion",
@@ -27342,7 +27342,7 @@
     },
     {
       "formId": 147,
-      "name": "Minotarumon",
+      "name": "Minotaurmon",
       "lineageId": 1147,
       "lineageSlug": "minotarumon",
       "stage": "Champion",
@@ -28633,7 +28633,7 @@
     },
     {
       "formId": 154,
-      "name": "Reptiledramon",
+      "name": "Raptordramon",
       "lineageId": 1154,
       "lineageSlug": "reptiledramon",
       "stage": "Champion",
@@ -31714,7 +31714,7 @@
     },
     {
       "formId": 172,
-      "name": "BlackWereGarurumon",
+      "name": "WereGarurumon (Black)",
       "lineageId": 1172,
       "lineageSlug": "blackweregarurumon",
       "stage": "Ultimate",
@@ -34311,7 +34311,7 @@
     },
     {
       "formId": 190,
-      "name": "Lucemon Chaos Mode",
+      "name": "Lucemon: Chaos Mode",
       "lineageId": 1190,
       "lineageSlug": "lucemon-chaos-mode",
       "stage": "Ultimate",
@@ -35035,7 +35035,7 @@
     },
     {
       "formId": 195,
-      "name": "MegaKabuterimon Blue",
+      "name": "MegaKabuterimon (Blue)",
       "lineageId": 1195,
       "lineageSlug": "megakabuterimon-blue",
       "stage": "Ultimate",
@@ -37368,7 +37368,7 @@
     },
     {
       "formId": 211,
-      "name": "Tyilinmon",
+      "name": "Chirinmon",
       "lineageId": 1101,
       "lineageSlug": "kudamon",
       "stage": "Ultimate",
@@ -37819,7 +37819,7 @@
     },
     {
       "formId": 214,
-      "name": "Armagemon",
+      "name": "Armageddemon",
       "lineageId": 1214,
       "lineageSlug": "armagemon",
       "stage": "Mega",
@@ -38403,7 +38403,7 @@
     },
     {
       "formId": 220,
-      "name": "BlackImperialdramon",
+      "name": "Imperialdramon (Black)",
       "lineageId": 1220,
       "lineageSlug": "blackimperialdramon",
       "stage": "Mega",
@@ -38894,7 +38894,7 @@
     },
     {
       "formId": 225,
-      "name": "Cherubimon Vaccine",
+      "name": "Cherubimon (Good)",
       "lineageId": 1225,
       "lineageSlug": "cherubimon-vaccine",
       "stage": "Mega",
@@ -38991,7 +38991,7 @@
     },
     {
       "formId": 226,
-      "name": "Cherubimon Virus",
+      "name": "Cherubimon (Black)",
       "lineageId": 1226,
       "lineageSlug": "cherubimon-virus",
       "stage": "Mega",
@@ -39088,7 +39088,7 @@
     },
     {
       "formId": 227,
-      "name": "Chronomon DM",
+      "name": "Chronomon: Destroy Mode",
       "lineageId": 1227,
       "lineageSlug": "chronomon-dm",
       "stage": "Mega",
@@ -39185,7 +39185,7 @@
     },
     {
       "formId": 228,
-      "name": "Chronomon Holy Mode",
+      "name": "Chronomon: Holy Mode",
       "lineageId": 1228,
       "lineageSlug": "chronomon-holy-mode",
       "stage": "Mega",
@@ -39379,7 +39379,7 @@
     },
     {
       "formId": 230,
-      "name": "Crossmon",
+      "name": "Eaglemon",
       "lineageId": 1230,
       "lineageSlug": "crossmon",
       "stage": "Mega",
@@ -39478,7 +39478,7 @@
     },
     {
       "formId": 231,
-      "name": "Daemon",
+      "name": "Creepymon",
       "lineageId": 1231,
       "lineageSlug": "daemon",
       "stage": "Mega",
@@ -40068,7 +40068,7 @@
     },
     {
       "formId": 237,
-      "name": "Gallantmon Crimson Mode",
+      "name": "Gallantmon: Crimson Mode",
       "lineageId": 1237,
       "lineageSlug": "gallantmon-crimson-mode",
       "stage": "Mega",
@@ -40262,7 +40262,7 @@
     },
     {
       "formId": 239,
-      "name": "Ghoulmon Black",
+      "name": "Ghoulmon (Black)",
       "lineageId": 1239,
       "lineageSlug": "ghoulmon-black",
       "stage": "Mega",
@@ -40458,7 +40458,7 @@
     },
     {
       "formId": 241,
-      "name": "Granlocomon",
+      "name": "GroundLocomon",
       "lineageId": 1241,
       "lineageSlug": "granlocomon",
       "stage": "Mega",
@@ -40555,7 +40555,7 @@
     },
     {
       "formId": 242,
-      "name": "GuardiAngemon",
+      "name": "SlashAngemon",
       "lineageId": 1242,
       "lineageSlug": "guardiangemon",
       "stage": "Mega",
@@ -40753,7 +40753,7 @@
     },
     {
       "formId": 244,
-      "name": "Imperialdramon Dragon Mode",
+      "name": "Imperialdramon: Dragon Mode",
       "lineageId": 1117,
       "lineageSlug": "veemon",
       "stage": "Mega",
@@ -40852,7 +40852,7 @@
     },
     {
       "formId": 245,
-      "name": "Imperialdramon Fighter Mode",
+      "name": "Imperialdramon: Fighter Mode",
       "lineageId": 1245,
       "lineageSlug": "imperialdramon-fighter-mode",
       "stage": "Mega",
@@ -40949,7 +40949,7 @@
     },
     {
       "formId": 246,
-      "name": "Imperialdramon Paladin Mode",
+      "name": "Imperialdramon: Paladin Mode",
       "lineageId": 1246,
       "lineageSlug": "imperialdramon-paladin-mode",
       "stage": "Mega",
@@ -44928,7 +44928,7 @@
     },
     {
       "formId": 278,
-      "name": "XV-mon",
+      "name": "ExVeemon",
       "lineageId": 1278,
       "lineageSlug": "xv-mon",
       "stage": "Champion",
@@ -44940,9 +44940,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "XVmon Jab",
-        "heavy": "XVmon Rush",
-        "magic": "XVmon Hex"
+        "physical": "ExVeemon Jab",
+        "heavy": "ExVeemon Rush",
+        "magic": "ExVeemon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -45290,7 +45290,7 @@
     },
     {
       "formId": 280,
-      "name": "Shisamon",
+      "name": "Seasarmon",
       "lineageId": 1280,
       "lineageSlug": "shisamon",
       "stage": "Champion",
@@ -45302,9 +45302,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Shisamon Jab",
-        "heavy": "Shisamon Rush",
-        "magic": "Shisamon Hex"
+        "physical": "Seasarmon Jab",
+        "heavy": "Seasarmon Rush",
+        "magic": "Seasarmon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -45467,7 +45467,7 @@
     },
     {
       "formId": 281,
-      "name": "Evilmon",
+      "name": "Vilemon",
       "lineageId": 1281,
       "lineageSlug": "evilmon",
       "stage": "Champion",
@@ -45479,9 +45479,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Evilmon Jab",
-        "heavy": "Evilmon Rush",
-        "magic": "Evilmon Hex"
+        "physical": "Vilemon Jab",
+        "heavy": "Vilemon Rush",
+        "magic": "Vilemon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -45644,7 +45644,7 @@
     },
     {
       "formId": 282,
-      "name": "Gokimon",
+      "name": "Roachmon",
       "lineageId": 1282,
       "lineageSlug": "gokimon",
       "stage": "Champion",
@@ -45656,9 +45656,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Gokimon Jab",
-        "heavy": "Gokimon Rush",
-        "magic": "Gokimon Hex"
+        "physical": "Roachmon Jab",
+        "heavy": "Roachmon Rush",
+        "magic": "Roachmon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -45998,7 +45998,7 @@
     },
     {
       "formId": 284,
-      "name": "Hanumon",
+      "name": "Apemon",
       "lineageId": 1284,
       "lineageSlug": "hanumon",
       "stage": "Champion",
@@ -46010,9 +46010,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Hanumon Jab",
-        "heavy": "Hanumon Rush",
-        "magic": "Hanumon Hex"
+        "physical": "Apemon Jab",
+        "heavy": "Apemon Rush",
+        "magic": "Apemon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -46352,7 +46352,7 @@
     },
     {
       "formId": 286,
-      "name": "DarkTyranomon",
+      "name": "DarkTyrannomon",
       "lineageId": 1286,
       "lineageSlug": "darktyranomon",
       "stage": "Champion",
@@ -46364,9 +46364,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "DarkTyranomon Jab",
-        "heavy": "DarkTyranomon Rush",
-        "magic": "DarkTyranomon Hex"
+        "physical": "DarkTyrannomon Jab",
+        "heavy": "DarkTyrannomon Rush",
+        "magic": "DarkTyrannomon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -46529,7 +46529,7 @@
     },
     {
       "formId": 287,
-      "name": "DarkLizamon",
+      "name": "DarkLizardmon",
       "lineageId": 1287,
       "lineageSlug": "darklizamon",
       "stage": "Champion",
@@ -46541,9 +46541,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "DarkLizamon Jab",
-        "heavy": "DarkLizamon Rush",
-        "magic": "DarkLizamon Hex"
+        "physical": "DarkLizardmon Jab",
+        "heavy": "DarkLizardmon Rush",
+        "magic": "DarkLizardmon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -46706,7 +46706,7 @@
     },
     {
       "formId": 288,
-      "name": "FlareLizamon",
+      "name": "Flarerizamon",
       "lineageId": 1288,
       "lineageSlug": "flarelizamon",
       "stage": "Champion",
@@ -46718,9 +46718,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "FlareLizamon Jab",
-        "heavy": "FlareLizamon Rush",
-        "magic": "FlareLizamon Hex"
+        "physical": "Flarerizamon Jab",
+        "heavy": "Flarerizamon Rush",
+        "magic": "Flarerizamon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -47414,7 +47414,7 @@
     },
     {
       "formId": 292,
-      "name": "Wendimon",
+      "name": "Wendigomon",
       "lineageId": 1292,
       "lineageSlug": "wendimon",
       "stage": "Champion",
@@ -47426,9 +47426,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Wendimon Jab",
-        "heavy": "Wendimon Rush",
-        "magic": "Wendimon Hex"
+        "physical": "Wendigomon Jab",
+        "heavy": "Wendigomon Rush",
+        "magic": "Wendigomon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -49067,7 +49067,7 @@
     },
     {
       "formId": 301,
-      "name": "Yukidarumon",
+      "name": "Frigimon",
       "lineageId": 1301,
       "lineageSlug": "yukidarumon",
       "stage": "Champion",
@@ -49079,9 +49079,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Yukidarumon Jab",
-        "heavy": "Yukidarumon Rush",
-        "magic": "Yukidarumon Hex"
+        "physical": "Frigimon Jab",
+        "heavy": "Frigimon Rush",
+        "magic": "Frigimon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -49630,7 +49630,7 @@
     },
     {
       "formId": 304,
-      "name": "KaratsukiNumemon",
+      "name": "ShellNumemon",
       "lineageId": 1304,
       "lineageSlug": "karatsukinumemon",
       "stage": "Champion",
@@ -49642,9 +49642,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "KaratsukiNumemon Jab",
-        "heavy": "KaratsukiNumemon Rush",
-        "magic": "KaratsukiNumemon Hex"
+        "physical": "ShellNumemon Jab",
+        "heavy": "ShellNumemon Rush",
+        "magic": "ShellNumemon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -49992,7 +49992,7 @@
     },
     {
       "formId": 306,
-      "name": "Rukamon",
+      "name": "Dolphmon",
       "lineageId": 1306,
       "lineageSlug": "rukamon",
       "stage": "Champion",
@@ -50004,9 +50004,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Rukamon Jab",
-        "heavy": "Rukamon Rush",
-        "magic": "Rukamon Hex"
+        "physical": "Dolphmon Jab",
+        "heavy": "Dolphmon Rush",
+        "magic": "Dolphmon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -51463,7 +51463,7 @@
     },
     {
       "formId": 314,
-      "name": "Zassoumon",
+      "name": "Weedmon",
       "lineageId": 1314,
       "lineageSlug": "zassoumon",
       "stage": "Champion",
@@ -51475,9 +51475,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Zassoumon Jab",
-        "heavy": "Zassoumon Rush",
-        "magic": "Zassoumon Hex"
+        "physical": "Weedmon Jab",
+        "heavy": "Weedmon Rush",
+        "magic": "Weedmon Hex"
       },
       "baseStats": {
         "maxHp": 152,
@@ -51817,7 +51817,7 @@
     },
     {
       "formId": 316,
-      "name": "Kougamon",
+      "name": "Kogamon",
       "lineageId": 1316,
       "lineageSlug": "kougamon",
       "stage": "Champion",
@@ -51829,9 +51829,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Kougamon Jab",
-        "heavy": "Kougamon Rush",
-        "magic": "Kougamon Hex"
+        "physical": "Kogamon Jab",
+        "heavy": "Kogamon Rush",
+        "magic": "Kogamon Hex"
       },
       "baseStats": {
         "maxHp": 152,
@@ -53484,7 +53484,7 @@
     },
     {
       "formId": 325,
-      "name": "Kentarumon",
+      "name": "Centarumon",
       "lineageId": 1325,
       "lineageSlug": "kentarumon",
       "stage": "Champion",
@@ -53496,9 +53496,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Kentarumon Jab",
-        "heavy": "Kentarumon Rush",
-        "magic": "Kentarumon Hex"
+        "physical": "Centarumon Jab",
+        "heavy": "Centarumon Rush",
+        "magic": "Centarumon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -53866,7 +53866,7 @@
     },
     {
       "formId": 327,
-      "name": "Dokugamon",
+      "name": "Dokugumon",
       "lineageId": 1327,
       "lineageSlug": "dokugamon",
       "stage": "Champion",
@@ -53878,9 +53878,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Dokugamon Jab",
-        "heavy": "Dokugamon Rush",
-        "magic": "Dokugamon Hex"
+        "physical": "Dokugumon Jab",
+        "heavy": "Dokugumon Rush",
+        "magic": "Dokugumon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -54051,7 +54051,7 @@
     },
     {
       "formId": 328,
-      "name": "V-dramon",
+      "name": "Veedramon",
       "lineageId": 1328,
       "lineageSlug": "v-dramon",
       "stage": "Champion",
@@ -54063,9 +54063,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Vdramon Jab",
-        "heavy": "Vdramon Rush",
-        "magic": "Vdramon Hex"
+        "physical": "Veedramon Jab",
+        "heavy": "Veedramon Rush",
+        "magic": "Veedramon Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -54417,7 +54417,7 @@
     },
     {
       "formId": 330,
-      "name": "KnightChessmonWhite",
+      "name": "KnightChessmon (White)",
       "lineageId": 1330,
       "lineageSlug": "knightchessmonwhite",
       "stage": "Champion",
@@ -54429,9 +54429,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "KnightChessmonWhite Jab",
-        "heavy": "KnightChessmonWhite Rush",
-        "magic": "KnightChessmonWhite Hex"
+        "physical": "KnightChessmon (White) Jab",
+        "heavy": "KnightChessmon (White) Rush",
+        "magic": "KnightChessmon (White) Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -54604,7 +54604,7 @@
     },
     {
       "formId": 331,
-      "name": "KnightChessmonBlack",
+      "name": "KnightChessmon (Black)",
       "lineageId": 1331,
       "lineageSlug": "knightchessmonblack",
       "stage": "Champion",
@@ -54616,9 +54616,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "KnightChessmonBlack Jab",
-        "heavy": "KnightChessmonBlack Rush",
-        "magic": "KnightChessmonBlack Hex"
+        "physical": "KnightChessmon (Black) Jab",
+        "heavy": "KnightChessmon (Black) Rush",
+        "magic": "KnightChessmon (Black) Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -55115,7 +55115,7 @@
     },
     {
       "formId": 334,
-      "name": "Mammon",
+      "name": "Mammothmon",
       "lineageId": 1334,
       "lineageSlug": "mammon",
       "stage": "Ultimate",
@@ -55127,9 +55127,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Mammon Jab",
-        "heavy": "Mammon Rush",
-        "magic": "Mammon Hex"
+        "physical": "Mammothmon Jab",
+        "heavy": "Mammothmon Rush",
+        "magic": "Mammothmon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -55264,7 +55264,7 @@
     },
     {
       "formId": 335,
-      "name": "Anomalocarimon",
+      "name": "Scorpiomon",
       "lineageId": 1335,
       "lineageSlug": "anomalocarimon",
       "stage": "Ultimate",
@@ -55276,9 +55276,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Anomalocarimon Jab",
-        "heavy": "Anomalocarimon Rush",
-        "magic": "Anomalocarimon Hex"
+        "physical": "Scorpiomon Jab",
+        "heavy": "Scorpiomon Rush",
+        "magic": "Scorpiomon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -55412,7 +55412,7 @@
     },
     {
       "formId": 336,
-      "name": "Dagomon",
+      "name": "Dragomon",
       "lineageId": 1336,
       "lineageSlug": "dagomon",
       "stage": "Ultimate",
@@ -55424,9 +55424,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Dagomon Jab",
-        "heavy": "Dagomon Rush",
-        "magic": "Dagomon Hex"
+        "physical": "Dragomon Jab",
+        "heavy": "Dragomon Rush",
+        "magic": "Dragomon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -56295,7 +56295,7 @@
     },
     {
       "formId": 342,
-      "name": "Tucanmon",
+      "name": "Toucanmon",
       "lineageId": 1342,
       "lineageSlug": "tucanmon",
       "stage": "Ultimate",
@@ -56307,9 +56307,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Tucanmon Jab",
-        "heavy": "Tucanmon Rush",
-        "magic": "Tucanmon Hex"
+        "physical": "Toucanmon Jab",
+        "heavy": "Toucanmon Rush",
+        "magic": "Toucanmon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -57068,7 +57068,7 @@
     },
     {
       "formId": 347,
-      "name": "Jureimon",
+      "name": "Cherrymon",
       "lineageId": 1347,
       "lineageSlug": "jureimon",
       "stage": "Ultimate",
@@ -57080,9 +57080,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Jureimon Jab",
-        "heavy": "Jureimon Rush",
-        "magic": "Jureimon Hex"
+        "physical": "Cherrymon Jab",
+        "heavy": "Cherrymon Rush",
+        "magic": "Cherrymon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -57208,7 +57208,7 @@
     },
     {
       "formId": 348,
-      "name": "MameTyranomon",
+      "name": "MameTyramon",
       "lineageId": 1348,
       "lineageSlug": "mametyranomon",
       "stage": "Ultimate",
@@ -57220,9 +57220,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "MameTyranomon Jab",
-        "heavy": "MameTyranomon Rush",
-        "magic": "MameTyranomon Hex"
+        "physical": "MameTyramon Jab",
+        "heavy": "MameTyramon Rush",
+        "magic": "MameTyramon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -57619,7 +57619,7 @@
     },
     {
       "formId": 351,
-      "name": "MetalTyranomon",
+      "name": "MetalTyrannomon",
       "lineageId": 1351,
       "lineageSlug": "metaltyranomon",
       "stage": "Ultimate",
@@ -57631,9 +57631,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "MetalTyranomon Jab",
-        "heavy": "MetalTyranomon Rush",
-        "magic": "MetalTyranomon Hex"
+        "physical": "MetalTyrannomon Jab",
+        "heavy": "MetalTyrannomon Rush",
+        "magic": "MetalTyrannomon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -58187,7 +58187,7 @@
     },
     {
       "formId": 355,
-      "name": "Vajiramon",
+      "name": "Vajramon",
       "lineageId": 1355,
       "lineageSlug": "vajiramon",
       "stage": "Ultimate",
@@ -58199,9 +58199,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Vajiramon Jab",
-        "heavy": "Vajiramon Rush",
-        "magic": "Vajiramon Hex"
+        "physical": "Vajramon Jab",
+        "heavy": "Vajramon Rush",
+        "magic": "Vajramon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -58324,7 +58324,7 @@
     },
     {
       "formId": 356,
-      "name": "AeroV-Dramon",
+      "name": "AeroVeedramon",
       "lineageId": 1356,
       "lineageSlug": "aerov-dramon",
       "stage": "Ultimate",
@@ -58336,9 +58336,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "AeroVDramon Jab",
-        "heavy": "AeroVDramon Rush",
-        "magic": "AeroVDramon Hex"
+        "physical": "AeroVeedramon Jab",
+        "heavy": "AeroVeedramon Rush",
+        "magic": "AeroVeedramon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -58463,7 +58463,7 @@
     },
     {
       "formId": 357,
-      "name": "GrappLeomon",
+      "name": "GrapLeomon",
       "lineageId": 1357,
       "lineageSlug": "grappleomon",
       "stage": "Ultimate",
@@ -58475,9 +58475,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "GrappLeomon Jab",
-        "heavy": "GrappLeomon Rush",
-        "magic": "GrappLeomon Hex"
+        "physical": "GrapLeomon Jab",
+        "heavy": "GrapLeomon Rush",
+        "magic": "GrapLeomon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -58756,7 +58756,7 @@
     },
     {
       "formId": 359,
-      "name": "Brachimon",
+      "name": "Brachiomon",
       "lineageId": 1359,
       "lineageSlug": "brachimon",
       "stage": "Ultimate",
@@ -58768,9 +58768,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Brachimon Jab",
-        "heavy": "Brachimon Rush",
-        "magic": "Brachimon Hex"
+        "physical": "Brachiomon Jab",
+        "heavy": "Brachiomon Rush",
+        "magic": "Brachiomon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -59167,7 +59167,7 @@
     },
     {
       "formId": 362,
-      "name": "Shawujingmon",
+      "name": "Shaujinmon",
       "lineageId": 1362,
       "lineageSlug": "shawujingmon",
       "stage": "Ultimate",
@@ -59179,9 +59179,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "Shawujingmon Jab",
-        "heavy": "Shawujingmon Rush",
-        "magic": "Shawujingmon Hex"
+        "physical": "Shaujinmon Jab",
+        "heavy": "Shaujinmon Rush",
+        "magic": "Shaujinmon Hex"
       },
       "baseStats": {
         "maxHp": 176,
@@ -59892,7 +59892,7 @@
     },
     {
       "formId": 367,
-      "name": "ArgomonPerfect",
+      "name": "Argomon (Ultimate)",
       "lineageId": 1367,
       "lineageSlug": "argomonperfect",
       "stage": "Ultimate",
@@ -59904,9 +59904,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "ArgomonPerfect Jab",
-        "heavy": "ArgomonPerfect Rush",
-        "magic": "ArgomonPerfect Hex"
+        "physical": "Argomon (Ultimate) Jab",
+        "heavy": "Argomon (Ultimate) Rush",
+        "magic": "Argomon (Ultimate) Hex"
       },
       "baseStats": {
         "maxHp": 200,
@@ -60274,7 +60274,7 @@
     },
     {
       "formId": 370,
-      "name": "Deathmon",
+      "name": "Ghoulmon",
       "lineageId": 1370,
       "lineageSlug": "deathmon",
       "stage": "Mega",
@@ -60286,9 +60286,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Deathmon Jab",
-        "heavy": "Deathmon Rush",
-        "magic": "Deathmon Hex"
+        "physical": "Ghoulmon Jab",
+        "heavy": "Ghoulmon Rush",
+        "magic": "Ghoulmon Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -60567,7 +60567,7 @@
     },
     {
       "formId": 373,
-      "name": "Gryphomon",
+      "name": "Gryphonmon",
       "lineageId": 1373,
       "lineageSlug": "gryphomon",
       "stage": "Mega",
@@ -60579,9 +60579,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Gryphomon Jab",
-        "heavy": "Gryphomon Rush",
-        "magic": "Gryphomon Hex"
+        "physical": "Gryphonmon Jab",
+        "heavy": "Gryphonmon Rush",
+        "magic": "Gryphonmon Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -60763,7 +60763,7 @@
     },
     {
       "formId": 375,
-      "name": "Orphanimon",
+      "name": "Ophanimon",
       "lineageId": 1375,
       "lineageSlug": "orphanimon",
       "stage": "Mega",
@@ -60775,9 +60775,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Orphanimon Jab",
-        "heavy": "Orphanimon Rush",
-        "magic": "Orphanimon Hex"
+        "physical": "Ophanimon Jab",
+        "heavy": "Ophanimon Rush",
+        "magic": "Ophanimon Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -61349,7 +61349,7 @@
     },
     {
       "formId": 381,
-      "name": "Galfmon",
+      "name": "Gulfmon",
       "lineageId": 1381,
       "lineageSlug": "galfmon",
       "stage": "Mega",
@@ -61361,9 +61361,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Galfmon Jab",
-        "heavy": "Galfmon Rush",
-        "magic": "Galfmon Hex"
+        "physical": "Gulfmon Jab",
+        "heavy": "Gulfmon Rush",
+        "magic": "Gulfmon Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -61545,7 +61545,7 @@
     },
     {
       "formId": 383,
-      "name": "ZeedMilleniumon",
+      "name": "ZeedMillenniummon",
       "lineageId": 1383,
       "lineageSlug": "zeedmilleniumon",
       "stage": "Mega",
@@ -61557,9 +61557,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ZeedMilleniumon Jab",
-        "heavy": "ZeedMilleniumon Rush",
-        "magic": "ZeedMilleniumon Hex"
+        "physical": "ZeedMillenniummon Jab",
+        "heavy": "ZeedMillenniummon Rush",
+        "magic": "ZeedMillenniummon Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -61642,7 +61642,7 @@
     },
     {
       "formId": 384,
-      "name": "DeathmonBlack",
+      "name": "Ghoulmon (Black)",
       "lineageId": 1384,
       "lineageSlug": "deathmonblack",
       "stage": "Mega",
@@ -61654,9 +61654,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "DeathmonBlack Jab",
-        "heavy": "DeathmonBlack Rush",
-        "magic": "DeathmonBlack Hex"
+        "physical": "Ghoulmon (Black) Jab",
+        "heavy": "Ghoulmon (Black) Rush",
+        "magic": "Ghoulmon (Black) Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -61739,7 +61739,7 @@
     },
     {
       "formId": 385,
-      "name": "SkullMammon",
+      "name": "SkullMammothmon",
       "lineageId": 1385,
       "lineageSlug": "skullmammon",
       "stage": "Mega",
@@ -61751,9 +61751,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "SkullMammon Jab",
-        "heavy": "SkullMammon Rush",
-        "magic": "SkullMammon Hex"
+        "physical": "SkullMammothmon Jab",
+        "heavy": "SkullMammothmon Rush",
+        "magic": "SkullMammothmon Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -62131,7 +62131,7 @@
     },
     {
       "formId": 389,
-      "name": "Holydramon",
+      "name": "Magnadramon",
       "lineageId": 1389,
       "lineageSlug": "holydramon",
       "stage": "Mega",
@@ -62143,9 +62143,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Holydramon Jab",
-        "heavy": "Holydramon Rush",
-        "magic": "Holydramon Hex"
+        "physical": "Magnadramon Jab",
+        "heavy": "Magnadramon Rush",
+        "magic": "Magnadramon Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -62230,7 +62230,7 @@
     },
     {
       "formId": 390,
-      "name": "Milleniumon",
+      "name": "Millenniummon",
       "lineageId": 1390,
       "lineageSlug": "milleniumon",
       "stage": "Mega",
@@ -62242,9 +62242,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Milleniumon Jab",
-        "heavy": "Milleniumon Rush",
-        "magic": "Milleniumon Hex"
+        "physical": "Millenniummon Jab",
+        "heavy": "Millenniummon Rush",
+        "magic": "Millenniummon Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -62327,7 +62327,7 @@
     },
     {
       "formId": 391,
-      "name": "MoonMilleniumon",
+      "name": "MoonMillenniummon",
       "lineageId": 1391,
       "lineageSlug": "moonmilleniumon",
       "stage": "Mega",
@@ -62339,9 +62339,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "MoonMilleniumon Jab",
-        "heavy": "MoonMilleniumon Rush",
-        "magic": "MoonMilleniumon Hex"
+        "physical": "MoonMillenniummon Jab",
+        "heavy": "MoonMillenniummon Rush",
+        "magic": "MoonMillenniummon Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -63313,7 +63313,7 @@
     },
     {
       "formId": 401,
-      "name": "ShineGreymonBurst",
+      "name": "ShineGreymon: Burst Mode",
       "lineageId": 1401,
       "lineageSlug": "shinegreymonburst",
       "stage": "Mega",
@@ -63325,9 +63325,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ShineGreymonBurst Jab",
-        "heavy": "ShineGreymonBurst Rush",
-        "magic": "ShineGreymonBurst Hex"
+        "physical": "ShineGreymon: Burst Mode Jab",
+        "heavy": "ShineGreymon: Burst Mode Rush",
+        "magic": "ShineGreymon: Burst Mode Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -63410,7 +63410,7 @@
     },
     {
       "formId": 402,
-      "name": "ShineGreymonRuin",
+      "name": "ShineGreymon: Ruin Mode",
       "lineageId": 1402,
       "lineageSlug": "shinegreymonruin",
       "stage": "Mega",
@@ -63422,9 +63422,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ShineGreymonRuin Jab",
-        "heavy": "ShineGreymonRuin Rush",
-        "magic": "ShineGreymonRuin Hex"
+        "physical": "ShineGreymon: Ruin Mode Jab",
+        "heavy": "ShineGreymon: Ruin Mode Rush",
+        "magic": "ShineGreymon: Ruin Mode Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -63507,7 +63507,7 @@
     },
     {
       "formId": 403,
-      "name": "MirageGaogamonBurst",
+      "name": "MirageGaogamon: Burst Mode",
       "lineageId": 1403,
       "lineageSlug": "miragegaogamonburst",
       "stage": "Mega",
@@ -63519,9 +63519,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "MirageGaogamonBurst Jab",
-        "heavy": "MirageGaogamonBurst Rush",
-        "magic": "MirageGaogamonBurst Hex"
+        "physical": "MirageGaogamon: Burst Mode Jab",
+        "heavy": "MirageGaogamon: Burst Mode Rush",
+        "magic": "MirageGaogamon: Burst Mode Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -63604,7 +63604,7 @@
     },
     {
       "formId": 404,
-      "name": "RavemonBurst",
+      "name": "Ravemon: Burst Mode",
       "lineageId": 1404,
       "lineageSlug": "ravemonburst",
       "stage": "Mega",
@@ -63616,9 +63616,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "RavemonBurst Jab",
-        "heavy": "RavemonBurst Rush",
-        "magic": "RavemonBurst Hex"
+        "physical": "Ravemon: Burst Mode Jab",
+        "heavy": "Ravemon: Burst Mode Rush",
+        "magic": "Ravemon: Burst Mode Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -63798,7 +63798,7 @@
     },
     {
       "formId": 406,
-      "name": "BeelzebumonBlast",
+      "name": "Beelzemon: Blast Mode",
       "lineageId": 1406,
       "lineageSlug": "beelzebumonblast",
       "stage": "Mega",
@@ -63810,9 +63810,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "BeelzebumonBlast Jab",
-        "heavy": "BeelzebumonBlast Rush",
-        "magic": "BeelzebumonBlast Hex"
+        "physical": "Beelzemon: Blast Mode Jab",
+        "heavy": "Beelzemon: Blast Mode Rush",
+        "magic": "Beelzemon: Blast Mode Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -63895,7 +63895,7 @@
     },
     {
       "formId": 407,
-      "name": "RosemonBurst",
+      "name": "Rosemon: Burst Mode",
       "lineageId": 1407,
       "lineageSlug": "rosemonburst",
       "stage": "Mega",
@@ -63907,9 +63907,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "RosemonBurst Jab",
-        "heavy": "RosemonBurst Rush",
-        "magic": "RosemonBurst Hex"
+        "physical": "Rosemon: Burst Mode Jab",
+        "heavy": "Rosemon: Burst Mode Rush",
+        "magic": "Rosemon: Burst Mode Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -63992,7 +63992,7 @@
     },
     {
       "formId": 408,
-      "name": "ArgomonUltimate",
+      "name": "Argomon (Mega)",
       "lineageId": 1408,
       "lineageSlug": "argomonultimate",
       "stage": "Mega",
@@ -64004,9 +64004,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ArgomonUltimate Jab",
-        "heavy": "ArgomonUltimate Rush",
-        "magic": "ArgomonUltimate Hex"
+        "physical": "Argomon (Mega) Jab",
+        "heavy": "Argomon (Mega) Rush",
+        "magic": "Argomon (Mega) Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -64186,7 +64186,7 @@
     },
     {
       "formId": 410,
-      "name": "Duftmon",
+      "name": "Leopardmon",
       "lineageId": 1410,
       "lineageSlug": "duftmon",
       "stage": "Mega",
@@ -64198,9 +64198,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Duftmon Jab",
-        "heavy": "Duftmon Rush",
-        "magic": "Duftmon Hex"
+        "physical": "Leopardmon Jab",
+        "heavy": "Leopardmon Rush",
+        "magic": "Leopardmon Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -64380,7 +64380,7 @@
     },
     {
       "formId": 412,
-      "name": "Mercurimon",
+      "name": "Mercurymon",
       "lineageId": 1412,
       "lineageSlug": "mercurimon",
       "stage": "Mega",
@@ -64392,9 +64392,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "Mercurimon Jab",
-        "heavy": "Mercurimon Rush",
-        "magic": "Mercurimon Hex"
+        "physical": "Mercurymon Jab",
+        "heavy": "Mercurymon Rush",
+        "magic": "Mercurymon Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -64574,7 +64574,7 @@
     },
     {
       "formId": 414,
-      "name": "Agnimon",
+      "name": "Agunimon",
       "lineageId": 1414,
       "lineageSlug": "agnimon",
       "stage": "Champion",
@@ -64586,9 +64586,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "Agnimon Jab",
-        "heavy": "Agnimon Rush",
-        "magic": "Agnimon Hex"
+        "physical": "Agunimon Jab",
+        "heavy": "Agunimon Rush",
+        "magic": "Agunimon Hex"
       },
       "baseStats": {
         "maxHp": 152,
@@ -64751,7 +64751,7 @@
     },
     {
       "formId": 415,
-      "name": "AlforceV-dramon",
+      "name": "UlforceVeedramon",
       "lineageId": 1415,
       "lineageSlug": "alforcev-dramon",
       "stage": "Mega",
@@ -64763,9 +64763,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "AlforceVdramon Jab",
-        "heavy": "AlforceVdramon Rush",
-        "magic": "AlforceVdramon Hex"
+        "physical": "UlforceVeedramon Jab",
+        "heavy": "UlforceVeedramon Rush",
+        "magic": "UlforceVeedramon Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -67422,7 +67422,7 @@
     },
     {
       "formId": 438,
-      "name": "DoruluCannonShoutmon",
+      "name": "Dorulu Cannon",
       "lineageId": 1438,
       "lineageSlug": "dorulucannonshoutmon",
       "stage": "Mega",
@@ -67434,9 +67434,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "DoruluCannonShoutmon Jab",
-        "heavy": "DoruluCannonShoutmon Rush",
-        "magic": "DoruluCannonShoutmon Hex"
+        "physical": "Dorulu Cannon Jab",
+        "heavy": "Dorulu Cannon Rush",
+        "magic": "Dorulu Cannon Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -68124,7 +68124,7 @@
     },
     {
       "formId": 444,
-      "name": "GreymonXros",
+      "name": "Greymon (Fusion)",
       "lineageId": 1444,
       "lineageSlug": "greymonxros",
       "stage": "Champion",
@@ -68136,9 +68136,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "GreymonXros Jab",
-        "heavy": "GreymonXros Rush",
-        "magic": "GreymonXros Hex"
+        "physical": "Greymon (Fusion) Jab",
+        "heavy": "Greymon (Fusion) Rush",
+        "magic": "Greymon (Fusion) Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -68615,7 +68615,7 @@
     },
     {
       "formId": 447,
-      "name": "MetalGreymonXros",
+      "name": "MetalGreymon (Fusion)",
       "lineageId": 1447,
       "lineageSlug": "metalgreymonxros",
       "stage": "Ultimate",
@@ -68627,9 +68627,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "MetalGreymonXros Jab",
-        "heavy": "MetalGreymonXros Rush",
-        "magic": "MetalGreymonXros Hex"
+        "physical": "MetalGreymon (Fusion) Jab",
+        "heavy": "MetalGreymon (Fusion) Rush",
+        "magic": "MetalGreymon (Fusion) Hex"
       },
       "baseStats": {
         "maxHp": 200,
@@ -69173,7 +69173,7 @@
     },
     {
       "formId": 451,
-      "name": "ShoutmonX2",
+      "name": "Shoutmon X2",
       "lineageId": 1451,
       "lineageSlug": "shoutmonx2",
       "stage": "Champion",
@@ -69185,9 +69185,9 @@
       "minLevel": 5,
       "minBond": 20,
       "skills": {
-        "physical": "ShoutmonX2 Jab",
-        "heavy": "ShoutmonX2 Rush",
-        "magic": "ShoutmonX2 Hex"
+        "physical": "Shoutmon X2 Jab",
+        "heavy": "Shoutmon X2 Rush",
+        "magic": "Shoutmon X2 Hex"
       },
       "baseStats": {
         "maxHp": 136,
@@ -69350,7 +69350,7 @@
     },
     {
       "formId": 452,
-      "name": "ShoutmonX3",
+      "name": "Shoutmon X3",
       "lineageId": 1452,
       "lineageSlug": "shoutmonx3",
       "stage": "Ultimate",
@@ -69362,9 +69362,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "ShoutmonX3 Jab",
-        "heavy": "ShoutmonX3 Rush",
-        "magic": "ShoutmonX3 Hex"
+        "physical": "Shoutmon X3 Jab",
+        "heavy": "Shoutmon X3 Rush",
+        "magic": "Shoutmon X3 Hex"
       },
       "baseStats": {
         "maxHp": 200,
@@ -69487,7 +69487,7 @@
     },
     {
       "formId": 453,
-      "name": "ShoutmonX3GM",
+      "name": "Shoutmon X3GM",
       "lineageId": 1453,
       "lineageSlug": "shoutmonx3gm",
       "stage": "Ultimate",
@@ -69499,9 +69499,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "ShoutmonX3GM Jab",
-        "heavy": "ShoutmonX3GM Rush",
-        "magic": "ShoutmonX3GM Hex"
+        "physical": "Shoutmon X3GM Jab",
+        "heavy": "Shoutmon X3GM Rush",
+        "magic": "Shoutmon X3GM Hex"
       },
       "baseStats": {
         "maxHp": 200,
@@ -69624,7 +69624,7 @@
     },
     {
       "formId": 454,
-      "name": "ShoutmonX3SD",
+      "name": "Shoutmon X3SD",
       "lineageId": 1454,
       "lineageSlug": "shoutmonx3sd",
       "stage": "Ultimate",
@@ -69636,9 +69636,9 @@
       "minLevel": 10,
       "minBond": 50,
       "skills": {
-        "physical": "ShoutmonX3SD Jab",
-        "heavy": "ShoutmonX3SD Rush",
-        "magic": "ShoutmonX3SD Hex"
+        "physical": "Shoutmon X3SD Jab",
+        "heavy": "Shoutmon X3SD Rush",
+        "magic": "Shoutmon X3SD Hex"
       },
       "baseStats": {
         "maxHp": 200,
@@ -69761,7 +69761,7 @@
     },
     {
       "formId": 455,
-      "name": "ShoutmonX4",
+      "name": "Shoutmon X4",
       "lineageId": 1455,
       "lineageSlug": "shoutmonx4",
       "stage": "Mega",
@@ -69773,9 +69773,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ShoutmonX4 Jab",
-        "heavy": "ShoutmonX4 Rush",
-        "magic": "ShoutmonX4 Hex"
+        "physical": "Shoutmon X4 Jab",
+        "heavy": "Shoutmon X4 Rush",
+        "magic": "Shoutmon X4 Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -69858,7 +69858,7 @@
     },
     {
       "formId": 456,
-      "name": "ShoutmonX4B",
+      "name": "Shoutmon X4B",
       "lineageId": 1456,
       "lineageSlug": "shoutmonx4b",
       "stage": "Mega",
@@ -69870,9 +69870,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ShoutmonX4B Jab",
-        "heavy": "ShoutmonX4B Rush",
-        "magic": "ShoutmonX4B Hex"
+        "physical": "Shoutmon X4B Jab",
+        "heavy": "Shoutmon X4B Rush",
+        "magic": "Shoutmon X4B Hex"
       },
       "baseStats": {
         "maxHp": 216,
@@ -69955,7 +69955,7 @@
     },
     {
       "formId": 457,
-      "name": "ShoutmonX4S",
+      "name": "Shoutmon X4S",
       "lineageId": 1457,
       "lineageSlug": "shoutmonx4s",
       "stage": "Mega",
@@ -69967,9 +69967,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ShoutmonX4S Jab",
-        "heavy": "ShoutmonX4S Rush",
-        "magic": "ShoutmonX4S Hex"
+        "physical": "Shoutmon X4S Jab",
+        "heavy": "Shoutmon X4S Rush",
+        "magic": "Shoutmon X4S Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -70052,7 +70052,7 @@
     },
     {
       "formId": 458,
-      "name": "ShoutmonX5",
+      "name": "Shoutmon X5",
       "lineageId": 1458,
       "lineageSlug": "shoutmonx5",
       "stage": "Mega",
@@ -70064,9 +70064,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ShoutmonX5 Jab",
-        "heavy": "ShoutmonX5 Rush",
-        "magic": "ShoutmonX5 Hex"
+        "physical": "Shoutmon X5 Jab",
+        "heavy": "Shoutmon X5 Rush",
+        "magic": "Shoutmon X5 Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -70149,7 +70149,7 @@
     },
     {
       "formId": 459,
-      "name": "ShoutmonX5S",
+      "name": "Shoutmon X5S",
       "lineageId": 1459,
       "lineageSlug": "shoutmonx5s",
       "stage": "Mega",
@@ -70161,9 +70161,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "ShoutmonX5S Jab",
-        "heavy": "ShoutmonX5S Rush",
-        "magic": "ShoutmonX5S Hex"
+        "physical": "Shoutmon X5S Jab",
+        "heavy": "Shoutmon X5S Rush",
+        "magic": "Shoutmon X5S Hex"
       },
       "baseStats": {
         "maxHp": 248,
@@ -70423,7 +70423,7 @@
     },
     {
       "formId": 461,
-      "name": "StarSwordShoutmon",
+      "name": "Star Sword",
       "lineageId": 1461,
       "lineageSlug": "starswordshoutmon",
       "stage": "Mega",
@@ -70435,9 +70435,9 @@
       "minLevel": 15,
       "minBond": 80,
       "skills": {
-        "physical": "StarSwordShoutmon Jab",
-        "heavy": "StarSwordShoutmon Rush",
-        "magic": "StarSwordShoutmon Hex"
+        "physical": "Star Sword Jab",
+        "heavy": "Star Sword Rush",
+        "magic": "Star Sword Hex"
       },
       "baseStats": {
         "maxHp": 248,

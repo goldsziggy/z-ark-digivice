@@ -41,7 +41,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, origi
 function oldFields(state: any) {
   assert.equal(state.maxLevel, 50);
   const { walking, schemaVersion, rulesVersion, ...rest } = legacyFields(state);
-  assert.equal(schemaVersion, 26); assert.equal(rulesVersion, 19); assert.ok(validWalkingState(state.walking, state.phase));
+  assert.equal(schemaVersion, 27); assert.equal(rulesVersion, 19); assert.ok(validWalkingState(state.walking, state.phase));
   return { ...rest, schemaVersion: 13, rulesVersion: 10 };
 }
 for (const [name, value] of Object.entries(frozen.cases) as Array<[string, any]>) test(`schema13 ${name} preserves exact frozen10 state, trace, events and receipts`, async t => {
@@ -50,9 +50,9 @@ for (const [name, value] of Object.entries(frozen.cases) as Array<[string, any]>
   assert.equal(save.status, 200); assert.deepEqual(historicComparable(oldFields(save.body.state)), historicComparable(value.result.state)); assert.deepEqual(save.body.autoTrace, value.result.trace);
   assert.equal(save.body.revision, original.devices[0].revision); assert.equal(save.body.baseSequence, value.events.length); assert.deepEqual(save.body.events, []);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 27, 19]);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 10, events: value.events, receipts: original.devices[0].receipts }]);
-  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
+  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6860);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v10.json'), 'utf8')), original);
   if (value.events.length) {
     const prior = command(0, 'frozen-ten-original-batch', value.events, 10);
@@ -83,7 +83,7 @@ for (const [name, value] of Object.entries(frozen.cases) as Array<[string, any]>
 
 test('walking seed, threshold and Auto receipt survive retries, later care and restart without reroll', async t => {
   const f = await fixture(t, originalStore(frozen.cases.home.events));
-  const health = await f.request(undefined, '/api/health'); assert.equal(health.body.schemaVersion, 26); assert.equal(health.body.rulesVersion, 19);
+  const health = await f.request(undefined, '/api/health'); assert.equal(health.body.schemaVersion, 27); assert.equal(health.body.rulesVersion, 19);
   const seed = command(1, 'walking-seed-once', [{ type: 'encounter-seed', value: 123456789 }, { type: 'mode', value: 1 }]);
   const seeded = await f.request(seed); assert.equal(seeded.status, 200); assert.ok(seeded.body.state.walking.target > 0);
   const pacing = seeded.body.state.walking;

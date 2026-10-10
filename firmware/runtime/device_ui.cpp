@@ -1,5 +1,6 @@
 #include "device_ui.hpp"
 #include "capture_ring.hpp"
+#include "expeditions.hpp"
 #include "forms.hpp"
 #include <algorithm>
 #include <array>
@@ -386,6 +387,23 @@ std::uint32_t maxHp(const State& state) {
     const auto* member = activeMember(state);
     return member ? forms::stats(member->formId, member->level).maxHp : 0;
 }
+// A duplicate exact-form catch merges into the oldest copy and does not append.
+// The saved capture record is the Digimon that was just caught.
+std::uint32_t capturedFormId(const State& state) {
+    if(state.message==Message::Captured && state.lastCapture.result==CaptureResult::Captured &&
+       state.lastCapture.sequence==state.sequence && state.lastCapture.targetFormId)
+        return state.lastCapture.targetFormId;
+    if(state.message==Message::Captured && state.collectionCount)
+        return state.collection[state.collectionCount-1].formId;
+    const auto* member=activeMember(state);
+    return member ? member->formId : 0;
+}
+bool captureJoinedCollection(const State& state) {
+    if(state.message!=Message::Captured || !state.lastCapture.sequence || state.lastCapture.sequence!=state.sequence) return false;
+    for(std::size_t i=0;i<state.collectionCount;++i)
+        if(state.collection[i].capturedAtSequence==state.sequence) return true;
+    return false;
+}
 const char* shortMessage(Message message) {
     switch (message) {
     case Message::Fed: return "A TASTY LITTLE BREAK";
@@ -666,21 +684,29 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         if(member) {
             const bool active=member->id==state.activeCreatureId;
             const bool squad=isPartyMember(state,member->id);
-            // One primary, first match: TREAT, MAKE PARTNER, REMOVE, ADD, then a disabled full squad.
-            const char* primary=nullptr; int primaryId=0; bool primaryOn=false;
+            // TREAT or MAKE PARTNER stays its own button. Squad membership is a
+            // second button, so a production Digimon can join or leave without
+            // giving up Make Partner.
+            const char* lead=nullptr; int leadId=0; bool leadOn=false;
             if(active && isInjured(*member) && legal(state,model,Action::Treat)) {
-                primary="TREAT"; primaryId=Treat; primaryOn=true;
+                lead="TREAT"; leadId=Treat; leadOn=true;
             } else if(!active && legal(state,model,Action::Select,member->id)) {
-                primary="MAKE PARTNER"; primaryId=MemberSelect; primaryOn=true;
-            } else if(squad && !active && legal(state,model,Action::PartyRemove,member->id)) {
-                primary="REMOVE FROM SQUAD"; primaryId=PartyToggle; primaryOn=true;
-            } else if(legal(state,model,Action::PartyAdd,member->id)) {
-                primary="ADD TO SQUAD"; primaryId=PartyToggle; primaryOn=true;
+                lead="MAKE PARTNER"; leadId=MemberSelect; leadOn=true;
+            }
+            const char* squadLabel=nullptr; bool squadOn=false;
+            if(squad && !active && legal(state,model,Action::PartyRemove,member->id)) {
+                squadLabel="REMOVE FROM SQUAD"; squadOn=true;
+            } else if(!active && legal(state,model,Action::PartyAdd,member->id)) {
+                squadLabel="ADD TO SQUAD"; squadOn=true;
             } else if(!active && !squad && partyCount(state)==kPartyCapacity) {
-                primary="SQUAD FULL"; primaryId=PartyToggle; primaryOn=false;
+                squadLabel="SQUAD FULL"; squadOn=false;
             }
             add(kDetailX,kDetailY,kDetailW,kDetailH,"DETAILS",MemberStats);
-            if(primary) add(kPrimaryX,kPrimaryY,kPrimaryW,kPrimaryH,primary,primaryId,primaryOn);
+            if(lead && squadLabel) {
+                add(62,kPrimaryY,140,kPrimaryH,lead,leadId,leadOn);
+                add(210,kPrimaryY,140,kPrimaryH,squadLabel,PartyToggle,squadOn);
+            } else if(lead) add(kPrimaryX,kPrimaryY,kPrimaryW,kPrimaryH,lead,leadId,leadOn);
+            else if(squadLabel) add(kPrimaryX,kPrimaryY,kPrimaryW,kPrimaryH,squadLabel,PartyToggle,squadOn);
         }
         back(); break;
     }
@@ -1193,8 +1219,7 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
         if(model.battle && model.battle->locked && model.battle->capturePresentation && model.battle->captureCaught && model.battle->captureElapsedMs>=2300) request.animation=sprite::Animation::Celebrate;
         request.sceneId=scenes[(state.encounters ? state.encounters-1 : 0)%8]; break;
     case Screen::Result:
-        request.formId=state.message==Message::Captured && state.collectionCount ?
-            state.collection[state.collectionCount-1].formId : member ? member->formId : 0;
+        request.formId=state.message==Message::Captured ? capturedFormId(state) : member ? member->formId : 0;
         request.sceneId=scenes[(state.encounters ? state.encounters-1 : 0)%8];
         request.animation=sprite::Animation::Celebrate; break;
     case Screen::Evolution: case Screen::EvolutionReview: {
@@ -1437,10 +1462,15 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             i==static_cast<unsigned>(homePanel_) ? mint : edge);
         std::snprintf(label,sizeof(label),"STEPS %llu",static_cast<unsigned long long>(model.lifetimeSteps));
         c.badge(369,label,1,dim,27);
+        char keys[24]{};
         const char* status=model.stepStatus && std::strcmp(model.stepStatus,"STEP SAVE RECOVERY")==0 ? "STEP SAVE RECOVERY" :
             model.stepsRecovering ? "SENSOR RECOVERING" : !model.stepsAvailable ? "SENSOR UNAVAILABLE" :
             state.encounterRate==EncounterRate::Off ? "ENCOUNTERS PAUSED" : "LIFETIME TOTAL";
-        c.badge(384,status,1,dim,24);
+        if(homePanel_==HomePanel::Nearby && std::strcmp(status,"LIFETIME TOTAL")==0) {
+            std::snprintf(keys,sizeof(keys),"DUNGEON KEYS %u",static_cast<unsigned>(state.dungeonKeys));
+            status=keys;
+        }
+        c.badge(384,status,1,homePanel_==HomePanel::Nearby && status==keys ? mint : dim,24);
         break;
     }
     case Screen::Care: {
@@ -1585,12 +1615,17 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::Capture:
         captureScene(c,state,model,art,capturering::sample(captureElapsed(now),state.wildFormId));
         break;
-    case Screen::Result:
-        c.center(78,shortMessage(state.message),2,mint);
-        if (state.lastCritical) c.center(100,"CRITICAL HIT",2,amber);
+    case Screen::Result: {
+        const bool merged=state.message==Message::Captured && state.lastCapture.result==CaptureResult::Captured &&
+            state.lastCapture.sequence==state.sequence && !captureJoinedCollection(state);
+        const auto* caught=merged ? forms::find(state.lastCapture.targetFormId) : nullptr;
+        c.center(78,caught && caught->name ? caught->name : shortMessage(state.message),2,mint);
+        if (merged) c.center(100,"BONUS XP MERGED",1,amber);
+        else if (state.lastCritical) c.center(100,"CRITICAL HIT",2,amber);
         actor(206+tx,166+ty,5);
         std::snprintf(label,sizeof(label),"LEVEL %u   DIGIMON %u/%u",static_cast<unsigned>(state.level),static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(kCollectionCapacity));
         c.center(235,label,1,dim); break;
+    }
     case Screen::Collection:
         if(selectedMember(state)) {
             const auto& member=*selectedMember(state);
@@ -1922,6 +1957,9 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
                 c.center(157,"OPEN NEARBY ON BOTH DEVICES",1,dim,36);
                 c.center(185,"KEEP THE TWO DEVICES CLOSE",1,dim,36);
                 c.center(211,"WIFI IS PAUSED WHILE NEARBY",1,amber,36);
+                std::snprintf(label,sizeof(label),"DUNGEON KEYS %u",static_cast<unsigned>(state.dungeonKeys));
+                c.center(239,label,1,mint,36);
+                if(state.dungeonKeys) c.center(263,"GROVE, TIDE, AND EMBER",1,dim,36);
             }
         } else if (stage==nearby::Stage::Incoming || stage==nearby::Stage::Outgoing || stage==nearby::Stage::Accepting) {
             const auto* host=forms::find(n->offered[0].formId); const auto* guest=forms::find(n->offered[1].formId);

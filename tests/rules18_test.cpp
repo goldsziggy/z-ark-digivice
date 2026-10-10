@@ -3,6 +3,7 @@
 #include "forms.hpp"
 #include "capture_ring.hpp"
 #include "legacy_v17.hpp"
+#include "snapshot_test_helpers.hpp"
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -35,7 +36,7 @@ bool focusEncounter(bool strike, State& out) {
 }
 
 void versions() {
-    CHECK(kSchemaVersion==26&&kRulesVersion==19 && kSnapshotSize == 3216);
+    CHECK(kSchemaVersion==27&&kRulesVersion==19 && kSnapshotSize == 6860);
     CHECK(legacy_v17::kSchemaVersion == 24 && legacy_v17::kRulesVersion == 17);
     Action a; CHECK(parseAction("focus", a) && a == Action::Focus);
     legacy_v17::Action b; CHECK(!legacy_v17::parseAction("focus", b));
@@ -82,11 +83,15 @@ void focusFlow() {
         Snapshot snap; State back;
         CHECK(encodeSnapshot(paused, snap) && decodeSnapshot(snap.bytes, sizeof(snap.bytes), back) == SnapshotStatus::Ok && same(back, paused));
         // A schema-24 header can never carry a focus prompt.
-        auto old = snap; old.bytes[4] = 24; old.bytes[8] = 17;
+        std::uint8_t old[kSchema26SnapshotSize]{};
+        snapshot_test::schema26Image(snap.bytes, old);
+        old[4] = 24; old[8] = 17;
+        const unsigned payload = kSchema26SnapshotSize - 12;
+        old[6] = static_cast<std::uint8_t>(payload); old[7] = static_cast<std::uint8_t>(payload >> 8);
         std::uint32_t crc = 0xffffffffu;
-        for (std::size_t i = 0; i + 4 < sizeof(old.bytes); ++i) { crc ^= old.bytes[i]; for (unsigned b = 0; b < 8; ++b) crc = (crc >> 1) ^ (0xedb88320u & (0u - (crc & 1u))); }
-        crc = ~crc; for (unsigned i = 0; i < 4; ++i) old.bytes[sizeof(old.bytes) - 4 + i] = static_cast<std::uint8_t>(crc >> (8 * i));
-        State rejected; CHECK(decodeSnapshot(old.bytes, sizeof(old.bytes), rejected) == SnapshotStatus::InvalidState);
+        for (std::size_t i = 0; i + 4 < sizeof(old); ++i) { crc ^= old[i]; for (unsigned b = 0; b < 8; ++b) crc = (crc >> 1) ^ (0xedb88320u & (0u - (crc & 1u))); }
+        crc = ~crc; for (unsigned i = 0; i < 4; ++i) old[sizeof(old) - 4 + i] = static_cast<std::uint8_t>(crc >> (8 * i));
+        State rejected; CHECK(decodeSnapshot(old, sizeof(old), rejected) == SnapshotStatus::InvalidState);
 
         // Compare green, orange and an untapped answer on identical states.
         auto green = paused, orange = paused, none = paused, replay = paused;

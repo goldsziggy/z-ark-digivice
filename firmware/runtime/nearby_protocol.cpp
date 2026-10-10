@@ -98,6 +98,10 @@ void Protocol::tick(std::uint64_t now){
     case Stage::Outgoing:send(Challenge,0,now);break;
     case Stage::Accepting:send(Accept,0,now);break;
     case Stage::Playing:case Stage::Finished:case Stage::Reconnecting:
+        // A finished result both sides have already accepted must go quiet.
+        // Further State/Sync retries keep the radio and the panel busy after
+        // the duel, which is when a late display stripe can lock that device.
+        if(view_.stage==Stage::Finished && view_.peerAcknowledged) break;
         if(view_.host)send(State,view_.match.sequence,now);
         else if(view_.localChoicePending&&!choiceAcknowledged_)send(ChoicePacket,view_.match.sequence,now);
         else send(Sync,view_.match.sequence,now);
@@ -184,7 +188,12 @@ bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t lengt
         }
         if(!view_.host&&payload[0]==ChoicePacket&&view_.localChoicePending){choiceAcknowledged_=true;lastReceive_=now;return true;}return false;
     }
-    if(kind==Sync){if(size||!view_.host||!(view_.stage==Stage::Playing||view_.stage==Stage::Finished||view_.stage==Stage::Reconnecting))return false;lastReceive_=now;send(State,view_.match.sequence,now);return true;}
+    if(kind==Sync){
+        if(size||!view_.host||!(view_.stage==Stage::Playing||view_.stage==Stage::Finished||view_.stage==Stage::Reconnecting))return false;
+        lastReceive_=now;
+        if(!(view_.stage==Stage::Finished && view_.peerAcknowledged)) send(State,view_.match.sequence,now);
+        return true;
+    }
     return false;
 }
 } // namespace digivice::nearby

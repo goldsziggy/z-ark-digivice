@@ -363,7 +363,7 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
                     maxCaptureRenderUs_ = std::max(maxCaptureRenderUs_, renderUs);
                     maxCaptureFlushUs_ = std::max(maxCaptureFlushUs_, flushUs);
                 }
-            } else {
+            } else if (result != ESP_ERR_TIMEOUT && result != ESP_ERR_INVALID_STATE) {
                 ui_.cancelTouch(); setup_.cancelTouch(); requireTouchRelease();
                 std::printf("Display flush stopped: %s; USB/save remain available.\n", esp_err_to_name(result));
             }

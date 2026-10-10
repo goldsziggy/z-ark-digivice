@@ -1,12 +1,14 @@
 // Rules 19: the 465-form roster opens to the wild; rules 13-18 stay frozen on
 // the 276-form roster; four Dawn/Dusk duplicates are retired in place.
 #include "game.hpp"
+#include "expeditions.hpp"
 #include "forms.hpp"
 #include "encounters.hpp"
 #include "combat.hpp"
 #include "legacy_v18.hpp"
 #include <cstdio>
 #include <cstring>
+#include <iterator>
 #include <initializer_list>
 
 using namespace digivice;
@@ -15,7 +17,8 @@ unsigned checks = 0, failures = 0;
 #define CHECK(x) do{++checks;if(!(x)){++failures;std::fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,#x);}}while(false)
 
 void versions() {
-    CHECK(kSchemaVersion == 26 && kRulesVersion == 19 && kSnapshotSize == 3216);
+    CHECK(kSchemaVersion == 27 && kRulesVersion == 19 && kSnapshotSize == 6860 && kCollectionCapacity == 250);
+    CHECK(std::size(expeditions::kScenarios) == 6);
     CHECK(legacy_v18::kSchemaVersion == 25 && legacy_v18::kRulesVersion == 18);
     CHECK(forms::kFormCount == 465 && forms::kProductionFormCount == 451 && forms::kRules18FormCount == 276);
 }
@@ -80,6 +83,42 @@ bool partner(S& s, unsigned formId, unsigned level, A select) {
     return select(s);
 }
 
+void rosterAndKeys() {
+    CHECK(newDevice(1).dungeonKeys == 0 && newGame(1).dungeonKeys == 0);
+    State owned = newDevice(9);
+    CHECK(apply(owned, Action::Hatch, 1) == Error::None && owned.collectionCount == 1);
+    const auto founder = owned.collection[0];
+    owned.collectionCount = 60;
+    owned.captures = owned.encounters = 59;
+    owned.steps = 5900;
+    owned.sequence = owned.foregroundSequence = 80;
+    owned.nextMemberId = 61;
+    for (unsigned i = 1; i < 60; ++i) {
+        owned.collection[i] = founder;
+        owned.collection[i].id = i + 1;
+        owned.collection[i].capturedAtSequence = i + 1;
+    }
+    CHECK(isValid(owned) && owned.collectionCount < kCollectionCapacity);
+    owned.collectionCount = kCollectionCapacity;
+    owned.captures = owned.encounters = kCollectionCapacity - 1;
+    owned.steps = 100 * (kCollectionCapacity - 1);
+    owned.sequence = owned.foregroundSequence = kCollectionCapacity + 20;
+    owned.nextMemberId = kCollectionCapacity + 1;
+    for (unsigned i = 1; i < kCollectionCapacity; ++i) {
+        owned.collection[i] = founder;
+        owned.collection[i].id = i + 1;
+        owned.collection[i].capturedAtSequence = i + 1;
+    }
+    CHECK(isValid(owned));
+    char json[16384];
+    // The expedition catalog is near the end of a large projection; check the hatched save.
+    State hatched = newDevice(4);
+    CHECK(apply(hatched, Action::Hatch, 1) == Error::None);
+    CHECK(writeJson(hatched, json, sizeof(json)) && std::strstr(json, "\"dungeonKeys\":0") && std::strstr(json, "Grove Dungeon"));
+    Snapshot full; CHECK(encodeSnapshot(owned, full));
+    State restored; CHECK(decodeSnapshot(full.bytes, sizeof(full.bytes), restored) == SnapshotStatus::Ok && restored.collectionCount == 250 && restored.collection[249].id == 250);
+}
+
 void migrationMidEncounter() {
     unsigned migrated = 0, finished = 0, newWild = 0;
     for (unsigned seed = 1; seed <= 200; ++seed) {
@@ -93,7 +132,9 @@ void migrationMidEncounter() {
         CHECK(legacy_v18::encodeSnapshot(old, snap) && decodeSnapshot(snap.bytes, sizeof(snap.bytes), now) == SnapshotStatus::Migrated);
         ++migrated;
         // The encounter started under rules 18 keeps its foe and finishes; the next one is a rules-19 draw.
-        CHECK(now.wildRules == 18 && now.wildFormId == old.wildFormId && isValid(now));
+        CHECK(now.wildRules == 18 && now.wildFormId == old.wildFormId && now.dungeonKeys == 3 && isValid(now));
+        Snapshot saved; State again;
+        CHECK(encodeSnapshot(now, saved) && decodeSnapshot(saved.bytes, sizeof(saved.bytes), again) == SnapshotStatus::Ok && again.dungeonKeys == 3);
         for (unsigned guard = 0; guard < 16 && now.phase == Phase::Encounter; ++guard) {
             const bool focus = now.autoCapture == AutoCapture::FocusStrike || now.autoCapture == AutoCapture::FocusBlock;
             CHECK((focus ? applyFocus(now, kFocusNoTap) : now.autoCapture == AutoCapture::Awaiting ? applyAutoResume(now) : applyAutoFight(now)) == Error::None);
@@ -112,7 +153,7 @@ void migrationMidEncounter() {
 } // namespace
 
 int main() {
-    versions(); retiredDuplicates(); frozenPool(); migrationMidEncounter();
+    versions(); retiredDuplicates(); frozenPool(); rosterAndKeys(); migrationMidEncounter();
     std::printf("rules 19: %u checks, %u failures\n", checks, failures);
     return failures ? 1 : 0;
 }

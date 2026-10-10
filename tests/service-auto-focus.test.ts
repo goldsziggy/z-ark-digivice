@@ -43,7 +43,7 @@ test('a rules17 store migrates once; a real Auto fight pauses for one focus tap 
   let current = (await f.request()).body, serial = 0;
   assert.equal(current.state.rulesVersion, 19); assert.equal(current.state.focus, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 27, 19]);
   assert.deepEqual(stored.devices[0].legacy.histories.map((history: any) => history.rulesVersion), [17]);
   const send = async (events: Event[]) => {
     const result = await f.request(command(current.revision, `focus-flow-${++serial}`, events));

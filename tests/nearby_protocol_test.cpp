@@ -147,6 +147,8 @@ void autoPacing(){
  p.tick(2399);CHECK(same(frame,p.a.view().match));p.tick(1);CHECK(p.a.view().match.sequence==2);
  for(unsigned i=0;i<40&&p.a.view().stage==Stage::Playing;++i)p.tick(2400,0,true);
  CHECK(p.a.view().stage==Stage::Finished&&same(p.a.view().match,p.b.view().match));
+ CHECK(p.a.view().peerAcknowledged&&p.b.view().peerAcknowledged);
+ const auto quiet=p.delivered;p.tick(500);CHECK(p.delivered==quiet); // Accepted result does not keep the radios talking.
  const auto terminal=p.a.view().match;p.b.close();p.tick(30001,0xffffffffu);CHECK(p.a.view().stage==Stage::Finished&&same(terminal,p.a.view().match));
 }
 void autoModeConsent(){

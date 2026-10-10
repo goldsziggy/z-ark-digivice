@@ -13,7 +13,7 @@ The bounded candidate IDs are:
 97 98 99 100 101 103 105 106 109 110 112 113 114 116 117 118
 ```
 
-In that order: Armadillomon, Aruraumon, Betamon, Biyomon, BlackAgumon, DemiDevimon, Dorumon, Dracmon, Falcomon, Floramon, Gaomon, Gizamon, Goburimon, Gotsumon, Guilmon, Hagurumon, Hawkmon, Kamemon, Keramon, Kotemon, Kudamon, Lalamon, Muchomon, Otamamon, Penguinmon, Salamon, SnowAgumon, Tapirmon, Terriermon, Tsukaimon, Veemon and Wormmon.
+In that order: Armadillomon, Aruraumon, Betamon, Biyomon, Agumon (Black), DemiDevimon, Dorumon, Dracmon, Falcomon, Floramon, Gaomon, Gizamon, Goblimon, Gotsumon, Guilmon, Hagurumon, Hawkmon, Kamemon, Keramon, Kotemon, Kudamon, Lalamon, Muchomon, Otamamon, Penguinmon, Salamon, SnowAgumon, Tapirmon, Terriermon, Tsukaimon, Veemon and Wormmon.
 
 The original fixed forms `{11,18,25,32,39,46,53,60}` are excluded. Nine other Rookie forms without an authoritative outgoing edge are excluded: `{83,86,87,102,104,107,108,111,115}`. Named variants with distinct IDs/art and valid routes are retained. “Forward route” does not promise a complete Mega chain: Armadillomon→Ankylomon, Gizamon→Raremon and Kamemon→Gwappamon currently end at authored leaves.
 

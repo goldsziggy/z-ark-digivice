@@ -54,9 +54,9 @@ for (const [name, value] of Object.entries(frozen.cases) as Array<[string, any]>
   assert.ok(validLastCapture(saved.body.state.lastCapture, saved.body.state.sequence));
   assert.ok(saved.body.state.collection.every(validCare));
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 27, 19]);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 11, events: value.events, receipts: original.devices[0].receipts }]);
-  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
+  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6860);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v11.json'), 'utf8')), original);
   if (value.events.length) {
     const pending = command(0, 'frozen-eleven-original-batch', value.events, 11);

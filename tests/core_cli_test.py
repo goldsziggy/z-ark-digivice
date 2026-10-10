@@ -16,8 +16,26 @@ def rejected(events=b'',args=None):
  assert p.returncode and p.stdout==b'' and p.stderr.strip(),(args,events,p.stdout)
 def encoded(b):return base64.b64encode(b).decode()
 def seal(b):struct.pack_into('<I',b,len(b)-4,zlib.crc32(b[:-4]))
+def schema26_image(blob):
+ # Schema 27 packs 250 members into 26-byte slots. Rebuild the 60-slot schema 26 image.
+ assert len(blob)==6860
+ image=bytearray(3216)
+ image[:112]=blob[:112]
+ for i in range(60):
+  p=112+i*26
+  ident,seq=struct.unpack_from('<II', blob, p)
+  form,species=struct.unpack_from('<HH', blob, p+8)
+  xp,hp=struct.unpack_from('<HH', blob, p+12)
+  level,energy,fullness,mood,bond,pad=struct.unpack_from('<BBBBBB', blob, p+16)
+  care,=struct.unpack_from('<I', blob, p+22)
+  assert pad==0
+  struct.pack_into('<12I', image, 112+i*48, ident, species, hp, energy, fullness, mood, bond, level, seq, xp, form, care)
+ tail=112+250*26
+ image[2992:3212]=blob[tail:tail+220]
+ return image
 def rules15_image(blob):
  # Schema23 adds a care word on every member and three care-time words before the CRC.
+ if len(blob)==6860: blob=schema26_image(blob)
  assert len(blob)==3216
  image=bytearray(2964)
  image[:112]=blob[:112]
@@ -27,15 +45,22 @@ def rules15_image(blob):
  return image
 def old_payload(blob):
  # Project schema21's inserted52 slots out when comparing source-era bytes.
- if len(blob)==3216: blob=rules15_image(blob)
+ if len(blob) in (6860,3216): blob=rules15_image(blob)
  assert len(blob)==2964
  return blob[:464]+blob[2752:2948]+blob[-4:]
-def current_offset(old_offset):return old_offset if old_offset<464 else old_offset+2288
+def current_offset(old_offset):
+ # Lead bytes are unchanged. The 44-byte member words for XP and form are packed
+ # at the start of each 26-byte slot. The old tail now follows all 250 members.
+ if old_offset==148: return 112+12
+ if old_offset==152: return 112+8
+ if old_offset>=464: return 6612+(old_offset-464)
+ return old_offset
 def current_presentation(state):
  # User-facing wording is current; immutable historical fixture files stay exact.
  # The live level cap is 50. Frozen receipts keep the cap they were recorded with.
  # Live routes recompute level, bond, care and preview combat. Stored fixture gates stay historical.
  state.pop('maxLevel', None)
+ state.pop('expeditions', None)
  assert state.pop('focus', None) is None # Rules 18 focus pauses never exist in historical fixtures.
  evolution=state.get('evolution')
  if isinstance(evolution, dict):
@@ -47,7 +72,8 @@ def current_presentation(state):
  state['message']=state['message'].replace('Your friend is free to roam;', 'Your Digimon is free to roam;').replace('A new friend joined', 'A new Digimon joined')
 def remove_new_pacing(state):
  assert state.pop('partyCapacity',3)==3 and state.pop('partyMemberIds',[])==[]
- assert state['collectionCapacity'] in (8,60)
+ state.pop('expeditions', None)
+ assert state['collectionCapacity'] in (8,60,250)
  state['collectionCapacity']=8
  assert state.pop('receivedTrades',0)==0
  assert state.pop('autoCapture',0)==0
@@ -61,9 +87,9 @@ def remove_new_pacing(state):
  assert state.pop('walking')=={'rate':2,'name':'Normal','eligibleSteps':0,'encounters':0,'rngState':0,'target':0,'progress':0,'remainingSteps':0,'pendingEncounter':None}
 
 initial=accepted()
-assert (initial['schemaVersion'],initial['rulesVersion'],initial['creature'],initial['formId'],initial['level'],initial['xp'])==(26,19,'Mote',1,1,0)
+assert (initial['schemaVersion'],initial['rulesVersion'],initial['creature'],initial['formId'],initial['level'],initial['xp'])==(27,19,'Mote',1,1,0)
 assert initial['partyCapacity']==3 and initial['partyMemberIds']==[]
-assert initial['maxLevel']==50 and initial['xpToNext']==40 and initial['collectionCapacity']==60
+assert initial['maxLevel']==50 and initial['xpToNext']==40 and initial['collectionCapacity']==250 and initial['expeditions']['dungeonKeys']==0
 assert initial['worldSeed']==0
 # World setup is explicit, one-time and background-only; neither the CLI nor an
 # old replay epoch silently invents entropy or changes the historical game seed.
@@ -127,8 +153,8 @@ for mode in ['--migrate-v1','--migrate-v2']:
 history3=b'feed\nplay\nwalk 100\ncard 1\nattack\nattack\nattack\ncapture\n'
 m=accepted(history3,['--migrate-v3','12345']);s=m['state'];blob=base64.b64decode(m['snapshotBase64'],validate=True)
 assert (s['hp'],s['sequence'],s['rngState'],s['bond'])==(58,8,3336926330,19)
-assert len(blob)==3216 and struct.unpack_from('<HHI',blob,4)==(26,3204,19)
-assert struct.unpack_from('<I',blob,3212)[0]==zlib.crc32(blob[:3212])
+assert len(blob)==6860 and struct.unpack_from('<HHI',blob,4)==(27,6848,19)
+assert struct.unpack_from('<I',blob,6856)[0]==zlib.crc32(blob[:6856])
 assert accepted(args=['--replay-snapshot',m['snapshotBase64']])==s
 # Build exact old layout from a known level-1 migrated state, stripping new fields.
 image=rules15_image(blob)
@@ -152,7 +178,7 @@ for tier,feeds,level,xp in [(1,0,1,0),(2,20,5,400),(3,50,10,1800)]:
 for bad in ['', '!',m['snapshotBase64'][:-1],m['snapshotBase64']+'!',encoded(blob[:-1]),encoded(blob+b'\0')]:rejected(args=['--replay-snapshot',bad])
 for offset in [0,120,148,152,464,492,496]:
  bad=bytearray(blob);bad[offset]^=0x40;rejected(args=['--replay-snapshot',encoded(bad)])
-for offset,value in [(4,27),(8,99),(104,61),(148,7601),(152,67),(464,2),(468,1),(472,2),(476,6),(488,1),(492,1)]:
+for offset,value in [(4,28),(8,99),(104,61),(148,7601),(152,67),(464,2),(468,1),(472,2),(476,6),(488,1),(492,1)]:
  bad=bytearray(blob);struct.pack_into('<H' if offset==4 else '<I',bad,current_offset(offset),value);seal(bad);rejected(args=['--replay-snapshot',encoded(bad)])
 # Full Auto is one event; replay returns the identical persisted result/trace.
 auto=b'hatch 1\nmode 1\nwalk 100\nauto\n';args=['--replay-onboarding-trace','12345'];result=accepted(auto,args)
@@ -166,7 +192,7 @@ assert all(not step['reflected'] and step['guard'] in {'brace','ward','counter'}
 assert 'rngState' not in json.dumps(trace) and 'enemyChoice' not in json.dumps(trace)
 assert accepted(auto+b'rest\nmode 0\n',args)['trace']==trace
 for bad in [b'mode\n',b'mode 2\n',b'auto\n',b'walk 100\nauto\n',b'walk 100\nmode 1\n',b'mode 1\nwalk 100\nattack\n',b'mode 1\nwalk 100\ncard 1\n',b'mode 1\nwalk 100\ncapture\n',b'mode 1\nwalk 100\nauto 1\n',b'mode 1\nwalk 100\nauto\nauto\n']:rejected(bad)
-budget=accepted(args=['--budget']);assert budget['stateBytes']==3188 and budget['snapshotBytes']==3216 and budget['jsonBufferBytes']==65536 and budget['coreHeapAllocations']==0
+budget=accepted(args=['--budget']);assert budget['stateBytes']==12332 and budget['snapshotBytes']==6860 and budget['jsonBufferBytes']==262144 and budget['coreHeapAllocations']==0
 print('RPG CLI: all8 trees/hatches, native previews, bounded XP/care, exact rules1–3 migration, snapshots, trace replay and hostile input passed')
 
 # Exact prior rules4 Auto history remains frozen before migration.
@@ -207,7 +233,7 @@ for fixture in frozen['fixtures']:
  current_presentation(actual);current_presentation(expected)
  assert actual==expected,fixture['name']
  oldbytes=base64.b64decode(fixture['snapshotBase64']);newbytes=base64.b64decode(migrated['snapshotBase64'])
- assert len(newbytes)==3216 and struct.unpack_from('<HHI',newbytes,4)==(26,3204,19)
+ assert len(newbytes)==6860 and struct.unpack_from('<HHI',newbytes,4)==(27,6848,19)
  assert oldbytes[12:-4]==old_payload(newbytes)[12:572],fixture['name']
  assert accepted(args=['--replay-snapshot',fixture['snapshotBase64']])==migrated['state']
  assert accepted(args=['--replay-snapshot',migrated['snapshotBase64']])==migrated['state']
@@ -249,7 +275,7 @@ prior_equal(accepted(event_bytes(frozen6['suffixEvents']),['--migrate-v6-snapsho
 for events,key in [(frozen6['encounterEvents'],'encounterResult'),(frozen6['prefixEvents'],'autoResult'),([], 'egg')]:
  restored=accepted(event_bytes(events),['--migrate-v6-onboarding','12345'])
  prior_equal(restored['state'],frozen6[key]['state'])
- assert (restored['state']['schemaVersion'],restored['state']['rulesVersion'])==(26,19)
+ assert (restored['state']['schemaVersion'],restored['state']['rulesVersion'])==(27,19)
  assert accepted(args=['--replay-snapshot',restored['snapshotBase64']])==restored['state']
  if key=='encounterResult':
   assert restored['state']['wildRules']==6
@@ -362,20 +388,21 @@ for key in ('careMinute','critical','captureDeferred','carePoints','toilet','car
 for member in current['collection']:
  for key in ('carePoints','toilet','careMissed'): member.pop(key,None)
 current_presentation(current);current_presentation(frozen)
+for state in (current,frozen): state.pop('collectionCapacity', None)
 assert current==frozen
 assert accepted(args=['--replay-snapshot',migrated['snapshotBase64']])==migrated['state']
 rejected(args=['--replay-v14-snapshot-trace',migrated['snapshotBase64']])
 print('XP companion CLI: explicit inputs, exact frozen14 presentation, empty migration and old-epoch rejection passed')
 # Rules 19: rules-18 histories replay in the frozen executor (276-form roster)
-# and migrate once into schema 26; later events use the full roster.
+# and migrate once into schema 27; later events use the full roster.
 events18=b'mode 1\nwalk 100\nauto-fight 0\n'
 frozen18=accepted(events18,['--replay-v18-trace','4242'])
 assert (frozen18['state']['schemaVersion'],frozen18['state']['rulesVersion'])==(25,18)
 assert frozen18['state']['wildFormId']==0 or frozen18['state']['wildFormId']<=276
 migrated18=accepted(events18,['--migrate-v18','4242'])
-assert (migrated18['state']['schemaVersion'],migrated18['state']['rulesVersion'])==(26,19)
-assert migrated18['state']['sequence']==frozen18['state']['sequence']
-blob18=base64.b64decode(migrated18['snapshotBase64']);assert len(blob18)==3216 and struct.unpack_from('<HHI',blob18,4)==(26,3204,19)
+assert (migrated18['state']['schemaVersion'],migrated18['state']['rulesVersion'])==(27,19)
+assert migrated18['state']['expeditions']['dungeonKeys']==3 and migrated18['state']['sequence']==frozen18['state']['sequence']
+blob18=base64.b64decode(migrated18['snapshotBase64']);assert len(blob18)==6860 and struct.unpack_from('<HHI',blob18,4)==(27,6848,19)
 assert accepted(args=['--replay-snapshot',migrated18['snapshotBase64']])==migrated18['state']
 rejected(b'focus 100\n',['--replay-v17-trace','4242'])  # no focus before rules 18
-print('Rules19 CLI: frozen rules18 replay, single migration to schema26 and exact restore passed')
+print('Rules19 CLI: frozen rules18 replay, single migration to schema 27 and exact restore passed')

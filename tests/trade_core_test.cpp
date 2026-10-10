@@ -19,7 +19,7 @@ State fixture(unsigned starter=1,unsigned count=2){
     auto s=newDevice(100+starter);step(s,Action::Hatch,starter);
     s.sequence=s.foregroundSequence=100;s.collectionCount=count;s.nextMemberId=count+1;s.captures=s.encounters=count-1;s.steps=100*(count-1);
     for(unsigned i=1;i<count;++i){const auto id=78+i;const auto* f=forms::find(id);s.collection[i]={i+1,static_cast<Species>(f->lineage),17,63,47,89,100,5,i+1,xpForLevel(5)+17,id};s.journal[(id-1)/32]|=1u<<((id-1)%32);}
-    CHECK(isValid(s));return s;
+    s.dungeonKeys=3;CHECK(isValid(s));return s;
 }
 t::Transcript transcript(const State& a,const State& b,unsigned aId=2,unsigned bId=2){
     t::Transcript x;x.peers[0].bytes[0]=2;x.peers[1].bytes[0]=4;x.session=0xaabbccdd12345678ull;
@@ -219,7 +219,7 @@ void encodingAndMigration(){
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.receivedTrades==0&&t::sameState(a,migrated));
     CHECK(encodeSnapshot(migrated,current)&&snapshot_test::sameOldPayload(prior.data(),current.bytes,prior.size()));
     put32(current.bytes+snapshot_test::currentOffset(648),1);put32(current.bytes+kSnapshotSize-4,crc(current.bytes,kSnapshotSize-4));CHECK(decodeSnapshot(current.bytes,sizeof(current.bytes),migrated)==SnapshotStatus::InvalidState);
-    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==6604&&t::kV19RecordBytes==1492);
+    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kSnapshotSize==6860&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==13892&&t::kV26RecordBytes==6604&&t::kV19RecordBytes==1492);
 }
 }
 int main(){exchangeProgression();fullCollectionsExchange();restrictionsAndConsent();walkingAndInterruptedDecisions();encodingAndMigration();installedJournalMigration();

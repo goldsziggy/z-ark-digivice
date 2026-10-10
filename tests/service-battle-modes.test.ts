@@ -123,7 +123,7 @@ test('schema-five onboarding histories migrate intact and default to Tactical, i
     revision: index ? 0 : 1, events: index ? [] : events, receipts: index ? [] : [{ batchId, bodyHash: hash(JSON.stringify({ rulesVersion: 3, baseRevision: 0, events })), revision: 1, eventEnd: 2 }] }));
   const old = { formatVersion: 4, gameSchemaVersion: 5, rulesVersion: 3, devices }, f = await fixture(t, old);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 26);
+  assert.equal(stored.formatVersion, 21); assert.equal(stored.gameSchemaVersion, 27);
   for (let i = 0; i < devices.length; i++) {
     assert.equal(stored.devices[i].deviceId, devices[i].deviceId); assert.equal(stored.devices[i].revision, devices[i].revision);
     assert.deepEqual(stored.devices[i].events, []); assert.deepEqual(stored.devices[i].receipts, []);

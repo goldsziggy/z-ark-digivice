@@ -44,8 +44,32 @@ class GeneratorTest(unittest.TestCase):
         self.assertEqual(runtime['catalogVersion'], 6)
         self.assertEqual(runtime['rulesVersion'], 10)
 
+    def test_player_facing_names_use_english(self):
+        english = json.loads((ROOT / 'data/english-form-names.json').read_text())['names']
+        runtime = json.loads(MODULE.generate(*self.inputs)['data/world-ds-runtime.json'])
+        by_key = {form['entryKey']: form for form in runtime['forms'] if form.get('entryKey')}
+        display = {row['entryKey']: row['displayName'] for row in self.inputs[0]['entries']}
+        retired = {row['formId'] for row in self.inputs[0]['entries'] if row.get('retiredAliasOf') is not None}
+        shown = {form['name'] for form in runtime['forms'] if form['formId'] not in retired}
+        for key, name in english.items():
+            self.assertEqual(by_key[key]['name'], name)
+            if by_key[key]['formId'] not in retired and display[key] != name:
+                self.assertNotIn(display[key], shown)
+
     def effective_skills(self, form_id, base):
         return {**base, **{b['category']: b['name'] for b in self.inputs[0]['battleSkillBindings'] if b['formId'] == form_id}}
+
+    def restore_english_name_overlay(self, profiles):
+        # The rules 6/7 fingerprint covers sheet-era labels. Put those back so the
+        # check still proves every stat, skill and route is unchanged.
+        english = json.loads((ROOT / 'data/english-form-names.json').read_text())['names']
+        display = {row['entryKey']: row for row in self.inputs[0]['entries']}
+        for form in profiles:
+            key = form.get('entryKey')
+            if key in english and form['formId'] > 66:
+                self.assertEqual(form['name'], english[key])
+                form['name'] = display[key]['displayName']
+                form['skills'] = copy.deepcopy(display[key]['skills'])
 
     def restore_original_anchors(self, profiles):
         # Normalize only the two authorized changes before comparing the complete
@@ -67,6 +91,7 @@ class GeneratorTest(unittest.TestCase):
             form = profiles[binding['formId'] - 1]
             self.assertEqual(form['skills'][binding['category']], binding['name'])
             form['skills'][binding['category']] = binding['previousName']
+        self.restore_english_name_overlay(profiles)
         self.restore_original_anchors(profiles)
         profiles = profiles[:276]
         self.assertEqual(len(profiles), 276)
@@ -135,6 +160,7 @@ class GeneratorTest(unittest.TestCase):
         profiles = [{k: v for k, v in f.items() if k not in [*baseline['profileHashExcludes'], 'encounterRarity']} for f in runtime['forms']]
         for binding in self.inputs[0]['battleSkillBindings']:
             profiles[binding['formId'] - 1]['skills'][binding['category']] = binding['previousName']
+        self.restore_english_name_overlay(profiles)
         self.restore_original_anchors(profiles)
         original_profiles = profiles[:276]
         self.assertEqual(len(original_profiles), 276)

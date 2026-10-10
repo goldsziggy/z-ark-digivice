@@ -23,7 +23,7 @@ void target(State& s,unsigned id,unsigned level=1){s.wildFormId=id;s.wildSpecies
 unsigned formWith(encounters::Rarity rarity){for(unsigned id=forms::kFirstProductionFormId;id<=forms::kFormCount;++id)if(encounters::rarityForForm(id)==rarity&&combat::validFormProfile(id,1))return id;return 0;}
 unsigned phaseFor(const State& s,capturering::Grade grade){for(unsigned phase=0;phase<capturering::kCycleMs;++phase)if(capturering::sample(phase,s.wildFormId).grade==grade)return phase;CHECK(false);return 0;}
 void contract(){
-    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216);
+    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kSnapshotSize==6860);
     CHECK(static_cast<unsigned>(Action::RingCapture)==static_cast<unsigned>(Action::WorldSeed)+1);
     Action parsed;CHECK(parseAction("ring-capture",parsed)&&parsed==Action::RingCapture);
     auto s=fight();reject(s,2400,Error::InvalidValue);reject(s,UINT32_MAX,Error::InvalidValue);
@@ -37,29 +37,29 @@ void contract(){
     auto automatic=newDevice();step(automatic,Action::Hatch,1);step(automatic,Action::Mode,1);step(automatic,Action::Explore,1000);
     reject(automatic,0,Error::WrongMode);CHECK(!ringCaptureChance(automatic,0));
     // Collection capacity blocks before a draw; no fixture member or reward is lost.
-    auto full=s;full.sequence=full.foregroundSequence=100;full.collectionCount=60;full.captures=59;full.encounters=60;full.steps=5900;full.nextMemberId=61;
-    for(unsigned i=1;i<60;++i){full.collection[i]=full.collection[0];full.collection[i].id=i+1;full.collection[i].capturedAtSequence=i+1;}
+    auto full=s;full.sequence=full.foregroundSequence=400;full.collectionCount=kCollectionCapacity;full.captures=kCollectionCapacity-1;full.steps=100u*(kCollectionCapacity-1);full.encounters=full.steps/100+full.walkingEncounters;full.nextMemberId=kCollectionCapacity+1;
+    for(unsigned i=1;i<kCollectionCapacity;++i){full.collection[i]=full.collection[0];full.collection[i].id=i+1;full.collection[i].capturedAtSequence=i+1;}
     CHECK(isValid(full));reject(full,0,Error::CollectionFull);CHECK(!ringCaptureChance(full,0));
 }
 void fullRoster(){
     // Make the last free slot observable: existing members have distinct care
     // values and stable IDs, and the final capture must append without replacing.
-    auto s=fight();s.sequence=s.foregroundSequence=100;s.collectionCount=59;
-    s.captures=58;s.encounters=59;s.steps=5800;s.nextMemberId=60;
-    for(unsigned i=1;i<59;++i){s.collection[i]=s.collection[0];auto& member=s.collection[i];
-        member.id=i+1;member.capturedAtSequence=i+1;member.energy=30+i;member.mood=40+i;}
+    auto s=fight();s.sequence=s.foregroundSequence=400;s.collectionCount=kCollectionCapacity-1;
+    s.captures=kCollectionCapacity-2;s.steps=100u*(kCollectionCapacity-2);s.encounters=s.steps/100+s.walkingEncounters;s.nextMemberId=kCollectionCapacity;
+    for(unsigned i=1;i<kCollectionCapacity-1;++i){s.collection[i]=s.collection[0];auto& member=s.collection[i];
+        member.id=i+1;member.capturedAtSequence=i+1;member.energy=static_cast<std::uint8_t>(30+(i%60));member.mood=static_cast<std::uint8_t>(40+(i%50));}
     CHECK(isValid(s));const auto phase=phaseFor(s,capturering::Grade::Green),chance=ringCaptureChance(s,phase);
     CHECK(chance>0);
     while(nextRng(s.rngState)%100>=chance)s.rngState=nextRng(s.rngState);
     const auto beforeLastCapture=s;step(s,Action::RingCapture,phase);
-    CHECK(s.phase==Phase::Home&&s.collectionCount==kCollectionCapacity&&s.captures==59&&s.nextMemberId==61);
+    CHECK(s.phase==Phase::Home&&s.collectionCount==kCollectionCapacity&&s.captures==kCollectionCapacity-1&&s.nextMemberId==kCollectionCapacity+1);
     CHECK(s.activeCreatureId==beforeLastCapture.activeCreatureId&&s.collection[0].id==beforeLastCapture.collection[0].id&&
         s.collection[0].formId==beforeLastCapture.collection[0].formId&&s.collection[0].capturedAtSequence==0);
     // Only the active partner earns the normal battle XP/bond reward.
     CHECK(s.collection[0].xp>beforeLastCapture.collection[0].xp);
-    for(unsigned i=1;i<59;++i)CHECK(!std::memcmp(&s.collection[i],&beforeLastCapture.collection[i],sizeof(CreatureMember)));
-    CHECK(s.collection[59].id==60&&s.collection[59].formId==beforeLastCapture.wildFormId&&
-        s.collection[59].capturedAtSequence==beforeLastCapture.sequence+1&&s.lastCapture.result==CaptureResult::Captured);
+    for(unsigned i=1;i<kCollectionCapacity-1;++i)CHECK(!std::memcmp(&s.collection[i],&beforeLastCapture.collection[i],sizeof(CreatureMember)));
+    CHECK(s.collection[kCollectionCapacity-1].id==kCollectionCapacity&&s.collection[kCollectionCapacity-1].formId==beforeLastCapture.wildFormId&&
+        s.collection[kCollectionCapacity-1].capturedAtSequence==beforeLastCapture.sequence+1&&s.lastCapture.result==CaptureResult::Captured);
     restore(s);const auto home=s;CHECK(apply(s,Action::Hatch,2)==Error::AlreadyHatched);CHECK(same(s,home));
     Snapshot forged;CHECK(encodeSnapshot(s,forged));
     const auto put=[&](unsigned offset,unsigned value){for(unsigned i=0;i<4;++i)forged.bytes[offset+i]=static_cast<unsigned char>(value>>(i*8));};
@@ -86,7 +86,7 @@ void fullRoster(){
     }
     CHECK(!captureChance(s)&&s.captureAttempts==0&&s.rngState==full.rngState);
     CHECK(apply(s,Action::Release,s.activeCreatureId)==Error::ActiveMemberRelease);CHECK(same(s,full));
-    step(s,Action::Release,4);CHECK(s.collectionCount==59&&s.nextMemberId==61&&!findMember(s,4));
+    step(s,Action::Release,4);CHECK(s.collectionCount==kCollectionCapacity-1&&s.nextMemberId==kCollectionCapacity+1&&!findMember(s,4));
     CHECK(s.phase==full.phase&&s.wildFormId==full.wildFormId&&s.wildHp==full.wildHp&&s.wildTurn==full.wildTurn&&
         s.rngState==full.rngState&&s.captureAttempts==full.captureAttempts&&s.captures==full.captures);
     CHECK(!std::memcmp(s.journal,full.journal,sizeof(s.journal))&&s.activeCreatureId==full.activeCreatureId);
@@ -97,9 +97,9 @@ void fullRoster(){
     CHECK(captureChance(s)>0&&ringCaptureChance(s,renewed)>0);
     const auto room=s;step(s,Action::RingCapture,renewed);
     CHECK(s.rngState==nextRng(room.rngState)&&s.lastCapture.attempt==1&&s.lastCapture.result==CaptureResult::Captured);
-    CHECK(s.collectionCount==60&&s.nextMemberId==62&&s.collection[59].id==61&&!findMember(s,4));
+    CHECK(s.collectionCount==kCollectionCapacity&&s.nextMemberId==kCollectionCapacity+2&&s.collection[kCollectionCapacity-1].id==kCollectionCapacity+1&&!findMember(s,4));
     CHECK(s.activeCreatureId==room.activeCreatureId&&s.collection[0].id==room.collection[0].id);
-    for(unsigned i=1;i<59;++i)CHECK(!std::memcmp(&s.collection[i],&room.collection[i],sizeof(CreatureMember)));
+    for(unsigned i=1;i<room.collectionCount;++i)CHECK(!std::memcmp(&s.collection[i],&room.collection[i],sizeof(CreatureMember)));
     restore(s);
 }
 void installedEightMigration(){
@@ -128,7 +128,7 @@ void installedEightMigration(){
         CHECK(restored.collectionCount==prior.collectionCount&&restored.activeCreatureId==prior.activeCreatureId);
         for(unsigned i=0;i<8;++i){const auto& a=prior.collection[i];const auto& b=restored.collection[i];
             CHECK(a.id==b.id&&static_cast<unsigned>(a.species)==static_cast<unsigned>(b.species)&&a.hp==b.hp&&a.energy==b.energy&&a.fullness==b.fullness&&a.mood==b.mood&&a.bond==b.bond&&a.level==b.level&&a.capturedAtSequence==b.capturedAtSequence&&a.xp==b.xp&&a.formId==b.formId);}
-        for(unsigned i=8;i<60;++i){const auto& m=restored.collection[i];CHECK(!m.id&&m.species==Species::None&&!m.hp&&!m.energy&&!m.fullness&&!m.mood&&!m.bond&&!m.level&&!m.capturedAtSequence&&!m.xp&&!m.formId);}
+        for(unsigned i=8;i<kCollectionCapacity;++i){const auto& m=restored.collection[i];CHECK(!m.id&&m.species==Species::None&&!m.hp&&!m.energy&&!m.fullness&&!m.mood&&!m.bond&&!m.level&&!m.capturedAtSequence&&!m.xp&&!m.formId);}
         restore(restored);
         // Older firmware cannot decode the larger format, even with <=8 members.
         old::State rollback=prior;
@@ -146,35 +146,35 @@ void installedEightMigration(){
 }
 void fullRosterPartnerEvolutionAndBudget(){
     auto s=newDevice();step(s,Action::Hatch,1);
-    s.sequence=s.foregroundSequence=100;s.collectionCount=60;s.captures=s.encounters=59;s.steps=5900;s.nextMemberId=61;
-    for(unsigned i=1;i<60;++i){s.collection[i]=s.collection[0];s.collection[i].id=i+1;s.collection[i].capturedAtSequence=i+1;s.collection[i].mood=30+i;}
-    CHECK(isValid(s));const auto full=s;step(s,Action::Select,60);
-    CHECK(s.activeCreatureId==60&&s.collectionCount==60&&s.mood==89);
-    for(unsigned i=0;i<60;++i)CHECK(!std::memcmp(&s.collection[i],&full.collection[i],sizeof(CreatureMember)));
+    s.sequence=s.foregroundSequence=400;s.collectionCount=kCollectionCapacity;s.captures=s.encounters=kCollectionCapacity-1;s.steps=100*(kCollectionCapacity-1);s.nextMemberId=kCollectionCapacity+1;
+    for(unsigned i=1;i<kCollectionCapacity;++i){s.collection[i]=s.collection[0];s.collection[i].id=i+1;s.collection[i].capturedAtSequence=i+1;s.collection[i].mood=i+1==kCollectionCapacity?89:s.collection[0].mood;}
+    CHECK(isValid(s));const auto full=s;step(s,Action::Select,kCollectionCapacity);
+    CHECK(s.activeCreatureId==kCollectionCapacity&&s.collectionCount==kCollectionCapacity&&s.mood==89);
+    for(unsigned i=0;i<kCollectionCapacity;++i)CHECK(!std::memcmp(&s.collection[i],&full.collection[i],sizeof(CreatureMember)));
     restore(s);const auto partner=s;
-    CHECK(apply(s,Action::Release,60)==Error::ActiveMemberRelease&&same(s,partner));
+    CHECK(apply(s,Action::Release,kCollectionCapacity)==Error::ActiveMemberRelease&&same(s,partner));
     step(s,Action::Select,1);const auto* edge=forms::outgoing(11,0);CHECK(edge);
     if(edge){const auto need=forms::evolutionNeed(*edge);s.level=s.collection[0].level=need.level;s.collection[0].xp=xpForLevel(need.level);s.bond=s.collection[0].bond=need.bond;s.collection[0].careState=need.care;s.hp=s.collection[0].hp=combat::formProfile(11,need.level).stats.maxHp;}
     const auto before=s;if(edge)step(s,Action::Evolve,edge->to);
-    CHECK(s.collectionCount==60&&s.activeCreatureId==1&&s.nextMemberId==61&&s.collection[0].id==1&&s.collection[0].capturedAtSequence==0);
-    for(unsigned i=1;i<60;++i)CHECK(!std::memcmp(&s.collection[i],&before.collection[i],sizeof(CreatureMember)));
+    CHECK(s.collectionCount==kCollectionCapacity&&s.activeCreatureId==1&&s.nextMemberId==kCollectionCapacity+1&&s.collection[0].id==1&&s.collection[0].capturedAtSequence==0);
+    for(unsigned i=1;i<kCollectionCapacity;++i)CHECK(!std::memcmp(&s.collection[i],&before.collection[i],sizeof(CreatureMember)));
     restore(s);
-    // Maximum-width form from the independent3641-form/level sweep: all60
-    // members, full journal, 10-digit identities/counters and active encounter.
+    // Maximum-width form: a full 250-member roster, full journal, 10-digit
+    // identities/counters and an active encounter.
     s=newDevice(UINT32_MAX);step(s,Action::Hatch,1);
-    s.sequence=s.foregroundSequence=UINT32_MAX-1;s.steps=4294967200u;s.encounters=s.steps/100;s.captures=59;
-    s.receivedTrades=UINT32_MAX-65;s.nextMemberId=s.captures+s.receivedTrades+2;s.collectionCount=60;s.activeCreatureId=s.nextMemberId-60;
+    s.sequence=s.foregroundSequence=UINT32_MAX-1;s.steps=4294967200u;s.encounters=s.steps/100;s.captures=kCollectionCapacity-1;
+    s.receivedTrades=UINT32_MAX-255;s.nextMemberId=s.captures+s.receivedTrades+2;s.collectionCount=kCollectionCapacity;s.activeCreatureId=s.nextMemberId-kCollectionCapacity;
     s.worldSeed=s.rngState=UINT32_MAX;s.phase=Phase::Encounter;s.wildFormId=18;s.wildSpecies=Species::Agumon;s.wildRules=kRulesVersion;s.wildLevel=20;s.wildTurn=1000;
     s.wildMaxHp=s.wildHp=combat::formProfile(18,20).stats.maxHp;s.captureAttempts=2;s.lastCapture={s.sequence,18,90,2,20,CaptureResult::Escaped};
     for(unsigned id=1;id<=forms::kFormCount;++id)s.journal[(id-1)/32]|=1u<<((id-1)%32);
-    for(unsigned i=0;i<60;++i){auto& m=s.collection[i];m={s.activeCreatureId+i,static_cast<Species>(forms::find(245)->lineage),combat::formProfile(245,15).stats.maxHp,100,100,100,200,15,s.sequence-60+i,xpForLevel(15),245};}
+    for(unsigned i=0;i<kCollectionCapacity;++i){auto& m=s.collection[i];m={s.activeCreatureId+i,static_cast<Species>(forms::find(245)->lineage),combat::formProfile(245,15).stats.maxHp,100,100,100,200,15,s.sequence-static_cast<std::uint32_t>(kCollectionCapacity)+i,xpForLevel(15),245};}
     const auto& active=s.collection[0];s.hp=active.hp;s.energy=active.energy;s.fullness=active.fullness;s.mood=active.mood;s.bond=active.bond;s.level=active.level;
     for(unsigned i=0;i<kPartyCapacity;++i)s.partyMemberIds[i]=s.collection[i+1].id;
     CHECK(isValid(s));static char json[kJsonCapacity];const auto n=writeJson(s,json,sizeof(json));
-    CHECK(n>38000&&n<kJsonCapacity&&sizeof(State)==3188&&sizeof(Snapshot)==3216&&kCollectionCapacity==60);
-    CHECK(std::strstr(json,"\"collectionCapacity\":60"));
+    CHECK(n>38000&&n<kJsonCapacity&&sizeof(State)==12332&&sizeof(Snapshot)==6860&&kCollectionCapacity==250);
+    CHECK(std::strstr(json,"\"collectionCapacity\":250"));
     char shortJson[32];CHECK(!writeJson(s,shortJson,sizeof(shortJson))&&!shortJson[0]);restore(s);
-    std::printf("60-member wide JSON fixture: %zu/%zu bytes; State%zu Snapshot%zu\n",n,kJsonCapacity,sizeof(State),sizeof(Snapshot));
+    std::printf("full-roster JSON fixture: %zu/%zu bytes; State%zu Snapshot%zu\n",n,kJsonCapacity,sizeof(State),sizeof(Snapshot));
 }
 void odds(){
     using namespace capturering;

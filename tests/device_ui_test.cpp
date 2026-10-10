@@ -17,6 +17,7 @@ unsigned checks=0;
 #define CHECK(value) do { ++checks; if(!(value)) { std::fprintf(stderr,"FAIL %s:%d %s\n",__FILE__,__LINE__,#value); std::exit(1); } } while(false)
 // Member-card targets. DETAILS sits above the contextual primary; both end above BACK.
 constexpr int kDetailTapX=206, kDetailTapY=246, kPrimaryTapX=206, kPrimaryTapY=292;
+const Controller::Button* findLabel(const Controller::Button* buttons,std::size_t count,const char* label);
 
 struct Harness {
     State state=newDevice(12345);
@@ -802,7 +803,7 @@ void fullRosterNavigation() {
     Harness h;h.choose();
     // Released history makes owned IDs differ from their slot indices. Each
     // visible member has its own form to detect stale artwork requests.
-    constexpr unsigned released=100;
+    constexpr unsigned released=kCollectionCapacity;
     h.state.sequence=h.state.foregroundSequence=kCollectionCapacity+released+20;
     h.state.collectionCount=kCollectionCapacity;
     h.state.captures=h.state.encounters=kCollectionCapacity-1+released;
@@ -830,9 +831,15 @@ void fullRosterNavigation() {
     CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==h.state.collection[0].formId);
     h.dispatch(h.tap(55,180));
     CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==lastForm);
-    auto select=h.tap(280,312);CHECK(select.action==Action::Select && select.value==lastId);
+    Controller::Button rosterButtons[Controller::kMaxButtons];
+    const auto rosterCount=h.ui.layout(h.state,h.model,rosterButtons,Controller::kMaxButtons);
+    const auto* makePartner=findLabel(rosterButtons,rosterCount,"MAKE PARTNER");
+    CHECK(makePartner && makePartner->enabled && findLabel(rosterButtons,rosterCount,"ADD TO SQUAD"));
+    auto select=h.tap(makePartner->x+makePartner->w/2,makePartner->y+makePartner->h/2);
+    CHECK(select.action==Action::Select && select.value==lastId);
     h.dispatch(select,false);CHECK(trade::sameState(saved,h.state));
-    select=h.tap(280,312);CHECK(select.action==Action::Select && select.value==lastId);h.dispatch(select);
+    select=h.tap(makePartner->x+makePartner->w/2,makePartner->y+makePartner->h/2);
+    CHECK(select.action==Action::Select && select.value==lastId);h.dispatch(select);
     CHECK(h.state.activeCreatureId==lastId && h.state.collectionCount==kCollectionCapacity);
     CHECK(h.gameWrites==writes+1 && h.ui.artRequest(h.state,h.model,h.now).formId==lastForm);
 }
@@ -985,7 +992,7 @@ void memberCard() {
         Harness h; partnerRoster(h,4,0); setInjury(h.state,2,2); CHECK(isValid(h.state)); h.sync(); h.openPartners(); h.browseMember(2);
         Controller::Button buttons[Controller::kMaxButtons];
         const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
-        CHECK(findLabel(buttons,n,"MAKE PARTNER") && !findLabel(buttons,n,"TREAT"));
+        CHECK(findLabel(buttons,n,"MAKE PARTNER") && findLabel(buttons,n,"ADD TO SQUAD") && !findLabel(buttons,n,"TREAT"));
         bool owned=false, details=false;
         for(std::size_t i=0;i<n;++i) {
             owned=owned || std::strstr(buttons[i].label,"OWNED");
@@ -1005,7 +1012,33 @@ void memberCard() {
         CHECK(!h.tap(kPrimaryTapX,kPrimaryTapY));
         h.dispatch(h.tap(kDetailTapX,kDetailTapY)); CHECK(h.ui.screen()==Screen::Stats);
     }
-    { // Squad actions show only when MAKE PARTNER is not legal. A disabled full squad does not navigate.
+    { // A production member keeps MAKE PARTNER and the squad button together.
+        Harness h; partnerRoster(h,4,0); h.openPartners(); h.browseMember(2);
+        Controller::Button buttons[Controller::kMaxButtons];
+        auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        const auto* join=findLabel(buttons,n,"ADD TO SQUAD");
+        const auto* make=findLabel(buttons,n,"MAKE PARTNER");
+        CHECK(join && join->enabled && make && make->enabled);
+        const auto saved=h.state;
+        const auto select=h.tap(make->x+make->w/2,make->y+make->h/2);
+        CHECK(select.action==Action::Select && select.value==2);
+        h.dispatch(select,false);
+        CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0 && h.ui.screen()==Screen::Collection);
+        const auto intent=h.tap(join->x+join->w/2,join->y+join->h/2);
+        CHECK(intent.action==Action::PartyAdd && intent.value==2 && std::memcmp(&saved,&h.state,sizeof(State))==0);
+        Harness member; partnerRoster(member,4,1); member.openPartners(); member.browseMember(2);
+        n=member.ui.layout(member.state,member.model,buttons,Controller::kMaxButtons);
+        const auto* drop=findLabel(buttons,n,"REMOVE FROM SQUAD");
+        CHECK(drop && drop->enabled && findLabel(buttons,n,"MAKE PARTNER"));
+        const auto removed=member.tap(drop->x+drop->w/2,drop->y+drop->h/2);
+        CHECK(removed.action==Action::PartyRemove && removed.value==2 && isPartyMember(member.state,2));
+        Harness blocked; partnerRoster(blocked,6,3); blocked.openPartners(); blocked.browseMember(5);
+        n=blocked.ui.layout(blocked.state,blocked.model,buttons,Controller::kMaxButtons);
+        const auto* full=findLabel(buttons,n,"SQUAD FULL");
+        CHECK(full && !full->enabled && findLabel(buttons,n,"MAKE PARTNER"));
+        CHECK(!blocked.tap(full->x+full->w/2,full->y+full->h/2) && blocked.ui.screen()==Screen::Collection);
+    }
+    { // When MAKE PARTNER is not legal, the squad action stays the centered button. A disabled full squad does not navigate.
         Harness add; partnerRoster(add,4,0);
         auto* member=const_cast<CreatureMember*>(findMember(add.state,2));
         const auto* form=forms::find(4); CHECK(form);
@@ -1140,7 +1173,13 @@ void xpCompanionControls() {
     // Becoming active removes that member from the extras while the UI keeps
     // showing the same owned ID at its new first position.
     CHECK(apply(h.state,Action::PartyAdd,4)==Error::None); h.sync();
-    h.browseMember(4);auto select=h.tap(kPrimaryTapX,kPrimaryTapY);CHECK(select.action==Action::Select && select.value==4);h.dispatch(select);
+    h.browseMember(4);
+    Controller::Button selectButtons[Controller::kMaxButtons];
+    const auto selectCount=h.ui.layout(h.state,h.model,selectButtons,Controller::kMaxButtons);
+    const auto* selectButton=findLabel(selectButtons,selectCount,"MAKE PARTNER");
+    CHECK(selectButton && selectButton->enabled && findLabel(selectButtons,selectCount,"REMOVE FROM SQUAD"));
+    auto select=h.tap(selectButton->x+selectButton->w/2,selectButton->y+selectButton->h/2);
+    CHECK(select.action==Action::Select && select.value==4);h.dispatch(select);
     CHECK(h.ui.selectedMemberId()==4 && h.state.activeCreatureId==4 && !isPartyMember(h.state,4));
     CHECK(collectionMemberAtDisplayIndex(h.state,0)->id==4 && !h.tap(kPrimaryTapX,kPrimaryTapY));
     // The added controls leave a full opaque sprite clear of the count, name,
@@ -1527,6 +1566,40 @@ void tapAudit() {
     std::printf("tap audit: %u screens, %u targets\n",screens,targets);
 }
 
+void mergedCaptureShowsCaughtForm() {
+    bool found=false;
+    for(unsigned seed=1; seed<=512 && !found; ++seed) {
+        State owned=newDevice(seed);
+        if(apply(owned,Action::Hatch,1)!=Error::None) continue;
+        const auto partnerForm=activeMember(owned)->formId;
+        const auto partnerSpecies=activeMember(owned)->species;
+        if(apply(owned,Action::Explore,1000)!=Error::None || owned.phase!=Phase::Encounter || owned.wildFormId==partnerForm) continue;
+        owned.wildHp=owned.wildMaxHp/2;
+        State first=owned;
+        if(apply(first,Action::Capture)!=Error::None || first.lastCapture.result!=CaptureResult::Captured || first.collectionCount!=2) continue;
+        const auto newest=first.collection[first.collectionCount-1].formId;
+        if(newest==partnerForm || apply(first,Action::Explore,1000)!=Error::None || first.phase!=Phase::Encounter) continue;
+        first.wildFormId=partnerForm; first.wildSpecies=partnerSpecies; first.wildLevel=1; first.wildTurn=0; first.captureAttempts=0;
+        first.wildRules=kRulesVersion; first.wildMaxHp=combat::formProfile(partnerForm,1).stats.maxHp; first.wildHp=first.wildMaxHp/2;
+        if(!isValid(first)) continue;
+        State before=first;
+        for(unsigned attempt=0; attempt<3 && !found; ++attempt) {
+            State after=before;
+            if(apply(after,Action::Capture)!=Error::None) break;
+            if(after.lastCapture.result!=CaptureResult::Captured) { before=after; continue; }
+            CHECK(after.collection[after.collectionCount-1].formId==newest);
+            CHECK(after.lastCapture.targetFormId==partnerForm && after.collectionCount==2);
+            Harness h; h.state=before; h.sync(); h.state=after; h.sync();
+            CHECK(h.ui.screen()==Screen::Result);
+            CHECK(h.ui.artRequest(h.state,h.model,0).formId==partnerForm);
+            CHECK(h.ui.artRequest(h.state,h.model,0).animation==sprite::Animation::Celebrate);
+            std::array<std::uint16_t,kPixels> frame{};
+            CHECK(h.ui.render(h.state,h.model,frame.data(),frame.size(),1000));
+            found=true;
+        }
+    }
+    CHECK(found);
+}
 int main(int argc,char** argv) {
     backTargets();
     tapAudit();
@@ -1535,6 +1608,7 @@ int main(int argc,char** argv) {
     nearbyModeConsent();
     homeStepVisibility();
     captureTimingControls();
+    mergedCaptureShowsCaughtForm();
     fullRosterCaptureControls();
     fullRosterNavigation();
     partnersGrid();
@@ -1932,7 +2006,7 @@ int main(int argc,char** argv) {
 
     // Full collection and duplicate species keep instance identity distinct.
     // Release is offered only for an inactive instance and needs its own review.
-    Harness roster; roster.choose(); roster.state.sequence=100;
+    Harness roster; roster.choose(); roster.state.sequence=roster.state.foregroundSequence=kCollectionCapacity;
     roster.state.captures=roster.state.encounters=kCollectionCapacity-1; roster.state.steps=100*(kCollectionCapacity-1);
     roster.state.collectionCount=kCollectionCapacity; roster.state.nextMemberId=kCollectionCapacity+1;
     for (unsigned i=1;i<kCollectionCapacity;++i) {
@@ -1964,9 +2038,16 @@ int main(int argc,char** argv) {
     CHECK(roster.ui.screen()==Screen::Collection && roster.state.collectionCount==kCollectionCapacity-1);
     CHECK(!findMember(roster.state,2) && roster.state.activeCreatureId==1 && roster.state.nextMemberId==kCollectionCapacity+1);
     CHECK(roster.state.collection[1].id==3); // Slot moved; stable ID did not.
-    roster.browseMember(3); auto equip=roster.tap(280,312); CHECK(equip.action==Action::Select && equip.value==3);
+    roster.browseMember(3);
+    Controller::Button equipButtons[Controller::kMaxButtons];
+    const auto equipCount=roster.ui.layout(roster.state,roster.model,equipButtons,Controller::kMaxButtons);
+    const auto* equipButton=findLabel(equipButtons,equipCount,"MAKE PARTNER");
+    CHECK(equipButton && equipButton->enabled && findLabel(equipButtons,equipCount,"ADD TO SQUAD"));
+    auto equip=roster.tap(equipButton->x+equipButton->w/2,equipButton->y+equipButton->h/2);
+    CHECK(equip.action==Action::Select && equip.value==3);
     roster.dispatch(equip,false); CHECK(roster.state.activeCreatureId==1);
-    roster.dispatch(roster.tap(280,312)); CHECK(roster.state.activeCreatureId==3);
+    roster.dispatch(roster.tap(equipButton->x+equipButton->w/2,equipButton->y+equipButton->h/2));
+    CHECK(roster.state.activeCreatureId==3);
     CHECK(!roster.tap(280,312));
     Controller restoredRoster; restoredRoster.update(roster.state,roster.model);
     CHECK(restoredRoster.screen()==Screen::Home && roster.state.activeCreatureId==3);

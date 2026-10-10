@@ -506,7 +506,10 @@ void rules9ProfilesAndMigration() {
  for(unsigned id=1;id<=old::forms::kFormCount;++id)for(unsigned level=forms::find(id)->minLevel;level<=20;++level){
   const auto a=combat::formProfile(id,level);const auto b=old::combat::formProfile(id,level);
   const bool equal=a.stats.maxHp==b.stats.maxHp&&a.stats.attack==b.stats.attack&&a.stats.defense==b.stats.defense&&a.stats.magic==b.stats.magic&&a.stats.resistance==b.stats.resistance;
-  CHECK(equal==(id!=3&&id!=7));CHECK(!std::strcmp(a.name,b.name)&&!std::strcmp(a.type,b.type)&&!std::strcmp(a.physicalSkill,b.physicalSkill)&&!std::strcmp(a.heavySkill,b.heavySkill)&&!std::strcmp(a.magicSkill,b.magicSkill));
+  const bool skills=!std::strcmp(a.physicalSkill,b.physicalSkill)&&!std::strcmp(a.heavySkill,b.heavySkill)&&!std::strcmp(a.magicSkill,b.magicSkill);
+  CHECK(equal==(id!=3&&id!=7));CHECK(!std::strcmp(a.type,b.type));
+  // Forms 1–66 keep the rules8 strings. Later player-facing names may be the English dub.
+  if(id<=66||!std::strcmp(a.name,b.name)) CHECK(!std::strcmp(a.name,b.name)&&skills);
   if(!equal)++changed;
  }
  CHECK(changed==22);

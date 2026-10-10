@@ -201,19 +201,25 @@ static void pendingEncounterSavePolicy() {
 
 static void xpCompanionSavePolicy() {
     auto source=newDevice(12345);CHECK(apply(source,Action::Hatch,1)==Error::None);
-    source.sequence=source.foregroundSequence=100;source.collectionCount=kCollectionCapacity;
-    source.captures=source.encounters=kCollectionCapacity-1;source.steps=100*source.encounters;source.nextMemberId=kCollectionCapacity+1;
-    for(unsigned i=1;i<kCollectionCapacity;++i){source.collection[i]=source.collection[0];source.collection[i].id=i+1;source.collection[i].capturedAtSequence=i;}
+    // Schema 21 stores sixty 44-byte members and no party. The later slots of a
+    // current save stay empty, and migration grants the three dungeon keys.
+    constexpr unsigned count=kRoster60Capacity;
+    source.sequence=source.foregroundSequence=400;source.collectionCount=count;
+    source.captures=source.encounters=count-1;source.steps=100*source.encounters;source.nextMemberId=count+1;
+    source.dungeonKeys=3;
+    for(unsigned i=1;i<count;++i){source.collection[i]=source.collection[0];source.collection[i].id=i+1;source.collection[i].capturedAtSequence=i;}
     CHECK(isValid(source));Snapshot current;CHECK(encodeSnapshot(source,current));
-    Slot old{};old.length=kV21SnapshotSize;std::memcpy(old.bytes,current.bytes,kV21SnapshotSize-4);
+    std::uint8_t schema26[kSchema26SnapshotSize]{};snapshot_test::schema26Image(current.bytes,schema26);
+    std::uint8_t schema22[kV22SnapshotSize]{};snapshot_test::rules15Image(schema26,schema22);
+    Slot old{};old.length=kV21SnapshotSize;std::memcpy(old.bytes,schema22,kV21SnapshotSize-4);
     auto put=[](std::uint8_t* p,std::uint32_t v){for(unsigned i=0;i<4;++i)p[i]=static_cast<std::uint8_t>(v>>(8*i));};
     old.bytes[4]=21;old.bytes[5]=0;old.bytes[6]=(kV21SnapshotSize-12)&255;old.bytes[7]=(kV21SnapshotSize-12)>>8;put(old.bytes+8,14);
     std::uint32_t crc=~0u;for(std::size_t i=0;i<kV21SnapshotSize-4;++i){crc^=old.bytes[i];for(unsigned bit=0;bit<8;++bit)crc=(crc>>1)^(0xedb88320u&(0u-(crc&1)));}put(old.bytes+kV21SnapshotSize-4,~crc);
     for(unsigned failure=0;failure<3;++failure){
         MemoryBackend flash;flash.present[0]=flash.present[1]=true;flash.slots[0]=flash.slots[1]=old;
         SaveStore saves(flash);State state;CHECK(saves.restore(state)==BootStatus::Migrated && saves.writable() && !flash.writes);
-        CHECK(sameSnapshot(state,source) && partyCount(state)==0 && state.collectionCount==kCollectionCapacity);
-        auto candidate=state;CHECK(apply(candidate,Action::PartyAdd,kCollectionCapacity)==Error::None);
+        CHECK(sameSnapshot(state,source) && partyCount(state)==0 && state.collectionCount==count);
+        auto candidate=state;CHECK(apply(candidate,Action::PartyAdd,count)==Error::None);
         flash.failBeforeWrite=failure==1;flash.failAfterWrite=failure==2;
         const bool durable=saves.checkpoint(candidate);CHECK(durable==(failure==0));
         if(durable)state=candidate;
@@ -222,9 +228,9 @@ static void xpCompanionSavePolicy() {
         flash.failBeforeWrite=flash.failAfterWrite=false;SaveStore reboot(flash);State restored;
         const auto result=reboot.restore(restored);CHECK(result==(failure==1?BootStatus::Migrated:BootStatus::Loaded));
         CHECK(sameSnapshot(restored,failure==1?source:candidate));
-        CHECK(restored.activeCreatureId==source.activeCreatureId && restored.collectionCount==kCollectionCapacity);
-        for(unsigned i=0;i<kCollectionCapacity;++i)CHECK(restored.collection[i].id==source.collection[i].id);
-        if(failure!=1){CHECK(apply(restored,Action::PartyRemove,kCollectionCapacity)==Error::None && reboot.checkpoint(restored));SaveStore again(flash);State removed;CHECK(again.restore(removed)==BootStatus::Loaded && !partyCount(removed) && sameSnapshot(removed,restored));}
+        CHECK(restored.activeCreatureId==source.activeCreatureId && restored.collectionCount==count);
+        for(unsigned i=0;i<count;++i)CHECK(restored.collection[i].id==source.collection[i].id);
+        if(failure!=1){CHECK(apply(restored,Action::PartyRemove,count)==Error::None && reboot.checkpoint(restored));SaveStore again(flash);State removed;CHECK(again.restore(removed)==BootStatus::Loaded && !partyCount(removed) && sameSnapshot(removed,restored));}
     }
     std::puts("PASS schema21 ->22 companion save policy:60 members retained, initially empty extras, verified add/remove, before/after-commit faults, reboot recovery");
 }
@@ -502,8 +508,9 @@ int main() {
             if(i==4 || i==6 || i==7 || i==8) continue;
             CHECK(bytes.bytes[i] == static_cast<std::uint8_t>(nibble(hex[i*2])*16+nibble(hex[i*2+1])));
         }
+        const auto projected=snapshot_test::eightSlotBytes(bytes.bytes);
         for (std::size_t i=12; i<kV13SnapshotSize-4; ++i)
-            CHECK(bytes.bytes[snapshot_test::currentOffset(i)] == static_cast<std::uint8_t>(nibble(hex[i*2])*16+nibble(hex[i*2+1])));
+            CHECK(projected[i] == static_cast<std::uint8_t>(nibble(hex[i*2])*16+nibble(hex[i*2+1])));
         CHECK(candidate.explorationSteps==0 && candidate.walkingEncounters==0 &&
               candidate.encounterRng==0 && candidate.encounterTarget==0 &&
               candidate.encounterProgress==0 && candidate.encounterRate==EncounterRate::Normal);

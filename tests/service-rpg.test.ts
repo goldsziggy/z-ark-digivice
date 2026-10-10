@@ -40,13 +40,13 @@ test('rules-three Auto capture migrates once without retroactive XP or relabelle
   const events = [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }, { type: 'auto', value: 0 }];
   const old = oldCare(events), f = await fixture(t, old);
   const migrated = (await f.request('/api/save', TOKEN)).body;
-  assert.equal(migrated.state.schemaVersion, 26); assert.equal(migrated.state.rulesVersion, 19);
+  assert.equal(migrated.state.schemaVersion, 27); assert.equal(migrated.state.rulesVersion, 19);
   assert.equal(migrated.revision, 1); assert.equal(migrated.baseSequence, 4); assert.deepEqual(migrated.events, []);
   assert.equal(migrated.state.rngState, 3336926330); assert.equal(migrated.state.captures, 1);
   assert.deepEqual(migrated.state.collection.map((member: any) => [member.id, member.species, member.xp, member.level, member.capturedAtSequence]), [[1, 'impmon', 0, 1, 0], [2, 'flicker', 0, 1, 4]]);
   assert.deepEqual(migrated.state.lastAutoBattle, { sequence: 4, turns: 4, outcome: 'captured' }); assert.equal(migrated.autoTrace, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 21); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
+  assert.equal(stored.formatVersion, 21); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6860);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 3, events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v3.json'), 'utf8')), old);
   const oldPending = { rulesVersion: 3, baseRevision: 0, batchId: old.devices[0].receipts[0].batchId, events };

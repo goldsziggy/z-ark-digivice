@@ -42,11 +42,11 @@ for (const archivedBaseline of [false, true]) test(`schema17 upgrades metadata w
     return { status: response.status, body: await response.json() as any };
   };
   const saved = await request(); assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 26); assert.equal(saved.body.state.rulesVersion, 19);
-  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...frozen.cases.pending.state, schemaVersion: 26, rulesVersion: 19, collectionCapacity: 60, partyCapacity: 3, partyMemberIds: [], receivedTrades: 0, autoCapture: 0, worldSeed: 0 }));
+  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...frozen.cases.pending.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [], receivedTrades: 0, autoCapture: 0, worldSeed: 0 }));
   assert.equal(saved.body.revision, original.devices[0].revision);
   const upgraded = JSON.parse(await readFile(join(dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([upgraded.formatVersion, upgraded.gameSchemaVersion, upgraded.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([upgraded.formatVersion, upgraded.gameSchemaVersion, upgraded.rulesVersion], [21, 27, 19]);
   assert.deepEqual(upgraded.devices[0].legacy.histories, [...(original.devices[0].legacy?.histories ?? []), { rulesVersion: 13, events, receipts: [savedReceipt] }]);
   assert.deepEqual(upgraded.devices[0].events, []); assert.deepEqual(upgraded.devices[0].receipts, []);
   assert.equal(await readFile(join(dataDir, 'store.rules-v13.json'), 'utf8'), originalText);

@@ -9,10 +9,19 @@
 // This core has no heap allocation, clock, network, filesystem, or hardware dependency.
 namespace digivice {
 
-constexpr std::uint32_t kSchemaVersion = 26;
+constexpr std::uint32_t kSchemaVersion = 27;
 constexpr std::uint32_t kRulesVersion = 19;
 constexpr std::uint32_t kDevelopmentSeed = 12345;
-constexpr std::size_t kSnapshotSize = 3216; // V23, V24 and V25 share this layout.
+// Schema 27 stores each Digimon in 26 bytes so 250 of them still fit the
+// existing NVS partition beside two trade journals. Schemas 23-26 are 3,216 bytes.
+constexpr std::size_t kRoster60Capacity = 60;
+constexpr std::size_t kMemberSnapshotBytes = 26;
+constexpr std::size_t kSnapshotLeadBytes = 112;
+constexpr std::size_t kSnapshotTailBytes = 220;
+constexpr std::size_t kExpeditionWords = 6;
+constexpr std::size_t kSnapshotSize = kSnapshotLeadBytes + 250 * kMemberSnapshotBytes + kSnapshotTailBytes + kExpeditionWords * 4 + 4;
+constexpr std::size_t kSchema26SnapshotSize = 3216; // V23 through V26 share this layout.
+static_assert(kSnapshotSize == 6860, "schema 27 snapshot size");
 constexpr std::size_t kV22SnapshotSize = 2964;
 constexpr std::size_t kV21SnapshotSize = 2952;
 constexpr std::size_t kV20SnapshotSize = 664;
@@ -28,14 +37,16 @@ constexpr std::size_t kV5SnapshotSize = 412;
 constexpr std::size_t kPreviousSnapshotSize = 404; // Formats 3 and 4.
 constexpr std::size_t kLegacySnapshotSize = 96;
 constexpr std::size_t kV2SnapshotSize = 100;
-// Measured60-member catalog sweep:38,430 bytes including combat/care details.
-constexpr std::size_t kJsonCapacity = 65536;
+// A full 250-member projection is larger than the old 60-member 38,430-byte sweep.
+constexpr std::size_t kJsonCapacity = 262144;
 constexpr std::size_t kJournalCapacity = 512;
 constexpr std::size_t kJournalWords = kJournalCapacity / 32;
 constexpr std::uint32_t kMaxLevel = 50;
 constexpr std::uint32_t kMaxXp = 49000;
-constexpr std::size_t kCollectionCapacity = 60;
+constexpr std::size_t kCollectionCapacity = 250;
 constexpr std::size_t kPartyCapacity = 3;
+// Onboarding through world seed, then the three party ids. Schema 26 used 3188.
+constexpr std::size_t kSnapshotPartyOffset = kSnapshotLeadBytes + kCollectionCapacity * kMemberSnapshotBytes + (11 + kJournalWords + 6 + 9 + 4 + 3) * 4;
 constexpr std::size_t kLegacyCollectionCapacity = 8; // Snapshot schemas1..20.
 constexpr std::uint32_t kMaxReplayEvents = 10000;
 
@@ -173,6 +184,14 @@ struct State {
     std::uint32_t lastCritical = 0;
     // Rules 16: a miss hides capture until the next attack resolves.
     std::uint32_t captureDeferred = 0;
+    // Schema 27. Existing saves receive three dungeon keys once, on migration.
+    // A newly created game starts with none. Boss sigils stay at zero until earned.
+    std::uint32_t dungeonKeys = 0;
+    std::uint32_t bossSigils = 0;
+    std::uint32_t dungeonWins = 0;
+    std::uint32_t bossSteps = 0;
+    std::uint32_t dungeonClears = 0;
+    std::uint32_t bossClears = 0;
 };
 
 struct Snapshot { std::uint8_t bytes[kSnapshotSize]{}; };

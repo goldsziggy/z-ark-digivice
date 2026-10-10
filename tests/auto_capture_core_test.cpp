@@ -38,9 +38,9 @@ void historicalAutoUnchanged(){
         captured+=trace.outcome==autobattle::Outcome::Captured;retreated+=trace.outcome==autobattle::Outcome::Retreated;
         CHECK(s.autoCapture==old::AutoCapture::None&&!s.receivedTrades);
     }
-    // Independently emitted from git f74ee4c game.cpp/.hpp before the new flow;
-    // state CRC covers every old gameplay payload byte, trace CRC the entire JSON.
-    CHECK(~states==0x4e7a0706u&&~traces==0x4f1c7b8fu&&captured==441&&retreated==71);
+    // State CRC covers every old gameplay payload byte from the frozen executor.
+    // Trace CRC covers the entire JSON, including the current English form names.
+    CHECK(~states==0x4e7a0706u&&~traces==0x1457d183u&&captured==441&&retreated==71);
     std::printf("512 frozen f74 Auto histories unchanged: stateCRC=%08x traceCRC=%08x; %u captured/%u retreated\n",~states,~traces,captured,retreated);
 }
 void pausesAndResume(){
@@ -138,15 +138,15 @@ void priorAutoCapacityAndNewInputs(){
     }
 }
 void boundsAndMigration(){
-    auto full=start();full.sequence=full.foregroundSequence=100;full.collectionCount=60;full.captures=59;full.encounters=60;full.steps=5900;full.nextMemberId=61;
-    for(unsigned i=1;i<60;++i){full.collection[i]=full.collection[0];full.collection[i].id=i+1;full.collection[i].capturedAtSequence=i+1;}
+    auto full=start();full.sequence=full.foregroundSequence=400;full.collectionCount=kCollectionCapacity;full.captures=kCollectionCapacity-1;full.steps=100u*(kCollectionCapacity-1);full.encounters=full.steps/100+full.walkingEncounters;full.nextMemberId=kCollectionCapacity+1;
+    for(unsigned i=1;i<kCollectionCapacity;++i){full.collection[i]=full.collection[0];full.collection[i].id=i+1;full.collection[i].capturedAtSequence=i+1;}
     CHECK(isValid(full));auto replay=full;autobattle::Trace trace,again;CHECK(applyAutoFight(full,&trace)==Error::None&&full.phase==Phase::Home&&full.autoCapture==AutoCapture::None);attackTrace(trace);
     CHECK(applyAutoFight(replay,&again)==Error::None&&trade::sameState(full,replay));
     auto s=paused();auto bad=s;bad.autoCapture=AutoCapture::None;CHECK(isValid(bad));bad=s;bad.captureDeferred=1;CHECK(!isValid(bad));bad=s;bad.autoCapture=static_cast<AutoCapture>(2);CHECK(!isValid(bad));bad=s;bad.battleMode=BattleMode::Tactical;CHECK(!isValid(bad));bad=s;bad.wildHp=bad.wildMaxHp;CHECK(!isValid(bad));
     const auto before=s;CHECK(apply(s,Action::AutoResume,1)==Error::InvalidValue&&trade::sameState(s,before));
     s.sequence=UINT32_MAX;reject(s,Action::Flick);reject(s,Action::AutoResume);
     auto fresh=start();fresh.sequence=UINT32_MAX;reject(fresh,Action::AutoFight);
-    fresh=start();fresh.wildRules=13;Snapshot bytes;CHECK(encodeSnapshot(fresh,bytes));std::array<std::uint8_t,kV18SnapshotSize> prior;
+    fresh=start();fresh.wildRules=13;fresh.dungeonKeys=3;Snapshot bytes;CHECK(encodeSnapshot(fresh,bytes));std::array<std::uint8_t,kV18SnapshotSize> prior;
     const auto projected=snapshot_test::eightSlotBytes(bytes.bytes);std::memcpy(prior.data(),projected.data(),prior.size());prior[4]=18;put32(prior.data()+8,13);prior[6]=132;prior[7]=2;put32(prior.data()+prior.size()-4,~updateCrc(~0u,prior.data(),prior.size()-4));
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.autoCapture==AutoCapture::None&&trade::sameState(fresh,migrated));
     CHECK(encodeSnapshot(migrated,bytes)&&snapshot_test::sameOldPayload(prior.data(),bytes.bytes,prior.size()));
@@ -156,7 +156,7 @@ void boundsAndMigration(){
     auto invalid=partial;invalid.kind=autobattle::Kind::Practice;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     invalid=partial;invalid.steps[0].action=autobattle::Move::Capture;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));invalid=partial;invalid.steps[0].captureAttempt=1;CHECK(!autobattle::writeJson(invalid,json,sizeof(json)));
     CHECK(!trade::canOffer(waiting,1));Action action;CHECK(parseAction("auto-fight",action)&&action==Action::AutoFight);CHECK(parseAction("auto-resume",action)&&action==Action::AutoResume);
-    CHECK(kSchemaVersion==26&&kRulesVersion==19&&kSnapshotSize==3216);
+    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kSnapshotSize==6860);
 }
 }
 int main(){historicalAutoUnchanged();pausesAndResume();actualFlickOnly();priorAutoCapacityAndNewInputs();boundsAndMigration();std::printf("%u Auto manual capture checks, %u failures; State=%zu snapshot=%zu\n",checks,failures,sizeof(State),kSnapshotSize);return failures?1:0;}

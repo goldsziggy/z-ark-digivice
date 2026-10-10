@@ -63,7 +63,7 @@ test('HTTP service validates replay, identity, retries, concurrency, and product
   t.after(f.dispose);
   const paired = await f.legacy();
   const token = paired.token;
-  assert.equal(paired.state.schemaVersion, 26);
+  assert.equal(paired.state.schemaVersion, 27);
   assert.equal(paired.state.rulesVersion, 19);
   assert.equal(paired.revision, 0);
   assert.deepEqual(paired.events, []);

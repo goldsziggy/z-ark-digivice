@@ -1,30 +1,30 @@
 # Individual collection and journal
 
-> **Current roster (rules 19):** 465 form IDs, 451 playable (four retired duplicates), 254 routes; rules 13–18 keep the 276-form / 172-route roster below. See [ROSTER_RULES19.md](ROSTER_RULES19.md). The counts below describe the rules-14 release.
+> **Current roster (rules 19, schema 27):** 250 carried Digimon, a 6,860-byte snapshot, and 465 form IDs (451 playable). Existing saves receive three dungeon keys when they migrate. A newly created game starts with none. Rules 13–18 keep the smaller historical rosters described below. See [ROSTER_RULES19.md](ROSTER_RULES19.md) and [co-op expeditions](COOP_EXPEDITIONS.md).
 
-The shared, allocation-free native core uses **care schema 21, rules 14, catalog 6 and a 2,952-byte snapshot**. Browser and firmware execute the same transitions. The full catalog has 276 forms, including all 255 named source-sheet entries. [Gameplay review](GAMEPLAY_REVIEW.md) · [Roster and provenance](WORLD_DS_ROSTER.md) · [HTTP contract](../service/API.md).
+The shared native core is **schema 27, rules 19**. Browser and firmware execute the same transitions. [Gameplay review](GAMEPLAY_REVIEW.md) · [Roster and provenance](WORLD_DS_ROSTER.md) · [HTTP contract](../service/API.md).
 
-## At sixty of sixty Digimon
+## At 250 Digimon
 
-Sixty is the carried roster limit; there is no reserve storage box. A successful capture at 59/60 adds the wild Digimon as member sixty with a new stable ID. Existing members are retained. At 60/60, all capture actions reject before spending an attempt, drawing RNG, awarding rewards or advancing the save.
+Two hundred and fifty is the carried roster limit; there is no reserve storage box. A successful capture into the last free slot adds the wild Digimon with a new stable ID. Existing members are retained. When all 250 slots are filled, capture actions reject before spending an attempt, drawing RNG, awarding rewards or advancing the save. An exact-form duplicate still merges bonus XP into the oldest copy and does not need a free slot.
 
-| Action at 60/60 | Current behavior |
+| Action at 250/250 | Current behavior |
 | --- | --- |
 | Tactical capture | Disabled; a direct or stale request is also rejected without changing the save. |
 | Auto battle | Continues fighting to victory or retreat without pausing for capture. Make room before starting if you want to capture. |
 | Browser Make room | Review and confirm release of a non-partner while the current encounter waits. Back keeps the Digimon. Current encounters retain opponent, HP, RNG, attempts, cards and mode. |
 | Native release | Home → PARTNERS → select a non-partner → STATS + EVOLVE → RELEASE DIGIMON → confirm. The native battle screen explains that the roster is full and says FINISH BATTLE TO RELEASE. It currently has no Make room route; finish the encounter first. |
-| Partner selection or evolution | Uses an existing slot; roster count stays sixty. |
+| Partner selection or evolution | Uses an existing slot; roster count stays 250. |
 | Starter selection | Single-use at hatching; another starter cannot be added to a completed save. |
-| Native Nearby trade | One-for-one exchange, allowed at sixty. Both players confirm exact offers; another playable Digimon must remain. An offered active partner is replaced as partner by a retained member. |
+| Native Nearby trade | One-for-one exchange, allowed at 250. Both players confirm exact offers; another playable Digimon must remain. An offered active partner is replaced as partner by a retained member. |
 
-Release removes that individual’s care and XP, while its discovered form remains in the journal and lifetime captures remain recorded. It is never automatic. A confirmed release changes 60/60 to 59/60; a later successful capture can fill the free slot. Malformed saves claiming more than sixty members are rejected rather than truncated.
+Release removes that individual’s care and XP, while its discovered form remains in the journal and lifetime captures remain recorded. It is never automatic. A confirmed release changes 250/250 to 249/250; a later successful capture can fill the free slot. Malformed saves claiming more than 250 members are rejected rather than truncated.
 
 The expanded roster migrates old eight-member saves without adding or replacing any individual. Release policy is unchanged. The new firmware is prepared locally; both physical playtest units remain on `8be26c6`. No hardware access is part of this update.
 
 ## Individual Digimon
 
-- Carry at most **sixty Digimon**, each with its own HP, energy, fullness, mood, bond, XP, level, form and capture sequence. Inactive members do not receive the active member's care or combat changes. Duplicate forms remain separate individuals.
+- Carry at most **250 Digimon**, each with its own HP, energy, fullness, mood, bond, XP, level, form and capture sequence. Inactive members do not receive the active member's care or combat changes. An exact-form duplicate merges bonus XP into the oldest copy.
 - Member IDs are stable unsigned integers, starting at 1 and allocated monotonically through `nextMemberId`. An ID is never an array index and is never reused after release.
 - `select <memberId>` is accepted at Home. The active member may be selected again. Unknown IDs or selection during an encounter reject transactionally.
 - `release <memberId>` removes an inactive companion at Home or while a rules-10 through rules-14 wild encounter waits for input. Encounter release preserves opponent, HP, RNG, turn, capture attempts, cards and the active partner. Older encounters retain the Home-only restriction. The browser binds review/confirmation to the exact identity and save revision; ESP serial requires `release <id> confirm`. The active companion cannot be released. An active or uncertain practice duel blocks selection, evolution and release.

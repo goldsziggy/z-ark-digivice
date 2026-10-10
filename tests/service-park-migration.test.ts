@@ -32,7 +32,7 @@ function oldFields(current: any) {
   assert.equal(current.maxLevel, 50);
   const { schemaVersion, rulesVersion, wildRarity, recoveryRestCount, queuedEncounters, stepsToNextEncounter, walking, ...state } = legacyFields(current);
   assert.deepEqual(walking, { rate: 2, name: 'Normal', eligibleSteps: 0, encounters: 0, rngState: 0, target: 0, progress: 0, remainingSteps: 0 });
-  assert.equal(schemaVersion, 26); assert.equal(rulesVersion, 19);
+  assert.equal(schemaVersion, 27); assert.equal(rulesVersion, 19);
   assert.equal(wildRarity, null, 'historical encounter/result cannot acquire a rarity label retroactively');
   assert.ok(Number.isInteger(recoveryRestCount) && recoveryRestCount >= 0 && recoveryRestCount <= 40);
   assert.equal(queuedEncounters, Math.floor(state.stepCredit / 100));
@@ -47,7 +47,7 @@ for (const name of ['egg', 'encounter', 'autoResult', 'afterCare']) test(`genuin
   assert.deepEqual(current.body.autoTrace, checkpoint.response.body.autoTrace);
   assert.equal(current.body.revision, checkpoint.response.body.revision);
   const store = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [21, 27, 19]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v9.json'), 'utf8')), checkpoint.store);
   for (const command of frozen.care.commands.slice(0, current.body.revision)) {
     assert.equal((await f.request(command.body)).body.error, 'migration_required');

@@ -11,6 +11,22 @@ import { startServer } from '../service/server.ts';
 import { BattleError, createBattleService } from '../service/battle-service.ts';
 
 const rootDir = resolve(import.meta.dirname, '..');
+// Schema 27 packs each member into 26 bytes. Expand the first 60 back into the
+// schema-26 image so a frozen eight-slot checkpoint can be compared byte for byte.
+function schema26Image(current: Buffer) {
+  const out = Buffer.alloc(3216);
+  current.copy(out, 0, 0, 112);
+  for (let i = 0; i < 60; i++) {
+    const packed = 112 + i * 26, words = 112 + i * 48;
+    const formSpecies = current.readUInt32LE(packed + 8), xpHp = current.readUInt32LE(packed + 12);
+    const values = [current.readUInt32LE(packed), formSpecies >>> 16, xpHp >>> 16, current[packed + 17], current[packed + 18],
+      current[packed + 19], current[packed + 20], current[packed + 16], current.readUInt32LE(packed + 4), xpHp & 0xffff,
+      formSpecies & 0xffff, current.readUInt32LE(packed + 22)];
+    for (let word = 0; word < 12; word++) out.writeUInt32LE(values[word] >>> 0, words + word * 4);
+  }
+  current.copy(out, 2992, 112 + 250 * 26, 112 + 250 * 26 + 220);
+  return out;
+}
 const frozen = JSON.parse(readFileSync(join(rootDir, 'tests/fixtures/auto-tuning-baseline16-service.json'), 'utf8'));
 const corePath = process.env.DIGIVICE_TEST_BATTLE_PATH;
 const errorCode = (code: string) => (error: unknown) => error instanceof BattleError && error.code === code;
@@ -92,7 +108,7 @@ async function careFixture(t: { after: (fn: () => Promise<void>) => unknown }, c
   };
   return { dataDir, historical, request, restart: async () => { await close(); app.close(); app = await startServer({ seedSource: () => 12345, rootDir, dataDir, corePath: corePathCare, battleCorePath: corePath, port: 0 }); } };
 }
-const currentCare = (state: any) => ({ ...state, schemaVersion: 26, rulesVersion: 19, walking: { rate: 2, name: 'Normal', eligibleSteps: 0, encounters: 0, rngState: 0, target: 0, progress: 0, remainingSteps: 0 }, wildRarity: null, recoveryRestCount: state.phase === 'home' ? Math.ceil(Math.max(state.combat.maxHp - state.hp, 100 - state.energy) / 25) : 0, queuedEncounters: Math.floor(state.stepCredit / 100), stepsToNextEncounter: state.stepCredit >= 100 ? 0 : 100 - state.stepCredit });
+const currentCare = (state: any) => ({ ...state, schemaVersion: 27, rulesVersion: 19, walking: { rate: 2, name: 'Normal', eligibleSteps: 0, encounters: 0, rngState: 0, target: 0, progress: 0, remainingSteps: 0 }, wildRarity: null, recoveryRestCount: state.phase === 'home' ? Math.ceil(Math.max(state.combat.maxHp - state.hp, 100 - state.energy) / 25) : 0, queuedEncounters: Math.floor(state.stepCredit / 100), stepsToNextEncounter: state.stepCredit >= 100 ? 0 : 100 - state.stepCredit });
 test('care8 committed Auto history migrates once, reserves pending IDs, and cannot duplicate its capture reward', async t => {
   const f = await careFixture(t, 'afterCare'), saved = await f.request();
   assert.equal(saved.status, 200);
@@ -100,12 +116,12 @@ test('care8 committed Auto history migrates once, reserves pending IDs, and cann
   assert.deepEqual(saved.body.autoTrace, f.historical.response.body.autoTrace); assert.deepEqual(saved.body.events, []);
   assert.equal(saved.body.revision, 3); assert.equal(saved.body.baseSequence, f.historical.response.body.state.sequence);
   const store = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [21, 26, 19]);
+  assert.deepEqual([store.formatVersion, store.gameSchemaVersion, store.rulesVersion], [21, 27, 19]);
   assert.deepEqual(store.devices[0].legacy.histories, [{ rulesVersion: 8, events: f.historical.store.devices[0].events, receipts: f.historical.store.devices[0].receipts }]);
   assert.deepEqual(store.devices[0].legacy.autoTrace, f.historical.response.body.autoTrace);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v8.json'), 'utf8')), f.historical.store);
   const snapshot = Buffer.from(store.devices[0].legacy.snapshotBase64, 'base64');
-  assert.deepEqual([snapshot.length, snapshot.readUInt16LE(4), snapshot.readUInt32LE(8)], [3216, 26, 19]);
+  assert.deepEqual([snapshot.length, snapshot.readUInt16LE(4), snapshot.readUInt32LE(8)], [6860, 27, 19]);
   for (const command of frozen.care.commands) {
     assert.equal((await f.request(command.body)).body.error, 'migration_required');
     assert.equal((await f.request({ ...command.body, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
@@ -179,14 +195,15 @@ test('legacy Lumen/Pelagia checkpoints retain historical HP scaling and clear te
     assert.equal(migrated.body.state.maxLevel, 50); assert.deepEqual(historicComparable(legacyFields(migrated.body.state)), historicComparable(currentCare(checkpoint.migrated.state)));
     const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
     const currentBytes = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'), previousBytes = Buffer.from(checkpoint.migrated.snapshotBase64, 'base64');
-    assert.equal(currentBytes.length, 3216); assert.equal(previousBytes.length, 576);
-    assert.deepEqual(currentBytes.subarray(12, 112), previousBytes.subarray(12, 112), 'header gameplay stays exact');
+    assert.equal(currentBytes.length, 6860); assert.equal(previousBytes.length, 576);
+    const projected = schema26Image(currentBytes);
+    assert.deepEqual(projected.subarray(12, 112), previousBytes.subarray(12, 112), 'header gameplay stays exact');
     for (let slot = 0; slot < 8; slot++) {
-      assert.deepEqual(currentBytes.subarray(112 + slot * 48, 112 + slot * 48 + 44), previousBytes.subarray(112 + slot * 44, 112 + (slot + 1) * 44), `member ${slot} gameplay`);
-      assert.ok(currentBytes.subarray(112 + slot * 48 + 44, 112 + (slot + 1) * 48).every(byte => byte === 0), `member ${slot} care word starts empty`);
+      assert.deepEqual(projected.subarray(112 + slot * 48, 112 + slot * 48 + 44), previousBytes.subarray(112 + slot * 44, 112 + (slot + 1) * 44), `member ${slot} gameplay`);
+      assert.ok(projected.subarray(112 + slot * 48 + 44, 112 + (slot + 1) * 48).every(byte => byte === 0), `member ${slot} care word starts empty`);
     }
-    assert.ok(currentBytes.subarray(112 + 8 * 48, 2992).every(byte => byte === 0), 'new slots start empty');
-    assert.deepEqual(currentBytes.subarray(2992, 3100), previousBytes.subarray(464, 572), 'post-collection gameplay stays exact ahead of the care clock');
+    assert.ok(projected.subarray(112 + 8 * 48, 2992).every(byte => byte === 0), 'new slots start empty');
+    assert.deepEqual(projected.subarray(2992, 3100), previousBytes.subarray(464, 572), 'post-collection gameplay stays exact ahead of the care clock');
     await f.restart(); assert.deepEqual(await f.request(), migrated, 'restart must not scale HP twice');
     if (checkpoint.continuation) {
       const events = checkpoint.continuation.trim().split('\n').map((line: string) => { const [type, value] = line.split(' '); return { type, value: Number(value) }; });

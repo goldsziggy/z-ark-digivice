@@ -228,22 +228,22 @@ namespace {
 void boundedDiagnosticMemory() {
     using namespace digivice;
     fake::reset();Fixture f;
-    f.state.sequence=f.state.foregroundSequence=100;f.state.collectionCount=kCollectionCapacity;
+    f.state.sequence=f.state.foregroundSequence=400;f.state.collectionCount=kCollectionCapacity;
     f.state.captures=f.state.encounters=kCollectionCapacity-1;f.state.steps=100*(kCollectionCapacity-1);
     f.state.nextMemberId=kCollectionCapacity+1;
     for(unsigned i=1;i<kCollectionCapacity;++i){f.state.collection[i]=f.state.collection[0];f.state.collection[i].id=i+1;f.state.collection[i].capturedAtSequence=i+1;}
-    require(isValid(f.state)&&f.saves.checkpoint(f.state),"full60 diagnostic fixture is durably valid");
+    require(isValid(f.state)&&f.saves.checkpoint(f.state),"full roster diagnostic fixture is durably valid");
     const auto before=f.state;const auto writes=f.backend.writes;
     const auto readStatus=[&]{ConsoleOutput capture;printState(f.state);return capture.read();};
     const auto json=readStatus();
-    require(json.find("\"collectionCapacity\":60")!=std::string::npos&&json.find("\"id\":60")!=std::string::npos,"full roster status includes final member and capacity");
+    require(json.find("\"collectionCapacity\":250")!=std::string::npos&&json.find("\"id\":250")!=std::string::npos,"full roster status includes final member and capacity");
     require(json.size()<kJsonCapacity&&fake::diagnosticBytes==kJsonCapacity,"diagnostic allocation is bounded by the native JSON contract");
     require(fake::diagnosticCaps==(MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT),"display target diagnostics request PSRAM");
     require(fake::diagnosticAllocations==1&&fake::diagnosticFrees==1&&!fake::diagnosticOutstanding,"successful diagnostic releases its temporary buffer");
     fake::diagnosticAllocationFailure=true;const auto failure=readStatus();
     require(failure.find("insufficient diagnostic memory")!=std::string::npos,"OOM is visible to console user");
     require(fake::diagnosticAllocations==2&&fake::diagnosticFrees==1&&!fake::diagnosticOutstanding,"OOM makes one bounded request without internal fallback or leaked buffer");
-    require(sameSavedState(f.state,before)&&f.backend.writes==writes,"success and OOM leave all60 members and durable saves unchanged");
+    require(sameSavedState(f.state,before)&&f.backend.writes==writes,"success and OOM leave the full roster and durable saves unchanged");
     fake::diagnosticAllocationFailure=false;require(readStatus()==json,"diagnostic retry returns the exact same full state");
     require(fake::diagnosticAllocations==3&&fake::diagnosticFrees==2&&!fake::diagnosticOutstanding,"retry releases memory");
 }
