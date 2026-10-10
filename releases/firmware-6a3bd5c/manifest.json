@@ -1,0 +1,72 @@
+{
+  "sdkVersion": "v5.3.6",
+  "sdkCommit": "79e3454c68248bd7d881721c9b2e94561378a8ce",
+  "target": "esp32s3",
+  "profile": "waveshare",
+  "board": "Waveshare ESP32-S3-Touch-LCD-1.46 SKU29565",
+  "sourceCommit": "6a3bd5c49f42d900c69e7243303628de3f35d563",
+  "sourceTreeClean": true,
+  "projectVersion": "6a3bd5c",
+  "compilerWarnings": 0,
+  "installed": true,
+  "privateAssetsSavesOrCredentialsIncluded": false,
+  "images": {
+    "application": {
+      "file": "digivice.bin",
+      "bytes": 1608048,
+      "sha256": "9d85f509f7bb5f24081d948b9310f23c4bbe04d69aeb36a7b2099f8501cbe389",
+      "buildLayoutOffset": "0x20000"
+    },
+    "bootloader": {
+      "file": "bootloader.bin",
+      "bytes": 21392,
+      "sha256": "bae3340701736f37a03b4a70ce0eeb04f32a83d7ca24409793cb492271fbb7f5",
+      "buildLayoutOffset": "0x0"
+    },
+    "partitionTable": {
+      "file": "partition-table.bin",
+      "bytes": 3072,
+      "sha256": "703550d3bc9af51a7cf8c96f486ba5acb13f81d2301035b3eae0da4f793d33f1",
+      "buildLayoutOffset": "0x8000"
+    },
+    "otaInitial": {
+      "file": "ota_data_initial.bin",
+      "bytes": 8192,
+      "sha256": "7d2c7ac4888bfd75cd5f56e8d61f69595121183afc81556c876732fd3782c62f",
+      "buildLayoutOffset": "0x19000"
+    }
+  },
+  "sdkconfigSha256": "6d007a42374b28049f4731279b3471c10a51c10de70ec8080552fb79d5b80e92",
+  "partitionAndOtaMetadataMatchInstalled66": true,
+  "upgradeScope": "Reviewed exact-device application-only update at 0x20000. Do not write bootloader, partition table, OTA metadata or erase data.",
+  "resources": {
+    "measuredBuild": {
+      "applicationBytes": 1608048,
+      "applicationDeltaFrom53686e6Bytes": 176,
+      "applicationDeltaFrom171cda7Bytes": 6992,
+      "otaSlotBytes": 3145728,
+      "otaSlotFreeBytes": 1537680,
+      "staticDiramBytes": 213055,
+      "staticDiramDeltaFrom171cda7Bytes": 4392,
+      "staticDiramCapacityBytes": 341760,
+      "staticDiramUnassignedBytes": 128705,
+      "bssBytes": 89528,
+      "mainTaskStackBytes": 32768,
+      "stackChainRemeasured": false
+    },
+    "hostAbi": {
+      "stateBytes": 3188,
+      "snapshotBytes": 3216,
+      "partyCapacity": 3,
+      "collectionCapacity": 60,
+      "jsonBufferBytes": 65536,
+      "tradeJournalBytes": 6624,
+      "tradeRecordWireBytes": 6604,
+      "tradeRecordInMemoryBytes": 6536,
+      "schemaVersion": 23,
+      "rulesVersion": 16,
+      "maxLevel": 50
+    },
+    "limits": "Linker DIRAM remainder is not runtime heap. The application stack chain and synthetic JSON maximum were not remeasured for this image. Do not reuse the 171cda7 or 53686e6 stack or JSON figures as measurements of this binary."
+  }
+}

@@ -1,4 +1,4 @@
-**Current source package:** `53686e6`, schema 23/rules 16. Read the [current package instructions](../releases/firmware-53686e6/README.md) and [publication validation](../PUBLICATION_VALIDATION.json). The [171cda7 package](../releases/firmware-171cda7/README.md) and the retained checkpoints below are historical.
+**Current source package:** `6a3bd5c`, schema 23/rules 16. Wild encounters are the partner's level, one below, or one above, clamped to 1–50. Read the [current package instructions](../releases/firmware-6a3bd5c/README.md) and [publication validation](../PUBLICATION_VALIDATION.json). The [53686e6 package](../releases/firmware-53686e6/README.md), the [171cda7 package](../releases/firmware-171cda7/README.md) and the retained checkpoints below are historical.
 
 # Install Digivice development firmware
 

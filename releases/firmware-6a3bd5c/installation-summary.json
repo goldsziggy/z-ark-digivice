@@ -1,0 +1,58 @@
+{
+  "result": "PASS_BOTH_APPLICATIONS_INSTALLED_DUPLICATES_REMOVED",
+  "sourceCommit": "6a3bd5c49f42d900c69e7243303628de3f35d563",
+  "firmware": "6a3bd5c",
+  "applicationSha256": "9d85f509f7bb5f24081d948b9310f23c4bbe04d69aeb36a7b2099f8501cbe389",
+  "applicationBytes": 1608048,
+  "applicationOffset": "0x20000",
+  "schemaVersion": 23,
+  "rulesVersion": 16,
+  "snapshotBytes": 3216,
+  "bootloaderPartitionOrOtaWritten": false,
+  "chipErase": false,
+  "sdMountedOrWritten": false,
+  "assetsPartitionRemainedEmptyImageBeforeBoot": true,
+  "screenPhotographed": false,
+  "duplicateRemoval": "Later copies of an exact current form were released. The oldest owned copy of that form was kept. The active partner and selected XP companions were not released. No duplicate-merge XP was granted.",
+  "devices": {
+    "unit-1": {
+      "identityVerified": true,
+      "applicationReadbackMatches": true,
+      "nvsMatchedOwnBackupBeforeApplicationBoot": true,
+      "phaseBeforeCleanup": "encounter",
+      "modeDuringCleanup": "tactical",
+      "laterExactFormCopiesReleased": 5,
+      "collectionBefore": 28,
+      "collectionAfter": 23,
+      "sequenceDelta": 5,
+      "partnerAndCompanionsKept": true,
+      "keptFieldsUnchanged": true,
+      "readOnlyRebootChangedNvs": false,
+      "modeRestoredToAutoWithoutAnotherPlayBoot": true,
+      "leftInBootloader": true
+    },
+    "unit-2": {
+      "identityVerified": true,
+      "applicationReadbackMatches": true,
+      "nvsMatchedOwnBackupBeforeApplicationBoot": true,
+      "phaseBeforeCleanup": "home",
+      "modeDuringCleanup": "auto",
+      "laterExactFormCopiesReleased": 6,
+      "collectionBefore": 30,
+      "collectionAfter": 24,
+      "sequenceDelta": 6,
+      "partnerAndCompanionsKept": true,
+      "keptFieldsUnchanged": true,
+      "careMinuteObserved": false,
+      "readOnlyRebootChangedNvs": false,
+      "leftInBootloader": true
+    }
+  },
+  "limitations": [
+    "Earlier false stationary step counts remain unresolved. The motion detector was not changed.",
+    "Release checkpoints committed the in-RAM rules 16 migration. The pre-flash schema 22 snapshots were not restored after cleanup.",
+    "Unit 1 was returned to Auto in NVS and was not booted again, so the resumed encounter was not watched.",
+    "The on-flash assets partition was still the empty image before boot. Real artwork lives on the SD cards, which were not mounted or written.",
+    "No physical full-roster, companion-control, long-walk, or Nearby trade stress test was run. No screen photograph was taken."
+  ]
+}
