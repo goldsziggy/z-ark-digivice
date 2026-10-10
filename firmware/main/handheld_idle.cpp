@@ -10,7 +10,7 @@ bool HandheldRuntime::idleBlocked() const {
     const bool quietScreen = screen == S::Egg || screen == S::Home || screen == S::Result ||
         screen == S::Collection || screen == S::Stats || screen == S::Settings || screen == S::Sound;
     const auto& network = network_.status();
-    return !quietScreen || state_.phase == Phase::Encounter || ui_.pending() || touchPressed_ ||
+    return !quietScreen || state_.phase == Phase::Encounter || ui_.pending() || touchPressed() ||
         battle_.locked() || !practice_.allowsCareAction(Action::Explore) || nearbyBusy() ||
         setup_.active() || interfacePaused_ || powerFrozen() ||
         (powerEnabled_ && power_.status().phase != power::Phase::Ready) ||
@@ -52,7 +52,7 @@ void HandheldRuntime::pollIdle(std::uint64_t now) {
         if (idle_.blanked()) {
             audio_.setMusicScene(device::MusicScene::Quiet);
             ui_.cancelTouch(); setup_.cancelTouch();
-            touchPressed_ = false; touchNeedsRelease_ = true;
+            requireTouchRelease();
             std::puts("Screen idle: backlight off; touch and step sampling remain active.");
         }
     } else if (request == idle::Request::Wake) {
@@ -60,7 +60,7 @@ void HandheldRuntime::pollIdle(std::uint64_t now) {
         idle_.completeWake(error == ESP_OK, now);
         if (error == ESP_OK) {
             ui_.cancelTouch(); setup_.cancelTouch();
-            touchPressed_ = false; touchNeedsRelease_ = true;
+            requireTouchRelease();
             interfaceDirty_ = true;
             std::puts("Screen awake: wake contact consumed; release before choosing an action.");
         }

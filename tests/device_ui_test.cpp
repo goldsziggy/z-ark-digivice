@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 
 using namespace digivice;
 using namespace digivice::deviceui;
@@ -1193,8 +1194,75 @@ void backTargets() {
     }
 }
 
+// Tap-target audit on the Waveshare 1.46 panel (412 px over 37.1 mm, touch circle r204).
+// Every button on every reachable screen: fully inside the circle with a bezel
+// margin, at least 36 px (3.2 mm) on each side, no overlaps, and its centre tap
+// does something. TAP_AUDIT_REPORT=1 prints the per-screen table.
+void tapAudit() {
+    using Button=Controller::Button;
+    constexpr int kBezel=4, kMinSide=36;   // 36 px = 3.2 mm
+    const bool print=std::getenv("TAP_AUDIT_REPORT")!=nullptr;
+    if(print) std::printf("\n| Screen | Targets | Smallest | Closest gap | Notes |\n| --- | --- | --- | --- | --- |\n");
+    unsigned screens=0, targets=0;
+    auto audit=[&](const char* name,auto&& reach) {
+        Harness h; reach(h);
+        const auto screen=h.ui.screen();
+        Button b[Controller::kMaxButtons]; const auto n=h.ui.layout(h.state,h.model,b,Controller::kMaxButtons);
+        ++screens; targets+=static_cast<unsigned>(n);
+        int smallest=10000, gap=10000; const char* smallLabel="-";
+        for(std::size_t i=0;i<n;++i) {
+            for(int cx:{b[i].x,b[i].x+b[i].w-1}) for(int cy:{b[i].y,b[i].y+b[i].h-1}) {
+                const int dx=cx-206, dy=cy-206;
+                if(!(dx*dx+dy*dy<=(204-kBezel)*(204-kBezel))) std::fprintf(stderr,"  %s: %s corner (%d,%d) outside circle\n",name,b[i].label,cx,cy);
+                CHECK(dx*dx+dy*dy<=(204-kBezel)*(204-kBezel));
+            }
+            const bool chevron=!b[i].label[0];   // edge chevrons are 54x112 strips
+            if(!chevron && std::min(b[i].w,b[i].h)<smallest) { smallest=std::min(b[i].w,b[i].h); smallLabel=b[i].label; }
+            if(!(b[i].w>=kMinSide && b[i].h>=kMinSide)) std::fprintf(stderr,"  %s: %s is %dx%d\n",name,b[i].label,b[i].w,b[i].h);
+            CHECK(b[i].w>=kMinSide && b[i].h>=kMinSide);
+            for(std::size_t j=i+1;j<n;++j) {
+                const int gx=std::max(b[j].x-(b[i].x+b[i].w),b[i].x-(b[j].x+b[j].w));
+                const int gy=std::max(b[j].y-(b[i].y+b[i].h),b[i].y-(b[j].y+b[j].h));
+                const int g=std::max(gx,gy);
+                if(g<0) std::fprintf(stderr,"  %s: %s overlaps %s\n",name,b[i].label,b[j].label);
+                if(g<6) std::fprintf(stderr,"  %s: %s and %s only %d px apart\n",name,b[i].label,b[j].label,g);
+                CHECK(g>=6); gap=std::min(gap,g);   // 6 px = 0.5 mm between targets
+            }
+            // The centre of every enabled target does something; disabled targets stay inert.
+            Harness t; reach(t); CHECK(t.ui.screen()==screen);
+            const auto before=t.state; const int cx=b[i].x+b[i].w/2, cy=b[i].y+b[i].h/2;
+            const auto intent=t.tap(cx,cy);
+            if(b[i].enabled && !intent) std::fprintf(stderr,"  %s: %s centre (%d,%d) did nothing\n",name,b[i].label,cx,cy);
+            CHECK(b[i].enabled ? static_cast<bool>(intent) : !intent);
+            CHECK(std::memcmp(&before,&t.state,sizeof(State))==0); // a tap proposes; it never writes State itself
+        }
+        if(print) std::printf("| %s | %zu | %s %d px (%.1f mm) | %s | |\n",name,n,smallLabel,smallest==10000?0:smallest,
+            smallest==10000?0.0:smallest*37.1/412.0, gap==10000?"-":std::to_string(gap).append(" px").c_str());
+    };
+    audit("Egg",[](Harness&){});
+    audit("Starter",[](Harness& h){ h.dispatch(h.tap(206,285)); CHECK(h.ui.screen()==Screen::Starter); });
+    audit("Hatch review",[](Harness& h){ h.dispatch(h.tap(206,285)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::StarterReview); });
+    for(const auto panel:{HomePanel::Care,HomePanel::Partners,HomePanel::Settings,HomePanel::Nearby})
+        audit("Home",[panel](Harness& h){ h.choose(); h.selectHome(panel); });
+    audit("Care",[](Harness& h){ h.choose(); h.openHome(HomePanel::Care); CHECK(h.ui.screen()==Screen::Care); });
+    audit("Partners",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); CHECK(h.ui.screen()==Screen::Collection); });
+    audit("Stats",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); h.dispatch(h.tap(120,304)); CHECK(h.ui.screen()==Screen::Stats); });
+    audit("Evolution",[](Harness& h){ h.choose(); h.openHome(HomePanel::Partners); h.dispatch(h.tap(120,304)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::Evolution); });
+    audit("Settings",[](Harness& h){ h.choose(); h.model.motionAvailable=true; h.sync(); h.openHome(HomePanel::Settings); CHECK(h.ui.screen()==Screen::Settings); });
+    audit("Sound",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,252)); CHECK(h.ui.screen()==Screen::Sound); });
+    audit("Encounter settings",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(206,194)); CHECK(h.ui.screen()==Screen::EncounterSettings); });
+    audit("Mode review",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,304)); CHECK(h.ui.screen()==Screen::ModeReview); });
+    audit("Nearby",[](Harness& h){ h.choose(); h.openHome(HomePanel::Nearby); CHECK(h.ui.screen()==Screen::Nearby); });
+    audit("Encounter",[](Harness& h){ h.choose(); CHECK(apply(h.state,Action::Walk,100)==Error::None); h.sync(); CHECK(h.ui.screen()==Screen::Encounter); });
+    audit("Battle (tactical)",[](Harness& h){ h.choose(); h.encounter(); });
+    audit("Capture",[](Harness& h){ h.choose(); h.encounter(); h.state.wildHp=h.state.wildMaxHp/2; h.sync(); h.dispatch(h.tap(312,305)); CHECK(h.ui.screen()==Screen::Capture); });
+    audit("Wild result",[](Harness& h){ h.choose(); h.encounter(); h.state.wildHp=1; CHECK(apply(h.state,Action::Magic)==Error::None); h.sync(); CHECK(h.ui.screen()==Screen::Result); });
+    std::printf("tap audit: %u screens, %u targets\n",screens,targets);
+}
+
 int main(int argc,char** argv) {
     backTargets();
+    tapAudit();
     orientationGestures();
     horizontalTaps();
     nearbyModeConsent();

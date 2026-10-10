@@ -342,7 +342,8 @@ bool quiescent() {
 }
 
 esp_err_t flushRgb565(int x, int y, int width, int height,
-                     const std::uint16_t* pixels, std::size_t stridePixels) {
+                     const std::uint16_t* pixels, std::size_t stridePixels,
+                     StripeHook betweenStripes, void* context) {
 #if DIGIVICE_PANEL_ENABLED
     if (!displayReady() || !quiescent()) return ESP_ERR_INVALID_STATE;
     const Rect logical{x, y, width, height};
@@ -357,11 +358,13 @@ esp_err_t flushRgb565(int x, int y, int width, int height,
                         row, rows, dmaStripe, kDmaStripeBytes)) return ESP_ERR_INVALID_ARG;
         const auto error = submitStripe({native.x, native.y + row, native.width, rows});
         if (error != ESP_OK) return error;
+        if (betweenStripes && row + rows < native.height) betweenStripes(context);
     }
     ++current.frames;
     return ESP_OK;
 #else
     (void)x; (void)y; (void)width; (void)height; (void)pixels; (void)stridePixels;
+    (void)betweenStripes; (void)context;
     return ESP_ERR_NOT_SUPPORTED;
 #endif
 }

@@ -38,7 +38,7 @@ bool HandheldRuntime::pollUsage(std::uint64_t now, bool force) {
     // current fight, held touch and menu; one persisted slot cannot pile up.
     const bool quietHome = !tradeSession_.blocksForeground() && !powerFrozen() && !interfacePaused_ &&
         state_.phase == Phase::Home && state_.onboardingComplete &&
-        ui_.encounterPresentationEligible() && ui_.interactionIdle() && !touchPressed_ &&
+        ui_.encounterPresentationEligible() && ui_.interactionIdle() && !touchPressed() &&
         !setup_.active() && !battle_.locked() && !nearbyBusy() &&
         practice_.allowsCareAction(Action::Explore);
     auto publishBackground = [&](const State& candidate, Action action, std::uint32_t value) {

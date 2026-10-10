@@ -119,6 +119,8 @@ inline bool autoFightReady(const State& state, const Model& model) {
 }
 // One bottom spot for BACK/LEAVE/DONE/skip, fully inside the 204 px touch circle.
 inline constexpr int kNavX=116, kNavY=332, kNavW=180, kNavH=48, kNavPad=12;
+// Release margin for every other button once pressed (roll-off drift), never a Down target.
+inline constexpr int kHoldPad=8, kHoldSlop=44; // 44 px = 4 mm of drift; a longer drag is a swipe
 
 class Controller {
 public:
@@ -152,10 +154,17 @@ public:
     bool walkingEligible() const { return encounterPresentationEligible(); } // Compatibility for older callers.
     bool interactionIdle() const { return !down_ && !captureContactBlocked_ && !pending_; }
     static bool inside(int x, int y);
-private:
     // BACK, LEAVE, DONE and the Capture skip share one bottom spot, fully inside the
     // touch circle, with a padded hit area that also forgives release drift.
     struct Button { int x, y, w, h; const char* label; int id; bool enabled; bool padded=false; };
+    // Read-only layout of the current screen's tap targets (tests and tap audits).
+    std::size_t layout(const State& state, const Model& model, Button* out, std::size_t capacity) const {
+        Button all[kMaxButtons]; const auto n=buttons(state,model,all);
+        std::size_t i=0; for(;i<n && i<capacity;++i) out[i]=all[i];
+        return i;
+    }
+    static constexpr std::size_t kMaxButtons=8;
+private:
     static bool hits(const Button& b, int x, int y, int pad=0) {
         return x>=b.x-pad && x<b.x+b.w+pad && y>=b.y-pad && y<b.y+b.h+pad;
     }
@@ -203,7 +212,6 @@ private:
     mutable std::uint64_t hintAt_ = UINT64_MAX;
     mutable std::uint8_t hintSeen_ = 0, hintContext_ = 0;
     int downButton_ = 0;
-    bool downPadded_ = false;
     std::uint32_t captureEpochForm_ = 0;
     // Survives resolve/context changes until an observed physical release.
     bool captureContactBlocked_ = false;

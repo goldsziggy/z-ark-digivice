@@ -134,7 +134,7 @@ void HandheldRuntime::tradeIntent(deviceui::Intent intent) {
     else if (intent.kind == K::TradeCancel) accepted = tradeWire_.cancel(view.transcript, now);
     tradeStatus_ = accepted ? "Trade review updated" : "Offer changed - review again";
     if (accepted) pollTradePersistence(now);
-    ui_.cancelTouch(); touchNeedsRelease_ = true; interfaceDirty_ = true;
+    ui_.cancelTouch(); requireTouchRelease(); interfaceDirty_ = true;
 }
 }
 #endif

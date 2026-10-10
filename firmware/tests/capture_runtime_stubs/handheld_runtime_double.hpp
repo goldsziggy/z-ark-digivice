@@ -1,6 +1,7 @@
 #pragma once
 #define CONFIG_DIGIVICE_DISPLAY_TOUCH 1
 #include "device_ui.hpp"
+#include "touch_stream.hpp"
 #include "display_touch.hpp"
 #include "audio_cues.hpp"
 #include "imu_filter.hpp"
@@ -33,7 +34,8 @@ struct CaptureTrade {bool blocked=false;bool blocksForeground()const{return bloc
 inline device::AudioCue cueFor(Message){return device::AudioCue::Navigate;}
 class HandheldRuntime {
 public:
-    explicit HandheldRuntime(State& state):state_(state){}
+    // Production starts latched; these I/O tests start from a seen release.
+    explicit HandheldRuntime(State& state):state_(state){touch_.feed({true,false,true,0,0,0});}
     void pollInterface(std::uint64_t now);
     // Exact boot save-to-UI block extracted from beginInterface, excluding I/O.
     void restoreCaptureForTest(std::uint64_t now);
@@ -42,21 +44,30 @@ public:
     void pollBattlePresentation(std::uint64_t){}
     void interfaceActivity(std::uint64_t){}
     void pollIdle(std::uint64_t){}
+    void pollCareAndAuto(std::uint64_t){}
     void updateMusicScene(){}
     void interfaceIntent(deviceui::Intent intent){if(intent){++intents;interfaceDirty_=true;}}
+    // Extracted byte-for-byte from production handheld_ui.cpp by the runner.
+    void handleTouchSample(const touchstream::Sample& sample, const deviceui::Model& model);
+    static void sampleTouchDuringFlush(void* runtime);
+    void requireTouchRelease();
+    bool touchPressed()const{return touch_.pressed();}
+    touchstream::Stream touch_{};
+    static constexpr std::size_t kFlushTouchQueue=8;
+    touchstream::Sample flushTouch_[kFlushTouchQueue]{};
+    std::size_t flushTouchCount_=0;
     CaptureUi ui_;CaptureSetup setup_;CaptureImu imu_;CaptureIdle idle_;CaptureAudio audio_;CaptureSd sd_;CaptureArt art_,partnerArt_;
     battlepresentation::Sequencer battle_;CaptureTrade tradeSession_;
     bool encounterRecoveryRequired_=false,useOwnedPlayback=false;
     State& state_;deviceui::Model model{};
     bool frozen=false,interfacePaused_=false,assetStorageReady_=true,assetStorageFailed_=false;
-    bool interfaceDirty_=true,touchPressed_=false,touchNeedsRelease_=false;
+    bool interfaceDirty_=true;
     std::uint16_t* frame_=nullptr;
     std::uint64_t lastTouchMs_=0,lastFrameMs_=0,captureFrameStartedMs_=0;
-    std::uint32_t uiSequence_=UINT32_MAX,touchPresses_=0,touchReleases_=0;
+    std::uint32_t uiSequence_=UINT32_MAX;
     std::uint32_t renderedFrames_=0,maxFrameUs_=0,maxRenderUs_=0,maxFlushUs_=0;
     std::uint32_t captureFrames_=0,maxCaptureRenderUs_=0,maxCaptureFlushUs_=0,lastFrameSequence_=UINT32_MAX;
     bool captureFrameActive_=false,captureFrameValid_=false,lastArtStorageReady_=false;
-    std::int16_t touchX_=0,touchY_=0;
     unsigned intents=0;
     // The implementation below is extracted byte-for-byte from the production
     // header by the runner, including its actual runtime cadence selection.

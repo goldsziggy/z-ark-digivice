@@ -80,7 +80,13 @@ std::uint32_t playEncounter(State& state) {
     CHECK(apply(state,Action::PresentEncounter)==Error::None);
     const auto form=state.wildFormId;
     CHECK(applyAutoFight(state)==Error::None);
-    if(state.phase==Phase::Encounter)CHECK(applyAutoResume(state)==Error::None);
+    // Rules 18: an Auto fight may pause for a focus tap (answered untapped here)
+    // or a capture choice (skipped) before it finishes.
+    for(unsigned guard=0;guard<16&&state.phase==Phase::Encounter;++guard){
+        if(state.autoCapture==AutoCapture::FocusStrike||state.autoCapture==AutoCapture::FocusBlock)CHECK(applyFocus(state,kFocusNoTap)==Error::None);
+        else if(state.autoCapture==AutoCapture::Awaiting)CHECK(applyAutoResume(state)==Error::None);
+        else CHECK(applyAutoFight(state)==Error::None);
+    }
     CHECK(state.phase==Phase::Home);
     for(unsigned rest=0,count=recoveryRestCount(state);rest<count;++rest)CHECK(apply(state,Action::Rest)==Error::None);
     return form;

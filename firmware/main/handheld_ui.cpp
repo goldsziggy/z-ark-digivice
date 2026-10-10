@@ -171,7 +171,7 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
         break;
     case K::OpenSetup:
         if (nearbyBusy()) { notice = "CLOSE NEARBY FIRST"; break; }
-        setup_.open(); touchNeedsRelease_ = true; ui_.cancelTouch();
+        setup_.open(); requireTouchRelease(); ui_.cancelTouch();
         audio_.play(device::AudioCue::Navigate); break;
     case K::OpenNearby: case K::CloseNearby: case K::NearbyChallenge:
     case K::NearbyAccept: case K::NearbyChoose: case K::NearbyCancel:
@@ -199,7 +199,7 @@ void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
         (state_.autoCapture == AutoCapture::FocusStrike || state_.autoCapture == AutoCapture::FocusBlock);
     if (!focusOpen) focusSinceMs_ = 0;
     else if (!focusSinceMs_ || focusSequence_ != state_.sequence) { focusSinceMs_ = now; focusSequence_ = state_.sequence; }
-    else if (!touchPressed_ && !ui_.pending() && !battle_.locked() && now - focusSinceMs_ >= kFocusTimeoutMs) {
+    else if (!touchPressed() && !ui_.pending() && !battle_.locked() && now - focusSinceMs_ >= kFocusTimeoutMs) {
         focusSinceMs_ = now;
         deviceui::Intent intent;
         intent.kind = deviceui::IntentKind::GameAction;
@@ -209,7 +209,7 @@ void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
         model = interfaceModel();
     }
     // Touch is already applied this frame, so Run Away wins over the next chunk.
-    if (!touchPressed_ && !ui_.pending() && state_.sequence != autoStartSequence_ &&
+    if (!touchPressed() && !ui_.pending() && state_.sequence != autoStartSequence_ &&
         deviceui::autoFightReady(state_, model) && allowsCareAction(Action::AutoFight)) {
         autoStartSequence_ = state_.sequence;
         deviceui::Intent intent;
@@ -218,7 +218,7 @@ void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
         interfaceIntent(intent);
         model = interfaceModel();
     }
-    if (touchPressed_ || ui_.pending() || state_.phase != Phase::Home || !state_.onboardingComplete ||
+    if (touchPressed() || ui_.pending() || state_.phase != Phase::Home || !state_.onboardingComplete ||
         !saves_.writable() || battle_.locked() || nearbyBusy() || !allowsCareAction(Action::CareMinute)) {
         if (state_.phase != Phase::Home || interfacePaused_) careAwakeMs_ = now;
         return;
@@ -234,6 +234,49 @@ void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
     interfaceIntent(intent);
 }
 
+// Touch pipeline (docs/TOUCH_SPRINT.md): touchstream::Stream turns SPD2010 polls
+// into Down/Move/Up with a confirmed release, roll-off filtering and a quiet
+// rearm of the release latch. Bus failure and idle wake cancel, never confirm.
+void HandheldRuntime::handleTouchSample(const touchstream::Sample& sample, const deviceui::Model& model) {
+    const auto step = touch_.feed(sample);
+    if (step.activity) interfaceActivity(sample.atMs);
+    if (step.cancel) { ui_.cancelTouch(); setup_.cancelTouch(); }
+    // An observed release, or a quiet glass after a latch: clears the capture
+    // contact latch without proposing an action.
+    if (step.released) ui_.acknowledgeContactReleased();
+    if (!step.hasEvent) return;
+    if (setup_.active()) {
+        setup_.touch(step.event);
+        if (!setup_.active()) { ui_.cancelTouch(); requireTouchRelease(); }
+        interfaceDirty_ = true;
+        return;
+    }
+    const bool wasIdle = ui_.interactionIdle();
+    interfaceIntent(ui_.touch(state_, model, step.event));
+    // Held Moves no longer force a full redraw (a 75-141 ms frame blinds touch
+    // polling); Down, Up and a press cancelled by its Move still redraw. Real
+    // intents already mark dirty. Capture keeps its partial-frame path.
+    if (!captureFrameActive_ && (step.event.kind != deviceui::TouchKind::Move || wasIdle != ui_.interactionIdle()))
+        interfaceDirty_ = true;
+}
+
+void HandheldRuntime::sampleTouchDuringFlush(void* context) {
+    auto& self = *static_cast<HandheldRuntime*>(context);
+    const auto now = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
+    // Same 20 ms cadence as the loop: the UI rejects taps shorter than 20 ms.
+    if (self.flushTouchCount_ >= kFlushTouchQueue || !display::touchReady() || now < self.lastTouchMs_ + 20) return;
+    self.lastTouchMs_ = now;
+    display::TouchPoint point;
+    const auto read = display::pollTouch(point);
+    self.flushTouch_[self.flushTouchCount_++] = {read == ESP_OK, point.pressed, point.fresh, static_cast<std::int16_t>(point.x),
+                                                 static_cast<std::int16_t>(point.y), now, self.idle_.blanked()};
+}
+
+void HandheldRuntime::requireTouchRelease() {
+    touch_.requireRelease(static_cast<std::uint64_t>(esp_timer_get_time() / 1000));
+    flushTouchCount_ = 0; // queued samples predate the cancellation
+}
+
 void HandheldRuntime::pollInterface(std::uint64_t now) {
     if (powerFrozen() || interfacePaused_) return;
     setup_.poll();
@@ -247,44 +290,15 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
         uiSequence_ = state_.sequence; interfaceDirty_ = true;
         audio_.play(cueFor(state_.message));
     }
+    // Samples read between the previous frame's DMA stripes, in order, then this pass's sample.
+    for (std::size_t i = 0; i < flushTouchCount_; ++i) handleTouchSample(flushTouch_[i], model);
+    flushTouchCount_ = 0;
     if (frame_ && display::displayReady() && display::touchReady() && now - lastTouchMs_ >= (captureFrameActive_ ? 5u : 20u)) {
         lastTouchMs_ = now;
         display::TouchPoint point;
         const auto read = display::pollTouch(point);
-        if (read != ESP_OK) {
-            // Bus failure is cancellation, never a release/confirmation.
-            ui_.cancelTouch(); setup_.cancelTouch(); touchPressed_ = false; touchNeedsRelease_ = true;
-        } else if (idle_.blanked()) {
-            // Waking is not a button press, attack, or confirmation. Require a
-            // later fresh release even when motion and touch wake together.
-            if (point.fresh && point.pressed) interfaceActivity(now);
-            ui_.cancelTouch(); setup_.cancelTouch();
-            touchPressed_ = false; touchNeedsRelease_ = true;
-        } else if (touchNeedsRelease_) {
-            if (point.fresh && !point.pressed) {
-                // This is an observed release, not a cancellation or guessed Up.
-                // Clear the capture contact latch without proposing an action.
-                ui_.acknowledgeContactReleased();
-                touchPressed_ = false;
-                touchNeedsRelease_ = false;
-            }
-        } else if (point.pressed || touchPressed_) {
-            if (point.fresh && point.pressed) interfaceActivity(now);
-            deviceui::Touch event{deviceui::TouchKind::Move, touchX_, touchY_, now};
-            if (point.pressed) {
-                touchX_ = static_cast<std::int16_t>(point.x); touchY_ = static_cast<std::int16_t>(point.y);
-                event.x = touchX_; event.y = touchY_;
-                if (!touchPressed_) { event.kind = deviceui::TouchKind::Down; ++touchPresses_; }
-            } else { event.kind = deviceui::TouchKind::Up; ++touchReleases_; }
-            touchPressed_ = point.pressed;
-            if (setup_.active()) {
-                setup_.touch(event);
-                if (!setup_.active()) { ui_.cancelTouch(); touchNeedsRelease_ = true; }
-            } else interfaceIntent(ui_.touch(state_, model, event));
-            // Capture has no pressed-button visual. Real intents already mark
-            // dirty; ignored held/dragged contacts keep the partial-frame path.
-            if (!captureFrameActive_) interfaceDirty_ = true;
-        }
+        handleTouchSample({read == ESP_OK, point.pressed, point.fresh, static_cast<std::int16_t>(point.x),
+                           static_cast<std::int16_t>(point.y), now, idle_.blanked()}, model);
     }
     pollCareAndAuto(now);
     pollIdle(now);
@@ -335,7 +349,7 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
             const int width = partial ? deviceui::Controller::kCaptureWidth : deviceui::kSize;
             const int height = partial ? deviceui::Controller::kCaptureHeight : deviceui::kSize;
             const auto result = display::flushRgb565(x, y, width, height,
-                frame_ + y * deviceui::kSize + x, deviceui::kSize);
+                frame_ + y * deviceui::kSize + x, deviceui::kSize, &HandheldRuntime::sampleTouchDuringFlush, this);
             const auto flushUs = static_cast<std::uint32_t>(esp_timer_get_time() - drawn);
             maxFlushUs_ = std::max(maxFlushUs_, flushUs);
             if (result == ESP_OK) {
@@ -346,7 +360,7 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
                     maxCaptureFlushUs_ = std::max(maxCaptureFlushUs_, flushUs);
                 }
             } else {
-                ui_.cancelTouch(); setup_.cancelTouch(); touchNeedsRelease_ = true;
+                ui_.cancelTouch(); setup_.cancelTouch(); requireTouchRelease();
                 std::printf("Display flush stopped: %s; USB/save remain available.\n", esp_err_to_name(result));
             }
         }
@@ -356,6 +370,12 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
         captureFrameValid_ = completed && captureFrameActive_;
         lastFrameSequence_ = state_.sequence; lastArtStorageReady_ = artReady;
         interfaceDirty_ = false;
+        // Touch read between this frame's stripes is handled now, not a pass later.
+        if (flushTouchCount_) {
+            const auto after = interfaceModel();
+            for (std::size_t i = 0; i < flushTouchCount_; ++i) handleTouchSample(flushTouch_[i], after);
+            flushTouchCount_ = 0;
+        }
     } else if (!canDraw) captureFrameValid_ = false;
 
 }
@@ -367,7 +387,7 @@ void HandheldRuntime::pauseInterface(bool paused) {
     interfacePaused_ = paused;
     if (paused) { setup_.suspend(); battle_.cancel(); }
     captureFrameActive_ = captureFrameValid_ = false;
-    ui_.cancelTouch(); touchPressed_ = false; touchNeedsRelease_ = true;
+    ui_.cancelTouch(); requireTouchRelease();
     art_.pause(paused); partnerArt_.pause(paused);
     if (paused) audio_.setMusicScene(device::MusicScene::Quiet);
     audio_.pause(paused);
@@ -404,10 +424,11 @@ void HandheldRuntime::printInterface() const {
         static_cast<unsigned long>(walkingPending_), motion::stepStatusText(imu_.stepReading().status),
         usage_.writable() && !walkingFault_, static_cast<unsigned>(nearbyPhase_),
         static_cast<unsigned long>(nearby_.view().match.sequence), nearbyStatus_);
-    std::printf("device touch samples=%lu errors=%lu lockMisses=%lu lastError=%s presses=%lu releases=%lu xy=%d,%d\n",
+    std::printf("device touch samples=%lu errors=%lu lockMisses=%lu lastError=%s presses=%lu releases=%lu chatter=%lu rearms=%lu rolledOff=%lu xy=%d,%d\n",
         static_cast<unsigned long>(panel.touchSamples), static_cast<unsigned long>(panel.touchErrors),
         static_cast<unsigned long>(panel.touchLockMisses),
-        esp_err_to_name(panel.lastTouchError), static_cast<unsigned long>(touchPresses_), static_cast<unsigned long>(touchReleases_), touchX_, touchY_);
+        esp_err_to_name(panel.lastTouchError), static_cast<unsigned long>(touch_.presses()), static_cast<unsigned long>(touch_.releases()),
+        static_cast<unsigned long>(touch_.chatter()), static_cast<unsigned long>(touch_.rearms()), static_cast<unsigned long>(touch_.rolledOff()), touch_.x(), touch_.y());
     std::printf("device audio ready=%d muted=%d volume=%u error=%s; imu ready=%d revision=0x%02x valid=%d calibrated=%d tilt=%d error=%s\n",
         audio_.ready(), audio_.muted(), audio_.volume(), esp_err_to_name(audio_.lastError()),
         imu_.ready(), imu_.revision(), sample.valid, sample.calibrated, gyroEnabled_, esp_err_to_name(imu_.lastError()));
@@ -432,7 +453,7 @@ bool HandheldRuntime::interfaceCommand(const char* line) {
     if (powerFrozen() || interfacePaused_) { std::puts("Device controls paused for power transition."); return true; }
     if (!std::strcmp(line, "device wake")) { interfaceActivity(static_cast<std::uint64_t>(esp_timer_get_time() / 1000)); pollIdle(static_cast<std::uint64_t>(esp_timer_get_time() / 1000)); }
     else if (!std::strcmp(line, "device sound")) audio_.play(device::AudioCue::Boot);
-    else if (!std::strcmp(line, "device setup")) { setup_.open(); ui_.cancelTouch(); touchNeedsRelease_ = true; }
+    else if (!std::strcmp(line, "device setup")) { setup_.open(); ui_.cancelTouch(); requireTouchRelease(); }
     else if (!std::strcmp(line, "device mute")) { if (audio_.setMuted(true) != ESP_OK) std::puts("Sound changed; SETTINGS NOT SAVED."); }
     else if (!std::strcmp(line, "device unmute")) { if (audio_.setMuted(false) != ESP_OK) std::puts("Sound changed; SETTINGS NOT SAVED."); }
     else if (!std::strcmp(line, "device recenter")) { imu_.recenter(); ui_.notice("HOLD STILL TO CENTER TILT"); }

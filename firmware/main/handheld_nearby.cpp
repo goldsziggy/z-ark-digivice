@@ -27,7 +27,7 @@ void HandheldRuntime::beginNearby() {
     nearbyPhase_ = NearbyPhase::Starting; nearbyDeadline_ = clockMs() + 15000;
     nearbyStatus_ = "Pausing Wi-Fi for nearby"; nearbyShownSequence_ = 0;
     nearbyShownSession_ = 0; nearbyCuePhase_ = 0;
-    ui_.cancelTouch(); touchNeedsRelease_ = true; interfaceDirty_ = true;
+    ui_.cancelTouch(); requireTouchRelease(); interfaceDirty_ = true;
 }
 void HandheldRuntime::closeNearby() {
     if (!nearbyBusy() || nearbyPhase_ == NearbyPhase::Stopping) return;
@@ -36,7 +36,7 @@ void HandheldRuntime::closeNearby() {
     nearby_.close(); tradeWire_.close(); nearbyPhase_ = NearbyPhase::Stopping;
     nearbyDeadline_ = clockMs() + 5000;
     nearbyStatus_ = "Closing nearby / restoring Wi-Fi";
-    ui_.cancelTouch(); touchNeedsRelease_ = true; interfaceDirty_ = true;
+    ui_.cancelTouch(); requireTouchRelease(); interfaceDirty_ = true;
 }
 void HandheldRuntime::pollNearby(std::uint64_t now) {
     if (nearbyPhase_ == NearbyPhase::Idle) return;

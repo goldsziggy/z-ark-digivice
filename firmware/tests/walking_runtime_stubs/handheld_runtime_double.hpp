@@ -133,6 +133,8 @@ public:
     storage::SaveStore& saves_;
     entropy::Seeds startupSeeds_{7,11,0x12345678u,13};
     bool interfacePaused_=false,interfaceDirty_=false,walkingFault_=false,touchPressed_=false;
+    bool touchPressed()const{return touchPressed_;}
+    void requireTouchRelease(){touchNeedsRelease_=true;}
     bool frozen=false,quiescent=true;
     unsigned pauseRequests=0;
     std::uint32_t walkingPending_=0;

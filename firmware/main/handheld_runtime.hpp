@@ -34,6 +34,7 @@
 #include "nearby_radio.hpp"
 #include "../runtime/nearby_protocol.hpp"
 #include "../runtime/device_ui.hpp"
+#include "../runtime/touch_stream.hpp"
 #endif
 
 namespace digivice {
@@ -78,6 +79,12 @@ private:
     void printInterface() const;
     deviceui::Model interfaceModel() const;
     void interfaceIntent(deviceui::Intent intent);
+    // One touch sample through touch_ into setup/UI (main loop and the flush queue).
+    void handleTouchSample(const touchstream::Sample& sample, const deviceui::Model& model);
+    // Between DMA stripes: read only, queued for handleTouchSample after the flush.
+    static void sampleTouchDuringFlush(void* runtime);
+    void requireTouchRelease();
+    bool touchPressed() const { return touch_.pressed(); }
     bool pollUsage(std::uint64_t now, bool force = false);
     bool prepareUsageRestart();
     bool physicalStepsReady(std::uint64_t now) const;
@@ -133,15 +140,19 @@ private:
     static constexpr std::uint64_t kFocusTimeoutMs = 3200;
     std::uint64_t focusSinceMs_ = 0;
     std::uint32_t focusSequence_ = UINT32_MAX;
-    std::uint32_t uiSequence_ = UINT32_MAX, touchPresses_ = 0, touchReleases_ = 0;
+    std::uint32_t uiSequence_ = UINT32_MAX;
     std::uint32_t renderedFrames_ = 0, maxFrameUs_ = 0;
     std::uint32_t maxRenderUs_ = 0, maxFlushUs_ = 0;
     std::uint64_t captureFrameStartedMs_ = 0;
     std::uint32_t captureFrames_ = 0, maxCaptureRenderUs_ = 0, maxCaptureFlushUs_ = 0;
     std::uint32_t lastFrameSequence_ = UINT32_MAX;
     bool captureFrameActive_ = false, captureFrameValid_ = false, lastArtStorageReady_ = false;
-    std::int16_t touchX_ = 0, touchY_ = 0;
-    bool touchPressed_ = false, touchNeedsRelease_ = true, gyroEnabled_ = false;
+    // SPD2010 samples -> Down/Move/Up; starts latched until a release is seen or the glass is quiet.
+    touchstream::Stream touch_{};
+    static constexpr std::size_t kFlushTouchQueue = 8;
+    touchstream::Sample flushTouch_[kFlushTouchQueue]{};
+    std::size_t flushTouchCount_ = 0;
+    bool gyroEnabled_ = false;
     bool interfacePaused_ = false, interfaceDirty_ = true;
 #else
     void beginInterface() {}

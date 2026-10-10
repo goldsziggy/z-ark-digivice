@@ -9,7 +9,9 @@
 namespace {
 unsigned checks=0;
 void check(bool ok,const char* what){++checks;if(!ok)throw std::runtime_error(what);}
-#define CHECK(x) check((x),#x)
+#define CHECK(x) check((x),#x " @" DIGI_STR(__LINE__))
+#define DIGI_STR2(x) #x
+#define DIGI_STR(x) DIGI_STR2(x)
 using namespace digivice;
 std::array<std::uint16_t,deviceui::kPixels> frame{},background{},expected{},before{},panel{};
 std::array<std::uint16_t,1024> spritePixels{};
@@ -46,12 +48,16 @@ std::int64_t esp_timer_get_time(){return static_cast<std::int64_t>(capturefake::
 namespace digivice::display {
 bool displayReady(){return lcd;}bool touchReady(){return touch;}
 esp_err_t pollTouch(TouchPoint& out){touches.push_back(capturefake::nowUs);out=point;return touchError;}
-esp_err_t flushRgb565(int x,int y,int w,int h,const std::uint16_t* source,std::size_t stride){
+esp_err_t flushRgb565(int x,int y,int w,int h,const std::uint16_t* source,std::size_t stride,StripeHook hook,void* context){
     CHECK(stride==deviceui::kSize);CHECK(source==frame.data()+y*deviceui::kSize+x);
     const Rect logical{x,y,w,h};CHECK(validRect(logical));flushes.push_back({capturefake::nowUs,x,y,w,h});
     const auto native=logicalRectToPanel(Orientation::Ccw90,logical);
     std::array<std::uint8_t,kDmaStripeBytes+16> bytes;
     const auto pixels=static_cast<std::size_t>(h-1)*stride+w;
+    // Conservative linear byte-cost MODEL from an earlier full-frame45,757us
+    // measurement, spread over the stripes so the between-stripe hook sees time pass.
+    const auto cost=45757ull*static_cast<unsigned>(w*h)/deviceui::kPixels;
+    const auto stripes=static_cast<unsigned>((native.height+kStripeRows-1)/kStripeRows);unsigned done=0;
     for(int row=0;row<native.height;row+=kStripeRows){
         const auto rows=std::min(kStripeRows,native.height-row);bytes.fill(0xa5);
         CHECK(packStripe(Orientation::Ccw90,logical,source,pixels,stride,row,rows,bytes.data()+8,kDmaStripeBytes));
@@ -63,16 +69,36 @@ esp_err_t flushRgb565(int x,int y,int w,int h,const std::uint16_t* source,std::s
             const auto mapped=panelToLogical(Orientation::Ccw90,{native.x+dx,native.y+row+dy});
             CHECK(value==frame[mapped.y*deviceui::kSize+mapped.x]);panel[(native.y+row+dy)*kWidth+native.x+dx]=value;
         }
+        ++done;capturefake::nowUs+=cost*done/stripes-cost*(done-1)/stripes; // Not an ESP timing measurement.
+        if(hook&&row+rows<native.height)hook(context);
     }
-    // Conservative linear byte-cost MODEL from an earlier full-frame45,757us
-    // measurement. Not an ESP partial-frame timing measurement.
-    capturefake::nowUs+=45757ull*static_cast<unsigned>(w*h)/deviceui::kPixels;
     return flushFailure?ESP_FAIL:ESP_OK;
 }
 }
 namespace {
+// After a missed manual throw Auto resumes the fight and pauses again for the
+// next throw (rules 17+). Drive it there, answering any focus prompt untapped.
+bool missAgain(State& s){
+    for(unsigned guard=0;guard<16&&s.phase==Phase::Encounter&&s.autoCapture!=AutoCapture::Awaiting;++guard){
+        const bool focus=s.autoCapture==AutoCapture::FocusStrike||s.autoCapture==AutoCapture::FocusBlock;
+        if((focus?applyFocus(s,kFocusNoTap):applyAutoFight(s))!=Error::None)return false;
+    }
+    return s.phase==Phase::Encounter&&s.autoCapture==AutoCapture::Awaiting&&apply(s,Action::Flick,0)==Error::None;
+}
+// After the third missed throw Auto fights on to the end of the encounter.
+bool finishAuto(State& s){
+    for(unsigned guard=0;guard<16&&s.phase==Phase::Encounter;++guard){
+        const bool focus=s.autoCapture==AutoCapture::FocusStrike||s.autoCapture==AutoCapture::FocusBlock;
+        if((focus?applyFocus(s,kFocusNoTap):s.autoCapture==AutoCapture::Awaiting?applyAutoResume(s):applyAutoFight(s))!=Error::None)return false;
+    }
+    return s.phase==Phase::Home;
+}
 State waiting(){
-    for(unsigned seed=1;seed<1000;++seed){auto s=newDevice(seed);CHECK(apply(s,Action::Hatch,2)==Error::None);CHECK(apply(s,Action::Mode,1)==Error::None);CHECK(apply(s,Action::Explore,1000)==Error::None);CHECK(applyAutoFight(s)==Error::None);if(s.autoCapture==AutoCapture::Awaiting)return s;}
+    for(unsigned seed=1;seed<1000;++seed){auto s=newDevice(seed);CHECK(apply(s,Action::Hatch,2)==Error::None);CHECK(apply(s,Action::Mode,1)==Error::None);CHECK(apply(s,Action::Explore,1000)==Error::None);CHECK(applyAutoFight(s)==Error::None);
+        if(s.autoCapture!=AutoCapture::Awaiting)continue;
+        // The policy test needs a fight that lasts for all three missed throws.
+        auto probe=s;bool ok=apply(probe,Action::Flick,0)==Error::None&&probe.phase==Phase::Encounter&&missAgain(probe)&&probe.phase==Phase::Encounter&&missAgain(probe)&&finishAuto(probe);
+        if(ok&&probe.phase==Phase::Home&&probe.lastCapture.attempt==3)return s;}
     throw std::runtime_error("capture fixture unavailable");
 }
 void reset(){capturefake::nowUs=1000000;capturefake::fullRenders=capturefake::partialRenders=capturefake::parityChecks=0;capturefake::forcePartialFailure=false;flushes.clear();touches.clear();lcd=touch=true;flushFailure=false;point={false,0,0,true};touchError=ESP_OK;}
@@ -97,7 +123,7 @@ void restoredCapturePolicy(){
     auto pending=waiting();
     auto escaped=pending;CHECK(apply(escaped,Action::Flick,0)==Error::None);
     CHECK(escaped.phase==Phase::Encounter&&escaped.lastCapture.result==CaptureResult::Miss);
-    auto ended=escaped;CHECK(apply(ended,Action::Flick,0)==Error::None);CHECK(apply(ended,Action::Flick,0)==Error::None);
+    auto ended=escaped;CHECK(missAgain(ended)&&missAgain(ended)&&finishAuto(ended));
     CHECK(ended.phase==Phase::Home&&ended.lastCapture.attempt==3);
     State beforeCapture{},captured{};bool found=false;
     for(unsigned seed=1;seed<=100&&!found;++seed){
@@ -120,8 +146,9 @@ void restoredCapturePolicy(){
             CHECK(!std::memcmp(original.bytes,after.bytes,kSnapshotSize));
         }
     }
-    // An unfinished capture still replays the committed miss, then restores
-    // its manual capture choice. Recovery/trade locks suppress that replay.
+    // An unfinished capture still replays the committed miss, then returns to
+    // the Auto fight (rules 17+: a miss hands the fight back to Auto, which
+    // pauses again for the next throw). Recovery/trade locks suppress replay.
     for(unsigned gate=0;gate<3;++gate){
         auto restored=escaped;Snapshot original;CHECK(encodeSnapshot(restored,original));
         HandheldRuntime runtime(restored);runtime.model.writable=true;runtime.useOwnedPlayback=true;
@@ -130,7 +157,7 @@ void restoredCapturePolicy(){
         if(!gate){
             CHECK(runtime.ui_.screen()==deviceui::Screen::Battle);
             for(unsigned now=1000;now<=6000;now+=20){runtime.battle_.poll(now);runtime.ui_.update(restored,runtime.interfaceModel());}
-            CHECK(!runtime.battle_.locked()&&runtime.ui_.screen()==deviceui::Screen::Capture);
+            CHECK(!runtime.battle_.locked()&&runtime.ui_.screen()==deviceui::Screen::Battle&&restored.autoCapture==AutoCapture::None);
         }
         Snapshot after;CHECK(encodeSnapshot(restored,after));CHECK(!std::memcmp(original.bytes,after.bytes,kSnapshotSize));
     }
@@ -152,16 +179,16 @@ void releaseAndPlaybackBarrier(){
     runtime.pollInterface(capturefake::nowUs/1000);
     point={true,206,176,true};loop(runtime,20);CHECK(runtime.intents==1);
     runtime.ui_.resolve("SIMULATED SAVE FAILURE");runtime.interfaceDirty_=true;
-    touchError=ESP_FAIL;loop(runtime,20);CHECK(runtime.touchNeedsRelease_&&runtime.intents==1);
-    touchError=ESP_OK;loop(runtime,20);CHECK(runtime.touchNeedsRelease_&&runtime.intents==1);
-    point={false,206,176,false};loop(runtime,20);CHECK(runtime.touchNeedsRelease_);
-    point={false,206,176,true};loop(runtime,20);CHECK(!runtime.touchNeedsRelease_&&runtime.intents==1);
+    touchError=ESP_FAIL;loop(runtime,20);CHECK(runtime.touch_.awaitingRelease()&&runtime.intents==1);
+    touchError=ESP_OK;loop(runtime,20);CHECK(runtime.touch_.awaitingRelease()&&runtime.intents==1);
+    point={false,206,176,false};loop(runtime,20);CHECK(runtime.touch_.awaitingRelease());
+    point={false,206,176,true};loop(runtime,20);CHECK(!runtime.touch_.awaitingRelease()&&runtime.intents==1);
     // Wait past duplicate-contact cooldown, then the first new Down must work.
     loop(runtime,350);point={true,206,176,true};loop(runtime,20);CHECK(runtime.intents==2);
 
     reset();auto next=waiting();HandheldRuntime held(next);setup(held);
     battlepresentation::View playback{};playback.locked=true;playback.enemyFormId=next.wildFormId;
-    held.model.battle=&playback;point={true,206,176,true};loop(held,40);CHECK(held.intents==0&&held.touchPressed_);
+    held.model.battle=&playback;point={true,206,176,true};loop(held,40);CHECK(held.intents==0&&held.touch_.pressed());
     held.model.battle=nullptr;loop(held,100);CHECK(held.intents==0); // HeldlevelneverbecomesnewDown.
     point={false,206,176,true};loop(held,30);CHECK(held.intents==0);
     point={true,206,176,true};loop(held,30);CHECK(held.intents==1);
@@ -172,16 +199,16 @@ void flushFailureReleaseBarrier(){
     // A held header contact is tracked by the hardware owner, but is not a
     // throw. Fail the display transfer while that contact remains pressed.
     point={true,206,40,true};runtime.interfaceDirty_=true;flushFailure=true;
-    loop(runtime,30);CHECK(runtime.touchPressed_&&runtime.touchNeedsRelease_&&runtime.intents==0);
-    flushFailure=false;loop(runtime,20);CHECK(runtime.touchPressed_&&runtime.touchNeedsRelease_&&runtime.intents==0);
+    loop(runtime,30);CHECK(runtime.touch_.awaitingRelease()&&runtime.intents==0);
+    flushFailure=false;loop(runtime,20);CHECK(runtime.touch_.awaitingRelease()&&runtime.intents==0);
     // A cached/no-update release cannot discharge the barrier.
-    point={false,206,40,false};loop(runtime,20);CHECK(runtime.touchPressed_&&runtime.touchNeedsRelease_);
+    point={false,206,40,false};loop(runtime,20);CHECK(runtime.touch_.awaitingRelease());
     // The observed release must clear BOTH hardware and UI contact latches.
     point={false,206,40,true};capturefake::nowUs+=30000;runtime.pollInterface(capturefake::nowUs/1000);
-    CHECK(!runtime.touchPressed_&&!runtime.touchNeedsRelease_&&runtime.intents==0);
-    const auto presses=runtime.touchPresses_;
+    CHECK(!runtime.touch_.pressed()&&!runtime.touch_.awaitingRelease()&&runtime.intents==0);
+    const auto presses=runtime.touch_.presses();
     point={true,206,176,true};loop(runtime,20);
-    CHECK(runtime.touchPresses_==presses+1&&runtime.intents==1);
+    CHECK(runtime.touch_.presses()==presses+1&&runtime.intents==1);
     CHECK(state.captureAttempts==0); // This I/O harness records intent only.
 }
 void cadence(){

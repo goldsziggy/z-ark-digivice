@@ -1,5 +1,7 @@
 # Touch controls and physical playtest readiness
 
+**Touch sprint (2026-10-10):** first-tap-after-wake, redraw stalls, flush blind window, release chatter and lift roll-off are fixed and measured against the device timing model; every screen's tap targets are audited. Results, the SPD2010 models and a bench checklist are in [TOUCH_SPRINT.md](TOUCH_SPRINT.md).
+
 **Two-device status:** Unit 1 runs **`8a420c7`**. Its app-only upgrade, all **261 destination SHA-256 checks**, eight starter DVA decodes, scene JPEG decode and display-transfer counters passed. Its own **576-byte saved egg remained unchanged and survived software reboot**; no hatch was performed. Unit 2 remains on **`90ee501`**, currently absent from both USB and serial enumeration after the user confirmed reconnection; a check with Unit 1’s working cable and Mac port is pending. Actual visible-screen, finger, sound, battery and hotspot acceptance remain pending. [Per-device status](TWO_DEVICE_PREPARATION.md) · Current evidence (historical local evidence omitted).
 
 The current build uses **1,449,936 app bytes** and **145,419 static DIRAM bytes**, with **1,695,792 bytes free** in the unchanged 3 MiB app slot. Current build pins (historical local evidence omitted). These measurements and successful boot do not establish visible orientation, comfortable targets, actual finger coordinates or audible sound. Physical finger/visual/audio acceptance, battery behavior and hotspot connection remain unverified.

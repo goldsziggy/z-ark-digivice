@@ -27,6 +27,7 @@ public:
     tradewire::Protocol tradeWire_;nearby::Protocol nearby_;
     NearbyPhase nearbyPhase_=NearbyPhase::Active;
     bool tradePeerTerminal_=false,touchNeedsRelease_=false,interfaceDirty_=false;
+    void requireTouchRelease(){touchNeedsRelease_=true;}
     const char* tradeStatus_="";
 };
 }

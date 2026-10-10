@@ -468,9 +468,9 @@ int main() {
         const auto invite=tap(206,302);CHECK(invite.kind==deviceui::IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Auto);fake::now=1;
         for(unsigned changed=0;changed<6;++changed) {
             auto stale=invite;
-            if(changed==0)++stale.peer.bytes[5];if(changed==1)++stale.nearbyOpenNonce;
-            if(changed==2)++stale.nearbyFighters[0].level;if(changed==3)++stale.nearbyFighters[1].level;
-            if(changed==4)stale.value=nearby::kMaxPeers;if(changed==5)stale.nearbyMode=static_cast<nearby::Mode>(2);
+            if(changed==0){++stale.peer.bytes[5];}if(changed==1){++stale.nearbyOpenNonce;}
+            if(changed==2){++stale.nearbyFighters[0].level;}if(changed==3){++stale.nearbyFighters[1].level;}
+            if(changed==4){stale.value=nearby::kMaxPeers;}if(changed==5){stale.nearbyMode=static_cast<nearby::Mode>(2);}
             h.runtime.nearbyIntent(stale);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Discovering);
         }
         h.runtime.nearbyIntent(invite);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Outgoing && h.runtime.nearby_.view().offeredMode==nearby::Mode::Auto);
@@ -511,9 +511,9 @@ int main() {
         const auto accept=tap(120,252);CHECK(accept.kind==deviceui::IntentKind::NearbyAccept && accept.nearbyMode==nearby::Mode::Auto);fake::now=1;
         for(unsigned changed=0;changed<5;++changed) {
             auto stale=accept;
-            if(changed==0)++stale.peer.bytes[5];if(changed==1)++stale.nearbySession;
-            if(changed==2)++stale.nearbyFighters[0].level;if(changed==3)++stale.nearbyFighters[1].level;
-            if(changed==4)stale.nearbyMode=nearby::Mode::Tactical;
+            if(changed==0){++stale.peer.bytes[5];}if(changed==1){++stale.nearbySession;}
+            if(changed==2){++stale.nearbyFighters[0].level;}if(changed==3){++stale.nearbyFighters[1].level;}
+            if(changed==4){stale.nearbyMode=nearby::Mode::Tactical;}
             h.runtime.nearbyIntent(stale);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Incoming);
         }
         h.runtime.nearbyIntent(accept);CHECK(h.runtime.nearby_.view().stage==nearby::Stage::Accepting);

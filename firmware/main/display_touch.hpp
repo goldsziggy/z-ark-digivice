@@ -47,8 +47,13 @@ bool quiescent();
 // Rotates into one internal DMA stripe, converting to wire big endian. Returns
 // only after each stripe's completion callback. Caller may reuse pixels after
 // return. On DMA timeout the stripe stays allocated and display is disabled.
+// betweenStripes, when set, runs after each completed stripe (no DMA in flight);
+// the handheld uses it to keep touch sampling at its 20 ms cadence during long
+// flushes. It must not draw, flush or change game state.
+using StripeHook = void (*)(void* context);
 esp_err_t flushRgb565(int x, int y, int width, int height,
-                     const std::uint16_t* pixels, std::size_t stridePixels);
+                     const std::uint16_t* pixels, std::size_t stridePixels,
+                     StripeHook betweenStripes = nullptr, void* context = nullptr);
 
 // Logical UI 412x412 coordinates after inverse panel rotation; one contact only.
 // Multiple contacts cancel input. Cached/no-update points are not remapped.

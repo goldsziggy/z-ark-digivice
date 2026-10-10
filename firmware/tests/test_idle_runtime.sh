@@ -19,18 +19,18 @@ start=s.index('bool HandheldRuntime::pollUsage(');end=s.index('\nbool HandheldRu
 body=s[start:end]
 (out/'usage.cpp').write_text('#include "handheld_runtime_double.hpp"\n#include "esp_random.h"\n#include <algorithm>\nnamespace digivice {\n'+record(path,body,'exact pollUsage body; SDK/UI owner declaration doubled')+'\n}\n')
 path='firmware/main/handheld_ui.cpp';s=Path(path).read_text()
-start=s.index('void HandheldRuntime::pollInterface(');end=s.index('    // Full frames',start)
+start=s.index('void HandheldRuntime::handleTouchSample(');end=s.index('    // Full frames',start)
 prefix=s[start:end]
-assert 'pollIdle(now);' in prefix and 'else if (idle_.blanked())' in prefix
+assert 'pollIdle(now);' in prefix and 'idle_.blanked()}, model);' in prefix and 'touch_.feed(sample)' in prefix
 # Assert the excluded renderer retains its idle guard; this harness does not render.
 assert 'const bool canDraw = !idle_.blanked() && frame_ && display::displayReady();' in s[end:]
 start=s.index('void HandheldRuntime::pauseInterface(');end=s.index('\nbool HandheldRuntime::interfaceQuiescent',start)
 pause=s[start:end]
-(out/'interface.cpp').write_text('#include "handheld_runtime_double.hpp"\n#include "esp_timer.h"\n#include <cstdio>\nnamespace digivice {\n'+record(path,prefix,'exact input/policy prefix through pollIdle; rendering excluded and its guard asserted')+'}\n'+pause+'\n}\n')
+(out/'interface.cpp').write_text('#include "handheld_runtime_double.hpp"\n#include "esp_timer.h"\n#include <cstdio>\nnamespace digivice {\n'+record(path,prefix,'exact touch pipeline methods and input/policy prefix through pollIdle; rendering excluded and its guard asserted')+'}\n'+pause+'\n}\n')
 (out/'source-scope.json').write_text(json.dumps(entries,indent=2)+'\n')
 PY
 sources=(firmware/tests/idle_runtime_test.cpp "$idle_test_out/handheld_idle.cpp" "$idle_test_out/usage.cpp" "$idle_test_out/interface.cpp"
-  firmware/runtime/idle.cpp firmware/runtime/usage_store.cpp firmware/main/save_store.cpp
+  firmware/runtime/idle.cpp firmware/runtime/touch_stream.cpp firmware/runtime/usage_store.cpp firmware/main/save_store.cpp
   core/game.cpp core/combat.cpp core/encounters.cpp core/forms.cpp core/battle_trace.cpp
   core/legacy_combat_v3.cpp core/legacy_forms_v5.cpp core/legacy_combat_v5.cpp
   core/legacy_forms_v6.cpp core/legacy_combat_v6.cpp core/legacy_forms_v7.cpp core/legacy_combat_v7.cpp

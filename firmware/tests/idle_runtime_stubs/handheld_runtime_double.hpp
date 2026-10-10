@@ -8,6 +8,7 @@
 #include "usage_store.hpp"
 #include "idle.hpp"
 #include "device_ui.hpp"
+#include "touch_stream.hpp"
 #include "audio_cues.hpp"
 #include "music_synth.hpp"
 #include "display_touch.hpp"
@@ -69,6 +70,17 @@ public:
     deviceui::Model interfaceModel()const{return {};}
     void pollBattlePresentation(std::uint64_t){}
     void interfaceIntent(deviceui::Intent i){if(i)++intents;}
+    void pollCareAndAuto(std::uint64_t){}
+    // Extracted byte-for-byte from production handheld_ui.cpp by the runner.
+    void handleTouchSample(const touchstream::Sample&,const deviceui::Model&);
+    static void sampleTouchDuringFlush(void*);
+    void requireTouchRelease();
+    bool touchPressed()const{return touch_.pressed();}
+    void forcePressedForTest(){touch_.feed({true,false,true,0,0,0});touch_.feed({true,true,true,200,200,1});}
+    touchstream::Stream touch_{};
+    static constexpr std::size_t kFlushTouchQueue=8;
+    touchstream::Sample flushTouch_[kFlushTouchQueue]{};
+    std::size_t flushTouchCount_=0;
     IdleUiDouble ui_;IdleSetupDouble setup_;IdleImuDouble imu_;IdleAudioDouble audio_;
     IdleArtDouble art_,partnerArt_;IdleAssetsDouble assets_;IdleNetworkDouble network_;
     IdleUsbDouble usbTransfer_;IdlePowerDouble power_;IdleBattleDouble battle_;
@@ -80,10 +92,9 @@ public:
     bool interfacePaused_=false,frozen=false,nearby=false,powerEnabled_=true,usbTransferLease_=false;
     bool encounterRecoveryRequired_=false;
     bool captureFrameActive_=false,captureFrameValid_=false;
-    bool walkingFault_=false,touchPressed_=false,touchNeedsRelease_=false,interfaceDirty_=false;
-    std::uint32_t walkingPending_=0,uiSequence_=0,touchPresses_=0,touchReleases_=0;
-    std::uint64_t lastWalkingSaveMs_=0,lastTouchMs_=0;
-    std::int16_t touchX_=0,touchY_=0;
+    bool walkingFault_=false,interfaceDirty_=false;
+    std::uint32_t walkingPending_=0,uiSequence_=0;
+    std::uint64_t lastWalkingSaveMs_=0,lastTouchMs_=0,careAwakeMs_=0;
     std::uint16_t pixel=0;std::uint16_t* frame_=&pixel;
     unsigned intents=0;
 };

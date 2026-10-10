@@ -263,12 +263,12 @@ sprite::Animation battleAnimation(const battlepresentation::View* view,battlepre
 }
 int horizontalTap(int x,int y,bool picker) {
     // Shared unobtrusive edge targets; battle's existing side icons are also
-    // tappable. The icon band ends before CATCH (y283), never replacing it.
+    // tappable. The icon band ends before CATCH (y282), never replacing it.
     if(y>=134 && y<246) {
         if(x>=30 && x<84) return -1;
         if(x>=328 && x<382) return 1;
     }
-    if(picker && y>=248 && y<283) {
+    if(picker && y>=248 && y<282) {
         if(x>=80 && x<176) return -1;
         if(x>=238 && x<334) return 1;
     }
@@ -409,7 +409,7 @@ bool Controller::inside(int x, int y) {
     return dx*dx+dy*dy <= 204*204;
 }
 void Controller::resetTouch() {
-    down_=battleGesture_=browseGesture_=downPadded_=false; cancelled_=true; downButton_=0;
+    down_=battleGesture_=browseGesture_=false; cancelled_=true; downButton_=0;
 }
 std::uint64_t Controller::captureElapsed(std::uint64_t now) const {
     if(captureEpoch_==UINT64_MAX || now<captureEpoch_) captureEpoch_=now;
@@ -596,7 +596,7 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         add(116,260,180,54,"MEET PARTNER",EggOpen,model.writable);
         add(144,332,124,38,"SETUP",Setup); break;
     case Screen::Starter:
-        add(116,284,180,44,"CHOOSE",Choose,model.writable); back(); break;
+        add(116,282,180,44,"CHOOSE",Choose,model.writable); back(); break;
     case Screen::StarterReview:
         add(116,252,180,52,"HATCH",Hatch,model.writable && model.starterStage==onboarding::Stage::Confirming);
         back(); break;
@@ -617,8 +617,8 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     case Screen::Battle:
         if (state.battleMode==BattleMode::Auto) add(116,250,180,52,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
         else {
-            add(48,283,140,44,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
-            add(274,283,76,44,"CATCH",Capture,canCapture(state,model));
+            add(48,282,140,44,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
+            add(274,282,76,44,"CATCH",Capture,canCapture(state,model));
         }
         back(); break;
     case Screen::Capture:
@@ -634,7 +634,7 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         const auto action=companion ? Action::PartyRemove : Action::PartyAdd;
         const char* label=active ? "ACTIVE PARTNER" : companion ? "REMOVE XP COMPANION" :
             partyCount(state)==kPartyCapacity ? "XP COMPANIONS FULL" : "ADD XP COMPANION";
-        add(100,242,212,36,label,PartyToggle,member && !active && legal(state,model,action,member->id));
+        add(100,240,212,36,label,PartyToggle,member && !active && legal(state,model,action,member->id));
         left(1,"STATS + EVOLVE",MemberStats,member);
         right(1,"MAKE PARTNER",MemberSelect,member && !active && legal(state,model,Action::Select,member->id));
         back(); break;
@@ -643,29 +643,29 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         const auto* member=selectedMember(state);
         const bool active=member && member->id==state.activeCreatureId;
         if (member && !active) add(62,236,139,46,"DIGIVOLVE",EvolveOpen,state.phase==Phase::Home);
-        if (active) add(108,284,196,44,"DIGIVOLVE",EvolveOpen,state.phase==Phase::Home);
-        else add(108,284,196,44,"RELEASE DIGIMON",ReleaseOpen,member &&
+        if (active) add(108,282,196,44,"DIGIVOLVE",EvolveOpen,state.phase==Phase::Home);
+        else add(108,282,196,44,"RELEASE DIGIMON",ReleaseOpen,member &&
             legal(state,model,Action::Release,memberId_));
         back(); break;
     }
     case Screen::ReleaseReview:
-        add(108,278,196,50,"RELEASE",ReleaseConfirm,releaseMember_ && legal(state,model,Action::Release,releaseMember_)); back(); break;
+        add(108,278,196,48,"RELEASE",ReleaseConfirm,releaseMember_ && legal(state,model,Action::Release,releaseMember_)); back(); break;
     case Screen::Evolution: {
         const auto* member=selectedMember(state);
         const auto* edge=member ? forms::outgoing(member->formId,evolutionIndex_) : nullptr;
-        add(62,282,100,46,evolutionPage_ ? "CLOSE INFO" : "? INFO",EvolutionDetails,edge);
-        add(174,282,176,46,"SELECT",EvolutionReview,edge && evolutionPage_!=3);
+        add(62,282,100,44,evolutionPage_ ? "CLOSE INFO" : "? INFO",EvolutionDetails,edge);
+        add(174,282,176,44,"SELECT",EvolutionReview,edge && evolutionPage_!=3);
         back(); break;
     }
     case Screen::EvolutionReview: {
         const bool active=!evolutionMember_ || evolutionMember_==state.activeCreatureId;
         const auto action=active ? Action::Evolve : Action::EvolveMember;
         const auto value=active ? evolution_.target() : ((evolutionMember_<<16)|(evolution_.target()&0xffffu));
-        add(108,278,196,50,"DIGIVOLVE",EvolutionConfirm,evolution_.target() &&
+        add(108,278,196,48,"DIGIVOLVE",EvolutionConfirm,evolution_.target() &&
             legal(state,model,action,value)); back(); break;
     }
     case Screen::EvolutionResult:
-        add(108,278,196,50,"VIEW STATS",EvolutionDone); back(); break;
+        add(108,278,196,48,"VIEW STATS",EvolutionDone); back(); break;
     case Screen::Settings:
         add(100,117,212,44,"SCREEN TIMEOUT",Sleep);
         add(100,172,212,44,"ENCOUNTER SETTINGS",Encounters);
@@ -682,15 +682,15 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         const auto* peer=tradingPeer(model,tradePeer_);
         const bool initial=model.trade && model.trade->stage==tradewire::Stage::Discovering;
         const bool available=initial ? peer && peer->compatible && peer->advertisement.available && peer->advertisement.nonce==tradePeerNonce_ : changeTrade(model);
-        add(108,284,196,44,initial ? "OFFER TO TRADE" : "CHANGE OFFER",TradeSelect,
+        add(108,282,196,44,initial ? "OFFER TO TRADE" : "CHANGE OFFER",TradeSelect,
             model.writable && model.tradeWritable && available && trade::canOffer(state,tradeMemberId_));
         back(); break;
     }
     case Screen::TradeReview: {
         const auto* v=model.trade;
         if(v && v->stage==tradewire::Stage::Reviewing && v->durable==tradewire::Durable::None) {
-            add(62,282,100,46,"CHANGE",TradeChange,changeTrade(model));
-            add(174,282,176,46,"CONFIRM BOTH",TradeConfirm,confirmTrade(state,model));
+            add(62,282,100,44,"CHANGE",TradeChange,changeTrade(model));
+            add(174,282,176,44,"CONFIRM BOTH",TradeConfirm,confirmTrade(state,model));
         }
         const bool terminal=!v || v->stage==tradewire::Stage::Closed || v->stage==tradewire::Stage::Discovering ||
             v->stage==tradewire::Stage::Applied || v->stage==tradewire::Stage::Aborted || v->stage==tradewire::Stage::Cancelled;
@@ -708,7 +708,7 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     case Screen::NearbyReview:
         add(62,218,140,44,nearbyMode_==nearby::Mode::Tactical ? "> TACTICAL" : "TACTICAL",NearbyTactical);
         add(210,218,140,44,nearbyMode_==nearby::Mode::Auto ? "> AUTO" : "AUTO",NearbyAuto);
-        add(108,278,196,50,"CHALLENGE",NearbyChallenge,model.nearby &&
+        add(108,278,196,48,"CHALLENGE",NearbyChallenge,model.nearby &&
             model.nearby->stage==nearby::Stage::Discovering && nearbyIndex_<peerCount(model.nearby) && model.nearby->peers[nearbyIndex_].available);
         back(); break;
     case Screen::Nearby: {
@@ -718,14 +718,14 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
             // LEAVE remains available below; no game rule or network clock changes.
         } else if (nearby && nearby->stage==nearby::Stage::Discovering) {
             const bool peerReady=nearbyIndex_<peerCount(nearby) && nearby->peers[nearbyIndex_].available;
-            add(62,282,149,46,"BATTLE",NearbyReview,peerReady && !activeTrade(model.trade));
+            add(62,282,149,44,"BATTLE",NearbyReview,peerReady && !activeTrade(model.trade));
             const auto* trading=peerReady ? tradingPeer(model,peerIdentity(nearby->peers[nearbyIndex_].mac)) : nullptr;
-            add(218,282,132,46,"TRADE",TradeOpen,trading && trading->compatible && trading->advertisement.available &&
+            add(218,282,132,44,"TRADE",TradeOpen,trading && trading->compatible && trading->advertisement.available &&
                 model.trade->stage==tradewire::Stage::Discovering && model.tradeWritable && model.writable);
         } else if (nearby && nearby->stage==nearby::Stage::Incoming) {
             left(0,"ACCEPT",NearbyAccept); right(0,"DECLINE",NearbyCancel);
         } else if (nearby && (nearby->stage==nearby::Stage::Outgoing || nearby->stage==nearby::Stage::Accepting || nearby->stage==nearby::Stage::Reconnecting)) {
-            add(108,284,196,44,"CANCEL",NearbyCancel);
+            add(108,282,196,44,"CANCEL",NearbyCancel);
         }
         nav("LEAVE",NearbyClose); break;
     }
@@ -1012,7 +1012,7 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
         if (!inside(event.x,event.y) && (hit<0 || !choices[hit].padded)) return {};
         down_=true; cancelled_=tapMoved_=false; downX_=event.x; downY_=event.y; downAt_=lastAt_=event.atMs;
         const bool buttonOrigin=hit>=0;
-        if (buttonOrigin && choices[hit].enabled) { downButton_=choices[hit].id; downPadded_=choices[hit].padded; }
+        if (buttonOrigin && choices[hit].enabled) { downButton_=choices[hit].id; }
         const bool nearbyPicker=screen_==Screen::Nearby && !nearbyFeedback(model) && model.nearby && model.nearby->stage==nearby::Stage::Playing &&
             model.nearby->match.mode==nearby::Mode::Tactical && !model.nearby->localChoicePending;
         battleGesture_=!buttonOrigin && event.y>=130 && event.y<336 && (nearbyPicker ||
@@ -1025,12 +1025,19 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
         return {};
     }
     if (!down_ || cancelled_) return {};
-    // A press on the padded bottom button survives drift anywhere inside its padded box,
-    // including the bezel edge outside the circle; release there still counts.
+    // A press that began on a button survives roll-off drift while the finger stays
+    // on that button plus a margin; release there counts whatever the slop. The
+    // padded bottom button's margin also reaches the bezel edge outside the circle.
     bool padHold=false;
-    if (downPadded_ && downButton_) {
+    if (downButton_) {
         Button choices[8]; const auto n=buttons(state,model,choices);
-        for (std::size_t i=0;i<n;++i) if (choices[i].id==downButton_ && choices[i].padded && hits(choices[i],event.x,event.y,kNavPad)) padHold=true;
+        for (std::size_t i=0;i<n;++i) {
+            const auto& b=choices[i];
+            if (b.id!=downButton_ || !hits(b,event.x,event.y,b.padded ? kNavPad : kHoldPad)) continue;
+            const int dx=event.x-downX_, dy=event.y-downY_;
+            // Roll-off drift, not a deliberate swipe across the button.
+            padHold=b.padded || (inside(event.x,event.y) && dx*dx+dy*dy<=kHoldSlop*kHoldSlop);
+        }
     }
     if (event.atMs<lastAt_ || event.atMs-downAt_>10000 || (!padHold && !inside(event.x,event.y))) { resetTouch(); return {}; }
     lastAt_=event.atMs;
@@ -1041,7 +1048,7 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
     }
     if (event.kind!=TouchKind::Up) return {};
     const bool battleGesture=battleGesture_, browseGesture=browseGesture_; const int pressed=downButton_;
-    down_=false; battleGesture_=browseGesture_=downPadded_=false; downButton_=0;
+    down_=false; battleGesture_=browseGesture_=false; downButton_=0;
     if (battleGesture || browseGesture) {
         const int dx=event.x-downX_,dy=event.y-downY_;
         const auto elapsed=event.atMs-downAt_;
@@ -1069,7 +1076,7 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
     Button choices[8]; const auto n=buttons(state,model,choices);
     for (std::size_t i=0;i<n;++i) {
         const auto& b=choices[i];
-        if (b.id==pressed && b.enabled && hits(b,event.x,event.y,b.padded ? kNavPad : 0))
+        if (b.id==pressed && b.enabled && hits(b,event.x,event.y,b.padded ? kNavPad : kHoldPad))
             return activate(pressed,state,model);
     }
     return {};
@@ -1442,8 +1449,9 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             actor(206+tx,162,7); // Fixed vertical stage keeps roster controls clear at any gyro tilt.
             std::snprintf(label,sizeof(label),"%u/%u  LV %u%s",memberIndex_+1,static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(member.level),
                 member.id==state.activeCreatureId ? "  ACTIVE" : isPartyMember(state,member.id) ? "  XP" : "");
-            c.badge(222,label,1,member.id==state.activeCreatureId || isPartyMember(state,member.id) ? mint : dim);
-            std::snprintf(label,sizeof(label),"OWNED ID %u",static_cast<unsigned>(member.id)); c.badge(235,label,1,dim);
+            c.badge(209,label,1,member.id==state.activeCreatureId || isPartyMember(state,member.id) ? mint : dim);
+            // Ends at y234, clear of the companion toggle at y240.
+            std::snprintf(label,sizeof(label),"OWNED ID %u",static_cast<unsigned>(member.id)); c.badge(223,label,1,dim);
         }
         break;
     case Screen::ReleaseReview: {

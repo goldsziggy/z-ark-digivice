@@ -78,11 +78,13 @@ void resultIdle(){
     CHECK(!h.game.writes&&!h.usage.writes&&!h.runtime.intents);
     CHECK(h.runtime.ui_.screen()==deviceui::Screen::Result&&!h.runtime.imu_.paused);
     h.input(30020,{true,206,300,true});
-    CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&h.runtime.touchNeedsRelease_);
+    CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&h.runtime.touch_.awaitingRelease());
     CHECK(!h.runtime.intents&&!h.runtime.ui_.downs&&!h.runtime.ui_.ups);
     h.input(30040,{false,206,300,true});
-    CHECK(!h.runtime.touchNeedsRelease_&&!h.runtime.intents);
+    CHECK(!h.runtime.touch_.awaitingRelease()&&!h.runtime.intents);
     h.input(30060,{true,206,300,true});h.input(30080,{false,206,300,true});
+    CHECK(h.runtime.ui_.downs==1&&!h.runtime.ui_.ups); // release confirmed on the next poll (touchstream)
+    h.input(30100,{false,206,300,false});
     CHECK(h.runtime.ui_.downs==1&&h.runtime.ui_.ups==1&&h.runtime.intents==1);
     Snapshot after;CHECK(encodeSnapshot(h.state,after));
     CHECK(!std::memcmp(before.bytes,after.bytes,kSnapshotSize)&&!h.game.writes&&!h.usage.writes);
@@ -90,7 +92,7 @@ void resultIdle(){
     // barrier. These are the same production blockers used by other screens.
     const std::function<void(Harness&)> blocks[]{
         [](auto& r){r.runtime.battle_.locked_=true;},
-        [](auto& r){r.runtime.touchPressed_=true;},
+        [](auto& r){r.runtime.forcePressedForTest();},
         [](auto& r){r.runtime.ui_.pending_=true;},
         [](auto& r){CHECK(apply(r.state,Action::Explore,1000)==Error::None);},
         [](auto& r){r.runtime.usbTransferLease_=true;},
@@ -119,7 +121,7 @@ void flushStartsEncounter(){
 void homeWalkingWhileBlanked(){
     Harness h;CHECK(apply(h.state,Action::EncounterRate,2)==Error::None);CHECK(h.saves.checkpoint(h.state));
     h.runtime.uiSequence_=h.state.sequence;h.idle(30000);
-    CHECK(h.runtime.idle_.blanked()&&h.runtime.touchNeedsRelease_);
+    CHECK(h.runtime.idle_.blanked()&&h.runtime.touch_.awaitingRelease());
     // Backlight-only idle does not disable Home walking or require touch.
     h.runtime.imu_.sample={200,motion::StepStatus::Tracking,32000};CHECK(h.runtime.pollUsage(32000));
     CHECK(h.runtime.usage_.total()==200&&h.state.phase==Phase::Encounter&&h.state.walkingEncounters==1);
@@ -153,7 +155,7 @@ void blockers(){
         [](auto&h){h.runtime.ui_.selected=deviceui::Screen::Battle;},
         [](auto&h){h.runtime.ui_.selected=deviceui::Screen::Capture;},
         [](auto&h){h.runtime.ui_.selected=deviceui::Screen::EvolutionReview;},
-        [](auto&h){h.runtime.ui_.pending_=true;},[](auto&h){h.runtime.touchPressed_=true;},
+        [](auto&h){h.runtime.ui_.pending_=true;},[](auto&h){h.runtime.forcePressedForTest();},
         [](auto&h){h.runtime.battle_.locked_=true;},[](auto&h){h.runtime.nearby=true;},
         [](auto&h){h.runtime.setup_.active_=true;},[](auto&h){h.runtime.interfacePaused_=true;},
         [](auto&h){h.runtime.frozen=true;},[](auto&h){h.runtime.power_.s.phase=power::Phase::Holding;},
@@ -172,13 +174,13 @@ void blockers(){
     for(const auto& block:cases){Harness h;block(h);CHECK(h.runtime.idleBlocked());h.idle(30000);CHECK(!h.runtime.idle_.blanked()&&!fake::blanks&&!h.game.writes&&!h.usage.writes);}
 }
 void wakeContact(){
-    Harness h;h.idle(30000);CHECK(h.runtime.touchNeedsRelease_);
+    Harness h;h.idle(30000);CHECK(h.runtime.touch_.awaitingRelease());
     h.input(30020,{true,200,320,true});CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1);
-    CHECK(h.runtime.touchNeedsRelease_&&!h.runtime.touchPressed_&&!h.runtime.intents&&!h.runtime.ui_.downs&&!h.runtime.ui_.ups);
+    CHECK(h.runtime.touch_.awaitingRelease()&&!h.runtime.touch_.pressed()&&!h.runtime.intents&&!h.runtime.ui_.downs&&!h.runtime.ui_.ups);
     h.input(30040,{true,200,320,true});CHECK(!h.runtime.intents&&!h.runtime.ui_.downs);
-    h.input(30060,{false,200,320,false});CHECK(h.runtime.touchNeedsRelease_&&!h.runtime.intents);
-    h.input(30080,{false,200,320,true});CHECK(!h.runtime.touchNeedsRelease_&&!h.runtime.intents&&!h.runtime.ui_.ups);
-    h.input(30100,{true,200,320,true});h.input(30120,{false,200,320,true});
+    h.input(30060,{false,200,320,false});CHECK(h.runtime.touch_.awaitingRelease()&&!h.runtime.intents);
+    h.input(30080,{false,200,320,true});CHECK(!h.runtime.touch_.awaitingRelease()&&!h.runtime.intents&&!h.runtime.ui_.ups);
+    h.input(30100,{true,200,320,true});h.input(30120,{false,200,320,true});h.input(30140,{false,200,320,false}); // confirmed release
     CHECK(h.runtime.ui_.downs==1&&h.runtime.ui_.ups==1&&h.runtime.intents==1);
     CHECK(!h.game.writes&&!h.usage.writes);
 }
@@ -187,11 +189,11 @@ void wakeFaultAndMotion(){
     h.input(30020,{true,200,300,true});CHECK(h.runtime.idle_.blanked()&&!fake::wakes&&!h.runtime.intents);
     fake::touchError=ESP_OK;fake::blankError=ESP_FAIL;
     h.input(30040,{true,200,300,true});CHECK(h.runtime.idle_.blanked()&&fake::wakes==1&&!h.runtime.intents);
-    h.input(30060);CHECK(fake::wakes==1&&h.runtime.touchNeedsRelease_);
+    h.input(30060);CHECK(fake::wakes==1&&h.runtime.touch_.awaitingRelease());
     fake::blankError=ESP_OK;h.input(31040,{true,200,300,true});CHECK(!h.runtime.idle_.blanked()&&fake::wakes==2&&!h.runtime.intents);
     Harness m;m.idle(30000);auto& r=m.runtime.imu_.reading_;r.valid=r.calibrated=true;r.accelerationG={0,0,1};r.observedAtMs=30020;
     m.input(30020);r.accelerationG.x=0.2f;r.observedAtMs=30040;m.input(30040);CHECK(m.runtime.idle_.blanked());
-    r.observedAtMs=30060;m.input(30060,{true,200,300,true});CHECK(!m.runtime.idle_.blanked()&&!m.runtime.intents&&m.runtime.touchNeedsRelease_);
+    r.observedAtMs=30060;m.input(30060,{true,200,300,true});CHECK(!m.runtime.idle_.blanked()&&!m.runtime.intents&&m.runtime.touch_.awaitingRelease());
 }
 void strongerSuspension(){
     for(bool usb:{false,true}){
@@ -201,7 +203,7 @@ void strongerSuspension(){
         h.input(31000,{true,200,300,true});h.idle(31000);CHECK(!fake::wakes&&h.runtime.idle_.blanked());
         h.runtime.usbTransferLease_=h.runtime.frozen=false;fake::now=32000;h.runtime.pauseInterface(false);
         CHECK(!h.runtime.imu_.paused&&!fake::panel.suspended&&fake::panel.idleBlanked);
-        h.input(32020,{true,200,300,true});CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&!h.runtime.intents&&h.runtime.touchNeedsRelease_);
+        h.input(32020,{true,200,300,true});CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&!h.runtime.intents&&h.runtime.touch_.awaitingRelease());
     }
 }
 void musicIdleAndWake(){
@@ -217,9 +219,9 @@ void musicIdleAndWake(){
         // The wake contact is consumed; the first subsequent tap remains usable.
         h.input(30020,{true,200,300,true});
         CHECK(!h.runtime.idle_.blanked()&&h.runtime.audio_.scene==device::MusicScene::Home);
-        CHECK(h.runtime.touchNeedsRelease_&&!h.runtime.intents);
+        CHECK(h.runtime.touch_.awaitingRelease()&&!h.runtime.intents);
         h.input(30040,{false,200,300,true});
-        h.input(30060,{true,200,300,true});h.input(30080,{false,200,300,true});
+        h.input(30060,{true,200,300,true});h.input(30080,{false,200,300,true});h.input(30100,{false,200,300,false}); // confirmed release
         CHECK(h.runtime.intents==1&&h.runtime.ui_.downs==1&&h.runtime.ui_.ups==1);
         CHECK(!h.game.writes&&!h.usage.writes);
     }
