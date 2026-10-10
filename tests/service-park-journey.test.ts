@@ -92,7 +92,9 @@ test('park roster-full/release flow preserves member identity and exact ACKs acr
   };
   await submit(command([{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }]));
   for (let attempt = 0; attempt < 512 && current.state.collection.length < 60; attempt++) {
-    await submit(command([...Array.from({ length: 16 }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 }]));
+    // Rules 17: a knockout injures the partner, so treat before the recovery Rests.
+    const hurt = current.state.collection.find((member: any) => member.id === current.state.activeCreatureId)?.injury;
+    await submit(command([...(hurt ? [{ type: 'treat', value: 0 } as Event] : []), ...Array.from({ length: 16 }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 }]));
     assert.equal(current.state.phase, 'home'); assert.ok(current.state.collection.length <= 60);
   }
   assert.equal(current.state.collection.length, 60, 'bounded real native encounters reach the capacity fixture');

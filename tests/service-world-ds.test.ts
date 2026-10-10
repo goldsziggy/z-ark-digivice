@@ -17,7 +17,7 @@ const DEVICE = `dv_${'7'.repeat(24)}`, TOKEN = Buffer.alloc(32, 7).toString('bas
 type Event = { type: string; value: number };
 function receipt(rulesVersion: number, baseRevision: number, events: Event[], batchId: string) { return { batchId, revision: baseRevision + 1, eventEnd: events.length, bodyHash: hash(JSON.stringify({ rulesVersion, baseRevision, events })) }; }
 function oldCare(events: Event[], legacy: unknown = null, revision = 1) { return { formatVersion: 6, gameSchemaVersion: 7, rulesVersion: 4, devices: [{ deviceId: DEVICE, tokenHash: hash(TOKEN), seed: 12345, initialMode: 'onboarding', revision, legacy, events, receipts: events.length ? [receipt(4, revision - 1, events, 'frozen-four-game-batch')] : [] }] }; }
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 17, baseRevision, batchId, events });
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved?: unknown) {
   const dataDir = await mkdtemp(join(tmpdir(), 'digivice-world-ds-'));
   if (saved) for (const name of ['store.json', 'store.backup.json']) await writeFile(join(dataDir, name), JSON.stringify(saved));
@@ -32,16 +32,16 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, saved
 test('rules4 care migration preserves exact rewards, IDs and receipts and creates only held-form journal records', async t => {
   const old = oldCare(frozen.careAutoEvents), f = await fixture(t, old);
   const saved = (await f.request('/api/save')).body;
-  assert.equal(saved.state.schemaVersion, 23); assert.equal(saved.state.rulesVersion, 16); assert.equal(saved.revision, 1); assert.equal(saved.baseSequence, 4); assert.deepEqual(saved.events, []);
+  assert.equal(saved.state.schemaVersion, 24); assert.equal(saved.state.rulesVersion, 17); assert.equal(saved.revision, 1); assert.equal(saved.baseSequence, 4); assert.deepEqual(saved.events, []);
   for (const key of ['rngState', 'hp', 'energy', 'xp', 'level', 'formId', 'captures', 'collection', 'lastAutoBattle']) assert.deepEqual(legacyFields(saved.state[key]), frozen.careAutoState[key], key);
   assert.equal(saved.state.nextMemberId, 3); assert.deepEqual(saved.state.journal, { capacity: 512, obtainedFormIds: [4, 11] }); assert.equal(saved.autoTrace, null);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.equal(stored.formatVersion, 18); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
+  assert.equal(stored.formatVersion, 19); assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 3216);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 4, events: old.devices[0].events, receipts: old.devices[0].receipts }]);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, 'store.rules-v4.json'), 'utf8')), old);
   const pending = { rulesVersion: 4, baseRevision: 0, batchId: old.devices[0].receipts[0].batchId, events: old.devices[0].events };
   assert.equal((await f.request('/api/save-sync', pending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', { ...pending, rulesVersion: 17 })).body.error, 'legacy_batch_requires_reconciliation');
   await f.restart(); assert.deepEqual((await f.request('/api/save')).body, saved);
 });
 
@@ -152,7 +152,7 @@ test('test forms remain decode-only and are excluded from production roster endp
   const ids = new Set<number>();
   for (let offset = 0; offset < 266; offset += 16) {
     const page = JSON.parse(execFileSync(process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/digivice-core'), ['--catalog-page', String(offset), '16'], { encoding: 'utf8' }));
-    assert.equal(page.total, 266); assert.equal(page.rulesVersion, 16);
+    assert.equal(page.total, 266); assert.equal(page.rulesVersion, 17);
     for (const form of page.forms) { assert.ok(form.formId >= 11 && !ids.has(form.formId)); ids.add(form.formId); }
   }
   assert.equal(ids.size, 266);

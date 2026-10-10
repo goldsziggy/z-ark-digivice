@@ -39,7 +39,10 @@ def current_presentation(state):
  evolution=state.get('evolution')
  if isinstance(evolution, dict):
   for option in evolution.get('options') or []:
-   for key in ('requiredLevel','requiredBond','requiredCare','previewLevel','combat'): option.pop(key, None)
+   for key in ('requiredLevel','requiredBond','requiredCare','previewLevel','combat','maxCareMistakes','careRouteOpen'): option.pop(key, None)
+ # Rules 17 care-quality fields are zero on every migrated historical member.
+ for member in state.get('collection') or []:
+  assert member.pop('careMistakes', 0)==0 and member.pop('injury', 0)==0
  state['message']=state['message'].replace('Your friend is free to roam;', 'Your Digimon is free to roam;').replace('A new friend joined', 'A new Digimon joined')
 def remove_new_pacing(state):
  assert state.pop('partyCapacity',3)==3 and state.pop('partyMemberIds',[])==[]
@@ -57,7 +60,7 @@ def remove_new_pacing(state):
  assert state.pop('walking')=={'rate':2,'name':'Normal','eligibleSteps':0,'encounters':0,'rngState':0,'target':0,'progress':0,'remainingSteps':0,'pendingEncounter':None}
 
 initial=accepted()
-assert (initial['schemaVersion'],initial['rulesVersion'],initial['creature'],initial['formId'],initial['level'],initial['xp'])==(23,16,'Mote',1,1,0)
+assert (initial['schemaVersion'],initial['rulesVersion'],initial['creature'],initial['formId'],initial['level'],initial['xp'])==(24,17,'Mote',1,1,0)
 assert initial['partyCapacity']==3 and initial['partyMemberIds']==[]
 assert initial['maxLevel']==50 and initial['xpToNext']==40 and initial['collectionCapacity']==60
 assert initial['worldSeed']==0
@@ -89,8 +92,8 @@ for event in [b'flick\n',b'flick -1\n',b'flick 1.0\n',b'flick 82176\n',b'flick 4
  rejected(event)
 for version in range(1,10):
  rejected(b'flick 41140\n',args=[f'--migrate-v{version}','12345'])
-starters=accepted(args=['--starters']);assert starters['rulesVersion']==16 and len(starters['starters'])==8
-roster=accepted(args=['--roster']);assert roster['rulesVersion']==16 and len(roster['profiles'])==8
+starters=accepted(args=['--starters']);assert starters['rulesVersion']==17 and len(starters['starters'])==8
+roster=accepted(args=['--roster']);assert roster['rulesVersion']==17 and len(roster['profiles'])==8
 all_forms=set();egg_args=['--replay-onboarding','12345'];egg=accepted(args=egg_args)
 assert egg['phase']=='egg' and egg['collection']==[] and egg['formId']==0 and egg['evolution']=={'options':[]}
 for entry in starters['starters']:
@@ -101,7 +104,7 @@ for entry in starters['starters']:
  assert repeated_care['xp']==4 and repeated_care['level']==1 and repeated_care['bond']<20
  rejected(hatch+hatch,args=egg_args);rejected(hatch)
  tree=accepted(args=['--evolutions',entry['species']])
- assert set(tree)=={'formatVersion','rulesVersion','species','forms'} and tree['rulesVersion']==16 and len(tree['forms'])==7
+ assert set(tree)=={'formatVersion','rulesVersion','species','forms'} and tree['rulesVersion']==17 and len(tree['forms'])==7
  nodes={n['formId']:n for n in tree['forms']};all_forms.update(nodes)
  root=nodes[s['formId']];assert root['parentId']==0 and root['children']==[s['formId']+1,s['formId']+4]
  for n in nodes.values():
@@ -123,7 +126,7 @@ for mode in ['--migrate-v1','--migrate-v2']:
 history3=b'feed\nplay\nwalk 100\ncard 1\nattack\nattack\nattack\ncapture\n'
 m=accepted(history3,['--migrate-v3','12345']);s=m['state'];blob=base64.b64decode(m['snapshotBase64'],validate=True)
 assert (s['hp'],s['sequence'],s['rngState'],s['bond'])==(58,8,3336926330,19)
-assert len(blob)==3216 and struct.unpack_from('<HHI',blob,4)==(23,3204,16)
+assert len(blob)==3216 and struct.unpack_from('<HHI',blob,4)==(24,3204,17)
 assert struct.unpack_from('<I',blob,3212)[0]==zlib.crc32(blob[:3212])
 assert accepted(args=['--replay-snapshot',m['snapshotBase64']])==s
 # Build exact old layout from a known level-1 migrated state, stripping new fields.
@@ -148,7 +151,7 @@ for tier,feeds,level,xp in [(1,0,1,0),(2,20,5,400),(3,50,10,1800)]:
 for bad in ['', '!',m['snapshotBase64'][:-1],m['snapshotBase64']+'!',encoded(blob[:-1]),encoded(blob+b'\0')]:rejected(args=['--replay-snapshot',bad])
 for offset in [0,120,148,152,464,492,496]:
  bad=bytearray(blob);bad[offset]^=0x40;rejected(args=['--replay-snapshot',encoded(bad)])
-for offset,value in [(4,24),(8,99),(104,61),(148,7601),(152,67),(464,2),(468,1),(472,2),(476,6),(488,1),(492,1)]:
+for offset,value in [(4,25),(8,99),(104,61),(148,7601),(152,67),(464,2),(468,1),(472,2),(476,6),(488,1),(492,1)]:
  bad=bytearray(blob);struct.pack_into('<H' if offset==4 else '<I',bad,current_offset(offset),value);seal(bad);rejected(args=['--replay-snapshot',encoded(bad)])
 # Full Auto is one event; replay returns the identical persisted result/trace.
 auto=b'hatch 1\nmode 1\nwalk 100\nauto\n';args=['--replay-onboarding-trace','12345'];result=accepted(auto,args)
@@ -202,7 +205,7 @@ for fixture in frozen['fixtures']:
  current_presentation(actual);current_presentation(expected)
  assert actual==expected,fixture['name']
  oldbytes=base64.b64decode(fixture['snapshotBase64']);newbytes=base64.b64decode(migrated['snapshotBase64'])
- assert len(newbytes)==3216 and struct.unpack_from('<HHI',newbytes,4)==(23,3204,16)
+ assert len(newbytes)==3216 and struct.unpack_from('<HHI',newbytes,4)==(24,3204,17)
  assert oldbytes[12:-4]==old_payload(newbytes)[12:572],fixture['name']
  assert accepted(args=['--replay-snapshot',fixture['snapshotBase64']])==migrated['state']
  assert accepted(args=['--replay-snapshot',migrated['snapshotBase64']])==migrated['state']
@@ -211,7 +214,7 @@ for fixture in frozen['fixtures']:
 graph_ids=[];offset=0
 while True:
  page=accepted(args=['--evolution-graph','18',str(offset),'16'])
- assert page['formatVersion']==2 and page['rulesVersion']==16 and page['focusFormId']==18
+ assert page['formatVersion']==2 and page['rulesVersion']==17 and page['focusFormId']==18
  assert 1<=len(page['forms'])<=16 and page['total']<=276
  for node in page['forms']:
   assert len(node['children'])<=2 and len(node['edges'])==len(node['children'])
@@ -244,7 +247,7 @@ prior_equal(accepted(event_bytes(frozen6['suffixEvents']),['--migrate-v6-snapsho
 for events,key in [(frozen6['encounterEvents'],'encounterResult'),(frozen6['prefixEvents'],'autoResult'),([], 'egg')]:
  restored=accepted(event_bytes(events),['--migrate-v6-onboarding','12345'])
  prior_equal(restored['state'],frozen6[key]['state'])
- assert (restored['state']['schemaVersion'],restored['state']['rulesVersion'])==(23,16)
+ assert (restored['state']['schemaVersion'],restored['state']['rulesVersion'])==(24,17)
  assert accepted(args=['--replay-snapshot',restored['snapshotBase64']])==restored['state']
  if key=='encounterResult':
   assert restored['state']['wildRules']==6

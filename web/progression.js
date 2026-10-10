@@ -16,7 +16,8 @@ function form(value) {
 }
 export function validateEvolutionOptions(value) {
   if (!Array.isArray(value) || value.length > 2 || new Set(value.map(entry => entry?.formId)).size !== value.length
-    || !value.every(entry => exact(entry, ['formId', 'name', 'stage', 'artId', 'requiredLevel', 'requiredBond', 'requiredCare', 'previewLevel', 'eligible', 'combat']) && form(entry) && typeof entry.eligible === 'boolean')) throw new Error('Unsupported evolution choices.');
+    || !value.every(entry => exact(entry, ['formId', 'name', 'stage', 'artId', 'requiredLevel', 'requiredBond', 'requiredCare', 'previewLevel', 'eligible', 'maxCareMistakes', 'careRouteOpen', 'combat']) && form(entry) && typeof entry.eligible === 'boolean'
+      && (entry.maxCareMistakes === null || integer(entry.maxCareMistakes, 0, 7)) && typeof entry.careRouteOpen === 'boolean')) throw new Error('Unsupported evolution choices.');
   return structuredClone(value);
 }
 const ids = (value, max, self) => Array.isArray(value) && value.length <= max
@@ -30,7 +31,7 @@ export function validEvolutionLinks(value, self) {
 }
 export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8) {
   if (!exact(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms'])
-    || value.formatVersion !== 2 || value.rulesVersion !== 16 || value.catalogVersion !== 6
+    || value.formatVersion !== 2 || value.rulesVersion !== 17 || value.catalogVersion !== 6
     || !integer(focusFormId, 1, 512) || value.focusFormId !== focusFormId || value.offset !== offset || value.limit !== limit
     || !integer(offset, 0, 511) || !integer(limit, 1, 16) || !integer(value.total, 1, 512) || offset > value.total
     || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, value.total - offset)
@@ -48,7 +49,9 @@ export function evolutionRequirements(member, option) {
   const care = member.carePoints ?? 0;
   return [['Level', `${member.level} / ${option.requiredLevel}${member.level >= option.requiredLevel ? ' ✓' : ' needed'}`],
     ['Bond', `${member.bond} / ${option.requiredBond}${member.bond >= option.requiredBond ? ' ✓' : ' needed'}`],
-    ['Care', `${care} / ${option.requiredCare}${care >= option.requiredCare ? ' ✓' : ' needed'}`]];
+    ['Care', `${care} / ${option.requiredCare}${care >= option.requiredCare ? ' ✓' : ' needed'}`],
+    ...(option.maxCareMistakes === null || option.maxCareMistakes === undefined ? [] : [['Care mistakes', `${member.careMistakes ?? 0} / ${option.maxCareMistakes} max${option.careRouteOpen ? ' ✓' : ' · route locked this stage'}`]]),
+    ...(member.injury ? [['Injury', 'Treat before Digivolving']] : [])];
 }
 
 // No silhouette of a different form is substituted for missing character art.

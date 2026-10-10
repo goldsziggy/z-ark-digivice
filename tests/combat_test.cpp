@@ -45,7 +45,7 @@ int main(){
  check(!validProfile(13,1)&&!validFormProfile(digivice::forms::kFormCount+1,1));check(writeProfileJson(1,1,small,sizeof(small))==0&&small[0]=='\0');
  // Historical profiles above remain addressable; the current catalog exposes
  // only the eight production starters, never the original fixture species.
- const auto catalogBytes=writeCatalogJson(tree,sizeof(tree));check(catalogBytes>0&&std::strstr(tree,"Night of Fire")&&std::strstr(tree,"\"rulesVersion\":16"));
+ const auto catalogBytes=writeCatalogJson(tree,sizeof(tree));check(catalogBytes>0&&std::strstr(tree,"Night of Fire")&&std::strstr(tree,"\"rulesVersion\":17"));
  unsigned catalogProfiles=0;for(const char* p=tree;(p=std::strstr(p,"\"species\":"));++p)++catalogProfiles;check(catalogProfiles==8);
  for(unsigned id=1;id<=10;++id){char excluded[64];std::snprintf(excluded,sizeof(excluded),"\"name\":\"%s\"",digivice::forms::find(id)->name);check(std::strstr(tree,excluded)==nullptr);}
  for(unsigned starter=1;starter<=8;++starter){char expected[64];std::snprintf(expected,sizeof(expected),"\"name\":\"%s\"",profile(starterSpecies(starter),1).name);check(std::strstr(tree,expected)!=nullptr);}

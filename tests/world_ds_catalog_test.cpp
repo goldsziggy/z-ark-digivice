@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
         const auto n = c::writeCatalogPageJson(offset, 16, storage.data() + 1, c::kCatalogPageJsonCapacity);
         check(n > 0 && n < c::kCatalogPageJsonCapacity, "every possible page fits bound");
         check(storage.front() == 'Z' && storage.back() == 'Z', "page canaries intact");
-        check(std::strstr(storage.data() + 1, "\"rulesVersion\":16") && std::strstr(storage.data() + 1, "\"total\":266,"), "page identifies the current production projection");
+        check(std::strstr(storage.data() + 1, "\"rulesVersion\":17") && std::strstr(storage.data() + 1, "\"total\":266,"), "page identifies the current production projection");
         unsigned count = 0;
         for (const char* p = storage.data() + 1; (p = std::strstr(p, "\"formId\":")); ++p) {
             unsigned id = 0;

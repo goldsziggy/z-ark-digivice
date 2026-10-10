@@ -1,4 +1,4 @@
-import { validCare, validLastCapture, careSummary, captureReport } from './care-capture-state.js';
+import { validCare, validLastCapture, careSummary, careQualitySummary, captureReport } from './care-capture-state.js';
 import { validWalkingState } from './walking-state.js';
 import { validParty, orderedMembers, partyChoice } from './party.js';
 import builtinPack from './builtin-pack.js';
@@ -79,8 +79,9 @@ let assetState = { ready: false, busy: false, packs: [], selectedId: 'scene-mead
 const backgroundPlayer = createBackgroundPlayer({ onChange: () => { if (deviceReady) { syncBackgroundStatus(); scheduleDraw(); } } });
 const battleClient = createBattleClient({ storage: (() => { try { return localStorage; } catch { return null; } })(), onChange: () => { if (deviceReady) render(); } });
 const formArt = createFormArt({ getCredential: () => identity, onChange: () => { artGeneration++; if (deviceReady) render(); } });
-const RULES_VERSION = 16;
-const SCHEMA_VERSION = 23;
+const RULES_VERSION = 17;
+const SCHEMA_VERSION = 24;
+const activeCareMember = () => game?.collection?.find(member => member.id === game.activeCreatureId) ?? null;
 const COLLECTION_CAPACITY = 60;
 const MAX_STATE_BYTES = 64 * 1024;
 // Save responses also carry at most 10,000 bounded history events and a trace.
@@ -572,7 +573,7 @@ function progressionView(screen, view, item) {
         items: [item('evolution-requirements', 'Requirements', !option), item('evolution-skills', 'Compare moves', !option), item('evolution-review', 'Review Digivolution', !canEvolve())] }); break;
     case 'evolution-requirements':
       Object.assign(view, { title: 'Ready to Digivolve?', eyebrow: option?.name || 'REQUIREMENTS', layout: 'evolution-requirements',
-        facts: option && member ? evolutionRequirements(member, option) : [], detail: lock || (option?.eligible ? 'Digivolution requirements met. Review your choice before saving.' : 'Raise the missing level, bond or care, then return here.'),
+        facts: option && member ? evolutionRequirements(member, option) : [], detail: lock || (option?.eligible ? 'Digivolution requirements met. Review your choice before saving.' : member?.injury ? 'Treat the injury first, then return here.' : option && !option.careRouteOpen ? 'Too many care mistakes this stage for this route. The other route is still open.' : 'Raise the missing level, bond or care, then return here.'),
         items: [item('evolution-review', 'Review Digivolution', !canEvolve())] }); break;
     case 'evolution-skills':
       Object.assign(view, { title: 'Compare moves', eyebrow: option?.name || 'DIGIVOLUTION', layout: 'carousel',
@@ -754,8 +755,8 @@ function deviceView(screen) {
     case 'care':
       Object.assign(view, { title: `Care for ${game?.creature || 'Partner'}`, stats: [['Health', game?.hp ?? '—'], ['Energy', game?.energy ?? '—'], ['Fullness', game?.fullness ?? '—'], ['Mood', game?.mood ?? '—']],
         layout: 'care-carousel', portrait: { artId: playerId(), name: activeDisplayName(), type: game?.combat?.type || 'grove', artAvailable: Boolean(findArt(playerId())), personal: true, rookie: game?.stage === 'Rookie' },
-        detail: encounter ? 'Finish this encounter before care.' : game ? `${game.bond} bond · ${careSummary(game.collection.find(member => member.id === game.activeCreatureId))}` : 'Set up your device first.',
-        items: [item('recover-review', 'Recover fully', !act || !recoveryReview(game, identity?.deviceId, revision), '', '☾'), item('feed', 'Feed', !act || encounter, '', '◒'), item('play', 'Play', !act || encounter, '', '✧'), item('rest', 'Rest once', !act || encounter, '', '☾')] }); break;
+        detail: encounter ? 'Finish this encounter before care.' : game ? [`${game.bond} bond`, careSummary(activeCareMember()), careQualitySummary(activeCareMember())].filter(Boolean).join(' · ') : 'Set up your device first.',
+        items: [item('recover-review', 'Recover fully', !act || !recoveryReview(game, identity?.deviceId, revision), '', '☾'), item('feed', 'Feed', !act || encounter, '', '◒'), item('play', 'Play', !act || encounter, '', '✧'), item('rest', 'Rest once', !act || encounter, '', '☾'), item('treat', 'Treat injury', !act || encounter || !activeCareMember()?.injury, '', '✚')] }); break;
     case 'recover-confirm': {
       const reviewed = reviewedRecoveryEvents(recoveryDraft, game, identity?.deviceId, revision);
       Object.assign(view, { title: 'Recover fully?', eyebrow: game?.creature || 'YOUR PARTNER', layout: 'auto-confirm',
@@ -1190,7 +1191,7 @@ async function deviceAction(id, event) {
   if (id === 'reload-catalog') return loadCombatCatalog();
   if (id.startsWith('member-')) { companionDetailId = Number(id.slice(7)); navigation.go('companion'); return; }
   if (id.startsWith('load-')) { $('saved-playtest-select').value = id.slice(5); await loadPlaytest(); renderDevice(); return; }
-  if (['feed', 'play', 'rest', 'walk', 'attack', 'heavy', 'magic', 'capture'].includes(id)) return requestAction(id, id === 'walk' ? 100 : 0);
+  if (['feed', 'play', 'rest', 'treat', 'walk', 'attack', 'heavy', 'magic', 'capture'].includes(id)) return requestAction(id, id === 'walk' ? 100 : 0);
   if (id === 'select-companion') return requestAction('select', companionDetailId);
   if (id === 'party-add' || id === 'party-remove') return sendAction(id, companionDetailId);
   if (id === 'card-spark' || id === 'card-shelter') return requestAction('card', id === 'card-spark' ? 1 : 2);
@@ -1426,7 +1427,8 @@ function validateSave(save) {
     || !state.collection.every(member => Number.isInteger(member.id) && member.id >= 1 && member.id <= MAX_MEMBER_ID && Number.isInteger(member.formId) && member.formId >= 1 && member.formId <= 512
       && Number.isInteger(member.level) && member.level >= 1 && member.level <= 50 && Number.isInteger(member.xp) && member.xp >= 0 && member.xp <= 49000
       && Number.isInteger(member.xpToNext) && member.xpToNext >= 0 && member.xpToNext <= 49000
-      && Number.isInteger(member.carePoints) && member.carePoints >= 0 && member.carePoints <= 100 && Number.isInteger(member.toilet) && member.toilet >= 0 && member.toilet <= 100 && typeof member.careMissed === 'boolean')) {
+      && Number.isInteger(member.carePoints) && member.carePoints >= 0 && member.carePoints <= 100 && Number.isInteger(member.toilet) && member.toilet >= 0 && member.toilet <= 100 && typeof member.careMissed === 'boolean'
+      && Number.isInteger(member.careMistakes) && member.careMistakes >= 0 && member.careMistakes <= 7 && Number.isInteger(member.injury) && member.injury >= 0 && member.injury <= 3)) {
     throw new Error(`Unsupported save format. This browser requires schema ${SCHEMA_VERSION} and game rules ${RULES_VERSION}. Any pending action has been kept.`);
   }
 }

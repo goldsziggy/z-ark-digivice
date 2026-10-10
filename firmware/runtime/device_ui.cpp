@@ -360,7 +360,8 @@ const char* shortMessage(Message message) {
     case Message::Captured: return "A NEW DIGIMON!";
     case Message::CaptureMissed: return "TRY ANOTHER THROW";
     case Message::CaptureEnded: return "THE WILD DIGIMON LEFT";
-    case Message::Retreated: return "HOME SAFE - TAKE A REST";
+    case Message::Retreated: return "HOME SAFE - CHECK YOUR PARTNER";
+    case Message::Treated: return "INJURY TREATED";
     case Message::Toileted: return "TOILET NEED CLEARED";
     case Message::Evolved: return "A NEW FORM!";
     case Message::Selected: return "PARTNER READY";
@@ -375,7 +376,7 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  NearbyOpen, NearbyPrevious, NearbyNext, NearbyReview, NearbyChallenge, NearbyAccept, NearbyCancel, NearbyClose,
  NearbyPhysical, NearbyMagic, NearbyHeavy, NearbyCommit, NearbyBrace, NearbyCounter, NearbyWard,
  HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
- TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle };
+ TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat };
 constexpr const char* homeTitles[]{"CARE","PARTNERS","SETTINGS","NEARBY"};
 constexpr const char* homeActions[]{"OPEN CARE","PARTNERS","SETTINGS","FIND NEARBY"};
 } // namespace
@@ -582,7 +583,9 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         add(116,300,180,46,homeActions[static_cast<unsigned>(homePanel_)],HomeOpen,state.phase==Phase::Home); break;
     case Screen::Care:
         left(0,"FEED",Feed,legal(state,model,Action::Feed)); right(0,"PLAY",Play,legal(state,model,Action::Play));
-        left(1,"REST +25",Rest,legal(state,model,Action::Rest));
+        // Rules 17: an injured partner rests only to half health, so Treat takes Rest's slot.
+        if (activeMember(state) && isInjured(*activeMember(state))) left(1,"TREAT",Treat,legal(state,model,Action::Treat));
+        else left(1,"REST +25",Rest,legal(state,model,Action::Rest));
         right(1,"TOILET",Toilet,legal(state,model,Action::Toilet)); back(); break;
     case Screen::Explore:
         add(100,270,212,48,"ENCOUNTER SETTINGS",Encounters); back(); break;
@@ -823,6 +826,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case Play: return propose(state,model,Action::Play);
     case Rest: return propose(state,model,Action::Rest);
     case Toilet: return propose(state,model,Action::Toilet);
+    case Treat: return propose(state,model,Action::Treat);
     case Battle: return navigate(Screen::Battle);
     case Attack: battleSelection_=combat::Move::Physical; return {IntentKind::Navigation};
     case Heavy: battleSelection_=combat::Move::Heavy; return {IntentKind::Navigation};
@@ -1260,8 +1264,15 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         c.center(186,label,1,dim,36);
         const auto toilet=partner?toiletNeed(*partner):0;
         const auto missed=partner && careWasMissed(*partner);
-        std::snprintf(label,sizeof(label),missed?"TOILET %u  MISSED CARE":toilet>=25?"TOILET %u  NEEDED":"TOILET %u",static_cast<unsigned>(toilet));
-        c.center(200,label,1,missed||toilet>=25?amber:dim,36);
+        const auto mistakes=partner?careMistakes(*partner):0;
+        if (partner && isInjured(*partner)) {
+            std::snprintf(label,sizeof(label),injuryLevel(*partner)>=3?"HURT - TREAT NOW  MISTAKES %u":"HURT - TREAT  MISTAKES %u",static_cast<unsigned>(mistakes));
+            c.center(200,label,1,amber,36);
+        } else {
+            if (mistakes) std::snprintf(label,sizeof(label),missed?"TOILET %u  MISSED  MISTAKES %u":toilet>=25?"TOILET %u  NEEDED  MISTAKES %u":"TOILET %u  MISTAKES %u",static_cast<unsigned>(toilet),static_cast<unsigned>(mistakes));
+            else std::snprintf(label,sizeof(label),missed?"TOILET %u  MISSED CARE":toilet>=25?"TOILET %u  NEEDED":"TOILET %u",static_cast<unsigned>(toilet));
+            c.center(200,label,1,missed||toilet>=25?amber:dim,36);
+        }
         std::snprintf(label,sizeof(label),"FOOD %u   MOOD %u   EN %u",static_cast<unsigned>(state.fullness),static_cast<unsigned>(state.mood),static_cast<unsigned>(state.energy));
         c.center(214,label,1,dim,40);
         if (partner && anyRouteReady(state,model,*partner)) c.badge(228,"DIGIVOLUTION REQUIREMENTS MET",1,mint,36);
@@ -1494,7 +1505,8 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.center(216,"LEVEL XP CARE AND ID ARE KEPT",1,dim,40);
         } else {
             c.center(132,"NOT READY YET",2,amber);
-            c.center(166,level<need.level ? "GAIN LEVELS THROUGH PLAY" : bond<need.bond ? "CARE TO BUILD YOUR BOND" : "KEEP CARING TO DIGIVOLVE",1,dim,40);
+            c.center(166,level<need.level ? "GAIN LEVELS THROUGH PLAY" : bond<need.bond ? "CARE TO BUILD YOUR BOND" :
+                isInjured(*member) ? "TREAT THE INJURY FIRST" : !careRouteOpen(*member,evolutionIndex_) ? "TOO MANY CARE MISTAKES - TRY THE OTHER ROUTE" : "KEEP CARING TO DIGIVOLVE",1,dim,40);
             if (ready) c.center(191,"DIGIVOLUTION REQUIREMENTS MET",1,mint,40);
             if(!model.writable) c.center(214,"SAVE RECOVERY REQUIRED",1,amber,36);
             else if(state.phase!=Phase::Home) c.center(214,"RETURN HOME TO DIGIVOLVE",1,amber,36);

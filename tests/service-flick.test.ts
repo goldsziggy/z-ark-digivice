@@ -13,7 +13,7 @@ const hit = { type: 'flick', value: 41140 }; // dx 0, reach 180: target centre.
 const miss = { type: 'flick', value: 0 }; // dx -160, reach 0.
 const prepare = [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 },
   { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }, { type: 'attack', value: 0 }];
-const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 17, baseRevision, batchId, events });
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 
 async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
@@ -40,7 +40,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }) {
 
 test('flick requires an exact bounded payload and legal Tactical capture context', async t => {
   const f = await fixture(t), identity = await f.pair();
-  assert.deepEqual((await f.request('/api/health')).body.capabilities, { captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1 });
+  assert.deepEqual((await f.request('/api/health')).body.capabilities, { careInjury: 1, captureFlick: 1, captureTimingRing: 1, captureTimingQuality: 1, worldSeed: 1, deferredEncounters: 1, manualAutoCapture: 1 });
   assert.equal((await f.request('/api/device/health')).body.capabilities, undefined);
   const initial = await f.request('/api/save', identity.token);
   let serial = 0;

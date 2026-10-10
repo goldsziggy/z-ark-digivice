@@ -23,6 +23,14 @@ export function validLastCapture(value, sequence) {
 export function careSummary(member) {
   return validCare(member) ? `Care: ATK/MAG +${member.care.offenseBonus} · DEF/RES +${member.care.protectionBonus}` : '';
 }
+// Rules 17: care mistakes this stage and injury. Empty for a clean, healthy partner.
+export function careQualitySummary(member) {
+  if (!member || !Number.isInteger(member.careMistakes) || !Number.isInteger(member.injury)) return '';
+  const parts = [];
+  if (member.careMistakes) parts.push(`${member.careMistakes} care mistake${member.careMistakes === 1 ? '' : 's'} this stage`);
+  if (member.injury) parts.push(member.injury >= 3 ? 'Hurt and neglected · Treat now' : member.injury === 2 ? 'Hurt and worsening · Treat' : 'Hurt · Treat to rest fully');
+  return parts.join(' · ');
+}
 export function captureReport(record) {
   if (!record || !validLastCapture(record, record.sequence) || record.result === 'none') return null;
   const remaining = record.result === 'captured' ? 0 : 3 - record.attempt;

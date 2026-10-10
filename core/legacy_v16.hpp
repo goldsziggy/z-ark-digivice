@@ -1,3 +1,4 @@
+// Frozen rules 16 / schema 23 before rules 17 care mistakes, care-gated routes and injury.
 #pragma once
 
 #include <cstddef>
@@ -7,12 +8,12 @@
 #include "encounters.hpp"
 
 // This core has no heap allocation, clock, network, filesystem, or hardware dependency.
-namespace digivice {
+namespace digivice::legacy_v16 {
 
-constexpr std::uint32_t kSchemaVersion = 24;
-constexpr std::uint32_t kRulesVersion = 17;
+constexpr std::uint32_t kSchemaVersion = 23;
+constexpr std::uint32_t kRulesVersion = 16;
 constexpr std::uint32_t kDevelopmentSeed = 12345;
-constexpr std::size_t kSnapshotSize = 3216; // V23 and V24 share this layout.
+constexpr std::size_t kSnapshotSize = 3216;
 constexpr std::size_t kV22SnapshotSize = 2964;
 constexpr std::size_t kV21SnapshotSize = 2952;
 constexpr std::size_t kV20SnapshotSize = 664;
@@ -47,16 +48,15 @@ enum class Species : std::uint16_t {
     None, Mote, Flicker, Rill, Cinder, Impmon, Agumon, Gabumon, Patamon,
     Tentomon, Palmon, Gomamon, Renamon
 };
-enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember, Treat };
+enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember };
 enum class Message : std::uint8_t {
     Welcome, Fed, Played, Rested, Walked, Encounter, AttackCard, ShieldCard,
-    Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared, PartyAdded, PartyRemoved, Toileted, Treated
+    Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared, PartyAdded, PartyRemoved, Toileted
 };
 enum class Error : std::uint8_t {
     None, InvalidState, InvalidAction, InvalidValue, WrongPhase, LowEnergy,
     CardAlreadyUsed, WildTooStrong, CaptureLimit, CounterOverflow, CollectionFull, UnknownMember, AlreadyHatched,
-    WrongMode, AutoLimit, EvolutionUnavailable, ActiveMemberRelease, PartyFull, PartyMemberExists, NotPartyMember, ActiveMemberParty,
-    MemberInjured, CareRouteLocked
+    WrongMode, AutoLimit, EvolutionUnavailable, ActiveMemberRelease, PartyFull, PartyMemberExists, NotPartyMember, ActiveMemberParty
 };
 
 struct CreatureMember {
@@ -71,25 +71,12 @@ struct CreatureMember {
     std::uint32_t capturedAtSequence = 0;
     std::uint32_t xp = 0;
     std::uint32_t formId = 0;
-    // Bits 0-26: care 0-100, toilet 0-100, missed, and four 0-7 cooldowns.
-    // Rules 17 bits 27-29: care mistakes since the last Digivolution (0-7, saturating).
-    // Rules 17 bits 30-31: injury 0 none, 1 hurt, 2 worsening, 3 neglected. Zero on old saves.
+    // care 0-100, toilet 0-100, missed, and four 0-7 cooldowns. Zero on old saves.
     std::uint32_t careState = 0;
 };
 inline std::uint32_t carePoints(const CreatureMember& member) { return member.careState & 0x7fu; }
 inline std::uint32_t toiletNeed(const CreatureMember& member) { return (member.careState >> 7) & 0x7fu; }
 inline bool careWasMissed(const CreatureMember& member) { return ((member.careState >> 14) & 1u) != 0; }
-inline std::uint32_t careMistakes(const CreatureMember& member) { return (member.careState >> 27) & 7u; }
-inline std::uint32_t injuryLevel(const CreatureMember& member) { return (member.careState >> 30) & 3u; }
-inline bool isInjured(const CreatureMember& member) { return injuryLevel(member) != 0; }
-// Rules 17 care-quality routes. When a form has two outgoing routes, the first
-// (clean) route needs at most this many care mistakes; the second is always open.
-// A single route is never care-locked. Stage-scaled: Champion-or-lower 3,
-// Ultimate 2, Mega 1.
-constexpr std::uint32_t kInjuryNeglectMinutes = 10; // Live minutes per worsening step.
-std::uint32_t cleanRouteMistakeLimit(std::uint32_t destinationFormId);
-// True when care quality permits this route (independent of level/bond/care points).
-bool careRouteOpen(const CreatureMember& member, std::size_t outgoingIndex);
 
 enum class CaptureResult : std::uint8_t { None, Miss, Escaped, Captured };
 struct CaptureRecord {
@@ -249,12 +236,7 @@ bool needsTestEncounterResolution(const State& state);
 // PartyAdd/PartyRemove(memberId) modify only Home companion selection.
 // Selected extras each receive full base wild victory/capture XP and the same
 // bond, once. Care, practice, and nearby duels do not grant companion XP.
-// Toilet/CareMinute/EvolveMember/Retreat are rules 16.
-// Rules 17: live CareMinute ticks count care mistakes (toilet overflow, hunger
-// reaching zero, an injury left untreated through two worsening steps). A wild
-// defeat in a rules-17 encounter injures the partner and counts one mistake.
-// Injured Digimon Rest only to half HP and cannot Digivolve. Treat(0) heals the
-// active partner at Home. Digivolution spends care points and clears mistakes. EvolveMember packs
+// Toilet/CareMinute/EvolveMember/Retreat are rules 16. EvolveMember packs
 // (memberId<<16)|formId and can digivolve a benched Digimon at Home.
 // RingCapture(phaseMs0..2399) is additive: existing Capture/Flick replay stays
 // unchanged. Every legal timing grade spends one attempt and one capture draw.
@@ -297,4 +279,4 @@ bool encodeSnapshot(const State& state, Snapshot& snapshot);
 SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, State& state);
 const char* snapshotStatusText(SnapshotStatus status);
 
-} // namespace digivice
+} // namespace digivice::legacy_v16

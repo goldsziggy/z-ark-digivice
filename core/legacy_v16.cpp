@@ -1,4 +1,5 @@
-#include "game.hpp"
+// Frozen rules 16 / schema 23 before rules 17 care mistakes, care-gated routes and injury.
+#include "legacy_v16.hpp"
 #include "capture_ring.hpp"
 #include "combat.hpp"
 #include "forms.hpp"
@@ -14,7 +15,7 @@
 #include <cstring>
 #include <limits>
 
-namespace digivice {
+namespace digivice::legacy_v16 {
 const CreatureMember* findMember(const State& state,std::uint32_t id) {
     if(!id || state.collectionCount>kCollectionCapacity) return nullptr;
     for(std::size_t i=0;i<state.collectionCount;++i) if(state.collection[i].id==id) return &state.collection[i];
@@ -245,20 +246,8 @@ std::uint32_t packCare(std::uint32_t care, std::uint32_t toilet, bool missed, st
     return (care & 0x7fu) | ((toilet & 0x7fu) << 7) | (missed ? 1u << 14 : 0u) |
         ((feed & 7u) << 15) | ((play & 7u) << 18) | ((rest & 7u) << 21) | ((toiletCd & 7u) << 24);
 }
-constexpr std::uint32_t kCareLowMask = (1u << 27) - 1u;
-std::uint32_t mistakesOf(std::uint32_t packed) { return (packed >> 27) & 7u; }
-std::uint32_t injuryOf(std::uint32_t packed) { return (packed >> 30) & 3u; }
-std::uint32_t withMistakes(std::uint32_t packed, std::uint32_t mistakes) {
-    return (packed & ~(7u << 27)) | ((mistakes > 7 ? 7u : mistakes) << 27);
-}
-std::uint32_t withInjury(std::uint32_t packed, std::uint32_t injury) {
-    return (packed & ~(3u << 30)) | ((injury & 3u) << 30);
-}
-// Rebuild the low care fields while keeping rules-17 mistakes/injury bits.
-std::uint32_t repackCare(std::uint32_t old, std::uint32_t low) { return (low & kCareLowMask) | (old & ~kCareLowMask); }
-void addMistake(CreatureMember& member) { member.careState = withMistakes(member.careState, mistakesOf(member.careState) + 1); }
 bool validCareState(std::uint32_t packed) {
-    return carePointsOf(packed) <= 100 && toiletOf(packed) <= 100;
+    return (packed >> 27) == 0 && carePointsOf(packed) <= 100 && toiletOf(packed) <= 100;
 }
 void grantMemberXp(State& state, CreatureMember& member, std::uint32_t amount, std::uint32_t rules = 0) {
     if (member.id == state.activeCreatureId) { addXp(state, amount, rules); return; }
@@ -284,21 +273,18 @@ CreatureMember* oldestExact(State& state, std::uint32_t formId) {
     }
     return best;
 }
-Error evolveOwned(State& next, CreatureMember& member, std::uint32_t formId) {
+bool evolveOwned(State& next, CreatureMember& member, std::uint32_t formId) {
     const auto* target = forms::find(formId);
     const forms::EvolutionEdge* edge = nullptr;
-    std::size_t edgeIndex = 0;
     for (std::size_t i = 0; i < 2; ++i) {
         const auto* candidate = forms::outgoing(member.formId, i);
-        if (candidate && candidate->to == formId) { edge = candidate; edgeIndex = i; }
+        if (candidate && candidate->to == formId) edge = candidate;
     }
-    if (!target || !edge) return Error::EvolutionUnavailable;
+    if (!target || !edge) return false;
     const auto need = forms::evolutionNeed(*edge);
     const auto level = member.id == next.activeCreatureId ? next.level : member.level;
     const auto bond = member.id == next.activeCreatureId ? next.bond : member.bond;
-    if (level < need.level || bond < need.bond || carePointsOf(member.careState) < need.care) return Error::EvolutionUnavailable;
-    if (injuryOf(member.careState)) return Error::MemberInjured;
-    if (!careRouteOpen(member, edgeIndex)) return Error::CareRouteLocked;
+    if (level < need.level || bond < need.bond || carePointsOf(member.careState) < need.care) return false;
     const auto oldMax = maxHp(member.formId, level);
     member.formId = formId;
     member.species = static_cast<Species>(target->lineage);
@@ -306,9 +292,7 @@ Error evolveOwned(State& next, CreatureMember& member, std::uint32_t formId) {
     const auto scaled = scaleHp(member.id == next.activeCreatureId ? next.hp : member.hp, oldMax, maxHp(formId, level));
     if (member.id == next.activeCreatureId) next.hp = scaled;
     else member.hp = scaled;
-    // Rules 17: the next stage is earned again. Toilet, cooldowns and health stay.
-    member.careState = withMistakes(member.careState & ~0x7fu, 0);
-    return Error::None;
+    return true;
 }
 enum class CareKind : std::uint8_t { Feed, Play, Rest, Toilet };
 void noteCareReward(State& state, CreatureMember& member, CareKind kind) {
@@ -327,7 +311,7 @@ void noteCareReward(State& state, CreatureMember& member, CareKind kind) {
     else if (kind == CareKind::Play) play = cooldown;
     else if (kind == CareKind::Rest) rest = cooldown;
     else toiletCd = cooldown;
-    member.careState = repackCare(member.careState, packCare(care < 100 ? care + 4 : 100, toilet, missed, feed, play, rest, toiletCd));
+    member.careState = packCare(care < 100 ? care + 4 : 100, toilet, missed, feed, play, rest, toiletCd);
 }
 void home(State& state) {
     state.phase = Phase::Home;
@@ -344,12 +328,7 @@ void receiveDamage(State& state,std::uint32_t damage) {
     const auto maximum=maxHpForRules(active(state).formId,state.level,state.wildRules);
     const auto blocked=state.shield<damage ? state.shield : damage; state.shield-=blocked;
     const auto received=damage-blocked;
-    if(received>=state.hp) {
-        const auto rules=state.wildRules;
-        home(state);state.hp=(maximum+9)/10;state.message=Message::Retreated;
-        // Rules 17: a knockout hurts. Explicit Retreat and Auto's bounded limit do not.
-        if(rules>=17){auto& member=active(state);if(!injuryOf(member.careState))member.careState=withInjury(member.careState,1);addMistake(member);}
-    }
+    if(received>=state.hp) {home(state);state.hp=(maximum+9)/10;state.message=Message::Retreated;}
     else state.hp-=received;
 }
 // An encounter retains the resolver and profiles selected when it was created.
@@ -603,7 +582,7 @@ static bool validForVersion(const State& s,bool) {
     const auto& pending=s.pendingEncounter;
     if(pending.formId) {
         if(!s.onboardingComplete || !combat::validFormProfile(pending.formId,pending.level) ||
-           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15&&pending.rules!=16&&pending.rules!=17) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
+           (pending.rules!=12&&pending.rules!=13&&pending.rules!=14&&pending.rules!=15&&pending.rules!=16) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
            s.encounterProgress || s.encounters==kMax) return false;
     } else if(pending.level || pending.rules) return false;
     static_assert(forms::kFormCount<=kJournalCapacity);
@@ -644,11 +623,11 @@ static bool validForVersion(const State& s,bool) {
     const auto& m=*activeMember(s);
     if(s.hp!=m.hp || s.energy!=m.energy || s.fullness!=m.fullness || s.mood!=m.mood || s.bond!=m.bond || s.level!=m.level ||
        !s.rngState || s.steps<s.stepCredit || (s.steps-s.stepCredit)%100 || static_cast<std::uint64_t>(s.encounters)!=(s.steps-s.stepCredit)/100+static_cast<std::uint64_t>(s.walkingEncounters) ||
-       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::Treated)) return false;
+       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::Toileted)) return false;
     if(s.phase==Phase::Home) return !s.wildHp&&!s.wildMaxHp&&!s.captureAttempts&&!s.captureDeferred&&!s.cardUsed&&!s.attackBoost&&!s.shield&&
         s.wildSpecies==Species::None&&!s.wildLevel&&!s.wildTurn&&!s.wildFormId&&!s.wildRules;
     if(s.phase!=Phase::Encounter || !s.encounters || !forms::validForLineage(s.wildFormId,static_cast<unsigned>(s.wildSpecies)) ||
-       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16&&s.wildRules!=17) ||
+       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16) ||
        (s.wildRules>=13&&!forms::productionForm(s.wildFormId)) ||
        (s.wildRules==4&&(s.wildSpecies<Species::Flicker||s.wildSpecies>Species::Cinder||s.wildFormId!=rootForm(s.wildSpecies))) ||
        s.wildTurn>1000 || s.wildMaxHp!=maxHpForRules(s.wildFormId,s.wildLevel,s.wildRules) || !s.wildHp || s.wildHp>s.wildMaxHp || s.captureAttempts>3 || (s.wildRules>=12&&s.wildRules<16&&s.captureAttempts==3) ||
@@ -681,7 +660,7 @@ bool needsTestEncounterResolution(const State& state) {
 
 Error apply(State& state, Action action, std::uint32_t value) {
     if (!isValid(state)) return Error::InvalidState;
-    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::Treat)) return Error::InvalidAction;
+    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::EvolveMember)) return Error::InvalidAction;
     if (state.sequence == kMax) return Error::CounterOverflow;
     if(needsTestEncounterResolution(state)&&action!=Action::ResolveTestEncounter)return Error::InvalidAction;
     if(action==Action::StarterOfferSeed){
@@ -791,24 +770,14 @@ Error apply(State& state, Action action, std::uint32_t value) {
         next.collection[--next.collectionCount]={}; reconcileParty(next); next.message=Message::Released; break;
     }
     case Action::Evolve:
-        if (const auto error = evolveOwned(next, active(next), value); error != Error::None) return error;
+        if (!evolveOwned(next, active(next), value)) return Error::EvolutionUnavailable;
         next.message = Message::Evolved; break;
     case Action::EvolveMember: {
         const auto memberId = value >> 16;
         auto* member = const_cast<CreatureMember*>(findMember(next, memberId));
         if (!member) return Error::UnknownMember;
-        if (const auto error = evolveOwned(next, *member, value & 0xffffu); error != Error::None) return error;
+        if (!evolveOwned(next, *member, value & 0xffffu)) return Error::EvolutionUnavailable;
         next.message = Message::Evolved; break;
-    }
-    case Action::Treat: {
-        if (next.phase != Phase::Home) return Error::WrongPhase;
-        auto& member = active(next);
-        if (!injuryOf(member.careState)) return Error::InvalidAction;
-        member.careState = withInjury(member.careState, 0);
-        next.mood = cappedAdd(next.mood, 5, 100);
-        addBond(next, 2);
-        next.message = Message::Treated;
-        break;
     }
     case Action::Retreat: {
         if (next.phase != Phase::Encounter) return Error::WrongPhase;
@@ -835,21 +804,13 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (toiletCd) { --toiletCd; }
         if (toilet < 100) { toilet += 8; }
         if (toilet > 100) { toilet = 100; }
-        const bool starved = next.fullness == 1;
         if (next.fullness) --next.fullness;
-        const bool overflowed = toilet == 100 && !missed;
         if (toilet == 100 && !missed) {
             missed = true;
             next.mood = next.mood > 10 ? next.mood - 10 : 0;
             next.bond = next.bond > 2 ? next.bond - 2 : 0;
         }
-        member.careState = repackCare(member.careState, packCare(care, toilet, missed, feed, play, rest, toiletCd));
-        if (starved) addMistake(member);
-        if (overflowed) addMistake(member);
-        if (const auto injury = injuryOf(member.careState); injury && injury < 3 && value % kInjuryNeglectMinutes == 0) {
-            member.careState = withInjury(member.careState, injury + 1);
-            if (injury + 1 == 3) addMistake(member);
-        }
+        member.careState = packCare(care, toilet, missed, feed, play, rest, toiletCd);
         break;
     }
     case Action::Toilet: {
@@ -861,7 +822,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
         const auto play = careCooldown(member.careState, 18);
         const auto rest = careCooldown(member.careState, 21);
         const auto toiletCd = careCooldown(member.careState, 24);
-        member.careState = repackCare(member.careState, packCare(care, 0, false, feed, play, rest, toiletCd));
+        member.careState = packCare(care, 0, false, feed, play, rest, toiletCd);
         next.mood = cappedAdd(next.mood, 10, 100);
         addBond(next, 3);
         next.message = Message::Toileted;
@@ -908,11 +869,9 @@ Error apply(State& state, Action action, std::uint32_t value) {
         break; }
     case Action::Rest: {
         if (next.phase != Phase::Home) return Error::WrongPhase;
-        const auto fullMaximum=maxHp(active(next).formId,next.level);
-        // Rules 17: an injured partner only rests back to half health; Treat it first.
-        const auto maximum=injuryOf(active(next).careState) ? (fullMaximum+1)/2 : fullMaximum;
+        const auto maximum=maxHp(active(next).formId,next.level);
         const bool useful=next.hp<maximum || next.energy<100;
-        if (next.hp < maximum) next.hp = cappedAdd(next.hp, 25, maximum);
+        next.hp = cappedAdd(next.hp, 25, maximum);
         next.energy = cappedAdd(next.energy, 25, 100);
         next.message = Message::Rested;
         if(useful) addBond(next, 1);
@@ -1126,29 +1085,14 @@ Error apply(State& state, Action action, std::uint32_t value) {
 
 std::uint32_t recoveryRestCount(const State& state) {
     if(!isValid(state) || state.phase!=Phase::Home)return 0;
-    const auto fullMaximum=maxHp(activeMember(state)->formId,state.level);
-    const auto maximum=injuryOf(activeMember(state)->careState) ? (fullMaximum+1)/2 : fullMaximum;
-    if(state.hp>=maximum && state.energy==100)return 0;
+    const auto maximum=maxHp(activeMember(state)->formId,state.level);
+    if(state.hp==maximum && state.energy==100)return 0;
     State candidate=state;
     for(std::uint32_t count=1;count<=40;++count) {
         if(apply(candidate,Action::Rest)!=Error::None)return 0;
-        if(candidate.hp>=maximum && candidate.energy==100)return count;
+        if(candidate.hp==maximum && candidate.energy==100)return count;
     }
     return 0;
-}
-
-std::uint32_t cleanRouteMistakeLimit(std::uint32_t destinationFormId) {
-    const auto* form = forms::find(destinationFormId);
-    if (!form) return 0;
-    return form->stage == forms::Stage::Mega ? 1u : form->stage == forms::Stage::Ultimate ? 2u : 3u;
-}
-bool careRouteOpen(const CreatureMember& member, std::size_t outgoingIndex) {
-    const auto* edge = forms::outgoing(member.formId, outgoingIndex);
-    if (!edge) return false;
-    if (outgoingIndex != 0) return true;
-    const auto* second = forms::outgoing(member.formId, 1);
-    if (!second || !forms::productionForm(second->to)) return true; // A single real route is never care-locked.
-    return mistakesOf(member.careState) <= cleanRouteMistakeLimit(edge->to);
 }
 
 namespace {
@@ -1309,8 +1253,6 @@ const char* errorText(Error error) {
     case Error::NotPartyMember: return "that Digimon is not an XP companion";
     case Error::ActiveMemberParty: return "your active partner already earns battle XP";
     case Error::AutoLimit: return "auto battle reached its bounded turn limit; state unchanged";
-    case Error::MemberInjured: return "treat this Digimon's injury before it can digivolve";
-    case Error::CareRouteLocked: return "too many care mistakes this stage for this route; the other route is still open";
     }
     return "unknown error";
 }
@@ -1340,7 +1282,6 @@ const char* messageText(Message message) {
     case Message::Released: return "Your Digimon is free to roam; your journal remembers them.";
     case Message::Trained: return "Your companion gained a level from battle experience!";
     case Message::Toileted: return "Toilet need cleared. Your Digimon feels better.";
-    case Message::Treated: return "Injury treated. Your Digimon can rest to full health again.";
     }
     return "Unknown message.";
 }
@@ -1364,7 +1305,7 @@ const char* wildName(const State& state) {
 }
 bool parseAction(const char* name, Action& action) {
     if (!name) return false;
-    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member", "treat"};
+    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member"};
     if (std::strcmp(name, "physical") == 0) { action = Action::Attack; return true; }
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (std::strcmp(name, names[i]) == 0) {
@@ -1418,7 +1359,6 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
         std::snprintf(message,sizeof(message),joined?"%s joined your collection!":"Bonus XP merged into your oldest %s.",form?form->name:"Digimon");
     }
     else if(s.message==Message::CaptureMissed) std::snprintf(message,sizeof(message),"%s slipped away from the capture beam.",wildName(s));
-    else if(s.message==Message::Retreated && s.onboardingComplete && injuryOf(activeMember(s)->careState)) std::snprintf(message,sizeof(message),"%s","Your Digimon was hurt. Treat it at Home before resting to full.");
     else std::snprintf(message,sizeof(message),"%s",messageText(s.message));
     append("{\"schemaVersion\":%u,\"rulesVersion\":%u,\"sequence\":%u,\"seed\":%u,\"rngState\":%u,\"steps\":%u,\"stepCredit\":%u,"
            "\"hp\":%u,\"energy\":%u,\"fullness\":%u,\"mood\":%u,\"bond\":%u,\"level\":%u,\"maxLevel\":%u,\"captures\":%u,\"encounters\":%u,"
@@ -1476,7 +1416,7 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
         append("%s{\"id\":%u,\"species\":\"%s\",\"name\":\"%s\",\"hp\":%u,\"energy\":%u,\"fullness\":%u,\"mood\":%u,\"bond\":%u,\"level\":%u,\"capturedAtSequence\":%u,",
                i ? "," : "",number(m.id),speciesId(m.species),memberName(m),number(m.hp),number(m.energy),number(m.fullness),number(m.mood),number(m.bond),number(m.level),number(m.capturedAtSequence));
         progress(m); metadata(m.formId); append(","); profile(m.formId,m.level,m.id==s.activeCreatureId); care(m);
-        append(",\"carePoints\":%u,\"toilet\":%u,\"careMissed\":%s,\"careMistakes\":%u,\"injury\":%u}",number(carePointsOf(m.careState)),number(toiletOf(m.careState)),careMissedOf(m.careState)?"true":"false",number(mistakesOf(m.careState)),number(injuryOf(m.careState)));
+        append(",\"carePoints\":%u,\"toilet\":%u,\"careMissed\":%s}",number(carePointsOf(m.careState)),number(toiletOf(m.careState)),careMissedOf(m.careState)?"true":"false");
     }
     append("],\"evolution\":{\"options\":[");
     if(s.onboardingComplete) {
@@ -1486,13 +1426,9 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
             if(!forms::productionForm(id))continue;
             const auto* nextForm=forms::find(id); const auto need=forms::evolutionNeed(*edge);
             const auto preview=m.level<need.level ? need.level : m.level;
-            const auto routeOpen=careRouteOpen(m,i);
-            const auto locked=i==0 && forms::outgoing(m.formId,1) && forms::productionForm(forms::outgoing(m.formId,1)->to);
-            const auto eligible=s.phase==Phase::Home && m.level>=need.level && m.bond>=need.bond && carePointsOf(m.careState)>=need.care && routeOpen && !injuryOf(m.careState);
+            const auto eligible=s.phase==Phase::Home && m.level>=need.level && m.bond>=need.bond && carePointsOf(m.careState)>=need.care;
             append("%s{\"formId\":%u,\"name\":\"%s\",",comma ? "," : "",number(id),nextForm->name); metadata(id);
             append(",\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u,\"previewLevel\":%u,\"eligible\":%s,",number(need.level),number(need.bond),number(need.care),number(preview),eligible ? "true" : "false");
-            if(locked)append("\"maxCareMistakes\":%u,",number(cleanRouteMistakeLimit(id)));else append("\"maxCareMistakes\":null,");
-            append("\"careRouteOpen\":%s,",routeOpen?"true":"false");
             profile(id,preview); append("}"); comma=true;
         }
     }
@@ -1560,11 +1496,11 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     const auto version = static_cast<unsigned>(bytes[4]) | (static_cast<unsigned>(bytes[5]) << 8);
     if (version < 1 || version > kSchemaVersion) return SnapshotStatus::UnsupportedVersion;
     const auto required = version == 1 ? kLegacySnapshotSize : version == 2 ? kV2SnapshotSize :
-                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : version==22 ? kV22SnapshotSize : kSnapshotSize; // V23 and V24 share a layout.
+                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : version==22 ? kV22SnapshotSize : kSnapshotSize;
     const auto payload = static_cast<unsigned>(bytes[6]) | (static_cast<unsigned>(bytes[7]) << 8);
     if (length != required || payload != length - 12) return SnapshotStatus::InvalidLength;
     if (get32(bytes + length - 4) != crc32(bytes, length - 4)) return SnapshotStatus::BadChecksum;
-    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : version==22 ? 15u : version==23 ? 16u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
+    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : version==22 ? 15u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
     std::size_t offset = 12;
     const auto read = [&]() { const auto value = get32(bytes + offset); offset += 4; return value; };
     State next;
@@ -1579,7 +1515,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     next.attackBoost = read();
     next.shield = version == 1 ? 0 : read();
     const auto message = read();
-    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : version<22 ? Message::EncounterCleared : version<23 ? Message::PartyRemoved : version<24 ? Message::Toileted : Message::Treated;
+    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : version<22 ? Message::EncounterCleared : version<23 ? Message::PartyRemoved : Message::Toileted;
     if (phase > (version < 5 ? 1u : 2u) || card > 1 || message > static_cast<unsigned>(lastMessage))
         return SnapshotStatus::InvalidState;
     next.phase = static_cast<Phase>(phase);
@@ -1691,9 +1627,6 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
         if(next.wildRules>7 || (founder&&!legacy_v7::forms::canReach(root,founder->formId)))
             return SnapshotStatus::InvalidState;
     }
-    if(version<=23 && (next.wildRules>16 || next.pendingEncounter.rules>16)) return SnapshotStatus::InvalidState;
-    // Older rules never wrote mistakes/injury bits.
-    if(version<=23) for(std::size_t i=0;i<next.collectionCount && i<kCollectionCapacity;++i) if(next.collection[i].careState & ~kCareLowMask) return SnapshotStatus::InvalidState;
     if(version<=22 && (next.wildRules>15 || next.pendingEncounter.rules>15)) return SnapshotStatus::InvalidState;
     if(version<=21 && (next.wildRules>14 || next.pendingEncounter.rules>14)) return SnapshotStatus::InvalidState;
     if(version<=20 && (next.wildRules>13 || next.pendingEncounter.rules>13)) return SnapshotStatus::InvalidState;
@@ -1724,7 +1657,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
 const char* snapshotStatusText(SnapshotStatus status) {
     switch (status) {
     case SnapshotStatus::Ok: return "ok";
-    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 24";
+    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 23";
     case SnapshotStatus::InvalidLength: return "invalid snapshot length";
     case SnapshotStatus::BadMagic: return "invalid snapshot magic";
     case SnapshotStatus::UnsupportedVersion: return "unsupported snapshot version";
@@ -1734,4 +1667,4 @@ const char* snapshotStatusText(SnapshotStatus status) {
     }
     return "unknown snapshot status";
 }
-} // namespace digivice
+} // namespace digivice::legacy_v16

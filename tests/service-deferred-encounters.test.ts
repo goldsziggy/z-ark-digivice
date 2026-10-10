@@ -18,7 +18,7 @@ type Event = { type: string; value: number };
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
 const token = Buffer.alloc(32, 57).toString('base64url'); // Synthetic test identity only.
 const deviceId = `dv_${'d'.repeat(24)}`;
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 17, baseRevision, batchId, events });
 const receipt = (rulesVersion: number, baseRevision: number, events: Event[], batchId: string) => ({ batchId, revision: baseRevision + 1, eventEnd: events.length, bodyHash: hash(JSON.stringify({ rulesVersion, baseRevision, events })) });
 const oldStore = () => ({ formatVersion: 14, gameSchemaVersion: 15, rulesVersion: 12, devices: [{
   deviceId, tokenHash: hash(token), seed: 12345, initialMode: 'onboarding', revision: 2,
@@ -48,21 +48,21 @@ function schema15Projection(state: any) {
 
 test('rules12 migration archives exact original bytes and frozen results; old receipts stay reserved', async t => {
   const original = oldStore(), f = await fixture(t, original), save = await f.request();
-  assert.equal(save.status, 200); assert.equal(save.body.state.schemaVersion, 23); assert.equal(save.body.state.rulesVersion, 16);
+  assert.equal(save.status, 200); assert.equal(save.body.state.schemaVersion, 24); assert.equal(save.body.state.rulesVersion, 17);
   assert.equal(save.body.state.maxLevel, 50); assert.deepEqual(schema15Projection(save.body.state), historicComparable(frozen.result.state));
   assert.deepEqual(save.body.autoTrace, frozen.result.trace);
   assert.equal(await readFile(join(f.dataDir, 'store.rules-v12.json'), 'utf8'), f.originalText);
   const current = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([current.formatVersion, current.gameSchemaVersion, current.rulesVersion], [18,23,16]);
+  assert.deepEqual([current.formatVersion, current.gameSchemaVersion, current.rulesVersion], [19,24,17]);
   const migrated = current.devices[0];
   assert.equal(migrated.deviceId, original.devices[0].deviceId); assert.equal(migrated.tokenHash, original.devices[0].tokenHash);
   assert.equal(migrated.revision, 2); assert.deepEqual(migrated.events, []); assert.deepEqual(migrated.receipts, []);
   assert.deepEqual(migrated.legacy.histories, [...original.devices[0].legacy.histories, { rulesVersion: 12, events: frozen.events, receipts: original.devices[0].receipts }]);
-  assert.equal(Buffer.from(migrated.legacy.snapshotBase64,'base64').readUInt16LE(4), 23);
+  assert.equal(Buffer.from(migrated.legacy.snapshotBase64,'base64').readUInt16LE(4), 24);
   assert.deepEqual(await readFile(join(f.dataDir, 'store.json')), await readFile(join(f.dataDir, 'store.backup.json')));
   const retry = { ...batch(1, 'old-twelve-walk', frozen.events), rulesVersion: 12 };
   assert.equal((await f.request(retry)).body.error, 'migration_required');
-  assert.equal((await f.request({ ...retry, rulesVersion: 16 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request({ ...retry, rulesVersion: 17 })).body.error, 'legacy_batch_requires_reconciliation');
   await f.restart(); assert.deepEqual(await f.request(), save);
   assert.equal(await readFile(join(f.dataDir, 'store.rules-v12.json'), 'utf8'), f.originalText);
 });
@@ -71,7 +71,7 @@ test('one waiting encounter survives care, restart and receipt retries; active w
   const f = await fixture(t);
   const earnedBatch = batch(2, 'earn-one-in-menu', [{ type: 'accrue-steps', value: 1000 }]);
   const earned = await f.request(earnedBatch); assert.equal(earned.status, 200);
-  const waiting = earned.body.state.walking.pendingEncounter; assert.ok(waiting); assert.ok(waiting.formId >= 11); assert.equal(waiting.rules, 16); assert.ok(validWalkingState(earned.body.state.walking, 'home'));
+  const waiting = earned.body.state.walking.pendingEncounter; assert.ok(waiting); assert.ok(waiting.formId >= 11); assert.equal(waiting.rules, 17); assert.ok(validWalkingState(earned.body.state.walking, 'home'));
   assert.equal(earned.body.state.phase, 'home'); assert.equal(earned.body.state.walking.remainingSteps, 0);
   const filled = await f.request(batch(3, 'walk-with-full-slot', [{ type: 'accrue-steps', value: 1000 }, { type: 'rest', value: 0 }]));
   assert.equal(filled.status, 200); assert.deepEqual(filled.body.state.walking.pendingEncounter, waiting);

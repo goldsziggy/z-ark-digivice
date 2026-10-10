@@ -117,7 +117,7 @@ void frozenInstalledFixtures(){
  // No rules17 record can invent a current-rules original foe, but oldrules remain decodable until explicit repair.
  auto s=newDevice();step(s,Action::Hatch,1);step(s,Action::AccrueSteps,1000);auto bad=s;bad.pendingEncounter={4,1,13};CHECK(!isValid(bad));bad.pendingEncounter.rules=12;CHECK(isValid(bad));
  Action action;CHECK(parseAction("resolve-test-encounter",action)&&action==Action::ResolveTestEncounter);
- CHECK(kSchemaVersion==23&&kRulesVersion==16&&kSnapshotSize==3216);
+ CHECK(kSchemaVersion==24&&kRulesVersion==17&&kSnapshotSize==3216);
 }
 }
 int main(){productionPool();releaseEvolutionEdges();firstStepsAndStarters();resolution();frozenInstalledFixtures();std::printf("%u production-roster/migration checks, %u failures\n",checks,failures);return failures?1:0;}

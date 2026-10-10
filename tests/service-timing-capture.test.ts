@@ -14,7 +14,7 @@ const corePath = process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/dig
 const battleCorePath = process.env.DIGIVICE_TEST_BATTLE_PATH ?? join(rootDir, 'build/digivice-battle');
 const prepare = [{ type: 'hatch', value: 1 }, { type: 'walk', value: 100 },
   { type: 'magic', value: 0 }, { type: 'attack', value: 0 }, { type: 'magic', value: 0 }];
-const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 16, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: unknown[]) => ({ rulesVersion: 17, baseRevision, batchId, events });
 const ring = (value: unknown) => ({ type: 'ring-capture', value });
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const nextRoll = (input: number) => { let value = input; value ^= value << 13; value ^= value >>> 17; value ^= value << 5; return value >>> 0; };
@@ -170,7 +170,7 @@ test('lost ACK, simultaneous duplicate posts and service restart never spend ano
   await f.restart(); assert.deepEqual(await f.request('/api/save-sync', identity.token, first), receipt);
   assert.deepEqual(await f.request('/api/save', identity.token), current);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [18, 23, 16]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [19, 24, 17]);
   assert.equal(stored.devices[0].events.filter((event: any) => event.type === 'ring-capture').length, 3);
   assert.equal(stored.devices[0].receipts.length, 6, 'preparation, three throws, and two attacks that reopen capture');
 });
@@ -189,7 +189,9 @@ test('a full roster rejects timing throws without writes or receipts and release
   // Build a valid collection through real deterministic events; no store or
   // snapshot patching can hide dropped members or broken replay validation.
   for (let encounter = 0; encounter < 512 && state.collection.length < 60; ++encounter) {
-    const recovery = Array.from({ length: state.recoveryRestCount }, () => ({ type: 'rest', value: 0 }));
+    // Rules 17: treat a knockout injury first so recovery reaches full health.
+    const hurt = state.collection.find((member: any) => member.id === state.activeCreatureId)?.injury;
+    const recovery = [...(hurt ? [{ type: 'treat', value: 0 }] : []), ...Array.from({ length: hurt ? 12 : state.recoveryRestCount }, () => ({ type: 'rest', value: 0 }))];
     const membersBefore = structuredClone(state.collection);
     const partnerBefore = state.activeCreatureId;
     await submit([...recovery, { type: 'walk', value: 100 }, { type: 'auto', value: 0 }]);

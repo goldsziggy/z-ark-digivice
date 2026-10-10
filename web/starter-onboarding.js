@@ -5,7 +5,7 @@ const types = new Set(['grove', 'tide', 'ember', 'neutral']);
 const number = (value, min, max) => Number.isSafeInteger(value) && value >= min && value <= max;
 const label = value => typeof value === 'string' && value.trim().length > 0 && value.length <= 64;
 export function validateStarterCatalog(value) {
-  if (!value || value.formatVersion !== 1 || value.rulesVersion !== 16 || !Array.isArray(value.starters)
+  if (!value || value.formatVersion !== 1 || value.rulesVersion !== 17 || !Array.isArray(value.starters)
     || value.starters.length !== STARTER_COUNT) throw new Error('The starter list is unavailable or unsupported.');
   const species = new Set();
   for (const [index, starter] of value.starters.entries()) {
