@@ -100,6 +100,7 @@ void installedJournalRecovery(){
  for(unsigned version:{19u,20u,21u,22u})for(unsigned side=0;side<2;++side){
   x.rules=version==22?15:version==21?14:13;
   const auto& before=side?b:a;auto walked=before;step(walked,Action::EncounterSeed,777+side);step(walked,Action::AccrueSteps,1000);walked.pendingEncounter.rules=x.rules;
+  walked.bossSteps=0;walked.bossSigils=0;
   t::Record prepared,committed,applied,aborted;CHECK(t::prepare(before,x,side,7,prepared));CHECK(t::commit(prepared,walked,committed));
   CHECK(t::applied(committed,committed.after,applied));CHECK(t::abort(prepared,aborted));
   for(const auto& phase:{prepared,committed,applied,aborted}){

@@ -39,7 +39,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, origi
   return { dataDir, request, restart: async () => { await close(); app.close(); app = await startServer(options); } };
 }
 function oldFields(state: any) {
-  assert.equal(state.maxLevel, 50);
+  assert.equal(state.maxLevel, 99);
   const { walking, schemaVersion, rulesVersion, ...rest } = legacyFields(state);
   assert.equal(schemaVersion, 27); assert.equal(rulesVersion, 19); assert.ok(validWalkingState(state.walking, state.phase));
   return { ...rest, schemaVersion: 13, rulesVersion: 10 };

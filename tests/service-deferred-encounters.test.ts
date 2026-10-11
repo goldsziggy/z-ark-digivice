@@ -49,7 +49,7 @@ function schema15Projection(state: any) {
 test('rules12 migration archives exact original bytes and frozen results; old receipts stay reserved', async t => {
   const original = oldStore(), f = await fixture(t, original), save = await f.request();
   assert.equal(save.status, 200); assert.equal(save.body.state.schemaVersion, 27); assert.equal(save.body.state.rulesVersion, 19);
-  assert.equal(save.body.state.maxLevel, 50); assert.deepEqual(schema15Projection(save.body.state), historicComparable(frozen.result.state));
+  assert.equal(save.body.state.maxLevel, 99); assert.deepEqual(schema15Projection(save.body.state), historicComparable(frozen.result.state));
   assert.deepEqual(save.body.autoTrace, frozen.result.trace);
   assert.equal(await readFile(join(f.dataDir, 'store.rules-v12.json'), 'utf8'), f.originalText);
   const current = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
@@ -117,7 +117,7 @@ test('schema15 cannot conceal new deferred events and browser rejects impossible
   }
   const state = JSON.parse(execFileSync(corePath, ['--replay-onboarding', '12345'], { input: 'hatch 1\naccrue-steps 1000\n', encoding: 'utf8' }));
   assert.ok(validWalkingState(state.walking, state.phase));
-  for (const pendingEncounter of [{ formId: 0, level: 1, rules: 12 }, { formId: 18, level: 51, rules: 12 }, { formId: 18, level: 1, rules: 11 }, { formId: 18, level: 1, rules: 12, gps: [1, 2] }, [], undefined]) {
+  for (const pendingEncounter of [{ formId: 0, level: 1, rules: 12 }, { formId: 18, level: 100, rules: 12 }, { formId: 18, level: 1, rules: 11 }, { formId: 18, level: 1, rules: 12, gps: [1, 2] }, [], undefined]) {
     assert.equal(validWalkingState({ ...state.walking, pendingEncounter }, state.phase), false);
   }
   assert.equal(validWalkingState(state.walking, 'egg'), false);

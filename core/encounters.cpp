@@ -63,8 +63,11 @@ std::uint32_t selectFrom(bool (*production)(std::uint32_t),std::uint32_t lastId,
     return 0;
 }
 }
+namespace {
+bool productionWithArt(std::uint32_t id) { return forms::productionForm(id) && forms::hasInstalledArt(id); }
+}
 std::uint32_t selectProduction(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partner,std::uint32_t level) {
-    return selectFrom(&forms::productionForm,forms::kFormCount,encounter,seed,partner,level);
+    return selectFrom(&productionWithArt,forms::kFormCount,encounter,seed,partner,level);
 }
 namespace rules18 {
 std::uint32_t selectProduction(std::uint32_t encounter,std::uint32_t seed,std::uint32_t partner,std::uint32_t level) {

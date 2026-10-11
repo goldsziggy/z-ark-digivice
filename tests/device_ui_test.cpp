@@ -1654,7 +1654,6 @@ void expeditionMenu() {
     Harness h; h.choose();
     h.state.dungeonKeys=2; h.state.bossSigils=0; CHECK(isValid(h.state)); h.sync();
     h.openHome(HomePanel::Dungeons); CHECK(h.ui.screen()==Screen::Expeditions);
-    const auto saved=h.state; const auto writes=h.gameWrites;
     std::array<std::uint16_t,kPixels+2> frame{}; frame.front()=frame.back()=0xBEEF;
     for(unsigned i=0;i<6;++i) {
         CHECK(h.ui.render(h.state,h.model,frame.data()+1,kPixels,1000));
@@ -1664,23 +1663,43 @@ void expeditionMenu() {
     CHECK(h.ui.screen()==Screen::Expeditions);
     tapLabel(h,"ENTER"); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
     CHECK(h.ui.artRequest(h.state,h.model,0).formId==activeMember(h.state)->formId);
+    nearby::View lobby; lobby.stage=nearby::Stage::Discovering; lobby.activity=0; lobby.peerCount=1;
+    lobby.peers[0].available=true; lobby.peers[0].compatible=true; lobby.peers[0].activity=0; lobby.peers[0].fighter={17,18,1};
+    h.model.nearby=&lobby; h.sync();
+    Controller::Button joinButtons[Controller::kMaxButtons];
+    const auto joinCount=h.ui.layout(h.state,h.model,joinButtons,Controller::kMaxButtons);
+    CHECK(findLabel(joinButtons,joinCount,"JOIN") && findLabel(joinButtons,joinCount,"START SOLO"));
+    h.model.nearby=nullptr; h.sync();
+    const auto partnerLevel=h.state.level;
+    const auto partnerTier=forms::combatTier(activeMember(h.state)->formId);
     tapLabel(h,"START SOLO");
-    CHECK(h.ui.screen()==Screen::ExpeditionLobby);
-    CHECK(h.ui.artRequest(h.state,h.model,0).animation==sprite::Animation::Celebrate);
-    CHECK(h.state.dungeonKeys==2 && trade::sameState(saved,h.state) && h.gameWrites==writes);
-    h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Expeditions);
-    for(unsigned i=0;i<3;++i) h.dispatch(h.swipe(260,180,160,180));
-    tapLabel(h,"ENTER"); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    CHECK(h.ui.screen()==Screen::Encounter && h.state.phase==Phase::Encounter && h.state.dungeonKeys==1);
+    CHECK(forms::productionForm(h.state.wildFormId));
+    const auto* foe=forms::find(h.state.wildFormId);
+    CHECK(foe && std::strcmp(foe->type,"grove")==0);
+    CHECK(forms::combatTier(h.state.wildFormId)>partnerTier || h.state.wildLevel>partnerLevel);
+    CHECK(h.state.wildMaxHp==combat::formProfile(h.state.wildFormId,h.state.wildLevel).stats.maxHp && h.state.wildHp==h.state.wildMaxHp);
+    CHECK(h.ui.artRequest(h.state,h.model,0).formId==h.state.wildFormId);
+
+    Harness boss; boss.choose();
+    boss.state.dungeonKeys=0; boss.state.bossSigils=0; CHECK(isValid(boss.state)); boss.sync();
+    boss.openHome(HomePanel::Dungeons);
+    for(unsigned i=0;i<3;++i) boss.dispatch(boss.swipe(260,180,160,180));
+    tapLabel(boss,"ENTER"); CHECK(boss.ui.screen()==Screen::ExpeditionLobby);
     Controller::Button buttons[Controller::kMaxButtons];
-    const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+    const auto n=boss.ui.layout(boss.state,boss.model,buttons,Controller::kMaxButtons);
     const auto* solo=findLabel(buttons,n,"START SOLO");
     CHECK(solo && !solo->enabled);
-    h.state.bossSigils=1; CHECK(isValid(h.state)); h.sync();
-    CHECK(h.ui.screen()==Screen::ExpeditionLobby);
-    tapLabel(h,"START SOLO");
-    CHECK(h.state.bossSigils==1 && h.ui.screen()==Screen::ExpeditionLobby);
-    h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Expeditions);
-    h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Home && h.ui.homePanel()==HomePanel::Dungeons);
+    boss.state.bossSigils=1; CHECK(isValid(boss.state)); boss.sync();
+    CHECK(boss.ui.screen()==Screen::ExpeditionLobby);
+    const auto tier=forms::combatTier(activeMember(boss.state)->formId);
+    const auto level=boss.state.level;
+    tapLabel(boss,"START SOLO");
+    CHECK(boss.ui.screen()==Screen::Encounter && boss.state.bossSigils==0 && boss.state.phase==Phase::Encounter);
+    const auto* bossFoe=forms::find(boss.state.wildFormId);
+    CHECK(bossFoe && forms::productionForm(boss.state.wildFormId) && std::strcmp(bossFoe->type,"grove")==0);
+    CHECK(forms::combatTier(boss.state.wildFormId)>tier || boss.state.wildLevel>level);
+    CHECK(boss.state.wildMaxHp==combat::formProfile(boss.state.wildFormId,boss.state.wildLevel).stats.maxHp);
 }
 int main(int argc,char** argv) {
     backTargets();

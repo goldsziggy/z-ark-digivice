@@ -62,17 +62,15 @@ void retiredDuplicates() {
 }
 
 void frozenPool() {
-    // Rules 13-18 draw only from forms 1..276; rules 19 also reaches the new forms, never retired ones.
-    bool newSeen = false;
+    // Rules 13-18 draw only from forms 1..276. Rules 19 draws production forms
+    // that have a file in the installed device pack, so later forms are not wild.
     for (unsigned partner : {12u, 13u, 14u, 125u})
         for (unsigned seed = 1; seed <= 3000; ++seed) {
             const auto old = encounters::rules18::selectProduction(1 + seed % 40, seed * 2654435761u, partner, 40);
             const auto now = encounters::selectProduction(1 + seed % 40, seed * 2654435761u, partner, 40);
             CHECK(old >= forms::kFirstProductionFormId && old <= forms::kRules18FormCount);
-            CHECK(forms::productionForm(now) && !forms::retiredAliasOf(now));
-            newSeen = newSeen || now > forms::kRules18FormCount;
+            CHECK(forms::productionForm(now) && forms::hasInstalledArt(now) && !forms::retiredAliasOf(now));
         }
-    CHECK(newSeen);
     // Rookie-tier pools never contained the new Champion+ forms, so they are unchanged.
     for (unsigned seed = 1; seed <= 3000; ++seed)
         CHECK(encounters::rules18::selectProduction(seed, seed * 7919u, 11, 12) == encounters::selectProduction(seed, seed * 7919u, 11, 12));
@@ -159,11 +157,11 @@ void migrationMidEncounter() {
         if (now.phase != Phase::Home || !m.hp) continue;
         m.hp = now.hp = combat::formProfile(m.formId, now.level).stats.maxHp; m.careState &= (1u << 27) - 1u;
         if (!isValid(now) || apply(now, Action::Explore, 1000) != Error::None || now.phase != Phase::Encounter) continue;
-        CHECK(now.wildRules == 19 && forms::productionForm(now.wildFormId));
+        CHECK(now.wildRules == 19 && forms::productionForm(now.wildFormId) && forms::hasInstalledArt(now.wildFormId));
         newWild += now.wildFormId > forms::kRules18FormCount;
     }
-    CHECK(migrated >= 100 && finished == migrated && newWild > 0);
-    std::printf("Rules 19 migration: %u mid-encounter rules-18 saves finished their fight; %u next encounters met new forms\n", migrated, newWild);
+    CHECK(migrated >= 100 && finished == migrated && newWild == 0);
+    std::printf("Rules 19 migration: %u mid-encounter rules-18 saves finished their fight; next encounters stayed on installed art\n", migrated);
 }
 
 std::uint32_t crc32(const std::uint8_t* bytes, std::size_t length) {
@@ -247,8 +245,162 @@ void historicalFullBox() {
 }
 } // namespace
 
+State raisedPartner(std::uint32_t seed, std::uint32_t level) {
+    State s = newDevice(seed);
+    CHECK(apply(s, Action::Hatch, 1) == Error::None);
+    if (level > s.level) {
+        auto& m = s.collection[0];
+        m.level = level;
+        m.xp = xpForLevel(level);
+        m.hp = combat::formProfile(m.formId, level).stats.maxHp;
+        m.energy = 100;
+        s.level = level;
+        s.hp = m.hp;
+        s.energy = 100;
+        CHECK(isValid(s));
+    }
+    return s;
+}
+bool beatExpedition(State& s, unsigned& hits) {
+    hits = 0;
+    const auto foe = s.wildFormId;
+    const auto foeLevel = s.wildLevel;
+    const auto foeHp = s.wildMaxHp;
+    while (s.phase == Phase::Encounter && hits < 30) {
+        const auto error = apply(s, Action::Attack);
+        if (error != Error::None) {
+            std::fprintf(stderr, "attack %u error %u vs form %u lv %u hp %u\n", hits, static_cast<unsigned>(error), foe, foeLevel, foeHp);
+            return false;
+        }
+        ++hits;
+    }
+    const auto* form = forms::find(foe);
+    const bool victory = s.phase == Phase::Home && (s.message == Message::Won || s.message == Message::Trained);
+    if (!victory || hits < 4 || hits > 28) {
+        std::fprintf(stderr, "fight ended after %u hits vs %s lv %u hp %u message %u\n",
+            hits, form ? form->name : "?", foeLevel, foeHp, static_cast<unsigned>(s.message));
+        return false;
+    }
+    return true;
+}
+void expeditionRewards() {
+    Action parsed = Action::Feed;
+    CHECK(parseAction("start-expedition", parsed) && parsed == Action::StartExpedition);
+    CHECK(parseAction("focus", parsed) && parsed == Action::Focus);
+    State wins = raisedPartner(9, 1);
+    CHECK(wins.dungeonKeys == 0 && wins.bossSigils == 0 && wins.dungeonWins == 0 && wins.bossSteps == 0);
+    const auto blocked = wins.sequence;
+    CHECK(apply(wins, Action::StartExpedition, 0) == Error::InvalidAction && wins.sequence == blocked && wins.dungeonKeys == 0);
+    CHECK(apply(wins, Action::StartExpedition, 6) == Error::InvalidValue && wins.dungeonKeys == 0);
+    for (unsigned i = 0; i < 8; ++i) {
+        CHECK(apply(wins, Action::Walk, 100) == Error::None && wins.phase == Phase::Encounter);
+        wins.wildHp = 1;
+        CHECK(isValid(wins));
+        const auto err = apply(wins, Action::Attack);
+        const bool victory = wins.phase == Phase::Home && (wins.message == Message::Won || wins.message == Message::Trained);
+        CHECK(err == Error::None && victory);
+    }
+    CHECK(wins.dungeonKeys == 1 && wins.dungeonWins == 0 && wins.bossSteps == 0 && wins.bossSigils == 0);
+    CHECK(apply(wins, Action::Walk, 100) == Error::None);
+    wins.wildHp = 1;
+    CHECK(apply(wins, Action::Attack) == Error::None && wins.dungeonKeys == 1 && wins.dungeonWins == 1);
+    wins.dungeonKeys = 3;
+    wins.dungeonWins = 7;
+    CHECK(isValid(wins));
+    CHECK(apply(wins, Action::Walk, 100) == Error::None);
+    wins.wildHp = 1;
+    CHECK(apply(wins, Action::Attack) == Error::None && wins.dungeonKeys == 3 && wins.dungeonWins == 7);
+
+    State steps = raisedPartner(4, 1);
+    for (unsigned i = 0; i < 5; ++i) CHECK(apply(steps, Action::AccrueSteps, 1000) == Error::None);
+    CHECK(steps.bossSigils == 1 && steps.bossSteps == 0 && steps.dungeonKeys == 0);
+    for (unsigned i = 0; i < 5; ++i) CHECK(apply(steps, Action::AccrueSteps, 1000) == Error::None);
+    CHECK(steps.bossSigils == 1 && steps.bossSteps == expeditions::kBossStepsPerSigil - 1);
+    State walking = raisedPartner(6, 1);
+    CHECK(apply(walking, Action::Walk, 100) == Error::None && walking.phase == Phase::Encounter);
+    CHECK(walking.bossSteps == 0 && walking.bossSigils == 0);
+    steps.bossSigils = 0;
+    CHECK(isValid(steps));
+    CHECK(apply(steps, Action::AccrueSteps, 1) == Error::None && steps.bossSigils == 1 && steps.bossSteps == 0);
+    State explored = raisedPartner(5, 1);
+    CHECK(apply(explored, Action::Explore, 250) == Error::None && explored.bossSteps == 250 && explored.bossSigils == 0);
+
+    for (const auto level : {1u, 12u}) {
+        for (unsigned scenario = 0; scenario < 6; ++scenario) {
+            State s = raisedPartner(20 + level * 10 + scenario, level);
+            const bool dungeon = scenario < 3;
+            if (dungeon) s.dungeonKeys = 1; else s.bossSigils = 1;
+            CHECK(isValid(s));
+            const auto partnerTier = forms::combatTier(activeMember(s)->formId);
+            const auto partnerLevel = s.level;
+            CHECK(apply(s, Action::StartExpedition, scenario) == Error::None);
+            CHECK(s.phase == Phase::Encounter && isValid(s));
+            CHECK(dungeon ? s.dungeonKeys == 0 : s.bossSigils == 0);
+            const auto* foe = forms::find(s.wildFormId);
+            CHECK(foe && foe->type && forms::productionForm(s.wildFormId) && forms::hasInstalledArt(s.wildFormId));
+            const auto* partnerForm = forms::find(activeMember(s)->formId);
+            const auto* theme = expeditions::themeName(expeditions::kScenarios[scenario].theme);
+            const bool partnerMatchesTheme = partnerForm && partnerForm->type && std::strcmp(partnerForm->type, theme) == 0;
+            CHECK(std::strcmp(foe->type, theme) == 0 || partnerMatchesTheme);
+            CHECK(forms::combatTier(s.wildFormId) > partnerTier || s.wildLevel >= partnerLevel);
+            CHECK(s.wildMaxHp == combat::formProfile(s.wildFormId, s.wildLevel).stats.maxHp && s.wildHp == s.wildMaxHp);
+            unsigned hits = 0;
+            CHECK(beatExpedition(s, hits));
+        }
+    }
+    CHECK(forms::hasInstalledArt(11) && forms::hasInstalledArt(18) && !forms::hasInstalledArt(13) && !forms::hasInstalledArt(277));
+    State claim = raisedPartner(40, 5);
+    claim.dungeonKeys = 1;
+    CHECK(isValid(claim));
+    std::uint32_t form = 0, foeLevel = 0;
+    CHECK(previewExpeditionFoe(claim, 0, form, foeLevel) && forms::hasInstalledArt(form));
+    const auto xp = activeMember(claim)->xp;
+    const auto value = expeditions::claimExpeditionValue(0, form, foeLevel);
+    CHECK(apply(claim, Action::ClaimExpedition, value) == Error::None);
+    CHECK(claim.phase == Phase::Home && claim.dungeonKeys == 0 && activeMember(claim)->xp > xp);
+    CHECK(claim.message == Message::Won || claim.message == Message::Trained);
+    CHECK(apply(claim, Action::ClaimExpedition, value) == Error::InvalidAction);
+    State gap = raisedPartner(41, 5);
+    gap.dungeonKeys = 1;
+    CHECK(apply(gap, Action::ClaimExpedition, expeditions::claimExpeditionValue(0, 13, 1)) == Error::InvalidValue);
+    CHECK(gap.dungeonKeys == 1 && gap.phase == Phase::Home);
+    CHECK(parseAction("claim-expedition", parsed) && parsed == Action::ClaimExpedition);
+}
+
+void levelNinetyNine() {
+    CHECK(kMaxLevel == 99 && kMaxXp == 194040 && forms::kMaxRpgLevel == 99);
+    CHECK(xpForLevel(50) == 49000 && xpForLevel(99) == 194040 && levelForXp(193999) == 98 && levelForXp(194040) == 99);
+    State partner = raisedPartner(3, 99);
+    CHECK(partner.level == 99 && partner.collection[0].xp == 194040 && partner.collection[0].level == 99);
+    Snapshot saved;
+    CHECK(encodeSnapshot(partner, saved));
+    State loaded;
+    CHECK(decodeSnapshot(saved.bytes, sizeof(saved.bytes), loaded) == SnapshotStatus::Ok);
+    CHECK(loaded.level == 99 && loaded.hp == partner.hp && loaded.collection[0].xp == 194040 && loaded.collection[0].level == 99);
+    unsigned ultimates = 0, megas = 0, ultimateLow = 99, ultimateHigh = 0, megaLow = 99, megaHigh = 0;
+    for (std::size_t i = 0; i < forms::edgeCount(); ++i) {
+        const auto* edge = forms::edgeAt(i);
+        const auto* dest = forms::find(edge->to);
+        const auto need = forms::evolutionNeed(*edge);
+        const auto assigned = forms::unlockLevel(dest->stage, dest->minLevel, dest->id);
+        if (!assigned) continue;
+        CHECK(need.level == assigned);
+        if (dest->stage == forms::Stage::Mega) {
+            CHECK(need.level >= 50 && need.level <= 70);
+            if (need.level < megaLow) megaLow = need.level;
+            if (need.level > megaHigh) megaHigh = need.level;
+            ++megas;
+        } else {
+            CHECK(need.level >= 20 && need.level <= 35);
+            if (need.level < ultimateLow) ultimateLow = need.level;
+            if (need.level > ultimateHigh) ultimateHigh = need.level;
+            ++ultimates;
+        }
+    }
+    CHECK(ultimates > 8 && megas > 8 && ultimateLow == 20 && ultimateHigh == 35 && megaLow == 50 && megaHigh == 70);
+}
 int main() {
-    versions(); retiredDuplicates(); frozenPool(); rosterAndKeys(); migrationMidEncounter(); historicalFullBox();
+    versions(); retiredDuplicates(); frozenPool(); rosterAndKeys(); migrationMidEncounter(); historicalFullBox(); expeditionRewards(); levelNinetyNine();
     std::printf("rules 19: %u checks, %u failures\n", checks, failures);
     return failures ? 1 : 0;
 }

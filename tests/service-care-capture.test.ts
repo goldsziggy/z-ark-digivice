@@ -50,7 +50,7 @@ function beforeExtension(state: any) {
 for (const [name, value] of Object.entries(frozen.cases) as Array<[string, any]>) test(`rules11 ${name} migration preserves exact frozen fields, trace and receipts`, async t => {
   assert.deepEqual(core(['--replay-v11-onboarding-trace', '12345'], value.events), value.result, 'independent pre-change golden output');
   const original = originalStore(value.events), f = await fixture(t, original), saved = await f.request();
-  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.status, 200); assert.deepEqual(historicComparable(beforeExtension(saved.body.state)), historicComparable(value.result.state)); assert.deepEqual(saved.body.autoTrace, value.result.trace);
+  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.status, 200); assert.deepEqual(historicComparable(beforeExtension(saved.body.state)), historicComparable(value.result.state)); assert.deepEqual(saved.body.autoTrace, value.result.trace);
   assert.ok(validLastCapture(saved.body.state.lastCapture, saved.body.state.sequence));
   assert.ok(saved.body.state.collection.every(validCare));
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));

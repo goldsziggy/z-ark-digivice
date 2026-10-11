@@ -100,7 +100,7 @@ test('wild rewards pay each selected companion full native XP exactly once acros
     for (const member of before.collection) {
       const actual = after.collection.find((row: any) => row.id === member.id);
       const eligible = member.id === before.activeCreatureId || ids.includes(member.id);
-      assert.equal(actual.xp, Math.min(49000, member.xp + (rewarded && eligible ? 20 + 6 * before.wildLevel : 0)), `XP for member ${member.id}`);
+      assert.equal(actual.xp, Math.min(194040, member.xp + (rewarded && eligible ? 20 + 6 * before.wildLevel : 0)), `XP for member ${member.id}`);
     }
     await f.restart(); assert.deepEqual((await f.get()).body.state, after);
     assert.deepEqual(await f.request('/api/save-sync', f.identity.token, finish), responses[0]);
@@ -134,7 +134,7 @@ for (const version of [13, 14]) test(`rules${version} migration leaves companion
     deviceId: `dv_${'5'.repeat(24)}`, tokenHash: hash(oldToken), seed: 12345, initialMode: 'onboarding', revision: 1, legacy: null, events, receipts: [receipt],
   }] };
   const f = await fixture(t, original), save = await f.request('/api/save', oldToken); assert.equal(save.status, 200);
-  assert.equal(save.body.state.maxLevel, 50);
+  assert.equal(save.body.state.maxLevel, 99);
   assert.deepEqual(historicComparable(save.body.state), historicComparable({ ...previous.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(save.body.autoTrace, previous.trace);
   assert.equal((await f.request('/api/save-sync', oldToken, pending)).body.error, 'migration_required');
@@ -165,7 +165,7 @@ test('rules14 snapshot baseline preserves inherited rules13 Auto trace and both 
     legacy: { histories: [archived], snapshotBase64: snapshot, autoTrace: previous.trace }, events: suffix, receipts: [receipts[1]],
   }] };
   const f = await fixture(t, original), saved = await f.request('/api/save', oldToken); assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.maxLevel, 50);
+  assert.equal(saved.body.state.maxLevel, 99);
   assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...expected.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, previous.trace, 'care suffix inherits exact earlier frames');
   const histories = [archived, { rulesVersion: 14, events: suffix, receipts: [receipts[1]] }];

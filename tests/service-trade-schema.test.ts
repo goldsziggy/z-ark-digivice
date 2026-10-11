@@ -42,7 +42,7 @@ for (const archivedBaseline of [false, true]) test(`schema17 upgrades metadata w
     return { status: response.status, body: await response.json() as any };
   };
   const saved = await request(); assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
+  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
   assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...frozen.cases.pending.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [], receivedTrades: 0, autoCapture: 0, worldSeed: 0 }));
   assert.equal(saved.body.revision, original.devices[0].revision);
   const upgraded = JSON.parse(await readFile(join(dataDir, 'store.json'), 'utf8'));

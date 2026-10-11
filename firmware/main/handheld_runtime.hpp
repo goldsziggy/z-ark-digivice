@@ -115,7 +115,8 @@ private:
     NearbyPhase nearbyPhase_ = NearbyPhase::Idle;
     std::uint64_t nearbyDeadline_ = 0, nearbyTurnAt_ = 0, nearbyAttackCueAt_ = 0;
     std::uint32_t nearbyTxToken_ = 0, nearbyShownSequence_ = 0;
-    std::uint64_t nearbyShownSession_ = 0;
+    std::uint64_t nearbyShownSession_ = 0, claimedRaid_ = 0;
+    std::uint8_t nearbyActivity_ = 255;
     std::uint8_t nearbyCuePhase_ = 0;
     bool nearbyNetworkPaused_ = false, nearbyAssetsPaused_ = false, nearbyLease_ = false;
     const char* nearbyStatus_ = "Nearby is closed";

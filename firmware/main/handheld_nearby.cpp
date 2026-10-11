@@ -1,4 +1,5 @@
 #include "handheld_runtime.hpp"
+#include "expeditions.hpp"
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
 #include "esp_random.h"
 #include "esp_timer.h"
@@ -49,7 +50,7 @@ void HandheldRuntime::pollNearby(std::uint64_t now) {
         nearbyLease_ = true;
         if (nearbyRadio_.begin() != ESP_OK) { nearbyStatus_ = "Nearby radio start failed"; closeNearby(); return; }
         nearby::Mac mac; std::memcpy(mac.bytes, nearbyRadio_.identity(), sizeof(mac.bytes));
-        if (!nearby_.open(mac, nearbyFighter_, now, randomNonzero())) { closeNearby(); return; }
+        if (!nearby_.open(mac, nearbyFighter_, now, randomNonzero(), nearbyActivity_)) { closeNearby(); return; }
         if (!openTradeRadio(now)) tradeStatus_ = "Trade unavailable / recovery required";
         nearbyPhase_ = NearbyPhase::Active; nearbyStatus_ = "Wi-Fi paused - nearby play";
     }
@@ -117,12 +118,23 @@ void HandheldRuntime::pollNearby(std::uint64_t now) {
         }
     }
     const auto& view = nearby_.view();
+    if (view.offeredMode == nearby::Mode::Coop && view.stage == nearby::Stage::Finished &&
+        view.raid.status == nearby::RaidStatus::Cleared && view.session && claimedRaid_ != view.session &&
+        saves_.writable() && state_.phase == Phase::Home && !battle_.locked()) {
+        State candidate = state_;
+        const auto value = expeditions::claimExpeditionValue(view.raid.scenario, view.raid.foeForm, view.raid.foeLevel);
+        const auto error = apply(candidate, Action::ClaimExpedition, value);
+        if (error == Error::None && saves_.checkpoint(candidate)) {
+            state_ = candidate; claimedRaid_ = view.session; interfaceDirty_ = true;
+        } else if (error != Error::None) claimedRaid_ = view.session;
+    }
     if (nearbyShownSession_ != view.session) {
         nearbyShownSession_ = view.session; nearbyShownSequence_ = 0; nearbyCuePhase_ = 0;
     }
-    const auto& match = view.match;
-    if (match.sequence && match.sequence != nearbyShownSequence_) {
-        nearbyShownSequence_ = match.sequence; nearbyTurnAt_ = now;
+    const auto sequence = view.offeredMode == nearby::Mode::Coop ? view.raid.sequence : view.match.sequence;
+    const auto lastAttack = view.offeredMode == nearby::Mode::Coop ? view.raid.lastAttack : view.match.lastAttack;
+    if (sequence && sequence != nearbyShownSequence_) {
+        nearbyShownSequence_ = sequence; nearbyTurnAt_ = now;
         nearbyCuePhase_ = 1;
         audio_.play(device::AudioCue::Navigate); // Guard selection reveal.
         interfaceDirty_ = true;
@@ -133,7 +145,7 @@ void HandheldRuntime::pollNearby(std::uint64_t now) {
         nearbyCuePhase_ = elapsed >= 1200 ? 3 : 2;
         if (elapsed < 1200) {
             nearbyAttackCueAt_ = now;
-            audio_.play(match.lastAttack == nearby::Choice::Magic ? device::AudioCue::Magic : device::AudioCue::Attack);
+            audio_.play(lastAttack == nearby::Choice::Magic ? device::AudioCue::Magic : device::AudioCue::Attack);
         }
         else if (elapsed < 1800) audio_.play(device::AudioCue::Hit);
         interfaceDirty_ = true;
@@ -147,7 +159,7 @@ void HandheldRuntime::pollNearby(std::uint64_t now) {
 void HandheldRuntime::nearbyIntent(deviceui::Intent intent) {
     using K = deviceui::IntentKind;
     const auto now = clockMs();
-    if (intent.kind == K::OpenNearby) beginNearby();
+    if (intent.kind == K::OpenNearby) { nearbyActivity_ = intent.expeditionActivity; beginNearby(); }
     else if (intent.kind == K::CloseNearby) closeNearby();
     else if (nearbyPhase_ != NearbyPhase::Active) nearbyStatus_ = "Wait for the radio";
     else if (state_.phase != Phase::Home || battle_.locked()) nearbyStatus_ = "Finish the wild battle first";
@@ -155,12 +167,22 @@ void HandheldRuntime::nearbyIntent(deviceui::Intent intent) {
     else if (intent.kind == K::NearbyChallenge) {
         const auto& view=nearby_.view();
         const auto* peer=intent.value<view.peerCount && intent.value<nearby::kMaxPeers ? &view.peers[intent.value] : nullptr;
+        const bool coop=intent.nearbyMode==nearby::Mode::Coop;
         const bool reviewed=view.stage==nearby::Stage::Discovering && peer && peer->available && peer->compatible &&
             std::memcmp(peer->mac.bytes,intent.peer.bytes,sizeof(peer->mac.bytes))==0 && peer->openNonce==intent.nearbyOpenNonce &&
             nearby::sameFighter(peer->fighter,intent.nearbyFighters[1]) && nearby::sameFighter(nearbyFighter_,intent.nearbyFighters[0]) &&
-            (intent.nearbyMode==nearby::Mode::Tactical || intent.nearbyMode==nearby::Mode::Auto);
+            (coop ? nearbyActivity_<=5 && peer->activity==nearbyActivity_ && intent.expeditionActivity==nearbyActivity_ :
+                    (intent.nearbyMode==nearby::Mode::Tactical || intent.nearbyMode==nearby::Mode::Auto) && peer->activity>5);
         if (!reviewed) nearbyStatus_ = "Peer changed - review again";
-        else {
+        else if (coop) {
+            const bool dungeon=expeditions::kScenarios[nearbyActivity_].kind==expeditions::Kind::Dungeon;
+            std::uint32_t form=0, level=0;
+            if (dungeon ? !state_.dungeonKeys : !state_.bossSigils) nearbyStatus_ = "Need a key or sigil";
+            else if (!previewExpeditionFoe(state_, nearbyActivity_, form, level) ||
+                     !nearby_.challenge(intent.value, nearby::Mode::Coop, (std::uint64_t(randomNonzero())<<32)|randomNonzero(),
+                                        nearby::raidSeed(form, level, nearbyActivity_), now))
+                nearbyStatus_ = "No shared foe for this lobby";
+        } else {
             const auto session = (std::uint64_t(randomNonzero()) << 32) | randomNonzero();
             if (!nearby_.challenge(intent.value,intent.nearbyMode,session,randomNonzero(),now))
                 nearbyStatus_ = "Peer changed - choose again";
@@ -170,7 +192,10 @@ void HandheldRuntime::nearbyIntent(deviceui::Intent intent) {
         const bool reviewed=view.stage==nearby::Stage::Incoming && view.session==intent.nearbySession &&
             std::memcmp(view.opponent.bytes,intent.peer.bytes,sizeof(view.opponent.bytes))==0 && view.offeredMode==intent.nearbyMode &&
             nearby::sameFighter(view.offered[0],intent.nearbyFighters[0]) && nearby::sameFighter(view.offered[1],intent.nearbyFighters[1]);
-        if (!reviewed || !nearby_.accept(now)) nearbyStatus_ = "Offer changed - review again";
+        const bool coop=view.offeredMode==nearby::Mode::Coop;
+        const bool held=!coop || (view.activity<=5 && (expeditions::kScenarios[view.activity].kind==expeditions::Kind::Dungeon ? state_.dungeonKeys : state_.bossSigils));
+        if (!held) nearbyStatus_ = "Need a key or sigil";
+        else if (!reviewed || !nearby_.accept(now)) nearbyStatus_ = "Offer changed - review again";
     } else if (intent.kind == K::NearbyChoose) {
         if (!nearby_.choose(static_cast<nearby::Choice>(intent.value), now)) nearbyStatus_ = "Waiting for the other player";
     } else if (intent.kind == K::NearbyCancel) nearby_.cancel(now);

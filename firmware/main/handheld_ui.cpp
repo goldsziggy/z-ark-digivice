@@ -52,8 +52,9 @@ deviceui::Model HandheldRuntime::interfaceModel() const {
     model.tradeWritable = tradeSession_.healthy() && saves_.writable();
     model.tradeStatus = tradeSession_.blocksForeground() ? tradeSession_.diagnostic() : tradeStatus_;
     model.nearby = &nearby_.view(); model.nearbyLocalFighter = nearbyFighter_; model.nearbyStatus = nearbyStatus_;
+    const auto nearbyLiveSequence = nearby_.view().offeredMode == nearby::Mode::Coop ? nearby_.view().raid.sequence : nearby_.view().match.sequence;
     if (nearbyPhase_ == NearbyPhase::Active && nearbyShownSequence_ &&
-        nearbyShownSession_ == nearby_.view().session && nearbyShownSequence_ == nearby_.view().match.sequence)
+        nearbyShownSession_ == nearby_.view().session && nearbyShownSequence_ == nearbyLiveSequence)
         model.nearbyTurnElapsedMs = static_cast<std::uint32_t>(std::min<std::uint64_t>(UINT32_MAX - 1, now - nearbyTurnAt_));
     model.muted = audio_.muted();
     model.volumePercent = static_cast<std::uint8_t>(audio_.volume());
@@ -113,7 +114,8 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
         // publish order as USB. Never publish a write whose durability is uncertain.
         if (tradeSession_.blocksForeground()) { notice = "RECONNECT TRADE PEER TO FINISH"; break; }
         if (battle_.locked()) { notice = "WAIT FOR THE TURN"; break; }
-        if (nearbyBusy()) { notice = "CLOSE NEARBY FIRST"; break; }
+        if (nearbyBusy() && intent.action != Action::StartExpedition) { notice = "CLOSE NEARBY FIRST"; break; }
+        if (intent.action == Action::StartExpedition) closeNearby();
         if (!saves_.writable()) { notice = "SAVE RECOVERY - USB STATUS"; break; }
         if (state_.onboardingComplete && !state_.worldSeed) { notice = "WAIT FOR WORLD SAVE"; break; }
         if (!practice_.allowsCareAction(intent.action)) { notice = "FINISH ACTIVE PRACTICE FIRST"; break; }

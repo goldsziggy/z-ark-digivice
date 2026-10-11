@@ -97,7 +97,7 @@ test('graph pages and per-form metadata expose authoritative routes without muta
       assert.deepEqual(form.parents, native.evolution.parents); assert.deepEqual(form.children, native.evolution.children);
       assert.deepEqual(form.edges.map((edge: any) => edge.toFormId), native.evolution.children);
       for (const edge of form.edges) {
-        assert.ok(edge.requiredLevel >= 1 && edge.requiredLevel <= 50); assert.ok(edge.requiredBond >= 0 && edge.requiredBond <= 200);
+        assert.ok(edge.requiredLevel >= 1 && edge.requiredLevel <= 99); assert.ok(edge.requiredBond >= 0 && edge.requiredBond <= 200);
         assert.ok(edge.requiredCare >= 12 && edge.requiredCare <= 100);
       }
       const row = native.statsByLevel.find((row: any) => row.level === form.previewLevel); for (const stat of ['maxHp', 'attack', 'defense', 'magic', 'resistance']) assert.equal(form.combat[stat], row[stat]);

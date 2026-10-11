@@ -29,7 +29,7 @@ async function fixture(t: { after: (fn: () => Promise<void>) => unknown }, check
   return { dataDir, request, restart: async () => { await close(); app = await startServer(options); } };
 }
 function oldFields(current: any) {
-  assert.equal(current.maxLevel, 50);
+  assert.equal(current.maxLevel, 99);
   const { schemaVersion, rulesVersion, wildRarity, recoveryRestCount, queuedEncounters, stepsToNextEncounter, walking, ...state } = legacyFields(current);
   assert.deepEqual(walking, { rate: 2, name: 'Normal', eligibleSteps: 0, encounters: 0, rngState: 0, target: 0, progress: 0, remainingSteps: 0 });
   assert.equal(schemaVersion, 27); assert.equal(rulesVersion, 19);

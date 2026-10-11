@@ -89,7 +89,7 @@ def remove_new_pacing(state):
 initial=accepted()
 assert (initial['schemaVersion'],initial['rulesVersion'],initial['creature'],initial['formId'],initial['level'],initial['xp'])==(27,19,'Mote',1,1,0)
 assert initial['partyCapacity']==3 and initial['partyMemberIds']==[]
-assert initial['maxLevel']==50 and initial['xpToNext']==40 and initial['collectionCapacity']==250 and initial['expeditions']['dungeonKeys']==0
+assert initial['maxLevel']==99 and initial['xpToNext']==40 and initial['collectionCapacity']==250 and initial['expeditions']['dungeonKeys']==0
 assert initial['worldSeed']==0
 # World setup is explicit, one-time and background-only; neither the CLI nor an
 # old replay epoch silently invents entropy or changes the historical game seed.

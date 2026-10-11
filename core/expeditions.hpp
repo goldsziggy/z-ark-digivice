@@ -3,12 +3,15 @@
 #include <cstddef>
 #include <cstdint>
 
-// Boss and dungeon scenarios share one catalog. A dungeon key opens one
-// three-floor raid. A boss sigil opens one boss. The device menu can open a
-// waiting lobby or a solo start. Neither spends a key or sigil, and neither
-// begins the raid fight. Holding a key never starts a fight by itself.
-// The six names below stay in saves and state JSON. A device visit may show
-// another title from that theme's pool.
+// Boss and dungeon scenarios share one catalog. Spending a dungeon key or a
+// boss sigil starts a fight with a real Digimon of that theme. A boss is one
+// combat tier higher when the partner can survive it, otherwise the same
+// Digimon family at a higher level. A dungeon foe is a themed Digimon a little
+// above a normal wild encounter. Eight wild victories earn one key, up to
+// three held. Five thousand Explore or AccrueSteps earn one sigil, up to one
+// held. Progress stops at the last count while that pocket is full, so the
+// next win or step pays out after a spend. The six names below stay in saves
+// and state JSON. A device visit may show another title from that theme's pool.
 namespace digivice::expeditions {
 
 enum class Theme : std::uint8_t { Grove, Tide, Ember };
@@ -61,6 +64,11 @@ inline std::uint8_t variantCount(const Scenario& scenario) {
     variantList(scenario.kind, scenario.theme, names, count);
     return count;
 }
+// Shared clear: scenario in bits 0-2, foe level in 3-10, foe form in 11-26.
+inline constexpr std::uint32_t claimExpeditionValue(std::uint32_t scenario, std::uint32_t formId, std::uint32_t level) {
+    return (scenario & 7u) | ((level & 0xffu) << 3) | ((formId & 0xffffu) << 11);
+}
+
 inline const char* variantName(const Scenario& scenario, std::uint8_t index) {
     const char* const* names = nullptr;
     std::uint8_t count = 0;

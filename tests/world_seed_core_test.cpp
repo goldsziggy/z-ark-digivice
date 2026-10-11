@@ -124,7 +124,7 @@ void migration() {
         if(phase==2)step(original,Action::AccrueSteps,1000);
         if(phase==3)step(original,Action::Explore,1000);
         if(original.wildRules)original.wildRules=13;if(original.pendingEncounter.rules)original.pendingEncounter.rules=13;
-        original.dungeonKeys=3;
+        original.dungeonKeys=3; original.bossSteps=0; original.bossSigils=0;
         Snapshot current; CHECK(encodeSnapshot(original,current));
         std::array<std::uint8_t,kV19SnapshotSize> old{};
         const auto projected=snapshot_test::eightSlotBytes(current.bytes);std::memcpy(old.data(),projected.data(),old.size()); old[4]=19; put(old.data()+8,13); old[6]=136; old[7]=2;

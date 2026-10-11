@@ -7,7 +7,7 @@
 namespace digivice::nearby {
 constexpr std::uint32_t kRules = 12, kCatalog = 6, kMaxExchanges = 40;
 constexpr std::size_t kMatchBytes = 116;
-enum class Mode : std::uint8_t { Tactical, Auto };
+enum class Mode : std::uint8_t { Tactical, Auto, Coop };
 enum class Status : std::uint8_t { Active, HostWon, GuestWon, Draw };
 enum class Choice : std::uint8_t { None, Physical, Heavy, Magic, Brace, Counter, Ward };
 struct Fighter { std::uint32_t memberId=0, formId=0, level=0, offenseBonus=0, protectionBonus=0; };

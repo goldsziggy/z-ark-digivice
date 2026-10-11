@@ -31,6 +31,7 @@ void copyBackground(const State& from,State& to) {
     to.sequence=from.sequence;to.explorationSteps=from.explorationSteps;
     to.encounterRng=from.encounterRng;to.encounterTarget=from.encounterTarget;
     to.encounterProgress=from.encounterProgress;to.pendingEncounter=from.pendingEncounter;
+    to.bossSteps=from.bossSteps;to.bossSigils=from.bossSigils;
 }
 // Consent binds source ownership/care, while monotonically newer background
 // checkpoints can advance the containing save without changing that offer.

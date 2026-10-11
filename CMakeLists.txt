@@ -25,7 +25,7 @@ add_executable(digivice-battle core/practice_cli.cpp)
 target_link_libraries(digivice-battle PRIVATE digivice-practice)
 target_compile_options(digivice-battle PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
-add_library(digivice-nearby STATIC core/nearby_match.cpp firmware/runtime/nearby_protocol.cpp)
+add_library(digivice-nearby STATIC core/nearby_match.cpp core/expedition_raid.cpp firmware/runtime/nearby_protocol.cpp)
 target_link_libraries(digivice-nearby PUBLIC digivice-combat)
 target_include_directories(digivice-nearby PUBLIC core firmware/runtime)
 target_compile_features(digivice-nearby PUBLIC cxx_std_17)

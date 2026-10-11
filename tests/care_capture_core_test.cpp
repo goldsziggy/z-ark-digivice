@@ -86,7 +86,7 @@ void malformed(){
  auto s=newDevice(2);step(s,Action::StarterOfferSeed,55);auto bad=s;bad.starterOffers[0]=bad.starterOffers[1];CHECK(!isValid(bad));bad=s;bad.starterOfferSeed=0;CHECK(!isValid(bad));
  step(s,Action::Hatch,9);step(s,Action::Explore,1000);s.wildHp=1;step(s,Action::Flick,0);CHECK(s.lastCapture.result==CaptureResult::Miss);
  Snapshot bytes;CHECK(encodeSnapshot(s,bytes));for(unsigned offset=596;offset<sizeof(bytes.bytes);++offset){auto corrupt=bytes;corrupt.bytes[offset]^=1;auto out=s;CHECK(decodeSnapshot(corrupt.bytes,sizeof(corrupt.bytes),out)!=SnapshotStatus::Ok&&same(s,out));}
- bad=s;bad.lastCapture.sequence=s.sequence+1;CHECK(!isValid(bad));bad=s;bad.lastCapture.chance=1;CHECK(!isValid(bad));bad=s;bad.lastCapture.attempt=4;CHECK(!isValid(bad));bad=s;bad.lastCapture.targetLevel=51;CHECK(!isValid(bad));bad=s;bad.lastCapture.result=static_cast<CaptureResult>(4);CHECK(!isValid(bad));
+ bad=s;bad.lastCapture.sequence=s.sequence+1;CHECK(!isValid(bad));bad=s;bad.lastCapture.chance=1;CHECK(!isValid(bad));bad=s;bad.lastCapture.attempt=4;CHECK(!isValid(bad));bad=s;bad.lastCapture.targetLevel=100;CHECK(!isValid(bad));bad=s;bad.lastCapture.result=static_cast<CaptureResult>(4);CHECK(!isValid(bad));
  char json[kJsonCapacity];CHECK(writeJson(s,json,sizeof(json))&&std::strstr(json,"\"lastCapture\":{")&&std::strstr(json,"\"care\":{")&&std::strstr(json,"\"offers\":["));
  std::printf("Measured State%zu / Snapshot%zu / Trace%zu / Step%zu / JSON capacity%zu\n",sizeof(State),sizeof(Snapshot),sizeof(autobattle::Trace),sizeof(autobattle::Step),kJsonCapacity);
 }

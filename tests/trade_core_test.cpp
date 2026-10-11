@@ -60,6 +60,8 @@ void installedJournalMigration(){
         CHECK(t::prepare(state,x,side,7,prepared));
         auto walked=state;step(walked,Action::EncounterSeed,777+side);step(walked,Action::AccrueSteps,1000);
         CHECK(walked.pendingEncounter.formId!=0);walked.pendingEncounter.rules=13;
+        // Frozen journals predate sigil progress. Migration restores those counters to zero.
+        walked.bossSteps=0;walked.bossSigils=0;
         CHECK(t::commit(prepared,walked,committed));CHECK(t::applied(committed,committed.after,done));CHECK(t::abort(prepared,aborted));
         for(const auto& record:{prepared,committed,done,aborted}){
             const auto old=installedRecord(record,version);const auto original=old;

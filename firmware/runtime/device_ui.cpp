@@ -331,11 +331,26 @@ bool anyRouteReady(const State& state, const Model& model, const CreatureMember&
 std::size_t peerCount(const nearby::View* view) {
     return view ? std::min(view->peerCount,nearby::kMaxPeers) : 0;
 }
+const nearby::Peer* expeditionPeer(const Model& model, std::uint8_t scenario, std::size_t& index) {
+    if (!model.nearby || model.nearby->stage != nearby::Stage::Discovering) return nullptr;
+    for (std::size_t i = 0; i < peerCount(model.nearby); ++i) {
+        const auto& peer = model.nearby->peers[i];
+        if (peer.available && peer.compatible && peer.activity == scenario) { index = i; return &peer; }
+    }
+    return nullptr;
+}
+bool expeditionRaid(const Model& model) {
+    const auto* view = model.nearby;
+    return view && view->offeredMode == nearby::Mode::Coop &&
+        (view->stage == nearby::Stage::Playing || view->stage == nearby::Stage::Reconnecting || view->stage == nearby::Stage::Finished);
+}
 bool nearbyFeedback(const Model& model) {
     static_assert(kNearbyFeedbackMs<=nearby::kAutoPaceMs,"Protocol must preserve each displayed exchange");
     const auto* view=model.nearby;
-    return view && (view->stage==nearby::Stage::Playing || view->stage==nearby::Stage::Finished) &&
-        model.nearbyTurnElapsedMs<kNearbyFeedbackMs && view->match.sequence && nearby::valid(view->match);
+    if (!view || (view->stage != nearby::Stage::Playing && view->stage != nearby::Stage::Finished) ||
+        model.nearbyTurnElapsedMs >= kNearbyFeedbackMs) return false;
+    if (view->offeredMode == nearby::Mode::Coop) return view->raid.sequence != 0;
+    return view->match.sequence && nearby::valid(view->match);
 }
 bool activeTrade(const tradewire::View* view) {
     return view && view->stage!=tradewire::Stage::Closed && view->stage!=tradewire::Stage::Discovering;
@@ -431,7 +446,8 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  NearbyPhysical, NearbyMagic, NearbyHeavy, NearbyCommit, NearbyBrace, NearbyCounter, NearbyWard,
  HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
  TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat, FocusSkip,
- Tile0, Tile1, Tile2, Tile3, BoxOpen, BoxSort, ExpeditionOpen, ExpeditionEnter, ExpeditionSolo };
+ Tile0, Tile1, Tile2, Tile3, BoxOpen, BoxSort, ExpeditionOpen, ExpeditionEnter, ExpeditionSolo,
+ ExpeditionJoin, ExpeditionHit, ExpeditionHeavy, ExpeditionMagic, ExpeditionBrace, ExpeditionCounter, ExpeditionWard };
 std::size_t boxPages(const State& state) { return std::max<std::size_t>(1,(state.collectionCount+kTiles-1)/kTiles); }
 constexpr unsigned kHomePanelCount = 5;
 constexpr std::size_t kExpeditionCount = sizeof(expeditions::kScenarios) / sizeof(expeditions::kScenarios[0]);
@@ -440,6 +456,12 @@ const expeditions::Scenario& selectedExpedition(std::uint8_t index) {
 }
 bool expeditionReady(const State& state, const expeditions::Scenario& scenario) {
     return scenario.kind == expeditions::Kind::Dungeon ? state.dungeonKeys > 0 : state.bossSigils > 0;
+}
+void expeditionProgress(const State& state, const expeditions::Scenario& scenario, char* out, std::size_t capacity) {
+    if (scenario.kind == expeditions::Kind::Dungeon)
+        std::snprintf(out, capacity, "WINS %u/%u", static_cast<unsigned>(state.dungeonWins), static_cast<unsigned>(expeditions::kDungeonWinsPerKey));
+    else
+        std::snprintf(out, capacity, "STEPS %u/%u", static_cast<unsigned>(state.bossSteps), static_cast<unsigned>(expeditions::kBossStepsPerSigil));
 }
 // Member card and the Squad/Box controls sit above y 320, clear of the shared BACK spot.
 constexpr int kDetailX=116, kDetailY=228, kDetailW=180, kDetailH=36;
@@ -514,9 +536,29 @@ bool Controller::acknowledgeWalking(const State& before, const State& after, Act
     if (action==Action::AccrueSteps) {
         if (!value || value>UINT32_MAX-before.explorationSteps ||
             after.explorationSteps!=before.explorationSteps+value) return false;
+        auto steps=value, bossSteps=before.bossSteps, sigils=before.bossSigils;
+        while (steps) {
+            if (sigils>=expeditions::kMaxBossSigils) {
+                const auto cap=expeditions::kBossStepsPerSigil-1;
+                if (bossSteps<cap) {
+                    const auto room=cap-bossSteps;
+                    bossSteps+=steps<room ? steps : room;
+                }
+                steps=0;
+            } else {
+                const auto room=expeditions::kBossStepsPerSigil-bossSteps;
+                const auto take=steps<room ? steps : room;
+                bossSteps+=take;
+                steps-=take;
+                if (bossSteps>=expeditions::kBossStepsPerSigil) { bossSteps=0; ++sigils; }
+            }
+        }
+        if (after.bossSteps!=bossSteps || after.bossSigils!=sigils) return false;
         comparable.explorationSteps=before.explorationSteps;
         comparable.encounterProgress=before.encounterProgress;
         comparable.pendingEncounter=before.pendingEncounter;
+        comparable.bossSteps=before.bossSteps;
+        comparable.bossSigils=before.bossSigils;
     } else if (action==Action::EncounterSeed) {
         if (!value || before.encounterRng || before.encounterTarget) return false;
     } else return false;
@@ -559,7 +601,7 @@ void Controller::update(const State& state, const Model& model) {
     const bool presentationLocked = model.battle && model.battle->locked;
     const auto nearbyStage=model.nearby ? model.nearby->stage : nearby::Stage::Closed;
     const auto nearbySession=model.nearby ? model.nearby->session : 0;
-    const auto nearbySequence=model.nearby ? model.nearby->match.sequence : 0;
+    const auto nearbySequence=model.nearby ? (model.nearby->offeredMode==nearby::Mode::Coop ? model.nearby->raid.sequence : model.nearby->match.sequence) : 0;
     const bool nearbyPending=model.nearby && model.nearby->localChoicePending;
     const bool feedback=nearbyFeedback(model);
     if (model.nearby && nearbyIndex_>=peerCount(model.nearby)) nearbyIndex_=0;
@@ -569,9 +611,11 @@ void Controller::update(const State& state, const Model& model) {
     const auto opponent=model.nearby ? model.nearby->opponent : nearby::Mac{};
     const auto offeredMode=model.nearby ? model.nearby->offeredMode : nearby::Mode::Tactical;
     const nearby::Fighter offered[]{model.nearby ? model.nearby->offered[0] : nearby::Fighter{},model.nearby ? model.nearby->offered[1] : nearby::Fighter{}};
+    const bool raidRole=model.nearby && model.nearby->offeredMode==nearby::Mode::Coop;
     const auto role=static_cast<std::uint8_t>(model.nearby ? (model.nearby->host ? 1 : 0) |
-        (model.nearby->match.attacker<<1) | (static_cast<unsigned>(model.nearby->match.mode)<<2) |
-        (static_cast<unsigned>(model.nearby->match.status)<<3) : 255);
+        ((raidRole ? model.nearby->raid.sequence%2u : model.nearby->match.attacker)<<1) |
+        ((raidRole ? static_cast<unsigned>(model.nearby->offeredMode) : static_cast<unsigned>(model.nearby->match.mode))<<2) |
+        ((raidRole ? static_cast<unsigned>(model.nearby->raid.status) : static_cast<unsigned>(model.nearby->match.status))<<3) : 255);
     const bool nearbyChanged=peerNonce!=nearbyPeerNonce_ || !nearby::sameMac(opponent,nearbyOpponent_) || offeredMode!=nearbyOfferedMode_ ||
         !nearby::sameFighter(offered[0],nearbyOffered_[0]) || !nearby::sameFighter(offered[1],nearbyOffered_[1]) ||
         role!=nearbyRole_ || feedback!=nearbyFeedback_ || !nearby::sameFighter(peerFighter,nearbyFighter_) || nearbyStage!=nearbyStage_ || nearbySession!=nearbySession_ ||
@@ -814,7 +858,7 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
             // Keep the exchange readable before offering the next choices.
             // LEAVE remains available below; no game rule or network clock changes.
         } else if (nearby && nearby->stage==nearby::Stage::Discovering) {
-            const bool peerReady=nearbyIndex_<peerCount(nearby) && nearby->peers[nearbyIndex_].available;
+            const bool peerReady=nearbyIndex_<peerCount(nearby) && nearby->peers[nearbyIndex_].available && nearby->peers[nearbyIndex_].activity>5;
             add(62,282,149,44,"BATTLE",NearbyReview,peerReady && !activeTrade(model.trade));
             const auto* trading=peerReady ? tradingPeer(model,peerIdentity(nearby->peers[nearbyIndex_].mac)) : nullptr;
             add(218,282,132,44,"TRADE",TradeOpen,trading && trading->compatible && trading->advertisement.available &&
@@ -831,10 +875,36 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         back(); break;
     case Screen::Expeditions:
         add(116,270,180,44,"ENTER",ExpeditionEnter,state.phase==Phase::Home); back(); break;
-    case Screen::ExpeditionLobby:
-        if(!expeditionSolo_) add(116,270,180,44,"START SOLO",ExpeditionSolo,
-            state.phase==Phase::Home && expeditionReady(state,selectedExpedition(expeditionIndex_)));
+    case Screen::ExpeditionLobby: {
+        const auto* nearby=model.nearby;
+        const auto stage=nearby ? nearby->stage : nearby::Stage::Closed;
+        const bool raid=expeditionRaid(model);
+        if (raid && !nearbyFeedback(model) && stage==nearby::Stage::Playing && !nearby->localChoicePending) {
+            const unsigned local=nearby->host ? 0u : 1u;
+            const bool attacking=(nearby->raid.sequence % 2u)==local;
+            const auto energy=nearby->raid.energy[local];
+            if (attacking) {
+                add(48,270,100,44,"HIT",ExpeditionHit,energy>=2);
+                add(156,270,100,44,"HEAVY",ExpeditionHeavy,energy>=6);
+                add(264,270,100,44,"MAGIC",ExpeditionMagic,energy>=2);
+            } else {
+                add(48,270,100,44,"BRACE",ExpeditionBrace);
+                add(156,270,100,44,"WARD",ExpeditionWard);
+                add(264,270,100,44,"COUNTER",ExpeditionCounter);
+            }
+        } else if (nearby && stage==nearby::Stage::Incoming && nearby->offeredMode==nearby::Mode::Coop) {
+            left(0,"ACCEPT",NearbyAccept); right(0,"DECLINE",NearbyCancel);
+        } else if (nearby && nearby->offeredMode==nearby::Mode::Coop &&
+                   (stage==nearby::Stage::Outgoing || stage==nearby::Stage::Accepting || stage==nearby::Stage::Reconnecting)) {
+            add(116,270,180,44,"CANCEL",NearbyCancel);
+        } else if (!raid) {
+            std::size_t peerIndex=0;
+            const bool join=expeditionPeer(model,expeditionIndex_,peerIndex);
+            if (join) add(116,222,180,44,"JOIN",ExpeditionJoin,expeditionReady(state,selectedExpedition(expeditionIndex_)));
+            add(116,270,180,44,"START SOLO",ExpeditionSolo,legal(state,model,Action::StartExpedition,expeditionIndex_));
+        }
         back(); break;
+    }
     }
     return count;
 }
@@ -865,7 +935,7 @@ Intent Controller::navigateHorizontal(bool next,const State& state,const Model& 
     if(screen_==Screen::Home) return activate(next ? HomeNext : HomePrevious,state,model);
     if(screen_==Screen::Expeditions) {
         expeditionIndex_=static_cast<std::uint8_t>((expeditionIndex_+(next ? 1 : kExpeditionCount-1))%kExpeditionCount);
-        expeditionSolo_=false; rollExpeditionVariant(); return {IntentKind::Navigation};
+        rollExpeditionVariant(); return {IntentKind::Navigation};
     }
     if(screen_==Screen::Starter) return activate(next ? Next : Prev,state,model);
     if(screen_==Screen::Collection) return activate(next ? MemberNext : MemberPrev,state,model);
@@ -922,12 +992,39 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         return activate(actions[static_cast<unsigned>(homePanel_)],state,model);
     }
     case ExpeditionOpen:
-        expeditionIndex_=0; expeditionSolo_=false; rollExpeditionVariant(); return navigate(Screen::Expeditions);
-    case ExpeditionEnter:
-        expeditionSolo_=false; return navigate(Screen::ExpeditionLobby);
+        expeditionIndex_=0; rollExpeditionVariant(); return navigate(Screen::Expeditions);
+    case ExpeditionEnter: {
+        navigate(Screen::ExpeditionLobby);
+        Intent result{IntentKind::OpenNearby};
+        result.expeditionActivity=expeditionIndex_;
+        return result;
+    }
     case ExpeditionSolo:
-        if(expeditionSolo_ || state.phase!=Phase::Home || !expeditionReady(state,selectedExpedition(expeditionIndex_))) return {};
-        expeditionSolo_=true; return {IntentKind::Navigation};
+        return propose(state, model, Action::StartExpedition, expeditionIndex_);
+    case ExpeditionJoin: {
+        std::size_t index=0;
+        const auto* peer=expeditionPeer(model,expeditionIndex_,index);
+        if(!peer || !expeditionReady(state,selectedExpedition(expeditionIndex_))) return {};
+        Intent result{IntentKind::NearbyChallenge,Action::Feed,static_cast<std::uint32_t>(index)};
+        result.peer=peerIdentity(peer->mac);
+        result.nearbyOpenNonce=peer->openNonce;
+        result.nearbyMode=nearby::Mode::Coop;
+        result.nearbyFighters[0]=model.nearbyLocalFighter;
+        result.nearbyFighters[1]=peer->fighter;
+        result.expeditionActivity=expeditionIndex_;
+        return result;
+    }
+    case ExpeditionHit: case ExpeditionHeavy: case ExpeditionMagic:
+    case ExpeditionBrace: case ExpeditionCounter: case ExpeditionWard: {
+        if(!model.nearby || !expeditionRaid(model) || nearbyFeedback(model) ||
+           model.nearby->stage!=nearby::Stage::Playing || model.nearby->localChoicePending) return {};
+        const auto choice=id==ExpeditionHit ? nearby::Choice::Physical : id==ExpeditionHeavy ? nearby::Choice::Heavy :
+            id==ExpeditionMagic ? nearby::Choice::Magic : id==ExpeditionBrace ? nearby::Choice::Brace :
+            id==ExpeditionCounter ? nearby::Choice::Counter : nearby::Choice::Ward;
+        if(!nearby::legalRaidChoice(model.nearby->raid,model.nearby->host ? 0u : 1u,choice)) return {};
+        pending_=true;
+        return {IntentKind::NearbyChoose,Action::Feed,static_cast<std::uint32_t>(choice)};
+    }
     case Back:
         if(screen_==Screen::TradeChoose) return navigate(activeTrade(model.trade) ? Screen::TradeReview : Screen::Nearby);
         if (!state.onboardingComplete) return {IntentKind::StarterBack};
@@ -949,7 +1046,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         if (screen_==Screen::Evolution) { if(evolutionPage_) { evolutionPage_=0; return navigate(Screen::Evolution); } return navigate(Screen::Stats); }
         if (screen_==Screen::EvolutionReview) { cancelEvolution(); return navigate(Screen::Evolution); }
         if (screen_==Screen::EvolutionResult) return navigate(Screen::Home);
-        if (screen_==Screen::ExpeditionLobby) { expeditionSolo_=false; return navigate(Screen::Expeditions); }
+        if (screen_==Screen::ExpeditionLobby) { navigate(Screen::Expeditions); return {IntentKind::CloseNearby}; }
         if (screen_==Screen::EncounterSettings) return navigate(Screen::Settings);
         if (screen_==Screen::Sound) return navigate(Screen::Settings);
         if (screen_==Screen::ModeReview) { proposedMode_=255; return navigate(Screen::Settings); }
@@ -1269,8 +1366,11 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
         const auto theme=selectedExpedition(expeditionIndex_).theme;
         request.sceneId=theme==expeditions::Theme::Tide ? scenes[2] : theme==expeditions::Theme::Ember ? scenes[6] : scenes[1];
         if(screen_==Screen::ExpeditionLobby) {
-            request.formId=member ? member->formId : 0;
-            if(expeditionSolo_) request.animation=sprite::Animation::Celebrate;
+            if(expeditionRaid(model) && model.nearby->foeForm) request.formId=model.nearby->foeForm;
+            else if(model.nearby && model.nearby->offeredMode==nearby::Mode::Coop && model.nearby->foeForm &&
+                    (model.nearby->stage==nearby::Stage::Incoming || model.nearby->stage==nearby::Stage::Outgoing || model.nearby->stage==nearby::Stage::Accepting))
+                request.formId=model.nearby->foeForm;
+            else request.formId=member ? member->formId : 0;
         }
         break;
     }
@@ -1319,6 +1419,9 @@ ArtRequest Controller::partnerArtRequest(const State& state,const Model& model,s
         const auto* view=model.battle && model.battle->locked ? model.battle : nullptr;
         request.formId=view ? view->playerFormId : member ? member->formId : 0;
         request.animation=battleAnimation(view,battlepresentation::Actor::Player);
+    } else if(screen_==Screen::ExpeditionLobby && model.nearby && model.nearby->offeredMode==nearby::Mode::Coop &&
+              (model.nearby->stage==nearby::Stage::Playing || model.nearby->stage==nearby::Stage::Reconnecting || model.nearby->stage==nearby::Stage::Finished)) {
+        request.formId=model.nearby->raid.players[model.nearby->host ? 0 : 1].formId;
     } else if(screen_==Screen::Nearby && model.nearby) {
         const auto& view=*model.nearby;
         if(view.stage==nearby::Stage::Playing || view.stage==nearby::Stage::Reconnecting || view.stage==nearby::Stage::Finished)
@@ -1514,7 +1617,10 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const char* status=model.stepStatus && std::strcmp(model.stepStatus,"STEP SAVE RECOVERY")==0 ? "STEP SAVE RECOVERY" :
             model.stepsRecovering ? "SENSOR RECOVERING" : !model.stepsAvailable ? "SENSOR UNAVAILABLE" :
             state.encounterRate==EncounterRate::Off ? "ENCOUNTERS PAUSED" : "LIFETIME TOTAL";
-        if((homePanel_==HomePanel::Nearby || homePanel_==HomePanel::Dungeons) && std::strcmp(status,"LIFETIME TOTAL")==0) {
+        if(homePanel_==HomePanel::Dungeons && std::strcmp(status,"LIFETIME TOTAL")==0) {
+            std::snprintf(keys,sizeof(keys),"KEYS %u  SIGILS %u",static_cast<unsigned>(state.dungeonKeys),static_cast<unsigned>(state.bossSigils));
+            status=keys;
+        } else if(homePanel_==HomePanel::Nearby && std::strcmp(status,"LIFETIME TOTAL")==0) {
             std::snprintf(keys,sizeof(keys),"DUNGEON KEYS %u",static_cast<unsigned>(state.dungeonKeys));
             status=keys;
         }
@@ -2135,25 +2241,53 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         if(dungeon) std::snprintf(label,sizeof(label),"KEYS %u",static_cast<unsigned>(state.dungeonKeys));
         else std::snprintf(label,sizeof(label),"SIGILS %u",static_cast<unsigned>(state.bossSigils));
         c.center(236,label,1,mint);
+        expeditionProgress(state,scenario,label,sizeof(label));
+        c.center(252,label,1,dim);
         break;
     }
     case Screen::ExpeditionLobby: {
         const auto& scenario=selectedExpedition(expeditionIndex_);
         const bool dungeon=scenario.kind==expeditions::Kind::Dungeon;
         const bool ready=expeditionReady(state,scenario);
+        const auto* nearby=model.nearby;
+        const auto stage=nearby ? nearby->stage : nearby::Stage::Closed;
         c.center(74,expeditions::variantName(scenario,expeditionVariant_),2,mint);
-        if(expeditionSolo_) {
-            actor(206,128,5);
-            c.center(176,"SOLO RUN OPEN",2,amber);
-            std::snprintf(label,sizeof(label),"FLOOR 1 OF %u",static_cast<unsigned>(scenario.floors));
-            c.center(208,label,2);
-            c.center(236,dungeon ? "DUNGEON KEY STAYS" : "BOSS SIGIL STAYS",1,dim);
+        if(expeditionRaid(model) && nearby) {
+            const unsigned local=nearby->host ? 0u : 1u;
+            std::snprintf(label,sizeof(label),"FOE HP %u",static_cast<unsigned>(nearby->raid.foeHp));
+            c.center(118,label,2,amber);
+            std::snprintf(label,sizeof(label),"YOU %u  PARTNER %u",static_cast<unsigned>(nearby->raid.hp[local]),static_cast<unsigned>(nearby->raid.hp[1u-local]));
+            c.center(156,label,1,dim,36);
+            if(nearbyFeedback(model)) {
+                c.center(196,nearby->raid.status==nearby::RaidStatus::Cleared ? "YOU WON TOGETHER" :
+                    nearby->raid.status==nearby::RaidStatus::Wiped ? "THE FOE STANDS" :
+                    nearby->raid.lastCritical ? "CRITICAL HIT" : nearby->raid.lastFoeDamage ? "THE FOE IS HIT" : "YOU ARE HIT",2,mint);
+            } else if(stage==nearby::Stage::Finished) {
+                c.center(196,nearby->raid.status==nearby::RaidStatus::Cleared ? "YOU WON TOGETHER" : "THE FOE STANDS",2,mint);
+            } else if(stage==nearby::Stage::Reconnecting) {
+                c.center(196,"RECONNECTING",2,amber);
+            } else if(nearby->localChoicePending) {
+                c.center(196,"CHOICE SENT",2,mint);
+            } else {
+                c.center(196,(nearby->raid.sequence%2u)==local ? "YOUR STRIKE" : "YOUR GUARD",2);
+            }
+        } else if(nearby && nearby->offeredMode==nearby::Mode::Coop &&
+                  (stage==nearby::Stage::Outgoing || stage==nearby::Stage::Accepting)) {
+            c.center(126,"WAITING FOR ACCEPTANCE",2,amber);
+            c.center(166,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
+        } else if(nearby && stage==nearby::Stage::Incoming && nearby->offeredMode==nearby::Mode::Coop) {
+            c.center(126,"JOIN THIS FIGHT?",2,amber);
+            c.center(166,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
         } else {
-            c.center(118,"WAITING",2,amber);
-            c.center(150,"FOR ANOTHER PLAYER",2);
-            c.center(190,"BOTH DEVICES STAY HERE",1,dim);
-            c.center(214,ready ? "OR START SOLO" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
+            std::size_t peerIndex=0;
+            const bool join=expeditionPeer(model,expeditionIndex_,peerIndex)!=nullptr;
+            c.center(118,join ? "PLAYER FOUND" : "WAITING",2,amber);
+            c.center(150,join ? "TAP JOIN TO FIGHT TOGETHER" : "FOR ANOTHER PLAYER",join ? 1 : 2,join ? mint : ink);
+            c.center(190,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
+            if(!join) c.center(214,"OR START SOLO",1,dim);
         }
+        expeditionProgress(state,scenario,label,sizeof(label));
+        c.center(100,label,1,mint);
         break;
     }
     case Screen::ModeReview:

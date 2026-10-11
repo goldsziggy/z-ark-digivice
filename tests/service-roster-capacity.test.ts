@@ -57,7 +57,7 @@ test('rules13 full-eight Auto history stays exact before expansion; archived ret
   events.push(...Array.from({ length: old.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 });
   old = frozen(events); assert.equal(old.state.collection.length, 8); assert.equal(old.state.captures, 7);
   const f = await fixture(t, events), saved = await f.request(); assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
+  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
   assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, old.trace);
   assert.deepEqual(saved.body.events, []); assert.equal(saved.body.baseSequence, events.length);
@@ -90,7 +90,7 @@ test('rules13 ring event and paused Auto trace migrate without another timing dr
   const events = [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }, { type: 'auto-fight', value: 0 }, { type: 'ring-capture', value: 0 }];
   const old = frozen(events), f = await fixture(t, events), saved = await f.request();
   assert.equal(saved.status, 200); assert.equal(saved.body.state.lastCapture.chance, old.state.lastCapture.chance);
-  assert.equal(saved.body.state.maxLevel, 50); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
+  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
   assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, old.trace);
   await f.restart(); assert.deepEqual(await f.request(), saved);

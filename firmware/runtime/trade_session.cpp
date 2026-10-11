@@ -6,7 +6,7 @@ bool terminal(trade::Phase p){return p==trade::Phase::Applied || p==trade::Phase
 State beforeCommit(const trade::Record& r){
     auto s=r.before;s.sequence=r.after.sequence-1;s.explorationSteps=r.after.explorationSteps;
     s.encounterRng=r.after.encounterRng;s.encounterTarget=r.after.encounterTarget;s.encounterProgress=r.after.encounterProgress;
-    s.pendingEncounter=r.after.pendingEncounter;return s;
+    s.pendingEncounter=r.after.pendingEncounter;s.bossSteps=r.after.bossSteps;s.bossSigils=r.after.bossSigils;return s;
 }
 }
 bool Session::fault(const char* reason){healthy_=false;diagnostic_=reason;return false;}

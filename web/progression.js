@@ -12,7 +12,7 @@ export function validProgressCombat(value) {
 }
 function form(value) {
   return object(value) && integer(value.formId, 1, 512) && label(value.name) && stage(value.stage) && art(value.artId)
-    && integer(value.requiredLevel, 1, 50) && integer(value.requiredBond, 0, 200) && integer(value.requiredCare, 12, 100) && integer(value.previewLevel, 1, 50) && validProgressCombat(value.combat);
+    && integer(value.requiredLevel, 1, 99) && integer(value.requiredBond, 0, 200) && integer(value.requiredCare, 12, 100) && integer(value.previewLevel, 1, 99) && validProgressCombat(value.combat);
 }
 export function validateEvolutionOptions(value) {
   if (!Array.isArray(value) || value.length > 2 || new Set(value.map(entry => entry?.formId)).size !== value.length
@@ -27,7 +27,7 @@ export function validEvolutionLinks(value, self) {
     && Array.isArray(value.edges) && value.edges.length === value.children.length
     && new Set(value.edges.map(edge => edge?.toFormId)).size === value.edges.length
     && value.edges.every(edge => exact(edge, ['toFormId', 'requiredLevel', 'requiredBond', 'requiredCare']) && value.children.includes(edge.toFormId)
-      && integer(edge.requiredLevel, 1, 50) && integer(edge.requiredBond, 0, 200) && integer(edge.requiredCare, 12, 100));
+      && integer(edge.requiredLevel, 1, 99) && integer(edge.requiredBond, 0, 200) && integer(edge.requiredCare, 12, 100));
 }
 export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8) {
   if (!exact(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms'])
@@ -40,7 +40,7 @@ export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8
   for (const entry of value.forms) {
     if (!exact(entry, ['formId', 'name', 'stage', 'artId', 'minLevel', 'minBond', 'previewLevel', 'combat', 'parents', 'children', 'edges'])
       || !integer(entry.formId, 1, 512) || !label(entry.name) || !stage(entry.stage) || !art(entry.artId)
-      || !integer(entry.minLevel, 1, 50) || !integer(entry.minBond, 0, 200) || !integer(entry.previewLevel, 1, 50)
+      || !integer(entry.minLevel, 1, 99) || !integer(entry.minBond, 0, 200) || !integer(entry.previewLevel, 1, 99)
       || !validProgressCombat(entry.combat) || !validEvolutionLinks(entry, entry.formId)) throw new Error('Unsupported evolution graph node.');
   }
   return structuredClone(value);

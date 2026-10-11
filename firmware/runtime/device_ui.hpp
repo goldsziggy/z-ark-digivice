@@ -105,6 +105,7 @@ struct Intent {
     nearby::Fighter nearbyFighters[2]{};
     std::uint64_t nearbySession = 0;
     std::uint32_t nearbyOpenNonce = 0;
+    std::uint8_t expeditionActivity = 255; // 255 opens versus. 0-5 opens that dungeon or boss lobby.
     explicit operator bool() const { return kind != IntentKind::None; }
 };
 // Auto encounters continue themselves. Capture pauses, playback, and a same-frame
@@ -220,7 +221,7 @@ private:
     std::uint8_t nearbyRole_ = 255;
     controls::EvolutionChoice evolution_{};
     std::uint32_t evolutionMember_ = 0, evolutionForm_ = 0, evolutionTarget_ = 0, releaseMember_ = 0;
-    bool writable_ = false, enabled_ = false, partyEditable_ = true, initialized_ = false, battleLocked_ = false, expeditionSolo_ = false;
+    bool writable_ = false, enabled_ = false, partyEditable_ = true, initialized_ = false, battleLocked_ = false;
     bool down_ = false, battleGesture_ = false, browseGesture_ = false, cancelled_ = false, pending_ = false, tapMoved_ = false;
     combat::Move battleSelection_ = combat::Move::Physical;
     std::uint8_t defenseSelection_ = 0;

@@ -25,7 +25,7 @@ void productionPool(){
   auto tier=forms::combatTier(partner);if(tier<forms::CombatTier::Rookie)tier=forms::CombatTier::Rookie;
   for(unsigned seed=0;seed<32;++seed)for(unsigned encounter:{1u,2u,11u,1000000u}){
    const auto selected=encounters::selectProduction(encounter,seed,partner,level);const auto* f=forms::find(selected);
-   CHECK(f&&forms::productionForm(selected)&&forms::encounterObtainable(selected));
+   CHECK(f&&forms::productionForm(selected)&&forms::hasInstalledArt(selected)&&forms::encounterObtainable(selected));
    if(f){CHECK(f->minLevel<=level&&forms::combatTier(selected)<=tier);seen[selected]=true;}
    CHECK(selected==selectWildForm(encounter,seed,partner,level));++draws;
   }
@@ -36,9 +36,10 @@ void productionPool(){
  CHECK(forms::rules18::edgeCount()==172&&forms::kProductionFormCount==451);
  for(unsigned seed=1;seed<=8192;++seed){const auto id=encounters::selectProduction(1,seed,11,1);++counts[unsigned(encounters::rarityForForm(id))];}
  CHECK(!counts[0]&&counts[1]>5000&&counts[2]>1500&&counts[3]>200);
- unsigned covered=0;for(unsigned id=1;id<=forms::kFormCount;++id)covered+=seen[id];
- for(unsigned seed=0;seed<65536&&covered<forms::kProductionFormCount;++seed){const auto id=encounters::selectProduction(17,seed,14,20);CHECK(forms::productionForm(id));if(!seen[id]){seen[id]=true;++covered;}}
- CHECK(covered==forms::kProductionFormCount);
+ unsigned covered=0,installed=0;
+ for(unsigned id=1;id<=forms::kFormCount;++id){covered+=seen[id];installed+=forms::hasInstalledArt(id);}
+ for(unsigned seed=0;seed<65536&&covered<installed;++seed){const auto id=encounters::selectProduction(17,seed,14,20);CHECK(forms::hasInstalledArt(id));if(!seen[id]){seen[id]=true;++covered;}}
+ CHECK(covered==installed&&installed==241);
  for(unsigned encounter=1;encounter<=100;++encounter)CHECK(encounters::select(encounter,42,11,1)==old::selectWildForm(encounter,42,11,1));
  CHECK(encounters::select(1,42,11,1)==4); // Existing rules12 histories still reproduce exactly.
  CHECK(!encounters::selectProduction(0,1,11,1)&&!encounters::selectProduction(1,1,0,1)&&!encounters::selectProduction(1,1,11,0));

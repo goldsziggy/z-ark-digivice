@@ -17,7 +17,7 @@ constexpr std::uint32_t kProductionFormCount = 451; // 455 IDs from 11, minus 4 
 constexpr std::uint32_t kRules18FormCount = 276;
 constexpr std::uint32_t kRules18ProductionFormCount = 266;
 constexpr std::uint32_t kCatalogVersion = 6;
-constexpr std::uint32_t kMaxRpgLevel = 50;
+constexpr std::uint32_t kMaxRpgLevel = 99;
 enum class Stage : std::uint8_t { Original, Rookie, Champion, Ultimate, Mega, Fresh, InTraining, Armor, NoLevel };
 enum class CombatTier : std::uint8_t { Fresh, InTraining, Rookie, Champion, Ultimate, Mega, Unknown = 255 };
 
@@ -48,9 +48,19 @@ const Form* find(std::uint32_t formId);
 struct EvolutionEdge { std::uint16_t from, to; std::uint8_t minLevel, minBond; };
 // Rules 16 display and eligibility. Stored edge gates remain the historical floor.
 struct EvolutionNeed { std::uint8_t level, bond, care; };
+// Each Ultimate, including the three original ultimate-tier forms, opens at its own
+// level from 20 through 35. Each Mega opens at its own level from 50 through 70.
+constexpr std::uint8_t unlockLevel(Stage dest, std::uint8_t destLevel, std::uint16_t destId) {
+    const bool originalUltimate = dest == Stage::Original && destLevel >= 10 && destLevel < 15;
+    if (dest == Stage::Ultimate || originalUltimate)
+        return static_cast<std::uint8_t>(20u + (static_cast<std::uint32_t>(destId) * 17u) % 16u);
+    if (dest == Stage::Mega)
+        return static_cast<std::uint8_t>(50u + (static_cast<std::uint32_t>(destId) * 13u) % 21u);
+    return 0;
+}
 // Stricter than the stored edge. Source entry level/bond and zero care are never enough.
 constexpr EvolutionNeed evolutionNeedFor(std::uint8_t srcLevel, std::uint8_t srcBond, Stage dest,
-    std::uint8_t destLevel, std::uint8_t destBond, std::uint8_t edgeLevel, std::uint8_t edgeBond) {
+    std::uint8_t destLevel, std::uint8_t destBond, std::uint8_t edgeLevel, std::uint8_t edgeBond, std::uint16_t destId) {
     std::uint32_t levelFloor = 8, bondFloor = 24, care = 16;
     switch (dest) {
     case Stage::Fresh: levelFloor = 4; bondFloor = 16; care = 12; break;
@@ -62,6 +72,7 @@ constexpr EvolutionNeed evolutionNeedFor(std::uint8_t srcLevel, std::uint8_t src
     case Stage::Armor: levelFloor = 22; bondFloor = 72; care = 44; break;
     default: break;
     }
+    if (const auto assigned = unlockLevel(dest, destLevel, destId)) levelFloor = assigned;
     std::uint32_t level = edgeLevel;
     if (level < levelFloor) level = levelFloor;
     if (level < destLevel) level = destLevel;
@@ -80,10 +91,14 @@ inline EvolutionNeed evolutionNeed(const EvolutionEdge& edge) {
     const auto* dest = find(edge.to);
     const auto* src = find(edge.from);
     if (!dest || !src) return {static_cast<std::uint8_t>(kMaxRpgLevel), 200, 100};
-    return evolutionNeedFor(src->minLevel, src->minBond, dest->stage, dest->minLevel, dest->minBond, edge.minLevel, edge.minBond);
+    return evolutionNeedFor(src->minLevel, src->minBond, dest->stage, dest->minLevel, dest->minBond, edge.minLevel, edge.minBond, dest->id);
 }
 // IDs1..10 remain for old saves and frozen replays, never new production pools.
 bool productionForm(std::uint32_t formId); // Rules 19+: excludes retired duplicates.
+// True when the installed device pack has an exact DVA for this form.
+// The 25 uncredited forms inside 1..276, and every later addition, show a
+// missing-art mark on the card, so encounters and expeditions skip them.
+bool hasInstalledArt(std::uint32_t formId);
 // Retired duplicate IDs keep their append-only row but leave play; 0 when not retired.
 std::uint32_t retiredAliasOf(std::uint32_t formId);
 // The index-th production form (0-based, skipping retired IDs); 0 past the end.
@@ -108,8 +123,9 @@ bool encounterObtainable(std::uint32_t formId);
 const char* leafReason(std::uint32_t formId); // Null while an outgoing route exists.
 const char* evolutionStatus(std::uint32_t formId); // progression, terminal, independent; null if invalid.
 
-// Zero stats for invalid ID/level, level below the form's entry, or level > 50.
-// Levels 1–20 keep the previous curve; 21–50 continue that same per-level growth.
+// Zero stats for invalid ID/level, level below the form's entry, or level > 99.
+// Levels 1–20 keep the previous curve; 21–99 continue that same per-level growth
+// and stop at the existing ceilings of 2048 HP and 256 for each other stat.
 // Preserved Rookie stats interpolate exact old bonuses at levels 1/5/10, then
 // use growth above 10. Other forms grow after their minLevel anchor.
 // Eligibility also needs the current parent, bond and game phase: caller-owned.

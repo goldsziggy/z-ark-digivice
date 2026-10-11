@@ -38,7 +38,7 @@ test('bounded graph metadata rejects mismatched versions, pagination and malform
   const source = graph(15);
   for (const change of [x => x.rulesVersion = 5, x => x.catalogVersion = 1, x => x.focusFormId = 18, x => x.total = 513,
     x => x.nextOffset = 999, x => x.forms.push(x.forms[0]), x => x.forms[0].parents.push(x.forms[0].formId),
-    x => x.forms[0].combat.maxHp = 2049, x => x.forms[0].previewLevel = 51, x => x.forms[0].artId = '../private.png',
+    x => x.forms[0].combat.maxHp = 2049, x => x.forms[0].previewLevel = 100, x => x.forms[0].artId = '../private.png',
     x => x.forms[0].edges[0].requiredBond = 201, x => x.forms[0].edges[0].toFormId = 512]) {
     const bad = structuredClone(source); change(bad); assert.throws(() => validateEvolutionGraph(bad, 15));
   }

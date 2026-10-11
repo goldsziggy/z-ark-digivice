@@ -146,7 +146,7 @@ void boundsAndMigration(){
     const auto before=s;CHECK(apply(s,Action::AutoResume,1)==Error::InvalidValue&&trade::sameState(s,before));
     s.sequence=UINT32_MAX;reject(s,Action::Flick);reject(s,Action::AutoResume);
     auto fresh=start();fresh.sequence=UINT32_MAX;reject(fresh,Action::AutoFight);
-    fresh=start();fresh.wildRules=13;fresh.dungeonKeys=3;Snapshot bytes;CHECK(encodeSnapshot(fresh,bytes));std::array<std::uint8_t,kV18SnapshotSize> prior;
+    fresh=start();fresh.wildRules=13;fresh.dungeonKeys=3;fresh.bossSteps=0;fresh.bossSigils=0;Snapshot bytes;CHECK(encodeSnapshot(fresh,bytes));std::array<std::uint8_t,kV18SnapshotSize> prior;
     const auto projected=snapshot_test::eightSlotBytes(bytes.bytes);std::memcpy(prior.data(),projected.data(),prior.size());prior[4]=18;put32(prior.data()+8,13);prior[6]=132;prior[7]=2;put32(prior.data()+prior.size()-4,~updateCrc(~0u,prior.data(),prior.size()-4));
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.autoCapture==AutoCapture::None&&trade::sameState(fresh,migrated));
     CHECK(encodeSnapshot(migrated,bytes)&&snapshot_test::sameOldPayload(prior.data(),bytes.bytes,prior.size()));

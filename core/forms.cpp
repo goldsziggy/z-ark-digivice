@@ -192,14 +192,21 @@ constexpr Stats interpolate(Stats from, Stats to, std::uint32_t step, std::uint3
             interpolate(from.magic,to.magic,step,span),
             interpolate(from.resistance,to.resistance,step,span)};
 }
+constexpr std::uint32_t ceiling(std::uint32_t value, std::uint32_t limit) {
+    return value > limit ? limit : value;
+}
+constexpr Stats boundStats(Stats value) {
+    return {ceiling(value.maxHp, 2048), ceiling(value.attack, 256), ceiling(value.defense, 256),
+            ceiling(value.magic, 256), ceiling(value.resistance, 256)};
+}
 constexpr Stats compute(const Form& form, std::uint32_t level) {
     if (level < form.minLevel || level > kMaxRpgLevel) return {};
     if (form.id > kPreservedFormCount || form.stage != Stage::Rookie)
-        return add(form.baseStats,times(form.growth,level-form.minLevel));
+        return boundStats(add(form.baseStats,times(form.growth,level-form.minLevel)));
     const auto bonus = level <= 5 ? interpolate({},kOldTier2Bonus,level-1,4) :
                        level <= 10 ? interpolate(kOldTier2Bonus,kOldTier3Bonus,level-5,5) :
                        add(kOldTier3Bonus,times(form.growth,level-10));
-    return add(form.baseStats,bonus);
+    return boundStats(add(form.baseStats,bonus));
 }
 constexpr bool bounded(Stats s) {
     return s.maxHp >= 1 && s.maxHp <= 2048 && s.attack >= 1 && s.attack <= 256 &&
@@ -253,13 +260,15 @@ constexpr bool earnedEvolutionNeeds() {
     for (const auto& edge : kEvolutionEdges) {
         const auto& src = kForms[edge.from - 1];
         const auto& dest = kForms[edge.to - 1];
-        const auto need = evolutionNeedFor(src.minLevel, src.minBond, dest.stage, dest.minLevel, dest.minBond, edge.minLevel, edge.minBond);
+        const auto need = evolutionNeedFor(src.minLevel, src.minBond, dest.stage, dest.minLevel, dest.minBond, edge.minLevel, edge.minBond, dest.id);
         if (need.level <= src.minLevel || need.level > kMaxRpgLevel || need.care < 12 || need.care > 100 || need.bond > 200) return false;
         if (src.minBond < 200 && need.bond <= src.minBond) return false;
+        const auto assigned = unlockLevel(dest.stage, dest.minLevel, dest.id);
+        if (assigned && need.level != assigned) return false;
     }
     return true;
 }
-static_assert(earnedEvolutionNeeds(), "Every evolution route must be earned and still reachable by level 50");
+static_assert(earnedEvolutionNeeds(), "Every evolution route must be earned and still reachable by level 99");
 } // namespace
 
 const Form* find(std::uint32_t id) {
@@ -270,6 +279,17 @@ std::uint32_t retiredAliasOf(std::uint32_t id) {
     return 0;
 }
 bool productionForm(std::uint32_t id) { return id>=kFirstProductionFormId && id<=kFormCount && !retiredAliasOf(id); }
+bool hasInstalledArt(std::uint32_t id) {
+    // Forms 11-276 with a file in the installed 251-pack. The 25 gaps and every
+    // later form have no DVA on the devices, so the renderer would show ART MISSING.
+    constexpr std::uint32_t bits[]{
+        0xdf3fec00u,0x7ef9ffcfu,0xfffffffeu,0xffffffffu,0xffffffffu,0xffffff7fu,0xf0afffffu,0xfd7efbbbu,
+        0x000ffbffu,0x00000000u,0x00000000u,0x00000000u,0x00000000u,0x00000000u,0x00000000u};
+    static_assert(sizeof(bits) / sizeof(bits[0]) == (kFormCount + 31) / 32);
+    if (!id || id > kFormCount) return false;
+    const auto bit = id - 1u;
+    return (bits[bit / 32u] & (1u << (bit % 32u))) != 0;
+}
 std::uint32_t productionFormAt(std::uint32_t index) {
     for (std::uint32_t id = kFirstProductionFormId; id <= kFormCount; ++id) if (productionForm(id) && !index--) return id;
     return 0;

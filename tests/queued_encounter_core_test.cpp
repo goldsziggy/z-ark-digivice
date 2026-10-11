@@ -14,7 +14,7 @@ void step(State& s,Action action,unsigned value=0){const auto error=apply(s,acti
 void rejects(State& s,Action action,unsigned value,Error error){const auto before=s;CHECK(apply(s,action,value)==error);CHECK(same(before,s));}
 State hatched(unsigned seed){auto s=newDevice(seed);step(s,Action::Hatch,1);return s;}
 void restore(State& s){Snapshot bytes;CHECK(encodeSnapshot(s,bytes));State restored;CHECK(decodeSnapshot(bytes.bytes,sizeof(bytes.bytes),restored)==SnapshotStatus::Ok);CHECK(same(s,restored));s=restored;}
-bool sameForeground(State a,const State& b){a.sequence=b.sequence;a.explorationSteps=b.explorationSteps;a.encounterRng=b.encounterRng;a.encounterTarget=b.encounterTarget;a.encounterProgress=b.encounterProgress;a.pendingEncounter=b.pendingEncounter;return same(a,b);}
+bool sameForeground(State a,const State& b){a.sequence=b.sequence;a.explorationSteps=b.explorationSteps;a.encounterRng=b.encounterRng;a.encounterTarget=b.encounterTarget;a.encounterProgress=b.encounterProgress;a.pendingEncounter=b.pendingEncounter;a.bossSteps=b.bossSteps;a.bossSigils=b.bossSigils;return same(a,b);}
 void clearFight(State& s){for(unsigned n=0;s.phase==Phase::Encounter&&n<1000;++n)step(s,Action::Attack);CHECK(s.phase==Phase::Home);}
 void pacingAndOneSlot(){
  for(unsigned seed=1;seed<=512;++seed){

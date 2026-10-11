@@ -50,23 +50,23 @@ void weaken(State& s, unsigned formId, unsigned wildLevel){
     CHECK(isValid(s));
 }
 void levelsAndRoutes(){
-    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kMaxLevel==50&&kMaxXp==49000&&kSnapshotSize==6860);
-    CHECK(xpForLevel(1)==0&&xpForLevel(20)==7600&&xpForLevel(21)==20u*20u*21u&&xpForLevel(50)==49000);
-    CHECK(levelForXp(0)==1&&levelForXp(7600)==20&&levelForXp(8399)==20&&levelForXp(8400)==21&&levelForXp(49000)==50);
+    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kMaxLevel==99&&kMaxXp==194040&&kSnapshotSize==6860);
+    CHECK(xpForLevel(1)==0&&xpForLevel(20)==7600&&xpForLevel(21)==20u*20u*21u&&xpForLevel(50)==49000&&xpForLevel(99)==194040);
+    CHECK(levelForXp(0)==1&&levelForXp(7600)==20&&levelForXp(8399)==20&&levelForXp(8400)==21&&levelForXp(49000)==50&&levelForXp(194040)==99);
     for(unsigned level=1;level<=20;++level)CHECK(xpForLevel(level)==20u*(level-1)*level);
     for(unsigned id=forms::kFirstProductionFormId;id<forms::kFirstProductionFormId+8;++id){
-        const auto early=forms::stats(id,20), later=forms::stats(id,50);
-        CHECK(later.maxHp>=early.maxHp&&later.attack>=early.attack&&later.maxHp<=2048&&later.attack<=256);
+        const auto early=forms::stats(id,20), later=forms::stats(id,50), cap=forms::stats(id,99);
+        CHECK(later.maxHp>=early.maxHp&&cap.maxHp>=later.maxHp&&cap.maxHp<=2048&&cap.attack<=256);
     }
     CHECK(forms::edgeCount()>=166);
     for(std::size_t i=0;i<forms::edgeCount();++i){
         const auto* edge=forms::edgeAt(i);CHECK(edge);
         const auto need=forms::evolutionNeed(*edge);
-        CHECK(need.level>=edge->minLevel&&need.level<=50);
+        CHECK(need.level>=edge->minLevel&&need.level<=99);
         CHECK(need.bond>=edge->minBond&&need.bond<=200);
         CHECK(need.care>=12&&need.care<=100);
         const auto* src=forms::find(edge->from);const auto* dest=forms::find(edge->to);
-        CHECK(src&&dest&&need.level>=src->minLevel+1&&need.level<=50);
+        CHECK(src&&dest&&need.level>=src->minLevel+1&&need.level<=99);
     }
 }
 void migrationKeepsProgress(){
@@ -216,9 +216,10 @@ void encounterLevelBand(){
         CHECK(mid>=8&&mid<=10);
         if(mid==8)down=true; if(mid==9)flat=true; if(mid==10)up=true;
         const auto floor=wildEncounterLevel(encounter,seed,1);
-        const auto cap=wildEncounterLevel(encounter,seed,50);
-        CHECK((floor==1||floor==2)&&(cap==49||cap==50));
-        CHECK(wildEncounterLevel(encounter,seed,1)==floor&&wildEncounterLevel(encounter,seed,50)==cap);
+        const auto cap=wildEncounterLevel(encounter,seed,99);
+        CHECK((floor==1||floor==2)&&(cap==98||cap==99));
+        CHECK(wildEncounterLevel(encounter,seed,50)>=49&&wildEncounterLevel(encounter,seed,50)<=51);
+        CHECK(wildEncounterLevel(encounter,seed,1)==floor&&wildEncounterLevel(encounter,seed,99)==cap);
     }
     CHECK(down&&flat&&up);
     bool sawFloor=false,sawAbove=false,sawCap=false,sawBelow=false;
@@ -235,14 +236,14 @@ void encounterLevelBand(){
         auto queued=newDevice(seed); step(queued,Action::Hatch,1); step(queued,Action::WorldSeed,seed); step(queued,Action::AccrueSteps,1000);
         CHECK(queued.pendingEncounter.level==left.wildLevel&&queued.pendingEncounter.formId==left.wildFormId);
         auto high=newDevice(seed); step(high,Action::Hatch,1); step(high,Action::WorldSeed,seed);
-        high.level=high.collection[0].level=50; high.collection[0].xp=xpForLevel(50);
-        high.hp=high.collection[0].hp=combat::formProfile(high.collection[0].formId,50).stats.maxHp;
+        high.level=high.collection[0].level=99; high.collection[0].xp=xpForLevel(99);
+        high.hp=high.collection[0].hp=combat::formProfile(high.collection[0].formId,99).stats.maxHp;
         CHECK(isValid(high));
         auto peer=high; step(high,Action::Explore,1000); step(peer,Action::Walk,100);
-        CHECK(high.level==50&&peer.level==50&&high.wildLevel==peer.wildLevel);
-        CHECK(high.wildLevel==49||high.wildLevel==50);
-        CHECK(high.wildLevel==wildEncounterLevel(1,seed,50)&&combat::validFormProfile(high.wildFormId,high.wildLevel));
-        if(high.wildLevel==49)sawBelow=true; if(high.wildLevel==50)sawCap=true;
+        CHECK(high.level==99&&peer.level==99&&high.wildLevel==peer.wildLevel);
+        CHECK(high.wildLevel==98||high.wildLevel==99);
+        CHECK(high.wildLevel==wildEncounterLevel(1,seed,99)&&combat::validFormProfile(high.wildFormId,high.wildLevel));
+        if(high.wildLevel==98)sawBelow=true; if(high.wildLevel==99)sawCap=true;
     }
     CHECK(sawFloor&&sawAbove&&sawCap&&sawBelow);
 }

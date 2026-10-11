@@ -41,8 +41,9 @@ constexpr std::size_t kV2SnapshotSize = 100;
 constexpr std::size_t kJsonCapacity = 262144;
 constexpr std::size_t kJournalCapacity = 512;
 constexpr std::size_t kJournalWords = kJournalCapacity / 32;
-constexpr std::uint32_t kMaxLevel = 50;
-constexpr std::uint32_t kMaxXp = 49000;
+constexpr std::uint32_t kMaxLevel = 99;
+constexpr std::uint32_t kMaxXp = 194040; // 20*(99-1)*99. Levels 1-50 keep the previous totals; 49000 is still level 50.
+static_assert(kMaxXp <= 0x00ffffffu, "schema 27 stores XP in 24 bits");
 constexpr std::size_t kCollectionCapacity = 250;
 constexpr std::size_t kPartyCapacity = 3;
 // Onboarding through world seed, then the three party ids. Schema 26 used 3188.
@@ -59,7 +60,7 @@ enum class Species : std::uint16_t {
     None, Mote, Flicker, Rill, Cinder, Impmon, Agumon, Gabumon, Patamon,
     Tentomon, Palmon, Gomamon, Renamon
 };
-enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember, Treat, Focus };
+enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember, Treat, Focus, StartExpedition, ClaimExpedition };
 enum class Message : std::uint8_t {
     Welcome, Fed, Played, Rested, Walked, Encounter, AttackCard, ShieldCard,
     Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared, PartyAdded, PartyRemoved, Toileted, Treated
@@ -250,6 +251,8 @@ std::uint32_t worldSelectionSeed(const State& state);
 // Pure bounded pool selection; only explicit partner stage unlocks higher tiers.
 std::uint32_t selectWildForm(std::uint32_t encounter, std::uint32_t seed,
                              std::uint32_t partnerFormId, std::uint32_t rivalLevel);
+// The foe a solo or shared expedition would fight. Does not spend a key or sigil.
+bool previewExpeditionFoe(const State& state, std::uint32_t scenario, std::uint32_t& formId, std::uint32_t& level);
 // Partner level is the center. The wild level is that center, one below, or one
 // above, then clamped to 1..kMaxLevel. Same encounter, seed, and center always
 // agree, including peers that share those inputs. Does not advance any RNG.

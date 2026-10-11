@@ -112,7 +112,7 @@ const currentCare = (state: any) => ({ ...state, schemaVersion: 27, rulesVersion
 test('care8 committed Auto history migrates once, reserves pending IDs, and cannot duplicate its capture reward', async t => {
   const f = await careFixture(t, 'afterCare'), saved = await f.request();
   assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.maxLevel, 50); assert.deepEqual(historicComparable(legacyFields(saved.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
+  assert.equal(saved.body.state.maxLevel, 99); assert.deepEqual(historicComparable(legacyFields(saved.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
   assert.deepEqual(saved.body.autoTrace, f.historical.response.body.autoTrace); assert.deepEqual(saved.body.events, []);
   assert.equal(saved.body.revision, 3); assert.equal(saved.body.baseSequence, f.historical.response.body.state.sequence);
   const store = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
@@ -140,7 +140,7 @@ test('care8 committed Auto history migrates once, reserves pending IDs, and cann
 
 test('an active wild8 test encounter retains its archive and clears without a new capture', async t => {
   const f = await careFixture(t, 'encounter'), before = await f.request();
-  assert.equal(before.body.state.maxLevel, 50); assert.deepEqual(historicComparable(legacyFields(before.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
+  assert.equal(before.body.state.maxLevel, 99); assert.deepEqual(historicComparable(legacyFields(before.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
   assert.equal(before.body.state.wildRules, 8);
   assert.equal((await f.request({ rulesVersion: 19, baseRevision: 1, batchId: 'no-manual-input-old-auto', events: [{ type: 'attack', value: 0 }] })).status, 422);
   assert.deepEqual(await f.request(), before);
@@ -165,7 +165,7 @@ test('an active wild8 test encounter retains its archive and clears without a ne
 
 test('explicit unhatched care8 identity remains an egg after migration and fresh hatch9 commits exactly once', async t => {
   const f = await careFixture(t, 'egg'), before = await f.request();
-  assert.equal(before.body.state.maxLevel, 50); assert.deepEqual(historicComparable(legacyFields(before.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
+  assert.equal(before.body.state.maxLevel, 99); assert.deepEqual(historicComparable(legacyFields(before.body.state)), historicComparable(currentCare(f.historical.response.body.state)));
   assert.equal(before.body.revision, 0); assert.equal(before.body.state.phase, 'egg');
   const body = { rulesVersion: 19, baseRevision: 0, batchId: 'new-nine-hatch-on-old-egg', events: [{ type: 'hatch', value: 1 }] };
   const accepted = await f.request(body); assert.equal(accepted.status, 200); assert.equal(accepted.body.state.collection.length, 1);
@@ -192,7 +192,7 @@ test('legacy Lumen/Pelagia checkpoints retain historical HP scaling and clear te
     Object.assign(old.devices[0], { revision: 1, initialMode: 'legacy', legacy: { histories: [{ rulesVersion: 7, events, receipts: [receipt] }], snapshotBase64: checkpoint.snapshotBase64 } });
     const f = await careFixture(sub, { store: old, response: { body: { state: checkpoint.state } } });
     const migrated = await f.request(); assert.equal(migrated.status, 200);
-    assert.equal(migrated.body.state.maxLevel, 50); assert.deepEqual(historicComparable(legacyFields(migrated.body.state)), historicComparable(currentCare(checkpoint.migrated.state)));
+    assert.equal(migrated.body.state.maxLevel, 99); assert.deepEqual(historicComparable(legacyFields(migrated.body.state)), historicComparable(currentCare(checkpoint.migrated.state)));
     const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
     const currentBytes = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64'), previousBytes = Buffer.from(checkpoint.migrated.snapshotBase64, 'base64');
     assert.equal(currentBytes.length, 6860); assert.equal(previousBytes.length, 576);

@@ -1,5 +1,6 @@
 #pragma once
 #include "nearby_match.hpp"
+#include "expedition_raid.hpp"
 #include <cstddef>
 #include <cstdint>
 
@@ -9,7 +10,7 @@ constexpr std::uint64_t kPeerLifetimeMs=10000,kRetryMs=500,kReconnectMs=5000,kSe
 struct Mac { std::uint8_t bytes[6]{}; };
 bool sameMac(const Mac&,const Mac&);
 struct Datagram { Mac destination{};std::uint16_t length=0;std::uint8_t bytes[kMaxPacket]{}; };
-struct Peer { Mac mac{}; Fighter fighter{};std::uint64_t seenMs=0;std::uint32_t openNonce=0;bool available=false,compatible=true; };
+struct Peer { Mac mac{}; Fighter fighter{};std::uint64_t seenMs=0;std::uint32_t openNonce=0;bool available=false,compatible=true;std::uint8_t activity=255; };
 enum class Stage : std::uint8_t { Closed, Discovering, Outgoing, Incoming, Accepting, Playing, Reconnecting, Finished, Cancelled, TimedOut, Incompatible };
 struct View {
     Stage stage=Stage::Closed;
@@ -18,6 +19,10 @@ struct View {
     bool host=false,localChoicePending=false,peerAcknowledged=false;
     std::uint64_t session=0;
     Match match{};
+    std::uint8_t activity=255; // 255 is a versus lobby. 0-5 is that dungeon or boss.
+    std::uint16_t foeForm=0;
+    std::uint8_t foeLevel=0;
+    Raid raid{};
 };
 // Single main-task owner. Hardware only drains pop() to ESP-NOW and supplies
 // real radio source MAC to receive(). No heap, blocking, game save, or credentials.
@@ -26,7 +31,7 @@ struct View {
 // remain fixed through discovery, consent, retransmission and match resolution.
 class Protocol {
 public:
-    bool open(const Mac& local,const Fighter&,std::uint64_t nowMs,std::uint32_t nonzeroOpenNonce);
+    bool open(const Mac& local,const Fighter&,std::uint64_t nowMs,std::uint32_t nonzeroOpenNonce,std::uint8_t activity=255);
     bool challenge(std::size_t peerIndex,Mode,std::uint64_t session,std::uint32_t seed,std::uint64_t nowMs);
     bool accept(std::uint64_t nowMs); // Explicit recipient consent to frozen offer.
     bool choose(Choice,std::uint64_t nowMs);

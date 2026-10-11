@@ -14,7 +14,7 @@ import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, readFileSync, re
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-type Event = { type: 'feed' | 'play' | 'rest' | 'walk' | 'card' | 'attack' | 'heavy' | 'magic' | 'capture' | 'flick' | 'ring-capture' | 'select' | 'hatch' | 'mode' | 'auto' | 'auto-fight' | 'auto-resume' | 'evolve' | 'release' | 'explore' | 'encounter-rate' | 'encounter-seed' | 'starter-offer-seed' | 'accrue-steps' | 'present-encounter' | 'resolve-test-encounter' | 'world-seed' | 'party-add' | 'party-remove' | 'toilet' | 'retreat' | 'care-minute' | 'evolve-member' | 'treat' | 'focus'; value: number };
+type Event = { type: 'feed' | 'play' | 'rest' | 'walk' | 'card' | 'attack' | 'heavy' | 'magic' | 'capture' | 'flick' | 'ring-capture' | 'select' | 'hatch' | 'mode' | 'auto' | 'auto-fight' | 'auto-resume' | 'evolve' | 'release' | 'explore' | 'encounter-rate' | 'encounter-seed' | 'starter-offer-seed' | 'accrue-steps' | 'present-encounter' | 'resolve-test-encounter' | 'world-seed' | 'party-add' | 'party-remove' | 'toilet' | 'retreat' | 'care-minute' | 'evolve-member' | 'treat' | 'focus' | 'start-expedition' | 'claim-expedition'; value: number };
 type State = Record<string, unknown> & { schemaVersion: number; rulesVersion: number; sequence: number };
 type Receipt = { batchId: string; bodyHash: string; revision: number; eventEnd: number };
 type LegacyHistory = { events: Event[]; receipts: Receipt[]; snapshotBase64: string };
@@ -73,7 +73,7 @@ const GARAGE_ORIGINAL_IDS = new Set(['starter-v2', 'tide-v1', 'ember-v1']);
 const GARAGE_PERSONAL_ID = /^personal-[a-z0-9][a-z0-9-]{0,38}$/;
 const GARAGE_MAX_PACK = 256 * 1024;
 const GARAGE_MAX_PROVENANCE = 64 * 1024;
-const EVENT_TYPES = new Set(['feed', 'play', 'rest', 'walk', 'card', 'attack', 'heavy', 'magic', 'capture', 'flick', 'ring-capture', 'select', 'hatch', 'mode', 'auto', 'auto-fight', 'auto-resume', 'evolve', 'release', 'explore', 'encounter-rate', 'encounter-seed', 'starter-offer-seed', 'accrue-steps', 'present-encounter', 'resolve-test-encounter', 'world-seed', 'party-add', 'party-remove', 'toilet', 'retreat', 'care-minute', 'evolve-member', 'treat', 'focus']);
+const EVENT_TYPES = new Set(['feed', 'play', 'rest', 'walk', 'card', 'attack', 'heavy', 'magic', 'capture', 'flick', 'ring-capture', 'select', 'hatch', 'mode', 'auto', 'auto-fight', 'auto-resume', 'evolve', 'release', 'explore', 'encounter-rate', 'encounter-seed', 'starter-offer-seed', 'accrue-steps', 'present-encounter', 'resolve-test-encounter', 'world-seed', 'party-add', 'party-remove', 'toilet', 'retreat', 'care-minute', 'evolve-member', 'treat', 'focus', 'start-expedition', 'claim-expedition']);
 const ASSETS = new Map([
   ['/', ['web/index.html', 'text/html; charset=utf-8']],
   ['/index.html', ['web/index.html', 'text/html; charset=utf-8']],
@@ -192,6 +192,14 @@ function validEvents(input: unknown, maximum = MAX_EVENTS, rulesVersion = 19): i
     if (event.type === 'toilet' || event.type === 'retreat') return rulesVersion >= 16 && event.value === 0;
     if (event.type === 'treat') return rulesVersion >= 17 && event.value === 0;
     if (event.type === 'focus') return rulesVersion >= 18 && Number.isSafeInteger(event.value) && Number(event.value) >= 0 && Number(event.value) <= 2400;
+    if (event.type === 'start-expedition') return rulesVersion >= 19 && Number.isSafeInteger(event.value) && Number(event.value) >= 0 && Number(event.value) <= 5;
+    if (event.type === 'claim-expedition') {
+        const scenario = Number(event.value) & 7;
+        const level = (Number(event.value) >>> 3) & 0xff;
+        const formId = (Number(event.value) >>> 11) & 0xffff;
+        return rulesVersion >= 19 && Number.isSafeInteger(event.value) && event.value >= 0 && (event.value >>> 27) === 0 &&
+            scenario <= 5 && level >= 1 && level <= 99 && formId >= 11 && formId <= 465;
+    }
     if (event.type === 'party-add' || event.type === 'party-remove') return rulesVersion >= 15 && Number(event.value) >= 1 && Number(event.value) <= 0xfffffffe;
     if (event.type === 'auto-fight' || event.type === 'auto-resume') return rulesVersion >= 13 && event.value === 0;
     if (event.type === 'resolve-test-encounter') return rulesVersion >= 13 && event.value === 0;
@@ -234,10 +242,10 @@ function stateSupported(value: unknown): value is State {
   if (!bounded(value.foregroundSequence, 0, Number(value.sequence))) return false;
   if (!bounded(value.recoveryRestCount, 0, 40) || !bounded(value.queuedEncounters, 0, 42_949_672) || !bounded(value.stepsToNextEncounter, 0, 100) || value.phase !== 'home' && value.recoveryRestCount !== 0 ||
     (value.phase === 'encounter' && [10, 11, 12, 13, 14, 15, 16, 17, 18, 19].includes(Number(value.wildRules)) ? !['common', 'uncommon', 'rare'].includes(String(value.wildRarity)) : value.wildRarity !== null)) return false;
-  if (!validLastCapture(value.lastCapture, value.foregroundSequence) || !validWalkingState(value.walking, value.phase) || value.maxLevel !== 50 || !bounded(value.wildCaptureChance, 0, 100) || !bounded(value.wildLevel, 0, 50) || !bounded(value.wildTurn, 0, 1000) ||
+  if (!validLastCapture(value.lastCapture, value.foregroundSequence) || !validWalkingState(value.walking, value.phase) || value.maxLevel !== 99 || !bounded(value.wildCaptureChance, 0, 100) || !bounded(value.wildLevel, 0, 99) || !bounded(value.wildTurn, 0, 1000) ||
     !bounded(value.careMinute, 0, 0xffffffff) || typeof value.critical !== 'boolean' || ![0, 1].includes(Number(value.captureDeferred)) || typeof value.captureDeferred !== 'number' ||
     !object(value.evolution) || !Array.isArray(value.evolution.options) || value.evolution.options.length > 2 ||
-    !value.collection.every(member => object(member) && validCare(member) && bounded(member.level, 1, 50) && bounded(member.formId, 1, 512) && bounded(member.id, 1, 0xfffffffe) && bounded(member.xp, 0, 49000) && bounded(member.xpToNext, 0, 49000) && bounded(member.carePoints, 0, 100) && bounded(member.toilet, 0, 100) && typeof member.careMissed === 'boolean' && bounded(member.careMistakes, 0, 7) && bounded(member.injury, 0, 3))) return false;
+    !value.collection.every(member => object(member) && validCare(member) && bounded(member.level, 1, 99) && bounded(member.formId, 1, 512) && bounded(member.id, 1, 0xfffffffe) && bounded(member.xp, 0, 194040) && bounded(member.xpToNext, 0, 194040) && bounded(member.carePoints, 0, 100) && bounded(member.toilet, 0, 100) && typeof member.careMissed === 'boolean' && bounded(member.careMistakes, 0, 7) && bounded(member.injury, 0, 3))) return false;
   if (!bounded(value.nextMemberId, 1, 0xffffffff) || !bounded(value.wildFormId, 0, 512) || ![0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].includes(Number(value.wildRules)) || !(value.wildGuard === null || ['brace', 'ward', 'counter'].includes(String(value.wildGuard))) ||
     !object(value.journal) || !keysExactly(value.journal, ['capacity', 'obtainedFormIds']) || value.journal.capacity !== 512 || !Array.isArray(value.journal.obtainedFormIds) || value.journal.obtainedFormIds.length > 512 ||
     !value.journal.obtainedFormIds.every((id, index, ids) => bounded(id, 1, 512) && (index === 0 || Number(ids[index - 1]) < Number(id))) ||
@@ -519,7 +527,7 @@ function createUnlockedApp(options: AppOptions = {}) {
         if (!object(form) || !keysExactly(form, ['formId', 'parentId', 'children', 'name', 'stage', 'requiredLevel', 'requiredBond', 'previewLevel', 'artId', 'combat']) ||
           !integer(form.formId, 1, 512) || !integer(form.parentId, 0, 512) || !Array.isArray(form.children) || form.children.length > 2 || !form.children.every(id => integer(id, 1, 512)) ||
           !text(form.name) || !(form.stage === null || ['Fresh', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Armor', 'No Level', 'Original'].includes(String(form.stage))) ||
-          !integer(form.requiredLevel, 1, 50) || !integer(form.requiredBond, 0, 200) || !integer(form.previewLevel, 1, 50) || !(form.artId === null || text(form.artId)) || !object(form.combat)) return false;
+          !integer(form.requiredLevel, 1, 99) || !integer(form.requiredBond, 0, 200) || !integer(form.previewLevel, 1, 99) || !(form.artId === null || text(form.artId)) || !object(form.combat)) return false;
         const combat = form.combat;
         return keysExactly(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) &&
           integer(combat.maxHp, 1, 2048) && ['attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 256)) && ['grove', 'tide', 'ember', 'neutral'].includes(String(combat.type)) &&
@@ -546,10 +554,10 @@ function createUnlockedApp(options: AppOptions = {}) {
     if (value.nextOffset !== expectedNext) return bad();
     const seen = new Set<number>();
     for (const form of value.forms) {
-      if (!object(form) || !keysExactly(form, ['formId', 'name', 'stage', 'artId', 'minLevel', 'minBond', 'previewLevel', 'combat', 'parents', 'children', 'edges']) || !integer(form.formId, 1, 512) || seen.has(Number(form.formId)) || !text(form.name) || !(form.stage === null || ['Fresh', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Armor', 'No Level', 'Original'].includes(String(form.stage))) || !(form.artId === null || text(form.artId)) || !integer(form.minLevel, 1, 50) || !integer(form.minBond, 0, 200) || !integer(form.previewLevel, Number(form.minLevel), 50) || !ids(form.parents, 512) || !ids(form.children, 2) || form.parents.includes(Number(form.formId)) || form.children.includes(Number(form.formId)) || !Array.isArray(form.edges) || form.edges.length !== form.children.length || !object(form.combat)) return bad();
+      if (!object(form) || !keysExactly(form, ['formId', 'name', 'stage', 'artId', 'minLevel', 'minBond', 'previewLevel', 'combat', 'parents', 'children', 'edges']) || !integer(form.formId, 1, 512) || seen.has(Number(form.formId)) || !text(form.name) || !(form.stage === null || ['Fresh', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Armor', 'No Level', 'Original'].includes(String(form.stage))) || !(form.artId === null || text(form.artId)) || !integer(form.minLevel, 1, 99) || !integer(form.minBond, 0, 200) || !integer(form.previewLevel, Number(form.minLevel), 99) || !ids(form.parents, 512) || !ids(form.children, 2) || form.parents.includes(Number(form.formId)) || form.children.includes(Number(form.formId)) || !Array.isArray(form.edges) || form.edges.length !== form.children.length || !object(form.combat)) return bad();
       seen.add(Number(form.formId));
       const children = form.children;
-      if (!form.edges.every((edge, index) => object(edge) && keysExactly(edge, ['toFormId', 'requiredLevel', 'requiredBond', 'requiredCare']) && edge.toFormId === children[index] && integer(edge.requiredLevel, 1, 50) && integer(edge.requiredBond, 0, 200) && integer(edge.requiredCare, 12, 100))) return bad();
+      if (!form.edges.every((edge, index) => object(edge) && keysExactly(edge, ['toFormId', 'requiredLevel', 'requiredBond', 'requiredCare']) && edge.toFormId === children[index] && integer(edge.requiredLevel, 1, 99) && integer(edge.requiredBond, 0, 200) && integer(edge.requiredCare, 12, 100))) return bad();
       const combat = form.combat;
       if (!keysExactly(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) || !integer(combat.maxHp, 1, 2048) || !['attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 256)) || !['grove', 'tide', 'ember', 'neutral'].includes(String(combat.type)) || !object(combat.skills) || !keysExactly(combat.skills, ['physical', 'heavy', 'magic']) || !Object.values(combat.skills).every(label => text(label, 32))) return bad();
     }

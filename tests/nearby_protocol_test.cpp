@@ -15,7 +15,7 @@ void put(std::uint8_t* p,std::uint32_t n){for(unsigned i=0;i<4;++i)p[i]=static_c
 void reseal(Datagram& d){put(d.bytes+d.length-4,crc(d.bytes,d.length-4));}
 struct Pair {
  Protocol a,b;std::uint64_t now=10;unsigned delivered=0,dropped=0;std::size_t largest=0;
- void open(const Fighter& host=fa,const Fighter& guest=fb){CHECK(a.open(ma,host,now,100));CHECK(b.open(mb,guest,now,200));pump();CHECK(a.view().peerCount==1&&b.view().peerCount==1);}
+ void open(const Fighter& host=fa,const Fighter& guest=fb,std::uint8_t hostActivity=255,std::uint8_t guestActivity=255){CHECK(a.open(ma,host,now,100,hostActivity));CHECK(b.open(mb,guest,now,200,guestActivity));pump();CHECK(a.view().peerCount==1&&b.view().peerCount==1);}
  void pump(unsigned drop=0,bool duplicate=false){
   for(unsigned loops=0;loops<100;++loops){bool more=false;Datagram d;
    for(unsigned side=0;side<2;++side){auto& from=side?b:a;auto& to=side?a:b;const auto& mac=side?mb:ma;
@@ -318,5 +318,29 @@ void previousRulesHandshake(){
  const auto before=p.b.view().match;p.now+=500;p.a.tick(p.now);Datagram state;CHECK(p.a.pop(state)&&state.bytes[5]==4);
  state.bytes[14]=11;reseal(state);CHECK(!p.b.receive(ma,state.bytes,state.length,p.now)&&p.b.view().stage==Stage::Incompatible&&same(before,p.b.view().match));
 }
+void raidJoin(){
+ Pair sameLobby;sameLobby.open(fa,fb,0,0);
+ CHECK(sameLobby.a.view().peers[0].activity==0&&sameLobby.b.view().peers[0].activity==0&&sameLobby.a.view().peers[0].available);
+ CHECK(!sameLobby.a.challenge(0,Mode::Tactical,123,42,sameLobby.now)&&sameLobby.a.view().stage==Stage::Discovering);
+ const auto seed=raidSeed(18,1,0);
+ CHECK(sameLobby.a.challenge(0,Mode::Coop,0xabc,seed,sameLobby.now));sameLobby.pump();
+ CHECK(sameLobby.a.view().stage==Stage::Outgoing&&sameLobby.b.view().stage==Stage::Incoming&&sameLobby.b.view().foeForm==18&&sameLobby.b.view().foeLevel==1);
+ CHECK(sameLobby.b.accept(sameLobby.now));sameLobby.pump();
+ CHECK(sameLobby.a.view().stage==Stage::Playing&&sameLobby.b.view().stage==Stage::Playing&&sameRaid(sameLobby.a.view().raid,sameLobby.b.view().raid));
+ CHECK(sameLobby.a.view().raid.sequence==0&&sameLobby.a.view().raid.foeHp&&sameLobby.a.view().raid.status==RaidStatus::Active);
+ for(unsigned i=0;i<24&&sameLobby.a.view().stage==Stage::Playing;++i){
+  const auto before=sameLobby.a.view().raid.sequence;
+  const bool hostHits=before%2u==0;
+  CHECK(sameLobby.a.choose(hostHits?Choice::Physical:Choice::Brace,sameLobby.now));
+  CHECK(sameLobby.b.choose(hostHits?Choice::Brace:Choice::Physical,sameLobby.now));
+  sameLobby.pump();
+  if(sameLobby.a.view().raid.sequence==before)sameLobby.tick(2400);
+  CHECK(sameLobby.a.view().raid.sequence==before+1&&sameRaid(sameLobby.a.view().raid,sameLobby.b.view().raid));
+ }
+ CHECK(sameLobby.a.view().stage==Stage::Finished&&sameLobby.b.view().stage==Stage::Finished);
+ CHECK(sameRaid(sameLobby.a.view().raid,sameLobby.b.view().raid)&&sameLobby.a.view().raid.status!=RaidStatus::Active);
+ Pair otherLobby;otherLobby.open(fa,fb,0,1);
+ CHECK(!otherLobby.a.challenge(0,Mode::Coop,7,seed,otherLobby.now)&&otherLobby.a.view().stage==Stage::Discovering);
 }
-int main(){core();consentAndLoss();recoverAndTimeout();simultaneous();wireGuards();boundedQueuesAndReordering();reviewedRegressions();autoPacing();autoModeConsent();autoRandomAlternation();autoReconnectAndReboot();careBonusHandshake();previousRulesHandshake();std::printf("%u nearby checks, %u failures; Fighter%zuB / Match%zuB / Protocol%zuB / max packet%zuB\n",checks,failures,sizeof(Fighter),sizeof(Match),sizeof(Protocol),34+kMatchBytes+4);return failures?1:0;}
+}
+int main(){core();consentAndLoss();recoverAndTimeout();simultaneous();wireGuards();boundedQueuesAndReordering();reviewedRegressions();autoPacing();autoModeConsent();autoRandomAlternation();autoReconnectAndReboot();careBonusHandshake();previousRulesHandshake();raidJoin();std::printf("%u nearby checks, %u failures; Fighter%zuB / Match%zuB / Protocol%zuB / max packet%zuB\n",checks,failures,sizeof(Fighter),sizeof(Match),sizeof(Protocol),34+kMatchBytes+4);return failures?1:0;}

@@ -382,7 +382,7 @@ combat::Hit encounterHit(const State& state,std::uint32_t attacker,std::uint32_t
     }
     if(state.wildRules>=18){const auto bonus=memberCare(*activeMember(state));
         // Rules 18: move power grows with the attacker's level so fight length
-        // stays flat from level 1 to 50, and a chip floor keeps lopsided stat
+        // stays flat through level 99, and a chip floor keeps lopsided stat
         // matchups from dragging. Both sides use the same rule.
         const auto power=kWildPowerDivisor ? attackerLevel/kWildPowerDivisor : 0u;
         std::uint32_t floor=4;
@@ -712,6 +712,173 @@ std::uint32_t encounterStepsRemaining(const State& state) {
     return (state.encounterTarget-state.encounterProgress+factor-1)/factor;
 }
 bool isValid(const State& state) { return validForVersion(state, false); }
+
+namespace {
+std::uint32_t chipFloor(std::uint32_t defenderMax) {
+    auto floor = (defenderMax + kWildFloorDivisor - 1) / kWildFloorDivisor;
+    if (floor < 4) floor = 4;
+    if (floor > 32) floor = 32;
+    return floor;
+}
+std::uint32_t movePower(std::uint32_t level) {
+    const auto power = kWildPowerDivisor ? level / kWildPowerDivisor : 0u;
+    return power > 16 ? 16u : power;
+}
+// A full pocket keeps the last count, so the next win or step pays out after a spend.
+void noteDungeonVictory(State& state) {
+    if (state.dungeonWins + 1 >= expeditions::kDungeonWinsPerKey) {
+        if (state.dungeonKeys < expeditions::kMaxDungeonKeys) {
+            state.dungeonWins = 0;
+            ++state.dungeonKeys;
+        }
+        return;
+    }
+    ++state.dungeonWins;
+}
+void noteEligibleSteps(State& state, std::uint32_t steps) {
+    while (steps) {
+        if (state.bossSigils >= expeditions::kMaxBossSigils) {
+            const auto cap = expeditions::kBossStepsPerSigil - 1;
+            if (state.bossSteps < cap) {
+                const auto room = cap - state.bossSteps;
+                state.bossSteps += steps < room ? steps : room;
+            }
+            return;
+        }
+        const auto room = expeditions::kBossStepsPerSigil - state.bossSteps;
+        const auto take = steps < room ? steps : room;
+        state.bossSteps += take;
+        steps -= take;
+        if (state.bossSteps >= expeditions::kBossStepsPerSigil) {
+            state.bossSteps = 0;
+            ++state.bossSigils;
+        }
+    }
+}
+bool themeFits(const forms::Form* form, expeditions::Theme theme, int pass) {
+    if (!form->type) return false;
+    const bool exact = std::strcmp(form->type, expeditions::themeName(theme)) == 0;
+    if (pass == 0) return exact;
+    if (pass == 1) return exact || std::strcmp(form->type, "neutral") == 0;
+    return true;
+}
+// Plays the physical exchange, including the rotating guard, and keeps the
+// natural form HP. A higher tier is preferred when that fight is still winnable.
+int rateExpeditionFoe(const CreatureMember& partner, std::uint32_t foeId, std::uint32_t level, bool boss) {
+    if (!combat::validFormProfile(foeId, level) || !combat::validFormProfile(partner.formId, partner.level)) return -1000000;
+    const auto foeHp = combat::formProfile(foeId, level).stats.maxHp;
+    const auto playerHp = partner.hp ? partner.hp : 1u;
+    if (!foeHp) return -1000000;
+    const auto tier = forms::combatTier(foeId);
+    const auto partnerTier = forms::combatTier(partner.formId);
+    const bool evolution = tier > partnerTier && tier != forms::CombatTier::Unknown;
+    const auto care = memberCare(partner);
+    const auto floorFoe = chipFloor(foeHp);
+    const auto floorPlayer = chipFloor(combat::formProfile(partner.formId, partner.level).stats.maxHp);
+    const auto powerPlayer = movePower(partner.level);
+    const auto powerFoe = movePower(level);
+    const auto bonus = std::min<std::uint32_t>(kWildDamageBonusMax, kWildDamageBonusPerLevel * level);
+    const combat::Defense guards[]{combat::Defense::Brace, combat::Defense::Ward, combat::Defense::Counter};
+    int worstSwings = 0;
+    std::uint32_t worstRemain = playerHp;
+    std::uint32_t hardestReply = 0;
+    bool safe = true;
+    for (int phase = 0; phase < 3; ++phase) {
+        auto foeLeft = foeHp;
+        auto playerLeft = playerHp;
+        int swings = 0;
+        while (foeLeft && playerLeft && swings < 36) {
+            const auto hit = combat::resolveCareForms(partner.formId, partner.level, foeId, level,
+                combat::Move::Physical, guards[(phase + swings) % 3], care, {}, floorFoe, powerPlayer);
+            ++swings;
+            if (hit.damage >= foeLeft) { foeLeft = 0; break; }
+            foeLeft -= hit.damage;
+            const auto replyMove = swings % 2 ? combat::Move::Physical : combat::Move::Magic;
+            const auto reply = combat::resolveCareForms(foeId, level, partner.formId, partner.level,
+                replyMove, combat::Defense::None, {}, care, floorPlayer, powerFoe);
+            const auto damage = reply.damage * (100 + bonus) / 100;
+            if (damage > hardestReply) hardestReply = damage;
+            if (damage >= playerLeft) { playerLeft = 0; break; }
+            playerLeft -= damage;
+        }
+        if (swings > worstSwings) worstSwings = swings;
+        if (playerLeft < worstRemain) worstRemain = playerLeft;
+        if (foeLeft || !playerLeft) safe = false;
+    }
+    const int swingsLeft = static_cast<int>(partner.energy / 2);
+    const bool winnable = safe && worstRemain > hardestReply && worstSwings > 0 && worstSwings <= swingsLeft;
+    const int lo = boss ? 8 : 6;
+    const int hi = boss ? 16 : 12;
+    // A win the partner can finish always outranks a harder loss.
+    int score = winnable ? 500 : -1000;
+    if (worstSwings >= lo && worstSwings <= hi) score += 200;
+    else if (worstSwings && worstSwings < lo) score -= (lo - worstSwings) * 20;
+    else if (worstSwings > hi) score -= (worstSwings - hi) * 8;
+    if (winnable && evolution) score += 80;
+    else if (winnable && level > partner.level) score += 40;
+    const int anchor = static_cast<int>(partner.level) + (boss ? 3 : 1);
+    int gap = static_cast<int>(level) - anchor;
+    if (gap < 0) gap = -gap;
+    if (winnable) score -= gap;
+    const auto* form = forms::find(foeId);
+    if (form && form->artId && form->artId[0]) score += 4;
+    return score;
+}
+bool chooseExpeditionFoe(const State& state, std::uint32_t scenarioIndex, std::uint32_t& formId, std::uint32_t& level) {
+    const auto* partner = activeMember(state);
+    if (!partner || scenarioIndex >= std::size(expeditions::kScenarios)) return false;
+    const auto& scenario = expeditions::kScenarios[scenarioIndex];
+    const bool boss = scenario.kind == expeditions::Kind::Boss;
+    std::uint32_t mix = state.rngState ^ (state.worldSeed * 0x9E3779B9u) ^ (state.sequence * 0x85ebca6bu) ^ ((scenarioIndex + 1u) * 0xC2B2AE35u);
+    if (!mix) mix = 0x6d2b79f5u;
+    formId = 0;
+    level = 0;
+    for (int pass = 0; pass < 3 && !formId; ++pass) {
+        int best = -1000000;
+        std::uint32_t ties = 0;
+        std::uint32_t local = mix;
+        for (std::uint32_t id = 1; id <= forms::kFormCount; ++id) {
+            if (!forms::productionForm(id) || !forms::hasInstalledArt(id)) continue;
+            const auto* form = forms::find(id);
+            if (!form || !themeFits(form, scenario.theme, pass)) continue;
+            const std::uint32_t minLevel = form->minLevel ? form->minLevel : 1u;
+            const std::uint32_t options[]{
+                minLevel,
+                std::min<std::uint32_t>(kMaxLevel, std::max(minLevel, partner->level)),
+                std::min<std::uint32_t>(kMaxLevel, std::max(minLevel, partner->level + 1)),
+                std::min<std::uint32_t>(kMaxLevel, std::max(minLevel, partner->level + (boss ? 3u : 2u))),
+                std::min<std::uint32_t>(kMaxLevel, std::max(minLevel, partner->level + (boss ? 6u : 4u))),
+            };
+            int formBest = -1000000;
+            std::uint32_t formLevel = minLevel;
+            for (const auto candidate : options) {
+                if (candidate < 1 || candidate > kMaxLevel) continue;
+                const auto score = rateExpeditionFoe(*partner, id, candidate, boss);
+                if (score > formBest) { formBest = score; formLevel = candidate; }
+            }
+            if (formBest <= -1000000) continue;
+            if (formBest > best) {
+                best = formBest;
+                formId = id;
+                level = formLevel;
+                ties = 1;
+            } else if (formBest == best) {
+                ++ties;
+                local = local * 1664525u + 1013904223u;
+                if (ties && local % ties == 0) { formId = id; level = formLevel; }
+            }
+        }
+        // Losses sit below zero. A same-element partner can lose every themed fight,
+        // so keep looking until a win fits in the partner's HP and energy.
+        if (pass < 2 && best <= 0) { formId = 0; level = 0; }
+    }
+    return formId && combat::validFormProfile(formId, level) && forms::productionForm(formId) && forms::hasInstalledArt(formId);
+}
+} // namespace
+bool previewExpeditionFoe(const State& state, std::uint32_t scenario, std::uint32_t& formId, std::uint32_t& level) {
+    return chooseExpeditionFoe(state, scenario, formId, level);
+}
+
 bool needsTestEncounterResolution(const State& state) {
     return (state.phase==Phase::Encounter && state.wildFormId>=1 && state.wildFormId<forms::kFirstProductionFormId) ||
            (state.pendingEncounter.formId>=1 && state.pendingEncounter.formId<forms::kFirstProductionFormId);
@@ -719,7 +886,7 @@ bool needsTestEncounterResolution(const State& state) {
 
 Error apply(State& state, Action action, std::uint32_t value) {
     if (!isValid(state)) return Error::InvalidState;
-    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::Focus)) return Error::InvalidAction;
+    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::ClaimExpedition)) return Error::InvalidAction;
     if (state.sequence == kMax) return Error::CounterOverflow;
     if(needsTestEncounterResolution(state)&&action!=Action::ResolveTestEncounter)return Error::InvalidAction;
     if(action==Action::StarterOfferSeed){
@@ -780,6 +947,16 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (!value) return Error::InvalidValue;
     } else if (action == Action::Focus) {
         if (value > kFocusNoTap) return Error::InvalidValue;
+    } else if (action == Action::StartExpedition) {
+        if (value >= std::size(expeditions::kScenarios)) return Error::InvalidValue;
+        if (state.phase != Phase::Home) return Error::WrongPhase;
+    } else if (action == Action::ClaimExpedition) {
+        const auto scenario = value & 7u;
+        const auto level = (value >> 3) & 0xffu;
+        const auto formId = (value >> 11) & 0xffffu;
+        if (state.phase != Phase::Home) return Error::WrongPhase;
+        if ((value >> 27) || scenario >= std::size(expeditions::kScenarios) || level < 1 || level > kMaxLevel ||
+            !forms::productionForm(formId) || !forms::hasInstalledArt(formId)) return Error::InvalidValue;
     } else if (action == Action::EvolveMember) {
         const auto memberId = value >> 16;
         const auto formId = value & 0xffffu;
@@ -971,6 +1148,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
         break;
     case Action::AccrueSteps: {
         next.explorationSteps+=value;
+        noteEligibleSteps(next, value);
         // A full slot has no hidden backlog and does not advance either RNG.
         if(next.pendingEncounter.formId) break;
         if(!next.encounterTarget) drawEncounterTarget(next);
@@ -999,6 +1177,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
     }
     case Action::Explore: {
         next.explorationSteps+=value;
+        noteEligibleSteps(next, value);
         next.message=Message::Walked;
         if(!next.encounterTarget) drawEncounterTarget(next);
         const auto effort=value*static_cast<unsigned>(next.encounterRate);
@@ -1073,6 +1252,7 @@ Error apply(State& state, Action action, std::uint32_t value) {
             next.lastCritical=critical;
             next.message = Message::Won;
             addBond(next, 8); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward); addPartyBond(next,8);
+            noteDungeonVictory(next);
         } else {
             next.wildHp -= damage;
             next.message = Message::Attacked;
@@ -1143,6 +1323,54 @@ Error apply(State& state, Action action, std::uint32_t value) {
         loadActive(next);
         next.message = Message::Selected;
         break;
+    case Action::StartExpedition: {
+        if (next.phase != Phase::Home) return Error::WrongPhase;
+        if (value >= std::size(expeditions::kScenarios)) return Error::InvalidValue;
+        const auto& scenario = expeditions::kScenarios[value];
+        const bool dungeon = scenario.kind == expeditions::Kind::Dungeon;
+        if (dungeon ? !next.dungeonKeys : !next.bossSigils) return Error::InvalidAction;
+        if (next.encounters == kMax || next.walkingEncounters == kMax || next.explorationSteps == kMax) return Error::CounterOverflow;
+        std::uint32_t formId = 0, foeLevel = 0;
+        if (!chooseExpeditionFoe(next, value, formId, foeLevel)) return Error::InvalidState;
+        const auto* foe = forms::find(formId);
+        if (!foe) return Error::InvalidState;
+        if (dungeon) --next.dungeonKeys; else --next.bossSigils;
+        // A walking encounter must be backed by a step and a live target.
+        ++next.explorationSteps;
+        if (!next.encounterTarget) drawEncounterTarget(next);
+        ++next.walkingEncounters; ++next.encounters;
+        next.phase = Phase::Encounter;
+        next.wildFormId = formId;
+        next.wildLevel = foeLevel;
+        next.wildRules = kRulesVersion;
+        next.wildSpecies = static_cast<Species>(foe->lineage);
+        next.wildMaxHp = next.wildHp = maxHp(formId, foeLevel);
+        next.wildTurn = next.captureAttempts = next.attackBoost = next.shield = 0;
+        next.cardUsed = false;
+        next.captureDeferred = 0;
+        next.lastCritical = 0;
+        next.message = Message::Encounter;
+        break;
+    }
+    case Action::ClaimExpedition: {
+        if (next.phase != Phase::Home) return Error::WrongPhase;
+        const auto scenario = value & 7u;
+        const auto level = (value >> 3) & 0xffu;
+        const auto formId = (value >> 11) & 0xffffu;
+        if ((value >> 27) || scenario >= std::size(expeditions::kScenarios) || !combat::validFormProfile(formId, level) ||
+            !forms::productionForm(formId) || !forms::hasInstalledArt(formId)) return Error::InvalidValue;
+        const bool dungeon = expeditions::kScenarios[scenario].kind == expeditions::Kind::Dungeon;
+        if (dungeon ? !next.dungeonKeys : !next.bossSigils) return Error::InvalidAction;
+        if (dungeon) --next.dungeonKeys; else --next.bossSigils;
+        const auto xpReward = 20u + 6u * level;
+        next.message = Message::Won;
+        addBond(next, 8);
+        addXp(next, xpReward);
+        addPartyXp(next, xpReward);
+        addPartyBond(next, 8);
+        noteDungeonVictory(next);
+        break;
+    }
     default:
         return Error::InvalidAction;
     }
@@ -1441,7 +1669,8 @@ const char* wildName(const State& state) {
 }
 bool parseAction(const char* name, Action& action) {
     if (!name) return false;
-    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member", "treat", "focus"};
+    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member", "treat", "focus", "start-expedition", "claim-expedition"};
+    static_assert(sizeof(names) / sizeof(names[0]) == static_cast<unsigned>(Action::ClaimExpedition) + 1, "Action names must follow the enum");
     if (std::strcmp(name, "physical") == 0) { action = Action::Attack; return true; }
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (std::strcmp(name, names[i]) == 0) {
@@ -1613,13 +1842,14 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
         put32(bytes + offset, member.id);
         put32(bytes + offset + 4, member.capturedAtSequence);
         put32(bytes + offset + 8, member.formId | (static_cast<std::uint32_t>(member.species) << 16));
-        put32(bytes + offset + 12, member.xp | (member.hp << 16));
+        put32(bytes + offset + 12, (member.xp & 0xffffu) | (member.hp << 16));
         bytes[offset + 16] = static_cast<std::uint8_t>(member.level);
         bytes[offset + 17] = static_cast<std::uint8_t>(member.energy);
         bytes[offset + 18] = static_cast<std::uint8_t>(member.fullness);
         bytes[offset + 19] = static_cast<std::uint8_t>(member.mood);
         bytes[offset + 20] = static_cast<std::uint8_t>(member.bond);
-        bytes[offset + 21] = 0;
+        // The spare byte holds XP above 65535. Older saves leave it zero, so levels 1-50 are unchanged.
+        bytes[offset + 21] = static_cast<std::uint8_t>(member.xp >> 16);
         put32(bytes + offset + 22, member.careState);
         offset += kMemberSnapshotBytes;
     }
@@ -1707,7 +1937,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
                 if(offset-start!=16 || offset+kMemberSnapshotBytes-16>length) return SnapshotStatus::InvalidState;
                 member.level=bytes[offset]; member.energy=bytes[offset+1]; member.fullness=bytes[offset+2];
                 member.mood=bytes[offset+3]; member.bond=bytes[offset+4];
-                if(bytes[offset+5]) return SnapshotStatus::InvalidState;
+                member.xp |= static_cast<std::uint32_t>(bytes[offset + 5]) << 16;
                 offset+=6; member.careState=read();
                 const bool empty=!member.id && !member.capturedAtSequence && !member.formId && member.species==Species::None && !member.xp && !member.hp &&
                     !member.level && !member.energy && !member.fullness && !member.mood && !member.bond && !member.careState;

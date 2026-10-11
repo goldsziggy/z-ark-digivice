@@ -1433,13 +1433,13 @@ function validateSave(save) {
     || !validLastCapture(state.lastCapture, state.foregroundSequence) || !validWalkingState(state.walking, state.phase) || !validRecoveryCount(state.recoveryRestCount) || state.phase !== 'home' && state.recoveryRestCount !== 0 || !validEncounterRarity(state.wildRarity)
     || !Number.isSafeInteger(state.queuedEncounters) || state.queuedEncounters < 0 || state.queuedEncounters > 4294967295
     || !Number.isInteger(state.stepsToNextEncounter) || state.stepsToNextEncounter < 0 || state.stepsToNextEncounter > 100
-    || !validParty(state) || !validOnboarding || !(validEgg || validCompleted) || state.collectionCapacity !== COLLECTION_CAPACITY || !['tactical', 'auto'].includes(state.battleMode) || state.maxLevel !== 50
+    || !validParty(state) || !validOnboarding || !(validEgg || validCompleted) || state.collectionCapacity !== COLLECTION_CAPACITY || !['tactical', 'auto'].includes(state.battleMode) || state.maxLevel !== 99
     || !state.journal || state.journal.capacity !== 512 || !Array.isArray(state.journal.obtainedFormIds) || state.journal.obtainedFormIds.length > 512
     || !state.journal.obtainedFormIds.every((id, index, ids) => Number.isInteger(id) && id >= 1 && id <= 512 && (index === 0 || id > ids[index - 1]))
     || !Number.isInteger(state.nextMemberId) || state.nextMemberId < 1 || state.nextMemberId > 4294967295
     || !state.collection.every(member => Number.isInteger(member.id) && member.id >= 1 && member.id <= MAX_MEMBER_ID && Number.isInteger(member.formId) && member.formId >= 1 && member.formId <= 512
-      && Number.isInteger(member.level) && member.level >= 1 && member.level <= 50 && Number.isInteger(member.xp) && member.xp >= 0 && member.xp <= 49000
-      && Number.isInteger(member.xpToNext) && member.xpToNext >= 0 && member.xpToNext <= 49000
+      && Number.isInteger(member.level) && member.level >= 1 && member.level <= 99 && Number.isInteger(member.xp) && member.xp >= 0 && member.xp <= 194040
+      && Number.isInteger(member.xpToNext) && member.xpToNext >= 0 && member.xpToNext <= 194040
       && Number.isInteger(member.carePoints) && member.carePoints >= 0 && member.carePoints <= 100 && Number.isInteger(member.toilet) && member.toilet >= 0 && member.toilet <= 100 && typeof member.careMissed === 'boolean'
       && Number.isInteger(member.careMistakes) && member.careMistakes >= 0 && member.careMistakes <= 7 && Number.isInteger(member.injury) && member.injury >= 0 && member.injury <= 3)) {
     throw new Error(`Unsupported save format. This browser requires schema ${SCHEMA_VERSION} and game rules ${RULES_VERSION}. Any pending action has been kept.`);
