@@ -3,7 +3,13 @@
 void nfcPump(Fixture& f,unsigned ms,unsigned step=20){
     for(unsigned elapsed=0;elapsed<ms;elapsed+=step){
         const auto io=nfcmock::reads+nfcmock::writes;
-        f.tick(step);require(nfcmock::reads+nfcmock::writes-io<=1,"at most one nonblocking UART read/write per owner tick");
+        const auto writes=nfcmock::writes,drains=nfcmock::flushes+nfcmock::closes;
+        f.tick(step);
+        // The protocol performs one operation; explicit flush/close may also
+        // drain up to four 64-byte chunks for truthful discarded-byte tracing.
+        const auto drainBudget=4*(nfcmock::flushes+nfcmock::closes-drains);
+        require(nfcmock::writes-writes<=1&&nfcmock::reads+nfcmock::writes-io<=1+drainBudget,
+                "one protocol operation plus bounded flush/close drains per owner tick");
     }
 }
 void nfcStop(Fixture& f){f.send("nfc stop");nfcPump(f,1600);require(!nfcmock::installed&&nfcmock::opens==nfcmock::closes,"UART released after bounded cleanup");}

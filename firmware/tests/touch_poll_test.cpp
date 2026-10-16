@@ -72,5 +72,5 @@ int main(){using namespace digivice::display;
     // A successful busy/no-new-report read preserves level but supplies no
     // fresh release. The adapter never invents Up to disguise a missed poll.
     reset();previousTouch={true,42,53,true};updateReport=false;CHECK(pollTouch(point)==ESP_OK);CHECK(point.pressed&&!point.fresh&&current.touchSamples==1);
-    std::printf("touch poll: %u checks passed; actual1d5552e zero-tick contention reproduced;20ms fix bounded; SDK doubles only\n",checks);
+    std::printf("touch poll: %u checks passed; 2ms zero-tick contention reproduced;20ms fix bounded; SDK doubles only\n",checks);
 }

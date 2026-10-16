@@ -27,14 +27,16 @@ void exactRestAndNoop() {
     auto manual=state;for(std::uint32_t i=0;i<count;++i)CHECK(apply(manual,Action::Rest)==Error::None);
     State candidate=newDevice();CHECK(choice.confirm(state,candidate));
     CHECK(sameSavedState(candidate,manual) && sameSavedState(state,before) && choice.count()==0);
-    CHECK(candidate.collection[1].xp==state.collection[1].xp && candidate.sequence==state.sequence+count);
+    // Useful Rest earns the ordinary care reward once; the remaining batch
+    // runs at the same care minute and must not bypass its cooldown.
+    CHECK(candidate.collection[1].xp==state.collection[1].xp+2 && candidate.sequence==state.sequence+count);
     CHECK(candidate.hp==combat::formProfile(candidate.collection[1].formId,candidate.level).stats.maxHp && candidate.energy==100);
     ParkSaveBackend flash;SaveStore saves(flash);CHECK(saves.restore(state)==BootStatus::Empty && saves.checkpoint(state));
     CHECK(saves.checkpoint(candidate));state=candidate;
     CHECK(flash.writes==2 && !choice.propose(state) && !choice.confirm(state,candidate) && flash.writes==2);
     SaveStore reboot(flash);auto restored=newDevice();
     CHECK(reboot.restore(restored)==BootStatus::Loaded && sameSavedState(restored,state) && !choice.propose(restored));
-    std::printf("  Full recovery: %lu ordinary Rest events, one verified checkpoint, XP unchanged, restored complete.\n",static_cast<unsigned long>(count));
+    std::printf("  Full recovery: %lu ordinary Rest events, one verified checkpoint, one care XP reward, restored complete.\n",static_cast<unsigned long>(count));
 }
 void staleAndCancel() {
     auto state=tired();RecoveryChoice choice;State output=newDevice();const auto untouched=output;
