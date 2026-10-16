@@ -13,7 +13,7 @@
 #endif
 
 #ifndef DEMO_SOURCE_COMMIT
-#define DEMO_SOURCE_COMMIT "171cda7e698cf2915b50aa46bc766d8d1d0ee50d"
+#define DEMO_SOURCE_COMMIT "9e6a74538326b82abf7bda0a7764b47e8094de09"
 #endif
 
 // This adapter owns only a separate browser-demo State. All rules, validation,
@@ -44,6 +44,9 @@ void quote(const char* source, char* destination, std::size_t capacity) {
 
 const char* response(const char* error = nullptr, const autobattle::Trace* trace = nullptr,
                      std::uint32_t demoSteps = 0) {
+    // Match the production CLI: a valid zero-step focus pause has state but
+    // no serializable battle trace. Do not hide its committed checkpoint.
+    if (trace && !trace->count) trace = nullptr;
     if (!writeJson(state, stateJson, sizeof(stateJson)))
         return "{\"ok\":false,\"error\":\"Native state serialization failed\",\"state\":null,\"trace\":null}";
     if (trace && !autobattle::writeJson(*trace, traceJson, sizeof(traceJson)))
@@ -64,6 +67,7 @@ const char* response(const char* error = nullptr, const autobattle::Trace* trace
 bool allowed(Action action) {
     switch (action) {
     case Action::Feed: case Action::Play: case Action::Rest: case Action::Card:
+    case Action::CareMinute: case Action::Toilet: case Action::Treat: case Action::Retreat: case Action::StartExpedition: case Action::NextExpedition:
     case Action::Attack: case Action::Heavy: case Action::Magic: case Action::Hatch:
     case Action::Mode: case Action::Select: case Action::Evolve: case Action::Release:
     case Action::RingCapture: case Action::PartyAdd: case Action::PartyRemove:
@@ -120,9 +124,19 @@ DEMO_EXPORT const char* demo_command(const char* command, std::uint32_t value) {
             ? applyAutoFight(state, &trace) : applyAutoResume(state, &trace);
         return error == Error::None ? response(nullptr, &trace) : response(errorText(error));
     }
+    if (std::strcmp(command, "focus") == 0) {
+        autobattle::Trace trace;
+        const auto error = applyFocus(state, value, &trace);
+        return error == Error::None ? response(nullptr, &trace) : response(errorText(error));
+    }
     Action action;
     if (!parseAction(command, action) || !allowed(action))
         return response("That command is not available in this browser demo");
+    // The sample clock advances one visible Home minute at a time. It never
+    // catches up offline time or accepts an arbitrary future care timestamp.
+    if (action == Action::CareMinute && (state.phase != Phase::Home ||
+        state.careMinute == UINT32_MAX || value != state.careMinute + 1))
+        return response("Care clock requires the next visible Home minute");
     const auto error = apply(state, action, value);
     return error == Error::None ? response() : response(errorText(error));
 }
@@ -143,19 +157,20 @@ DEMO_EXPORT const char* demo_snapshot() {
 DEMO_EXPORT const char* demo_load(const char* hex) {
     using namespace digivice;
     if (!hex) return response("A demo snapshot is required");
-    // This versioned demo accepts current snapshots only; the product's migration
-    // surface and physical-device save import are deliberately not exposed.
+    // Accept the current layout and its native schema migration. The length
+    // check excludes older layouts; decodeSnapshot validates rules, CRC and state.
     const auto length = std::strlen(hex);
-    if (length != kSnapshotSize * 2) return response("Invalid demo snapshot length");
+    if (length != kSnapshotSize * 2 && length != 6860 * 2) return response("Invalid demo snapshot length");
     Snapshot snapshot;
-    for (std::size_t i = 0; i < sizeof(snapshot.bytes); ++i) {
+    for (std::size_t i = 0; i < length / 2; ++i) {
         const int high = nibble(hex[i * 2]), low = nibble(hex[i * 2 + 1]);
         if (high < 0 || low < 0) return response("Invalid demo snapshot encoding");
         snapshot.bytes[i] = static_cast<std::uint8_t>(high * 16 + low);
     }
     State candidate;
-    const auto status = decodeSnapshot(snapshot.bytes, sizeof(snapshot.bytes), candidate);
-    if (status != SnapshotStatus::Ok) return response(snapshotStatusText(status));
+    const auto status = decodeSnapshot(snapshot.bytes, length / 2, candidate);
+    if (status != SnapshotStatus::Ok && status != SnapshotStatus::Migrated)
+        return response(snapshotStatusText(status));
     state = candidate;
     return response();
 }

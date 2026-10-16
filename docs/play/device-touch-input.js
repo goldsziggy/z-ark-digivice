@@ -52,7 +52,7 @@ export function createDeviceTouchInput(surface, {
   }
   // Home's side targets are also browse origins in the firmware. Other button
   // origins (even disabled Catch) cannot become a swipe or a different action.
-  const homeEdge = (target, band) => band[0] === 112 && band[1] === 282 && target &&
+  const homeEdge = (target, band) => band[0] === 112 && [246,282].includes(band[1]) && target &&
     [30, 328].includes(target.x) && target.y === 134 && target.w === 54 && target.h === 112;
   function refresh() {
     if (destroyed) return;

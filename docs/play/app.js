@@ -6,10 +6,14 @@ import { loadGameArt } from './game-art.js';
 import { createDeviceTouchInput } from './device-touch-input.js';
 import { createDeviceView } from './device-view.js';
 import { buildBattleFrames, createBattlePlayback } from './battle-playback.js';
+import { expeditionView, paintBossAura } from './shared/expedition-presentation.js';
 
 // Presentation only. All game decisions, random draws and saved state belong to
 // the unchanged native C++ core. No service API, account or device is involved.
-const SAVE_KEY = 'zark.browser-demo.v1.rules15';
+// Keep the storage/lock key shared with the older tab; never fork a save.
+const SAVE_KEY = 'zark.browser-demo.v1.rules19';
+const UPGRADE_BACKUP_KEY = `${SAVE_KEY}.before-rules22`;
+const LEGACY_SAVE_KEY = 'zark.browser-demo.v1.rules15';
 const LOCK_KEY = `${SAVE_KEY}.write`;
 const FORMAT = 1, DEFAULT_SEED = 12345;
 const $ = id => document.getElementById(id);
@@ -20,6 +24,7 @@ let core, state, starters = [], selectedStarter = 1, busy = false, needsReset = 
 let currentTab = 'play', captureMode = false, captureEpoch = 0, captureRevision = 0, ringInput;
 let persistent = !!navigator.locks?.request, lastSavedRaw = null, releaseId = 0;
 let releaseIntendedState = null, resetIntent = null;
+let careElapsed = 0, lastCareTick = 0;
 let lastFrame = 0, lastActionAt = 0, displayMessage = '', logs = [];
 const eggCanvases = new Map();
 let gameArt = null, memberThumbs = [];
@@ -29,7 +34,7 @@ const playback = createBattlePlayback();
 let playbackIndex = -1, playbackScene = null, playbackForms=[];
 const playbackBack = [{id:'battle-skip',label:'SKIP ANIMATION',x:126,y:348,w:160,h:38,enabled:true}];
 const gameScenes = ['meadow','forest','beach','ruins','cavern','snow','volcanic','digital'];
-const sceneId = () => playbackScene || (isEncounter() ? gameScenes[Math.max(0,(state.encounters || 1)-1)%gameScenes.length] : 'meadow');
+const sceneId = () => playbackScene || (isEncounter() ? gameScenes[Math.max(0,(state.encounters || 1)-1)%gameScenes.length] : deviceView?.scene() || 'meadow');
 function prepareArt() {
   if (!gameArt || !state) return;
   const ids = state.phase === 'egg' ? [] : [state.formId, ...(isEncounter() ? [state.wildFormId] : [])];
@@ -50,17 +55,19 @@ const canPlay = () => !!state && !busy && !needsReset && !playback.active();
 const isHome = () => state?.phase === 'home';
 const isEncounter = () => state?.phase === 'encounter';
 const canCapture = () => canPlay() && isEncounter() && state.wildCaptureChance > 0
-  && (state.battleMode === 'tactical' || state.autoCapture === 1);
+  && !state.captureDeferred && (state.battleMode === 'tactical' || state.autoCapture === 1);
+const canFocus = () => canPlay() && isEncounter() && !!state.focus;
+const canTimeRing = () => canCapture() || canFocus();
 const show = (id, visible) => { $(id).hidden = !visible; };
 
 function native(name, types = [], args = []) {
   const raw = core.ccall(name, 'string', types, args);
-  if (typeof raw !== 'string' || raw.length > 200000) throw new Error('The game engine returned an invalid response.');
+  if (typeof raw !== 'string' || raw.length > 600000) throw new Error('The game engine returned an invalid response.');
   return JSON.parse(raw);
 }
 function accept(result) {
-  if (!result?.state || result.rulesVersion !== 15 || result.schemaVersion !== 22
-    || !['egg','home','encounter'].includes(result.state.phase) || !validParty(result.state))
+  if (!result?.state || result.rulesVersion !== 22 || result.schemaVersion !== 30
+    || !['egg','home','encounter','expedition'].includes(result.state.phase) || !validParty(result.state))
     throw new Error('This demo and its game engine are incompatible. Please reload the page.');
   state = result.state;
   return result;
@@ -94,11 +101,17 @@ function readRaw() {
   catch { sessionOnly('Browser storage is unavailable.'); return null; }
 }
 function restore(raw) {
-  if (typeof raw !== 'string' || raw.length > 8000) throw new Error('The saved demo could not be read.');
+  if (typeof raw !== 'string' || raw.length > 16000) throw new Error('The saved demo could not be read.');
   const value = JSON.parse(raw);
-  if (value.format !== FORMAT || value.rulesVersion !== 15 || value.schemaVersion !== 22
-    || typeof value.snapshot !== 'string' || !/^[a-fA-F0-9]{5928}$/.test(value.snapshot))
+  if (value.format !== FORMAT || !(value.rulesVersion === 22 && value.schemaVersion === 30 || value.rulesVersion === 21 && value.schemaVersion === 29 || value.rulesVersion === 20 && value.schemaVersion === 28 || value.rulesVersion === 19 && value.schemaVersion === 27)
+    || typeof value.snapshot !== 'string' || !(value.schemaVersion >= 29 ? /^[a-fA-F0-9]{13752}$/ : /^[a-fA-F0-9]{13720}$/).test(value.snapshot))
     throw new Error('The saved demo uses an unsupported format.');
+  // Check both envelope and binary header before native migration. The native
+  // decoder checks the full snapshot CRC and state invariants.
+  const header = Uint8Array.from(value.snapshot.match(/../g), byte => parseInt(byte,16));
+  const words = new DataView(header.buffer);
+  if (words.getUint16(4,true) !== value.schemaVersion || words.getUint32(8,true) !== value.rulesVersion)
+    throw new Error('The saved demo version marker does not match its snapshot.');
   const result = native('demo_load', ['string'], [value.snapshot]);
   if (!result.ok) throw new Error('The saved demo failed its native integrity check.');
   accept(result);
@@ -107,9 +120,15 @@ function restore(raw) {
 function persist() {
   if (!persistent) return;
   const snapshot = core.ccall('demo_snapshot', 'string', [], []);
-  if (!/^[a-fA-F0-9]{5928}$/.test(snapshot)) throw new Error('The game engine could not save this state.');
-  const raw = JSON.stringify({format:FORMAT,rulesVersion:15,schemaVersion:22,snapshot});
+  if (!/^[a-fA-F0-9]{13752}$/.test(snapshot)) throw new Error('The game engine could not save this state.');
+  const raw = JSON.stringify({format:FORMAT,rulesVersion:22,schemaVersion:30,snapshot});
   try {
+    if (lastSavedRaw && JSON.parse(lastSavedRaw).rulesVersion < 22) {
+      const backup = localStorage.getItem(UPGRADE_BACKUP_KEY);
+      if (backup !== null && backup !== lastSavedRaw) throw new Error('An earlier pre-rules-22 backup already exists.');
+      localStorage.setItem(UPGRADE_BACKUP_KEY, lastSavedRaw);
+      if (localStorage.getItem(UPGRADE_BACKUP_KEY) !== lastSavedRaw) throw new Error('The previous save could not be backed up.');
+    }
     localStorage.setItem(SAVE_KEY, raw);
     lastSavedRaw = raw;
     $('save-status').innerHTML = '<i class="status-dot"></i> Saved in this browser';
@@ -177,7 +196,7 @@ async function command(name, value = 0) {
       if (frames.length && !document.hidden && currentTab === 'play') {
         playbackScene = gameScenes[Math.max(0,(intendedState.encounters||1)-1)%gameScenes.length]; playbackIndex = -1;
         playbackForms=[intendedState.formId,intendedState.wildFormId];
-        playback.start(frames,{state,message,openCapture:state.phase==='encounter'&&state.autoCapture===1},performance.now());
+        playback.start(frames,{state,message,openCapture:state.phase==='encounter'&&(state.autoCapture===1||!!state.focus)},performance.now());
       } else { status(message); log(message); }
     });
   } catch (error) { status(error.message || 'The action could not be completed.', true); }
@@ -186,7 +205,7 @@ async function command(name, value = 0) {
     if (!playback.active()) deviceView?.sync();
     // Like the installed touch UI, Auto opens its manual timing screen as soon
     // as the shared core pauses at the capture opportunity.
-    if (!playback.active() && !document.hidden && currentTab==='play' && state?.phase === 'encounter' && state.autoCapture === 1 && ['auto-fight','ring-capture'].includes(name)) openCapture(false);
+    if (!playback.active() && !document.hidden && currentTab==='play' && state?.phase === 'encounter' && (state.autoCapture === 1 || state.focus) && ['auto-fight','auto-resume','focus','ring-capture'].includes(name)) openCapture(false);
     render();
   }
 }
@@ -207,9 +226,9 @@ function setTab(tab, focus = false) {
   if (tab === 'box') for (const {canvas,member} of memberThumbs) paintMemberThumb(canvas,member);
   ringInput?.refresh();
 }
-function stat(label, value, max, css = '') {
+function stat(label, value, max, css = '', numeric = true) {
   const percent = Math.max(0, Math.min(100, Number(value) / Math.max(1, Number(max)) * 100));
-  return `<div><div class="stat-heading"><span>${escapeHTML(label)}</span><b>${fmt(value)} / ${fmt(max)}</b></div><div class="meter ${css}" role="meter" aria-label="${escapeHTML(label)}" aria-valuenow="${Number(value)}" aria-valuemin="0" aria-valuemax="${Number(max)}"><span style="width:${percent}%"></span></div></div>`;
+  return `<div><div class="stat-heading"><span>${escapeHTML(label)}</span>${numeric ? `<b>${fmt(value)} / ${fmt(max)}</b>` : ''}</div><div class="meter ${css}" role="meter" aria-label="${escapeHTML(label)}" aria-valuenow="${Number(value)}" aria-valuemin="0" aria-valuemax="${Number(max)}"><span style="width:${percent}%"></span></div></div>`;
 }
 function renderStarters() {
   $('starter-grid').replaceChildren(...starters.map(starter => {
@@ -233,8 +252,10 @@ function renderHome() {
   $('partner-name').textContent = state.creature;
   $('partner-level').textContent = `LV ${state.level}`;
   $('partner-meta').textContent = `${state.stage || 'Partner'} · ${state.combat?.type || 'neutral'} type · ${state.bond} bond · ${state.xpToNext ? `${state.xpToNext} XP to next level` : 'Maximum level'}`;
-  $('care-stats').innerHTML = stat('Health',state.hp,state.combat.maxHp,'hp')+stat('Energy',state.energy,100)+stat('Fullness',state.fullness,100)+stat('Mood',state.mood,100);
-  document.querySelectorAll('.care-buttons button').forEach(button => { button.disabled = !canPlay() || !isHome() || (button.dataset.command === 'play' && state.energy < 5 && state.mood < 100); });
+  $('care-stats').innerHTML = stat('Health',state.hp,state.combat.maxHp,'hp')+stat('Energy',state.energy,100,'',false)+stat('Food',state.fullness,100,'',false)+stat('Mood',state.mood,100,'',false);
+  const injury=state.collection.find(member=>member.id===state.activeCreatureId)?.injury;
+  const recovery=document.querySelector('.care-buttons [data-recovery]');if(recovery){recovery.dataset.command=injury?'treat':'rest';recovery.textContent=injury?'Treat':'Rest';}
+  document.querySelectorAll('.care-buttons button').forEach(button => { button.disabled = !canPlay() || !isHome() || (button.dataset.command === 'play' && state.energy < 5 && state.mood < 100) || (button.dataset.command === 'toilet' && state.toilet<25 && !state.careMissed); });
   $('encounter').disabled = !canPlay() || !isHome();
   for (const [id,mode] of [['mode-manual','tactical'],['mode-auto','auto']]) { $(id).setAttribute('aria-pressed',String(state.battleMode === mode)); $(id).disabled = !canPlay() || !isHome(); }
 }
@@ -251,6 +272,7 @@ function renderBattle() {
     document.querySelector(`#manual-actions [data-command="${action}"]`).disabled = !canPlay() || !manual || (action === 'heavy' && state.energy < 6);
   }
   $('auto-fight').disabled = !canPlay();
+  $('auto-fight').textContent = state.focus ? 'Time focus ring' : 'Run auto battle';
   show('capture-card',!captureMode);
   show('capture-controls',captureMode);
   $('attempts').textContent = `${state.captureAttempts} / 3 USED`;
@@ -258,8 +280,10 @@ function renderBattle() {
   if (state.collection.length >= state.collectionCapacity) help = 'Your box is full. Open Box and release a non-active Digimon to make room.';
   else if (state.wildCaptureChance > 0) help = `Eligible capture: ${state.wildCaptureChance}% at green timing. You have ${3-state.captureAttempts} ${3-state.captureAttempts === 1 ? 'attempt' : 'attempts'} left.`;
   $('capture-help').textContent = help;
-  $('capture-open').disabled = !canCapture();
-  $('capture-press').disabled = !canCapture() || !captureMode;
+  $('capture-open').disabled = !canTimeRing();
+  $('capture-open').textContent = state.focus ? 'Time focus ring' : 'Aim capture ring';
+  if(state.focus)$('capture-help').textContent=`Time your ${state.focus.kind}. Green gives the strongest effect; skipping keeps normal combat strength.`;
+  $('capture-press').disabled = !canTimeRing() || !captureMode;
   show('auto-resume',!manual && state.autoCapture === 1 && !captureMode);
   $('auto-resume').disabled = !canPlay();
 }
@@ -336,7 +360,7 @@ function render() {
 
 function closeCapture() { captureMode = false; captureRevision++; ringInput?.refresh(); }
 function openCapture(focus = true) {
-  if (!canCapture()) return;
+  if (!canTimeRing()) return;
   if (currentTab !== 'play') setTab('play');
   captureMode = true; captureEpoch = performance.now(); captureRevision++; render();
   if (focus) $('capture-press').focus({preventScroll:true});
@@ -344,9 +368,9 @@ function openCapture(focus = true) {
 function ringSample(time) { return sampleCaptureRing(Math.max(0,Math.floor(time-captureEpoch)),state.wildFormId); }
 function submitCapture(sample, time = performance.now()) {
   // One repeat guard across the screen, keyboard and optional HTML button.
-  if (!captureMode || !canCapture() || time < lastCaptureInputAt || time-lastCaptureInputAt < 450) return;
+  if (!captureMode || !canTimeRing() || time < lastCaptureInputAt || time-lastCaptureInputAt < 450) return;
   lastCaptureInputAt=time;
-  return command('ring-capture',sample.phaseMs);
+  return command(state.focus?'focus':'ring-capture',sample.phaseMs);
 }
 
 // Native commands and persistence finish once, before playback. This queue is
@@ -393,7 +417,7 @@ function paintBattlePlayback(sample,time) {
   const attackerX=sample.actor==='player'?118+lunge:294-lunge;
   const playerX=sample.actor==='player'?attackerX:118-recoil;
   const enemyX=sample.actor==='enemy'?attackerX:294+recoil;
-  badge(`TURN ${sample.turn} · ${s.battleMode==='auto'?'AUTO':'MANUAL'} BATTLE`,206,63,10,'#a4ddbc',252);
+  badge(`${expeditionView(s)?.label || `TURN ${sample.turn}`} · ${s.battleMode==='auto'?'AUTO':'MANUAL'}`,206,63,10,'#a4ddbc',252);
   badge(s.creature,118,95,12,'#a4ddbc',155);badge(s.wildName,294,95,12,'#ffd387',155);
   badge(`HP ${sample.playerHp ?? '?'}/${s.combat.maxHp}`,118,114,9,'#d8e6d7',116);
   badge(`HP ${sample.enemyHp ?? '?'}/${s.wildMaxHp}`,294,114,9,'#d8e6d7',116);
@@ -402,8 +426,9 @@ function paintBattlePlayback(sample,time) {
   const draw=(id,x,facing,isTarget)=>{
     ctx.save();
     if(moving&&sample.damage!==0&&hit&&p<.64&&isTarget)ctx.globalAlpha=.45+.55*Math.abs(Math.cos(p*44));
-    actor(id,x,193,112,time,facing);ctx.restore();
+    actor(id,x,197,128,time,facing);ctx.restore();
   };
+  if (expeditionView(s)?.boss) paintBossAura(ctx, enemyX, 197, 128, time, reducedMotion.matches);
   draw(s.formId,playerX,'right',sample.target==='player');
   draw(s.wildFormId,enemyX,'left',sample.target==='enemy');
   const targetX=sample.target==='player'?playerX:enemyX;
@@ -438,10 +463,8 @@ function paint(time) {
   ctx.setTransform(2,0,0,2,0,0);ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,412,412);
   ctx.fillStyle='#183331';ctx.fillRect(0,0,412,412);
   const scene=state?sceneId():'meadow';
-  if (gameArt?.drawBackground(ctx,scene,0,0,412,412)) {
-    // Native scene rendering dims its JPEG to 60% beneath the UI and sprites.
-    ctx.fillStyle='#0006';ctx.fillRect(0,0,412,412);
-  }
+  gameArt?.drawBackground(ctx,scene,0,0,412,412);
+  ctx.fillStyle='#0006';ctx.fillRect(0,0,412,412);
   if(!state){text('z-ark',206,188,38,'#e2ecdb',700);text('A LITTLE WORLD IS WAKING UP',206,222,10,'#c6d7c3');return;}
   if(battleSample){paintBattlePlayback(battleSample,time);return;}
   if (deviceView && !captureMode) {
@@ -449,7 +472,7 @@ function paint(time) {
     return;
   }
   const egg = state.phase === 'egg';
-  badge(egg?'CHOOSE YOUR PARTNER':captureMode?'CAPTURE / TIMING':isEncounter()?(state.battleMode==='auto'?'AUTO BATTLE':'MANUAL BATTLE'):'YOUR LITTLE ADVENTURE',206,65,10,'#a4ddbc');
+  badge(egg?'CHOOSE YOUR PARTNER':captureMode?(state.focus?`FOCUS / ${state.focus.kind.toUpperCase()}`:'CAPTURE / TIMING'):isEncounter()?(state.battleMode==='auto'?'AUTO BATTLE':'MANUAL BATTLE'):'YOUR LITTLE ADVENTURE',206,65,10,'#a4ddbc');
   if(egg){
     const starter=starters.find(s=>s.id===selectedStarter);const image=eggCanvases.get(selectedStarter);
     if(image){const bob=reducedMotion.matches?0:Math.sin(time*.0018)*3;ctx.drawImage(image,116,102+bob,180,180);}
@@ -457,12 +480,13 @@ function paint(time) {
   }else if(captureMode){
     const sample=ringSample(time);const tint={green:'#9ee2a9',orange:'#ffbd66',red:'#ff806b'}[sample.grade];
     const x=206,y=176;
+    if (expeditionView(state)?.boss) paintBossAura(ctx,x,y,176,time,reducedMotion.matches);
     actor(state.wildFormId,x,y,176,time);
     ctx.strokeStyle='#162c2adb';ctx.lineWidth=CAPTURE_RING.bandHalfWidth*2;ctx.beginPath();ctx.arc(x,y,sample.targetRadius,0,Math.PI*2);ctx.stroke();
     ctx.strokeStyle='#e4f4de';ctx.lineWidth=2;ctx.setLineDash([4,5]);ctx.beginPath();ctx.arc(x,y,sample.targetRadius,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
     ctx.strokeStyle=tint;ctx.lineWidth=5;ctx.beginPath();ctx.arc(x,y,sample.radiusQ8/256,0,Math.PI*2);ctx.stroke();
-    badge(state.wildName,206,306,19,'#f5f3df',258);
-    badge(`${sample.grade.toUpperCase()} · ${captureRingChance(state.wildCaptureChance,sample.grade)}% CHANCE`,206,339,11,tint,244);
+    badge(state.wildName,206,306,17,'#f5f3df',258);
+    badge(state.focus?`${sample.grade.toUpperCase()} · TAP TO ${state.focus.kind.toUpperCase()}`:`${sample.grade.toUpperCase()} · ${captureRingChance(state.wildCaptureChance,sample.grade)}% CHANCE`,206,326,11,tint,244);
     if (deviceView) deviceView.paintTargets(ctx);
     else badge('TAP THE SCREEN / PRESS D',206,364,9,'#c6d7c3',226);
     // This live mirror keeps the same timing visible beside mobile controls.
@@ -472,7 +496,8 @@ function paint(time) {
     badge(state.creature,118,95,12,'#a4ddbc',155);badge(state.wildName,294,95,12,'#ffd387',155);
     badge(`HP ${state.hp} / ${state.combat.maxHp}`,118,114,9,'#d8e6d7',114);badge(`HP ${state.wildHp} / ${state.wildMaxHp}`,294,114,9,'#d8e6d7',114);
     healthBar(64,120,108,state.hp,state.combat.maxHp);healthBar(240,120,108,state.wildHp,state.wildMaxHp,'#ffd387');
-    actor(state.formId,118,185,112,time,'right');actor(state.wildFormId,294,185,112,time,'left');
+    if (expeditionView(state)?.boss) paintBossAura(ctx,294,197,128,time,reducedMotion.matches);
+    actor(state.formId,118,197,128,time,'right');actor(state.wildFormId,294,197,128,time,'left');
     badge(state.autoCapture===1?'YOUR TURN TO CAPTURE':'READY FOR THE NEXT EXCHANGE',206,291,12,'#a4ddbc',282);
     badge(`LV ${state.level}  /  WILD LV ${state.wildLevel}`,206,321,10,'#d8e6d7',212);
     badge(state.battleMode==='auto'?'AUTO FIGHTS · YOU AIM THE CAPTURE':'CHOOSE A MOVE IN THE CONTROLS',206,350,9,'#d8e6d7',264);
@@ -486,6 +511,13 @@ function paint(time) {
 }
 
 function frame(time) {
+  const elapsed=lastCareTick?Math.max(0,Math.min(1000,time-lastCareTick)):0;lastCareTick=time;
+  // One real minute of visible, idle Home time; no hidden/offline catch-up.
+  // Never interrupt a held contact, pending action, battle or confirmation.
+  if(!document.hidden&&isHome()&&deviceView?.page()==='home'&&canPlay()&&!touchInput?.contactActive()&&!$('reset-dialog').open&&!$('release-dialog').open){
+    careElapsed+=elapsed;
+    if(careElapsed>=60000){careElapsed=0;void command('care-minute',state.careMinute+1);}
+  }
   if(!document.hidden && (time-lastFrame>32 || captureMode)){paint(time);lastFrame=time;}
   requestAnimationFrame(frame);
 }
@@ -507,7 +539,7 @@ document.querySelectorAll('[data-command]').forEach(button=>button.addEventListe
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>command('mode',Number(button.dataset.mode))));
 $('encounter').addEventListener('click',()=>command('demo-encounter'));
 $('touch-encounter').addEventListener('click',()=>command('demo-encounter'));
-$('auto-fight').addEventListener('click',()=>command('auto-fight'));
+$('auto-fight').addEventListener('click',()=>state.focus?openCapture():command('auto-fight'));
 $('auto-resume').addEventListener('click',()=>command('auto-resume'));
 $('capture-open').addEventListener('click',openCapture);
 $('capture-cancel').addEventListener('click',()=>{closeCapture();render();$('capture-open').focus({preventScroll:true});});
@@ -563,8 +595,11 @@ async function init() {
     if(!persistent)sessionOnly('This browser cannot safely coordinate a shared save across tabs.');
     await locked(()=>{
       const raw=readRaw();
-      if(raw !== null){try{restore(raw);}catch(error){damagedSave(error);}}
-      else persist();
+      if(raw !== null){try{restore(raw);if(JSON.parse(raw).rulesVersion<22)persist();}catch(error){damagedSave(error);}}
+      else {
+        persist();
+        try {if(localStorage.getItem(LEGACY_SAVE_KEY)!==null)storageWarning('Your older demo save is preserved. This updated preview uses a separate adventure.');}catch {/* Storage fallback is already reported. */}
+      }
     });
     if(persistent&&!needsReset)$('save-status').innerHTML='<i class="status-dot"></i> Saved in this browser';
     status(needsReset?'Use Reset demo to replace the unreadable save.':state.phase==='egg'?'Choose an egg and hatch your first partner.':state.message);
@@ -585,12 +620,13 @@ async function init() {
       onBattleCommit:()=>deviceView.battleCommit(),onCapture:({time})=>submitCapture(ringSample(time),time),
     });
     ringInput=createCaptureRingInput($('screen'),{
-      actionButton:$('capture-press'),canArm:()=>captureMode&&currentTab==='play'&&canCapture()&&!touchInput?.contactActive(),
+      actionButton:$('capture-press'),canArm:()=>captureMode&&currentTab==='play'&&canTimeRing()&&!touchInput?.contactActive(),
       getRevision:()=>captureRevision,sample:ringSample,
       onPress:({sample})=>submitCapture(sample),
       onCancel:reason=>{if(['blur','hidden','resize'].includes(reason)&&captureMode){closeCapture();render();}},
     });
-    if(state.phase==='encounter'&&state.autoCapture===1)openCapture(false);
+    if(state.phase==='encounter'&&(state.autoCapture===1||state.focus))openCapture(false);
+    $('version-label').textContent='RULES 22 · THREE-TIER DUNGEONS';
     render();
     try { gameArt=await loadGameArt({onChange:artChanged});prepareArt(); }
     catch { $('art-status').textContent='In-game art could not load. Reload to try again.'; }

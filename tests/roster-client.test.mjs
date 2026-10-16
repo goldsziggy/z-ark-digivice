@@ -93,3 +93,85 @@ test('private artwork loads only requested forms with two-pack memory and no abs
   client.setEnabled(false); client.select([20]); await new Promise(resolve => setTimeout(resolve, 5)); assert.equal(requests.length, 3);
   client.setEnabled(true); await settle(() => client.state().loaded.includes(20)); assert.ok(client.get(20));
 });
+
+test('GrapLeomon artwork uses only its verified same-species alias after exact 404', async () => {
+  for (const [requested, alternate] of [[30, 357], [357, 30]]) {
+    const requests = [];
+    const client = createFormArt({ getCredential: () => ({ deviceId: 'test', token: 'local-test-token' }),
+      fetcher: async path => {
+        requests.push(path); const id = Number(path.split('/').at(-1));
+        return id === requested ? new Response('', { status: 404 }) : Response.json(formFixture(id));
+      } });
+    client.select([requested]); await settle(() => client.state().loaded.includes(requested));
+    assert.equal(client.sourceId(requested), alternate);
+    assert.deepEqual(Object.keys(client.get(requested).sprites), [`ds-form-${alternate}`]);
+    assert.deepEqual(requests, [`/api/roster/art/${requested}`, `/api/roster/art/${alternate}`]);
+    client.select([requested]); assert.equal(requests.length, 2);
+    client.setEnabled(false); assert.equal(client.sourceId(requested), null); assert.equal(client.get(requested), null);
+  }
+});
+
+test('exact GrapLeomon art wins and malformed exact packs never borrow another identity', async () => {
+  for (const outcome of ['exact', '503', 'identity', 'corrupt', 'missing-both']) {
+    const requests = [];
+    const client = createFormArt({ getCredential: () => ({ deviceId: 'test', token: 'local-test-token' }),
+      fetcher: async path => {
+        requests.push(path); const id = Number(path.split('/').at(-1));
+        if (outcome === '503') return new Response('', { status: 503 });
+        if (outcome === 'missing-both') return new Response('', { status: 404 });
+        const body = formFixture(outcome === 'identity' ? 357 : id);
+        if (outcome === 'corrupt') body.sha256 = '0'.repeat(64);
+        return Response.json(body);
+      } });
+    client.select([30]); await settle(() => !client.state().pending);
+    assert.equal(requests.length, outcome === 'missing-both' ? 2 : 1);
+    if (outcome === 'exact') { assert.equal(client.sourceId(30), 30); assert.ok(client.get(30).sprites['ds-form-30']); }
+    else { assert.equal(client.get(30), null); assert.equal(client.sourceId(30), null); assert.deepEqual(client.state().unavailable, [30]); }
+  }
+  const requests = [];
+  const client = createFormArt({ getCredential: () => ({ deviceId: 'test', token: 'local-test-token' }),
+    fetcher: async path => { requests.push(path); return new Response('', { status: 404 }); } });
+  client.select([31]); await settle(() => client.state().unavailable.includes(31));
+  assert.deepEqual(requests, ['/api/roster/art/31']);
+});
+
+test('GrapLeomon alias responses keep source identity validation and two visible-pack bounds', async () => {
+  const requests = [];
+  const client = createFormArt({ getCredential: () => ({ deviceId: 'test', token: 'local-test-token' }),
+    fetcher: async path => {
+      requests.push(path); const id = Number(path.split('/').at(-1));
+      return id === 30 ? new Response('', { status: 404 }) : Response.json(formFixture(id));
+    } });
+  client.select([30, 18, 19]); await settle(() => client.state().loaded.length === 2);
+  assert.deepEqual(client.state().loaded, [30, 18]); assert.equal(client.sourceId(30), 357);
+  assert.deepEqual(requests, ['/api/roster/art/30', '/api/roster/art/357', '/api/roster/art/18']);
+  client.select([18]); assert.equal(client.get(30), null); assert.equal(client.sourceId(30), null);
+  const invalid = createFormArt({ getCredential: () => ({ deviceId: 'test', token: 'local-test-token' }),
+    fetcher: async path => path.endsWith('/30') ? new Response('', { status: 404 }) : Response.json(formFixture(31)) });
+  invalid.select([30]); await settle(() => invalid.state().unavailable.includes(30));
+  assert.equal(invalid.get(30), null); assert.equal(invalid.sourceId(30), null);
+});
+
+
+test('delayed exact 404 does not fetch fallback after target, private-art or account changes', async () => {
+  for (const change of ['target', 'disabled', 'account']) {
+    let credential = { deviceId: 'original', token: 'original-token' }, releaseExact;
+    const exact = new Promise(resolve => { releaseExact = resolve; }), requests = [];
+    const client = createFormArt({ getCredential: () => credential,
+      fetcher: async (path, options) => {
+        requests.push([path, options.headers.Authorization]);
+        if (requests.length === 1) return exact;
+        return Response.json(formFixture(Number(path.split('/').at(-1))));
+      } });
+    client.select([30]); assert.equal(requests.length, 1);
+    if (change === 'target') client.select([18]);
+    else if (change === 'disabled') client.setEnabled(false);
+    else { credential = { deviceId: 'replacement', token: 'replacement-token' }; client.select([30]); }
+    releaseExact(new Response('', { status: 404 }));
+    await settle(() => !client.state().pending);
+    assert.equal(requests.some(([path]) => path.endsWith('/357')), false, `${change}: obsolete request never fetches alias`);
+    if (change === 'disabled') { assert.equal(requests.length, 1); assert.deepEqual(client.state().loaded, []); }
+    else if (change === 'target') { assert.deepEqual(requests[1], ['/api/roster/art/18', 'Bearer original-token']); assert.equal(client.sourceId(18), 18); }
+    else { assert.deepEqual(requests[1], ['/api/roster/art/30', 'Bearer replacement-token']); assert.equal(client.sourceId(30), 30); }
+  }
+});

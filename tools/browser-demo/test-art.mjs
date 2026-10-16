@@ -108,3 +108,35 @@ const count=requests.length;
 await failed.prepare([11],'meadow');
 assert.equal(requests.length,count,'A failed asset must not cause a render-loop network storm');
 console.log(JSON.stringify({passed:true,forms:manifest.forms.length,missingForms:manifest.missingForms.length,scenes:manifest.scenes.length,nativeFramingChecks:manifest.forms.length*6,oddMirroredFramingChecks:oddMirror,visibleLoading:true,repeatedPreparation:true,explicitMissing:true,failedLoadBackoff:true,attributionCoverage:credits.size},null,2));
+
+// Synthetic manifests test alias selection without importing/publishing artwork.
+const descriptor=id=>({...manifest.forms[0],id,name:'GrapLeomon',file:`forms/${id}.png`});
+let aliasForms=[], broken=null;
+globalThis.fetch=async()=>({ok:true,json:async()=>({...manifest,forms:aliasForms,scenes:[]})});
+globalThis.Image=class {
+  set src(url) {
+    const path=fileURLToPath(url);requests.push(path);
+    queueMicrotask(()=>{
+      if(broken!==null && path.endsWith(`/forms/${broken}.png`)) {this.onerror();return;}
+      this.naturalWidth=96;this.naturalHeight=32;this.onload();
+    });
+  }
+};
+for(const [requested,source] of [[30,357],[357,30]]) {
+  aliasForms=[descriptor(source)];const shared=await loadGameArt();const at=requests.length;
+  await shared.prepare([requested]);
+  assert.equal(shared.formStatus(requested),'ready');assert.deepEqual(shared.status().ready,[requested]);
+  assert.equal(requests.length,at+1);assert.ok(requests.at(-1).endsWith(`/forms/${source}.png`));
+  assert.equal(shared.drawForm(context,requested,{x:206,y:176,maxSide:144}),true);
+  assert.equal(shared.formStatus(31),'missing');assert.equal(shared.drawForm(context,31,{x:206,y:176,maxSide:144}),false);
+  await shared.prepare([requested]);assert.equal(requests.length,at+1);
+}
+aliasForms=[descriptor(30),descriptor(357)];broken=null;
+const exact=await loadGameArt();await exact.prepare([30]);assert.ok(requests.at(-1).endsWith('/forms/30.png'));
+broken=30;const invalid=await loadGameArt();const at=requests.length;await invalid.prepare([30]);
+assert.equal(invalid.formStatus(30),'error');assert.deepEqual(invalid.status().failed,[30]);
+assert.equal(requests.length,at+1,'A broken exact image never loads the alias');
+assert.equal(invalid.drawForm(context,30,{x:206,y:176,maxSide:144}),false);
+aliasForms=[];broken=null;const missing=await loadGameArt();const emptyAt=requests.length;await missing.prepare([30,357]);
+assert.deepEqual(missing.status().missing,[30,357]);assert.equal(requests.length,emptyAt);
+console.log('PASS GrapLeomon preview aliases: both directions, exact priority, failed exact rejection, no unrelated form alias, repeat/missing bounds.');

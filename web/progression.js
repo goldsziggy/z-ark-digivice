@@ -12,12 +12,12 @@ export function validProgressCombat(value) {
 }
 function form(value) {
   return object(value) && integer(value.formId, 1, 512) && label(value.name) && stage(value.stage) && art(value.artId)
-    && integer(value.requiredLevel, 1, 99) && integer(value.requiredBond, 0, 200) && integer(value.requiredCare, 12, 100) && integer(value.previewLevel, 1, 99) && validProgressCombat(value.combat);
+    && integer(value.requiredLevel, 1, 99) && integer(value.requiredBond, 0, 200) && value.requiredCare === 0 && integer(value.previewLevel, 1, 99) && validProgressCombat(value.combat);
 }
 export function validateEvolutionOptions(value) {
   if (!Array.isArray(value) || value.length > 2 || new Set(value.map(entry => entry?.formId)).size !== value.length
     || !value.every(entry => exact(entry, ['formId', 'name', 'stage', 'artId', 'requiredLevel', 'requiredBond', 'requiredCare', 'previewLevel', 'eligible', 'maxCareMistakes', 'careRouteOpen', 'combat']) && form(entry) && typeof entry.eligible === 'boolean'
-      && (entry.maxCareMistakes === null || integer(entry.maxCareMistakes, 0, 7)) && typeof entry.careRouteOpen === 'boolean')) throw new Error('Unsupported evolution choices.');
+      && entry.maxCareMistakes === null && entry.careRouteOpen === true)) throw new Error('Unsupported evolution choices.');
   return structuredClone(value);
 }
 const ids = (value, max, self) => Array.isArray(value) && value.length <= max
@@ -27,11 +27,11 @@ export function validEvolutionLinks(value, self) {
     && Array.isArray(value.edges) && value.edges.length === value.children.length
     && new Set(value.edges.map(edge => edge?.toFormId)).size === value.edges.length
     && value.edges.every(edge => exact(edge, ['toFormId', 'requiredLevel', 'requiredBond', 'requiredCare']) && value.children.includes(edge.toFormId)
-      && integer(edge.requiredLevel, 1, 99) && integer(edge.requiredBond, 0, 200) && integer(edge.requiredCare, 12, 100));
+      && integer(edge.requiredLevel, 1, 99) && integer(edge.requiredBond, 0, 200) && edge.requiredCare === 0);
 }
 export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8) {
   if (!exact(value, ['formatVersion', 'rulesVersion', 'catalogVersion', 'focusFormId', 'offset', 'limit', 'total', 'nextOffset', 'forms'])
-    || value.formatVersion !== 2 || value.rulesVersion !== 19 || value.catalogVersion !== 6
+    || value.formatVersion !== 2 || value.rulesVersion !== 22 || value.catalogVersion !== 6
     || !integer(focusFormId, 1, 512) || value.focusFormId !== focusFormId || value.offset !== offset || value.limit !== limit
     || !integer(offset, 0, 511) || !integer(limit, 1, 16) || !integer(value.total, 1, 512) || offset > value.total
     || !Array.isArray(value.forms) || value.forms.length !== Math.min(limit, value.total - offset)
@@ -46,11 +46,8 @@ export function validateEvolutionGraph(value, focusFormId, offset = 0, limit = 8
   return structuredClone(value);
 }
 export function evolutionRequirements(member, option) {
-  const care = member.carePoints ?? 0;
   return [['Level', `${member.level} / ${option.requiredLevel}${member.level >= option.requiredLevel ? ' ✓' : ' needed'}`],
     ['Bond', `${member.bond} / ${option.requiredBond}${member.bond >= option.requiredBond ? ' ✓' : ' needed'}`],
-    ['Care', `${care} / ${option.requiredCare}${care >= option.requiredCare ? ' ✓' : ' needed'}`],
-    ...(option.maxCareMistakes === null || option.maxCareMistakes === undefined ? [] : [['Care mistakes', `${member.careMistakes ?? 0} / ${option.maxCareMistakes} max${option.careRouteOpen ? ' ✓' : ' · route locked this stage'}`]]),
     ...(member.injury ? [['Injury', 'Treat before Digivolving']] : [])];
 }
 
@@ -61,4 +58,12 @@ export function paintFormPlaceholder(ctx, x, y, size = 96) {
   ctx.beginPath(); ctx.roundRect(-36, -38, 72, 72, 12); ctx.fill(); ctx.stroke();
   ctx.fillStyle = '#234a4d'; ctx.font = 'bold 42px Arial'; ctx.textAlign = 'center'; ctx.fillText('?', 0, 14);
   ctx.fillStyle = '#fff5d9'; ctx.fillRect(-49, 39, 98, 17); ctx.fillStyle = '#234a4d'; ctx.font = 'bold 11px Arial'; ctx.fillText('ARTWORK PENDING', 0, 51); ctx.restore();
+}
+
+// Presentation of the native 20*(level-1)*level curve. xpToNext is supplied by the save.
+export function levelProgress(state) {
+  const level = state?.level || 1, maximum = level >= 99;
+  const earned = Math.max(0, (state?.xp || 0) - 20 * (level - 1) * level);
+  const remaining = Math.max(0, state?.xpToNext || 0);
+  return { level, maximum, percent: maximum ? 100 : earned + remaining ? Math.min(100, 100 * earned / (earned + remaining)) : 0 };
 }

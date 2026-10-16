@@ -1,6 +1,22 @@
-# Nearby duels: protocol and limits
+# Nearby play: protocol and limits
 
-The wire contract below remains compatible with installed `f9d8723`. The next source update adds explicit Nearby mode selection and stronger review-to-send validation without changing that contract. [Current update and installation boundary](LANYARD_NEARBY_AUDIO_RELEASE.md).
+## Current source: wire v4 and surviving co-op partners
+
+The current source uses **wire v4**, nearby combat rules 13, game rules 22 and save schema 30. Both handhelds must run a compatible wire/rules/catalog combination. Wire v1/v2/v3 peers may appear in discovery as incompatible; they cannot consent to a v4 session. This source/build statement does not imply that either physical device has been updated.
+
+Dungeon and boss lobbies offer **Manual** (the existing default) or **Auto** for two-player co-op. This ephemeral choice is independent of the saved solo battle mode. The host reviews the selected mode, and the guest explicitly accepts the frozen offer. The mode cannot change during a session. Both devices bind consent to the peer, nonce/session, fighter profiles and mode.
+
+`Mode::Coop` remains the session kind. A separate `coopAuto` byte extends Challenge/Accept to **88 bytes total**. Auto uses the existing Physical/Magic and Brace/Ward/Counter choices through the shared raid resolver. The host resolves one deterministic exchange, then waits for the recipient's acknowledgement and the existing 2.4-second visible hold before advancing. The guest independently recomputes the exchange. Retries resend the same state, and manual-choice packets cannot advance an Auto raid.
+
+A knocked-out partner remains visible but cannot attack, guard, or submit a choice. The living partner strikes on every remaining exchange and takes the foe's reply without an active guard. Manual play waits only for living actors' choices; both devices still verify and acknowledge each state. If a Heavy reflection knocks out the striker during an exchange, a living defender keeps the guard already submitted for that exchange. Auto and guest replay use the same pre-exchange roles. The 120-byte raid payload is unchanged; the new wire/rules versions prevent older peers from applying the former alternating-dead-actor behavior.
+
+Dungeons retain three successive fights with carried HP/energy; standalone bosses retain one fight. Both partners, foe identities, critical rolls, energy exhaustion and final reward checkpointing use the same rules as Manual. There is no capture or Focus action in the existing co-op raid; solo Auto still pauses for its interactive capture/Focus controls. Only the mutually delivered final clear is claimable, and each participant's existing own-key/sigil checkpoint policy remains unchanged. Closing or rebooting abandons the ephemeral raid; same-session reconnect is supported, durable raid resume is not.
+
+See [protocol source](../firmware/runtime/nearby_protocol.cpp), [raid resolver](../core/expedition_raid.cpp), [protocol regressions](../tests/nearby_protocol_test.cpp) and [native consent handling](../firmware/main/handheld_nearby.cpp). The browser demo does not provide nearby radio play.
+
+## Historical rules-12 duel checkpoint
+
+The remainder records the earlier installed `f9d8723` duel milestone. Its version numbers, packet sizes, counts and installation evidence are historical; the current-source contract above supersedes them. [Historical update and installation boundary](LANYARD_NEARBY_AUDIO_RELEASE.md).
 
 Nearby is a local, reward-free two-device duel. The native runtime supplies each device's actual selected owned member ID, form ID, level and two derived Care bonuses when it opens the screen. Both devices derive the same five combat stats, types and named moves from **rules 12 / catalog 6**. A duel starts with full duel HP and 100 duel energy; match resolution never changes the companion's care HP, XP, bond, captures, ownership, journal or save. Matching member IDs on different devices do not imply a shared creature or identity.
 

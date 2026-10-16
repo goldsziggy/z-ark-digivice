@@ -8,6 +8,7 @@ p.add_argument('--pack',required=True,type=pathlib.Path)
 p.add_argument('--manifest',required=True,type=pathlib.Path)
 p.add_argument('--output',required=True,type=pathlib.Path)
 p.add_argument('--battle-sequences',action='store_true',help='Replay committed native turns with exact local sprites')
+p.add_argument('--showcase',action='store_true',help='Render the public showcase stills from current screens')
 a=p.parse_args(); repo=pathlib.Path(__file__).resolve().parents[1]
 pack=a.pack.resolve(); out=a.output.resolve()
 if out==repo or repo in out.parents: raise SystemExit('Private output must be outside the repository')
@@ -32,7 +33,7 @@ run(['cmake','--build',build,'--target','digivice-game','digivice-nearby','-j','
 sources=['scripts/render-native-ui.cpp','firmware/runtime/device_ui.cpp','firmware/runtime/battle_presentation.cpp','firmware/runtime/setup_ui.cpp','firmware/runtime/network.cpp','firmware/runtime/starter.cpp','firmware/runtime/evolution_choice.cpp','firmware/runtime/sprite.cpp','firmware/runtime/background_decode.cpp']
 compiler=['c++','-std=c++17','-Wall','-Wextra','-Wpedantic','-Werror','-Icore','-Ifirmware/runtime','-I/opt/homebrew/include']
 run(compiler+sources+[build/'libdigivice-game.a',build/'libdigivice-nearby.a',build/'libdigivice-combat.a','-L/opt/homebrew/lib','-ljpeg','-o',build/'render-native-ui'])
-r=run([build/'render-native-ui',pack,out]+(['--battle-sequences'] if a.battle_sequences else []))
+r=run([build/'render-native-ui',pack,out]+(['--battle-sequences'] if a.battle_sequences else ['--showcase'] if a.showcase else []))
 for file in out.glob('*.ppm'):run(['sips','-s','format','png',file,'--out',file.with_suffix('.png')])
 run(['swift','-module-cache-path',out/'.swift-cache',repo/'scripts/native-ui-contact-sheet.swift',out])
 entries=[row.split('\t') for row in (out/'screens.tsv').read_text().splitlines()[1:]]

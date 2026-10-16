@@ -11,7 +11,7 @@ A deploy has two independent parts:
 
 ```mermaid
 flowchart LR
-    A[git fetch public<br/>clean main] --> B[tests]
+    A[fetch verified GitHub remote<br/>clean main] --> B[tests]
     B --> C[build-esp.sh waveshare<br/>0 warnings]
     C --> D{save format<br/>changed?}
     D -->|yes| E[saves --against<br/>migration dry run]
@@ -50,10 +50,11 @@ This lists each board's MAC and port from USB enumeration only: no reset and no 
 
 ## 2. Start from the published source
 
-`public` is GitHub (`goldsziggy/z-ark-digivice`). `origin` is an old local mirror, so do not deploy from it.
+Verify that `origin` points to `https://github.com/goldsziggy/z-ark-digivice` before using the commands below. Historical worktrees may instead name that remote `public`; substitute the verified remote name.
 
 ```bash
-git fetch public && git switch main && git merge --ff-only public/main
+git remote -v
+git fetch origin && git switch main && git merge --ff-only origin/main
 ```
 
 The working tree must be clean. A dirty build reports `project_version` ending in `-dirty`, and the tool refuses it.

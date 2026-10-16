@@ -13,7 +13,7 @@ const corePath = process.env.DIGIVICE_TEST_CORE_PATH ?? join(rootDir, 'build/dig
 const battleCorePath = process.env.DIGIVICE_TEST_BATTLE_PATH ?? join(rootDir, 'build/digivice-battle');
 type Event = { type: string; value: number };
 const event = (type: string, value = 0): Event => ({ type, value });
-const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 19, baseRevision, batchId, events });
+const batch = (baseRevision: number, batchId: string, events: Event[]) => ({ rulesVersion: 22, baseRevision, batchId, events });
 const hash = (text: string | Buffer) => createHash('sha256').update(text).digest('hex');
 const oldToken = Buffer.alloc(32, 65).toString('base64url'); // Temporary synthetic identity only.
 const frozen = (events: Event[], version = 14) => JSON.parse(execFileSync(corePath, [`--replay-v${version}-onboarding-trace`, '12345'], {
@@ -135,14 +135,14 @@ for (const version of [13, 14]) test(`rules${version} migration leaves companion
   }] };
   const f = await fixture(t, original), save = await f.request('/api/save', oldToken); assert.equal(save.status, 200);
   assert.equal(save.body.state.maxLevel, 99);
-  assert.deepEqual(historicComparable(save.body.state), historicComparable({ ...previous.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
+  assert.deepEqual(historicComparable(save.body.state), historicComparable({ ...previous.state, schemaVersion: 30, rulesVersion: 22, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(save.body.autoTrace, previous.trace);
   assert.equal((await f.request('/api/save-sync', oldToken, pending)).body.error, 'migration_required');
-  assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 22 })).body.error, 'legacy_batch_requires_reconciliation');
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
-  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [21, 27, 19]);
+  assert.deepEqual([stored.formatVersion, stored.gameSchemaVersion, stored.rulesVersion], [24, 30, 22]);
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: version, events, receipts: [receipt] }]);
-  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6860);
+  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6876);
   assert.deepEqual(JSON.parse(await readFile(join(f.dataDir, `store.rules-v${version}.json`), 'utf8')), original);
   await f.restart(); assert.deepEqual(await f.request('/api/save', oldToken), save);
   await writeFile(join(f.dataDir, 'store.json'), '{interrupted'); await f.restart(); assert.deepEqual(await f.request('/api/save', oldToken), save);
@@ -166,7 +166,7 @@ test('rules14 snapshot baseline preserves inherited rules13 Auto trace and both 
   }] };
   const f = await fixture(t, original), saved = await f.request('/api/save', oldToken); assert.equal(saved.status, 200);
   assert.equal(saved.body.state.maxLevel, 99);
-  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...expected.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...expected.state, schemaVersion: 30, rulesVersion: 22, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, previous.trace, 'care suffix inherits exact earlier frames');
   const histories = [archived, { rulesVersion: 14, events: suffix, receipts: [receipts[1]] }];
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
@@ -174,7 +174,7 @@ test('rules14 snapshot baseline preserves inherited rules13 Auto trace and both 
   for (const [index, events] of [initial, suffix].entries()) {
     const pending = { rulesVersion: 13 + index, baseRevision: index, batchId: receipts[index].batchId, events };
     assert.equal((await f.request('/api/save-sync', oldToken, pending)).body.error, 'migration_required');
-    assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
+    assert.equal((await f.request('/api/save-sync', oldToken, { ...pending, rulesVersion: 22 })).body.error, 'legacy_batch_requires_reconciliation');
   }
   await f.restart(); assert.deepEqual(await f.request('/api/save', oldToken), saved);
   const current = await f.request('/api/save-sync', oldToken, batch(2, 'party-chain-current-care', [event('rest')])); assert.equal(current.status, 200);

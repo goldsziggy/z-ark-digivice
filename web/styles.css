@@ -1361,3 +1361,83 @@ body[data-device-input=touch] .device-screen { box-sizing:content-box; width:412
 .device-ui[data-layout=capture-flight] { pointer-events:none; }
 .device-ui[data-layout=capture-flight] .screen-heading { top:5%; }
 .device-ui[data-layout=capture-flight] .screen-content { display:none !important; }
+
+/* Simplified live handheld screens. Opaque control plates remain legible over art. */
+.device-ui[data-layout=home-carousel] { touch-action:pan-y; }
+.device-ui[data-screen=home] .screen-heading { top:10%; left:19%; width:62%; }
+.device-ui[data-screen=home] .screen-heading h2 { font-size:5.2cqw; padding:.8cqw 2cqw; }
+.device-ui[data-screen=home][data-long-title=true] .screen-heading h2 { font-size:3.7cqw; }
+.device-ui[data-screen=home] .screen-heading>span:empty { display:none; }
+.home-growth { width:100%; margin:1cqw auto 0; display:flex; flex-direction:column; align-items:center; gap:.6cqw; font-size:3.5cqw; font-weight:700; }
+.home-level { padding:.5cqw 5cqw; border-radius:6cqw; background:var(--screen-cream); }
+.home-meters { width:100%; display:flex; flex-direction:column; gap:.8cqw; padding:1cqw 2cqw; border-radius:2cqw; background:#122a33; color:#ecf6d9; }
+.home-meter { display:flex; align-items:center; gap:1.5cqw; flex:1; min-width:0; font-size:3cqw; --meter-color:#69b9ff; }
+.home-hp { --meter-color:#90e7ae; }
+.home-meter progress { appearance:none; flex:1; min-width:0; width:100%; height:2cqw; border:0; border-radius:1cqw; overflow:hidden; background:#265357; accent-color:var(--meter-color); }
+.home-meter progress::-webkit-progress-bar { background:#265357; }
+.home-meter progress::-webkit-progress-value { background:var(--meter-color); }
+.home-meter progress::-moz-progress-bar { background:var(--meter-color); }
+.device-ui[data-controls=touch][data-layout=home-carousel] .screen-content { top:61%; left:26%; width:48%; height:21%; padding:0; overflow:visible; background:transparent; }
+.device-ui[data-layout=home-carousel] .screen-choice { min-height:17cqw; font-size:5cqw; }
+.device-ui[data-layout=home-carousel] .screen-choice-count { display:none !important; }
+.device-ui[data-controls=touch][data-layout=home-carousel] .screen-footer { top:61%; left:10%; width:80%; height:17cqw; pointer-events:none; }
+.device-ui[data-controls=touch][data-layout=home-carousel] .screen-footer button { position:absolute; width:14cqw; height:17cqw; pointer-events:auto; }
+.device-ui[data-layout=home-carousel] #device-previous { left:0; }
+.device-ui[data-layout=home-carousel] #device-next { right:0; }
+.device-ui[data-controls=touch][data-layout=home-carousel] .screen-footer [data-device-action=menu] { top:19cqw; width:22cqw; height:11cqw; min-height:44px; left:29cqw; font-size:3cqw; }
+.home-dots { display:flex; justify-content:center; gap:1.4cqw; margin:2cqw 0; }
+.home-dots span { width:1.7cqw; height:1.7cqw; border-radius:50%; background:#fff6df80; }
+.home-dots span[data-current=true] { background:#fff6df; }
+.home-lifetime { position:absolute; bottom:5%; left:25%; width:50%; text-align:center; border-radius:3cqw; padding:1cqw; background:var(--screen-cream); font-size:2.8cqw; }
+.device-ui[data-layout=care-grid] .screen-heading { top:8%; }
+.device-ui[data-layout=care-grid] .care-bars { position:absolute; left:17%; top:22%; width:66%; border-radius:3cqw; padding:1.2cqw 3cqw; background:#fff6dff2; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5cqw; }
+.care-bars label { display:flex; flex-direction:column; align-items:stretch; gap:1cqw; font-size:3cqw; font-weight:700; }
+.care-bars label span { width:auto; }
+.care-bars .care-health { grid-column:1/-1; display:grid; grid-template-columns:1fr auto; align-items:center; font-size:3.2cqw; }
+.care-health progress { grid-column:1/-1; }
+.care-health[data-injured=true] progress { accent-color:#c45447; }
+.care-bars [data-need=food] progress { accent-color:#aa731e; }
+.care-bars [data-need=energy] progress { accent-color:#287f98; }
+.care-bars progress { min-width:0; width:100%; height:1.8cqw; accent-color:#23775e; border-radius:1cqw; }
+.device-ui[data-controls=touch][data-layout=care-grid] .screen-content { top:44%; left:12.5%; width:75%; height:38%; padding:0; background:transparent; overflow:visible; }
+.device-ui[data-layout=care-grid] .screen-choices { display:grid; grid-template-columns:1fr 1fr; gap:2cqw; }
+.device-ui[data-controls=touch][data-layout=care-grid] .screen-choice { height:17cqw; min-height:70px; padding:1cqw; font-size:4.9cqw; background:#fff6df; border:2px solid #2c6351; }
+.device-ui[data-layout=care-grid] .screen-choice[data-selected=true] { box-shadow:none; border-color:#2c6351; }
+.device-ui[data-controls=touch][data-layout=care-grid] .screen-detail { position:absolute; top:-5.5cqw; left:10%; width:80%; padding:.4cqw; text-align:center; font-size:2.8cqw; }
+.device-ui[data-controls=touch][data-layout=care-grid] .screen-footer { top:82%; left:25%; width:50%; height:11cqw; gap:2cqw; }
+.device-ui[data-controls=touch][data-layout=care-grid] .screen-footer button { width:24cqw; height:11cqw; min-height:44px; border-radius:5cqw; }
+.device-ui[data-controls=touch]:is([data-layout=dungeon-picker],[data-layout=dungeon-lobby]) .screen-content { top:47%; left:24%; width:52%; height:29%; background:transparent; padding:0; overflow:visible; }
+.device-ui[data-controls=touch]:is([data-layout=dungeon-picker],[data-layout=dungeon-lobby]) .screen-choices { margin:0; }
+.keys-held { order:1; border-radius:4cqw; padding:1.2cqw; margin:2cqw 0 0; text-align:center; font-size:3.8cqw; font-weight:700; background:var(--screen-cream); }
+.scenario-count { text-align:center; font-size:3cqw; margin:1.5cqw; color:#fff6df; text-shadow:0 1px 3px #000; }
+.device-ui[data-controls=touch][data-layout=dungeon-picker] .screen-detail { position:absolute; top:-13cqw; font-size:3.3cqw; text-align:center; }
+.device-ui[data-controls=touch][data-layout=dungeon-lobby] .screen-detail { position:absolute; top:-19cqw; font-size:3.5cqw; text-align:center; }
+.device-ui[data-controls=touch][data-layout=dungeon-lobby] .screen-touch-note { font-size:2.7cqw; background:var(--screen-cream); border-radius:2cqw; margin-top:2cqw; }
+.device-ui[data-controls=touch][data-layout=nearby-grid] .screen-content { top:47%; left:12.5%; width:75%; height:25%; background:transparent; padding:0; overflow:visible; }
+.device-ui[data-layout=nearby-grid] .screen-choices { display:grid; grid-template-columns:1fr 1fr; gap:2cqw; }
+.device-ui[data-controls=touch][data-layout=nearby-grid] .screen-choice { height:17cqw; min-height:70px; font-size:4.9cqw; padding:1cqw; }
+.device-ui[data-layout=nearby-grid] .screen-choice[data-selected=true] { box-shadow:none; }
+.device-ui[data-controls=touch][data-layout=nearby-grid] .screen-detail { width:80%; margin:2cqw auto 0; text-align:center; font-size:3.1cqw; padding:2cqw; }
+.device-ui[data-controls=touch][data-layout=nearby-grid] .screen-footer { top:82%; left:34%; width:32%; }
+.device-ui[data-controls=touch]:is([data-layout=nearby-grid],[data-layout=dungeon-lobby]) .screen-footer { top:84%; height:11cqw; }
+.device-ui[data-controls=touch]:is([data-layout=nearby-grid],[data-layout=dungeon-lobby]) #device-back { width:32cqw; height:11cqw; min-height:44px; border-radius:5cqw; }
+@media (prefers-reduced-motion:reduce) { .device-ui[data-layout=home-carousel] * { animation:none; transition:none; } }
+
+.device-ui[data-layout=home-carousel] .screen-choices:has(>button:nth-child(2)) { grid-template-columns:1fr; }
+/* Keep the held-currency label and scenario position above navigation targets. */
+.device-ui[data-controls=touch][data-layout=dungeon-picker] .screen-content { top:43%; }
+.device-ui[data-layout=dungeon-picker] .scenario-count { order:2; margin:.8cqw; font-size:2.8cqw; }
+/* Battle status must remain inside the touch scroll panel, including boss fights. */
+.device-ui[data-controls=touch][data-screen=battle] .screen-detail { position:static; bottom:auto; width:auto; }
+
+/* Battle actors occupy the open middle band. Keep the action carousel and
+   >=44px navigation below them on both supported round screen diameters. */
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-content { top:64%; left:20%; width:60%; height:15%; padding:0; background:transparent; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-detail { display:none; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-choices { margin:0; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-choice { min-height:14cqw; height:14cqw; padding:1cqw; font-size:4.1cqw; gap:.6cqw; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-choice small { font-size:2.7cqw; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-choice-count { display:none; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-footer { top:81%; left:24%; width:52%; height:44px; gap:1cqw; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-footer button { min-height:44px; height:44px; padding:1cqw; font-size:3.1cqw; }
+.device-ui[data-controls=touch][data-layout=wild-carousel] .screen-footer>span { display:none; }

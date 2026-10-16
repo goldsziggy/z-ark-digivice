@@ -90,9 +90,11 @@ saved wild-battle mode. Both the outgoing invitation and the recipient's accept
 screen show the offered mode. Sending and accepting recheck the reviewed peer,
 open nonce/session, fighter profiles and mode; a changed offer requires review.
 
-Auto already uses seeded random Physical/Magic attacks with equal odds, random
-existing defenses and alternating attackers. The recipient verifies the exact
-next result. Retries resend the committed exchange, and the host waits for the
+Friendly versus Auto uses seeded random Physical/Magic attacks with equal odds,
+random existing defenses and alternating attackers. Co-op Auto prefers the
+stronger basic attack using public profiles and the visible foe guard, retaining
+seeded choices for equal damage and random defensive guards. Knocked-out co-op
+partners are skipped. The recipient verifies the exact next result. Retries resend the committed exchange, and the host waits for the
 previous state to be acknowledged before the next paced turn. No PvP capture,
 care damage, ownership change or progression reward is introduced.
 

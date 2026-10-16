@@ -57,25 +57,25 @@ test('rules13 full-eight Auto history stays exact before expansion; archived ret
   events.push(...Array.from({ length: old.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 });
   old = frozen(events); assert.equal(old.state.collection.length, 8); assert.equal(old.state.captures, 7);
   const f = await fixture(t, events), saved = await f.request(); assert.equal(saved.status, 200);
-  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
-  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
+  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.body.state.schemaVersion, 30); assert.equal(saved.body.state.rulesVersion, 22);
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 30, rulesVersion: 22, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, old.trace);
   assert.deepEqual(saved.body.events, []); assert.equal(saved.body.baseSequence, events.length);
   const stored = JSON.parse(await readFile(join(f.dataDir, 'store.json'), 'utf8'));
   assert.deepEqual(stored.devices[0].legacy.histories, [{ rulesVersion: 13, events, receipts: f.original.devices[0].receipts }]);
-  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6860);
+  assert.equal(Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64').length, 6876);
   assert.equal(await readFile(join(f.dataDir, 'store.rules-v13.json'), 'utf8'), f.originalText);
   const first = f.original.devices[0].receipts[0];
   const oldPending = { rulesVersion: 13, baseRevision: 0, batchId: first.batchId, events: events.slice(0, first.eventEnd) };
   assert.equal((await f.request(oldPending)).body.error, 'migration_required');
-  assert.equal((await f.request({ ...oldPending, rulesVersion: 19 })).body.error, 'legacy_batch_requires_reconciliation');
+  assert.equal((await f.request({ ...oldPending, rulesVersion: 22 })).body.error, 'legacy_batch_requires_reconciliation');
   assert.deepEqual(await f.request(), saved);
   await f.restart(); assert.deepEqual(await f.request(), saved);
   await writeFile(join(f.dataDir, 'store.json'), '{interrupted'); await f.restart(); assert.deepEqual(await f.request(), saved);
   const health = await f.request(undefined, '/api/health'); assert.equal(health.body.collectionCapacity, 250);
   let current = saved.body;
   for (let attempt = 0; attempt < 32 && current.state.collection.length === 8; ++attempt) {
-    const result = await f.request({ rulesVersion: 19, baseRevision: current.revision, batchId: `expanded-roster-capture-${attempt}`, events: [
+    const result = await f.request({ rulesVersion: 22, baseRevision: current.revision, batchId: `expanded-roster-capture-${attempt}`, events: [
       ...Array.from({ length: current.state.recoveryRestCount }, () => ({ type: 'rest', value: 0 })), { type: 'walk', value: 100 }, { type: 'auto', value: 0 },
     ] });
     assert.equal(result.status, 200); current = result.body;
@@ -90,8 +90,8 @@ test('rules13 ring event and paused Auto trace migrate without another timing dr
   const events = [{ type: 'hatch', value: 1 }, { type: 'mode', value: 1 }, { type: 'walk', value: 100 }, { type: 'auto-fight', value: 0 }, { type: 'ring-capture', value: 0 }];
   const old = frozen(events), f = await fixture(t, events), saved = await f.request();
   assert.equal(saved.status, 200); assert.equal(saved.body.state.lastCapture.chance, old.state.lastCapture.chance);
-  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.body.state.schemaVersion, 27); assert.equal(saved.body.state.rulesVersion, 19);
-  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 27, rulesVersion: 19, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
+  assert.equal(saved.body.state.maxLevel, 99); assert.equal(saved.body.state.schemaVersion, 30); assert.equal(saved.body.state.rulesVersion, 22);
+  assert.deepEqual(historicComparable(saved.body.state), historicComparable({ ...old.state, schemaVersion: 30, rulesVersion: 22, collectionCapacity: 250, partyCapacity: 3, partyMemberIds: [] }));
   assert.deepEqual(saved.body.autoTrace, old.trace);
   await f.restart(); assert.deepEqual(await f.request(), saved);
 });
@@ -134,12 +134,13 @@ function schema26Snapshot(current: Buffer): string {
   }
   current.copy(out, 2992, 112 + 250 * 26, 112 + 250 * 26 + 220);
   out.writeUInt16LE(26, 4);
+  out.writeUInt32LE(19, 8);
   out.writeUInt16LE(3204, 6);
   out.writeUInt32LE(crc32(out.subarray(0, 3212)), 3212);
   return out.toString('base64');
 }
 
-test('a schema 26 save is rewritten before the schema 27 label and keeps its three dungeon keys', async t => {
+test('a schema 26 save is rewritten before the schema 28 label and keeps its three dungeon keys', async t => {
   const folded = JSON.parse(execFileSync(corePath, ['--fold-v19-onboarding', '12345'], {
     input: 'hatch 1\n', encoding: 'utf8', maxBuffer: 1024 * 1024,
   }));
@@ -184,16 +185,16 @@ test('a schema 26 save is rewritten before the schema 27 label and keeps its thr
     for (const name of ['store.json', 'store.backup.json']) {
       const stored = JSON.parse(await readFile(join(opened.dataDir, name), 'utf8'));
       const bytes = Buffer.from(stored.devices[0].legacy.snapshotBase64, 'base64');
-      assert.equal(stored.gameSchemaVersion, 27);
-      assert.equal(bytes.length, 6860);
-      assert.equal(bytes.readUInt16LE(4), 27);
+      assert.equal(stored.gameSchemaVersion, 30);
+      assert.equal(bytes.length, 6876);
+      assert.equal(bytes.readUInt16LE(4), 30);
     }
     assert.equal(await readFile(join(opened.dataDir, 'store.schema-26.json'), 'utf8'), opened.originalText);
-    const fed = await opened.request({ rulesVersion: 19, baseRevision: 1, batchId: `schema26-feed-${gameSchemaVersion}`, events: [{ type: 'feed', value: 0 }] });
+    const fed = await opened.request({ rulesVersion: 22, baseRevision: 1, batchId: `schema26-feed-${gameSchemaVersion}`, events: [{ type: 'feed', value: 0 }] });
     assert.equal(fed.status, 200);
     assert.equal(fed.body.state.expeditions.dungeonKeys, 3);
     const afterFeed = JSON.parse(await readFile(join(opened.dataDir, 'store.json'), 'utf8'));
-    assert.equal(Buffer.from(afterFeed.devices[0].legacy.snapshotBase64, 'base64').readUInt16LE(4), 27);
+    assert.equal(Buffer.from(afterFeed.devices[0].legacy.snapshotBase64, 'base64').readUInt16LE(4), 30);
     await opened.restart();
     const again = await opened.request();
     assert.equal(again.status, 200);

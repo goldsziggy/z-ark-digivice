@@ -1,10 +1,10 @@
 # Agent instructions: z-ark Digivice
 
-An offline virtual-pet game: a deterministic C++ core (`core/`), ESP32-S3 firmware with a native 412 × 412 touch UI (`firmware/`), a Node/TypeScript service (`service/`), a browser demo (`docs/play/`) and the GitHub Pages showcase (`docs/`). Read the README "Current source" paragraph for the live schema/rules version.
+An offline virtual-pet game: a deterministic C++ core (`core/`), ESP32-S3 firmware with a native 412 × 412 logical touch UI and 412/480-pixel board profiles (`firmware/`), a Node/TypeScript service (`service/`), a browser demo (`docs/play/`) and the GitHub Pages showcase (`docs/`). Read the README "Current source" paragraph for the live schema/rules version.
 
 ## Git
 
-- `public` is GitHub (`goldsziggy/z-ark-digivice`) and the source of truth. `origin` is an old local mirror: never pull from or push to it. Run `git fetch public` before starting.
+- Verify remotes before fetching or pushing. The canonical repository is `https://github.com/goldsziggy/z-ark-digivice`; fresh clones use `origin`, while historical worktrees may use `public`. Never assume a remote name identifies GitHub.
 - Other agents may be working in this checkout or in sibling worktrees (`git worktree list`). Work on your own branch, preferably in your own worktree, and never reset or switch branches under someone else's uncommitted changes.
 - GitHub Pages serves `docs/` from `main`. Anything merged there is published.
 
@@ -12,7 +12,7 @@ An offline virtual-pet game: a deterministic C++ core (`core/`), ESP32-S3 firmwa
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j 4
-npm run test:publication          # published scope; only background-decode-test is expected to be absent
+npm run test:publication          # published scope; private asset fixture suites require local inputs
 bash firmware/tests/run.sh        # firmware host tests (touch stream, capture, idle, walking, ...)
 TAP_AUDIT_REPORT=1 ./build/device-ui-test
 DIGIVICE_IDF_PYTHON_ENV="$PWD/../.toolchains/espressif-v5.3.6/python_env/idf5.3_py3.9_env" bash scripts/build-esp.sh waveshare

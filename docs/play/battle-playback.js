@@ -38,7 +38,7 @@ export function buildBattleFrames(before, result, command) {
     || after.sequence !== before.sequence + 1 || before.activeCreatureId !== after.activeCreatureId) return [];
   // Copy, so later view-only decoration cannot alter a command snapshot.
   const scene = JSON.parse(JSON.stringify(before));
-  if (command === 'auto-fight' || command === 'auto-resume') {
+  if (command === 'auto-fight' || command === 'auto-resume' || command === 'focus') {
     const trace = result.trace;
     if (!trace || trace.startSequence !== before.sequence || trace.endSequence !== after.sequence
       || !Array.isArray(trace.steps) || !trace.steps.length || trace.steps.length > 48
@@ -60,7 +60,7 @@ export function buildBattleFrames(before, result, command) {
   }
   const action = ATTACKS.get(command);
   if (!action || before.battleMode !== 'tactical') return [];
-  const terminal = after.phase === 'home';
+  const terminal = after.phase === 'home' || after.phase === 'expedition';
   if (!terminal && (after.phase !== 'encounter' || after.wildFormId !== before.wildFormId
     || after.encounters !== before.encounters || after.wildTurn !== before.wildTurn + 1)) return [];
   const retreat = terminal && after.message === 'A gentle retreat. Rest whenever you are ready.';

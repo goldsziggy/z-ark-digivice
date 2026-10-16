@@ -10,11 +10,11 @@ source_root="${1:-$repo_root}"
 default_output="$repo_root/docs/play/runtime"
 if [[ "$mode" == native ]]; then default_output="$repo_root/tools/browser-demo/native-output"; fi
 output_dir="${2:-$default_output}"
-source_commit="${DEMO_SOURCE_COMMIT:-171cda7e698cf2915b50aa46bc766d8d1d0ee50d}"
+source_commit="${DEMO_SOURCE_COMMIT:-9e6a74538326b82abf7bda0a7764b47e8094de09}"
 [[ "$source_commit" =~ ^[a-f0-9]{40}$ ]] || { echo 'DEMO_SOURCE_COMMIT must be a full lowercase Git SHA.' >&2; exit 2; }
 [[ -f "$source_root/core/game.cpp" ]] || { echo 'Source root must contain core/game.cpp.' >&2; exit 2; }
 
-sources=(game combat encounters battle_trace forms legacy_combat_v3 legacy_forms_v5 legacy_combat_v5 legacy_forms_v6 legacy_combat_v6 legacy_forms_v7 legacy_combat_v7 legacy_forms_v8 legacy_combat_v8 legacy_forms_v9 legacy_combat_v9)
+sources=(game trade combat encounters battle_trace forms legacy_combat_v3 legacy_forms_v5 legacy_combat_v5 legacy_forms_v6 legacy_combat_v6 legacy_forms_v7 legacy_combat_v7 legacy_forms_v8 legacy_combat_v8 legacy_forms_v9 legacy_combat_v9)
 inputs=("$script_dir/bridge.cpp")
 for source in "${sources[@]}"; do inputs+=("$source_root/core/$source.cpp"); done
 common=(-std=c++17 -Wall -Wextra -Wpedantic -Werror -fno-exceptions -fno-rtti "-I$source_root/core" "-DDEMO_SOURCE_COMMIT=\"$source_commit\"")

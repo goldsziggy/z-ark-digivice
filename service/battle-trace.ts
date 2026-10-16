@@ -17,7 +17,7 @@ const choices = new Set(['physical', 'heavy', 'magic', 'capture', 'brace', 'coun
 function participant(value: unknown): Participant {
   const text = (input: unknown) => typeof input === 'string' && input.length >= 1 && input.length <= 64 && !/[\u0000-\u001f\u007f]/.test(input);
   if (!object(value) || !exact(value, ['species', 'name', 'level', 'combat', ...(Object.hasOwn(value, 'formId') ? ['formId'] : [])]) || Object.hasOwn(value, 'formId') && (!integer(value.formId, 512) || Number(value.formId) < 1) || !(typeof value.species === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.species) && value.species.length <= 63) ||
-    !text(value.name) || !integer(value.level, 50) || Number(value.level) < 1 || !object(value.combat)) throw new Error('Invalid native Auto participant.');
+    !text(value.name) || !integer(value.level, 99) || Number(value.level) < 1 || !object(value.combat)) throw new Error('Invalid native Auto participant.');
   const combat = value.combat;
   if (!exact(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) || !integer(combat.maxHp, 2048) || Number(combat.maxHp) < 1 || !['attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 256) && Number(combat[key]) >= 1) ||
     !['grove', 'tide', 'ember', 'neutral'].includes(String(combat.type)) || !object(combat.skills) || !exact(combat.skills, ['physical', 'heavy', 'magic']) || !Object.values(combat.skills).every(text)) throw new Error('Invalid native Auto combat profile.');

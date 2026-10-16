@@ -10,6 +10,7 @@ import createDemoCore from '../../docs/play/runtime/demo-core.js';
 import * as party from '../../docs/play/shared/party.js';
 import * as starter from '../../docs/play/shared/starter-onboarding.js';
 import * as ring from '../../docs/play/shared/capture-ring.js';
+import * as expedition from '../../docs/play/shared/expedition-presentation.js';
 import { loadGameArt } from '../../docs/play/game-art.js';
 
 const play = new URL('../../docs/play/', import.meta.url);
@@ -81,7 +82,7 @@ const sandbox = {
   performance: { now: () => 1000 },
   navigator: { locks: { async request(_name, _options, callback) { return callback(); } } },
   localStorage: { getItem() { return raw; }, setItem(_key, value) { raw = value; } },
-  ...party, ...starter, ...ring, loadGameArt,
+  ...party, ...starter, ...ring, ...expedition, loadGameArt,
   buildBattleFrames, createBattlePlayback, createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
     createCaptureRingInput: () => ({ refresh() {}, cancel() {} }),
   runtimeFactory: createDemoCore,

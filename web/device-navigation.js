@@ -1,7 +1,7 @@
 // Presentation state only. The app owns commands, identities, pending saves,
 // capture cancellation and the items currently available on each screen.
 export const DEVICE_SCREENS = Object.freeze([
-  'home', 'starter-select', 'starter-review', 'starter-hatched', 'menu', 'care', 'companions', 'companion', 'explore', 'battle', 'capture', 'capture-aim', 'battle-mode',
+  'home', 'dungeons', 'dungeon-lobby', 'expedition-next', 'nearby', 'starter-select', 'starter-review', 'starter-hatched', 'menu', 'care', 'companions', 'companion', 'explore', 'battle', 'capture', 'capture-aim', 'battle-mode',
   'wild-mode', 'wild-auto-confirm', 'wild-auto-progress', 'wild-auto-result', 'battle-select-mode', 'battle-auto-confirm', 'battle-auto-progress', 'battle-auto-result',
   'progression', 'evolution-options', 'evolution-preview', 'evolution-skills', 'evolution-requirements', 'evolution-confirm', 'evolution-result', 'evolution-tree', 'evolution-node', 'evolution-links', 'evolution-node-skills',
   'release-review', 'release-confirm', 'release-result', 'roster', 'roster-filters', 'roster-letters', 'roster-stages', 'roster-detail', 'roster-stats', 'roster-growth', 'roster-moves', 'roster-notes', 'journal',

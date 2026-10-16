@@ -5,12 +5,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { createDeviceView } from '../../docs/play/device-view.js';
+import * as expedition from '../../docs/play/shared/expedition-presentation.js';
 import { buildBattleFrames, createBattlePlayback } from '../../docs/play/battle-playback.js';
 import createDemoCore from '../../docs/play/runtime/demo-core.js';
 import { validParty } from '../../docs/play/shared/party.js';
 import { validateStarterCatalog } from '../../docs/play/shared/starter-onboarding.js';
 
-const SAVE_KEY = 'zark.browser-demo.v1.rules15';
+const SAVE_KEY = 'zark.browser-demo.v1.rules19';
 const source = await readFile(new URL('../../docs/play/app.js', import.meta.url), 'utf8');
 assert.equal((source.match(/const \{default:createDemoCore\}=await import\('\.\/runtime\/demo-core\.js'\);/g) || []).length, 1);
 assert.match(source, /\ninit\(\);\s*$/);
@@ -27,10 +28,10 @@ const native = await createDemoCore();
 const call = (name, types=[], args=[]) => JSON.parse(native.ccall(name, 'string', types, args));
 const act = (command, value=0) => call('demo_command', ['string','number'], [command,value]);
 const snapshot = () => native.ccall('demo_snapshot','string',[],[]);
-const envelope = hex => JSON.stringify({format:1,rulesVersion:15,schemaVersion:22,snapshot:hex});
+const envelope = hex => JSON.stringify({format:1,rulesVersion:22,schemaVersion:30,snapshot:hex});
 
-async function fixture(initialRaw) {
-  let stored = initialRaw, writes = 0, beforeNextLock;
+async function fixture(initialRaw, {failBackup=false,initialBackup=null}={}) {
+  let stored = initialRaw, backup = initialBackup, writes = 0, beforeNextLock;
   const calls = [], elements = new Map();
   const element = () => ({ textContent:'',innerHTML:'',hidden:false,dataset:{},style:{},disabled:false,listeners:new Map(),open:false,
     getContext:()=>({}),addEventListener(name,callback){this.listeners.set(name,callback);},replaceChildren(){},setAttribute(){},focus(){},showModal(){this.open=true;},close(){this.open=false;} });
@@ -43,8 +44,8 @@ async function fixture(initialRaw) {
       assert.equal(name,`${SAVE_KEY}.write`);assert.equal(options.mode,'exclusive');
       const hook=beforeNextLock;beforeNextLock=null;if(hook)hook();return callback();
     }}},
-    localStorage:{getItem(key){assert.equal(key,SAVE_KEY);return stored;},setItem(key,value){assert.equal(key,SAVE_KEY);stored=value;writes++;}},
-    validParty,validateStarterCatalog,
+    localStorage:{getItem(key){if(key===`${SAVE_KEY}.before-rules22`)return backup;assert.equal(key,SAVE_KEY);return stored;},setItem(key,value){if(key===`${SAVE_KEY}.before-rules22`){if(failBackup)throw Error('synthetic storage failure');backup=value;return;}assert.equal(key,SAVE_KEY);stored=value;writes++;}},
+    validParty,validateStarterCatalog,...expedition,
     loadGameArt:async()=>({prepare:async()=>{},drawForm:()=>false,drawBackground:()=>false,formStatus:()=>'missing'}),
     buildBattleFrames, createBattlePlayback, createDeviceView, createDeviceTouchInput:()=>({refresh(){},cancel(){},contactActive:()=>false}),
     createCaptureRingInput:()=>({refresh(){},cancel(){}}),
@@ -57,7 +58,7 @@ async function fixture(initialRaw) {
   };
   vm.runInNewContext(controller,sandbox,{filename:'app.js'});
   await sandbox.ui.init();
-  return {ui:sandbox.ui,calls,elements,raw:()=>stored,writes:()=>writes,
+  return {ui:sandbox.ui,calls,elements,raw:()=>stored,backup:()=>backup,writes:()=>writes,
     updateBeforeNextLock(raw, syncFirst=false){beforeNextLock=()=>{stored=raw;if(syncFirst)sandbox.ui.syncSaved();};}};
 }
 
@@ -67,7 +68,9 @@ call('demo_reset',['number'],[12345]);
 assert.equal(act('hatch',5).ok,true);
 assert.equal(act('mode',1).ok,true);
 assert.equal(act('demo-encounter').ok,true);
-assert.equal(act('auto-fight').state.autoCapture,1);
+const fight=act('auto-fight');assert.equal(fight.ok,true);
+const captureReady=fight.state.focus?act('focus',2400):fight;
+assert.equal(captureReady.state.autoCapture,1);
 const beforeCapture=snapshot();
 assert.equal(act('ring-capture',0).ok,true);
 const afterCapture=snapshot();
@@ -127,7 +130,7 @@ assert.equal(releaseModal.raw(),envelope(afterCapture));
 
 // Empty string is an existing corrupt save, not the absent-key sentinel. Preserve
 // it (and other invalid saves) until the user explicitly chooses Reset demo.
-for(const raw of ['', '{', '{}', envelope('0'.repeat(5928))]) {
+for(const raw of ['', '{', '{}', envelope('0'.repeat(13720))]) {
   const f=await fixture(raw);
   assert.equal(f.ui.needsReset(),true,`Invalid save must require reset: ${JSON.stringify(raw.slice(0,20))}`);
   assert.equal(f.raw(),raw);
@@ -172,3 +175,55 @@ assert.equal(autoRestored.ui.snapshot(),pendingCapture,'Opening the ring cannot 
 await autoRestored.ui.command('ring-capture',0);
 assert.notEqual(autoRestored.ui.snapshot(),pendingCapture,'Timing input executes a native capture attempt');
 console.log('PASS: save races and corrupt-save recovery; new/reset adventures default Auto; saved Auto/Manual choices persist; Auto waits for manual timing capture.');
+
+// This is a real pre-upgrade WASM snapshot, not a current save with relabeled
+// version markers. Migration preserves the old bytes before any new-rule write.
+const oldSave=JSON.parse(await readFile(new URL('../../tests/fixtures/rules19-save.json',import.meta.url),'utf8'));
+const oldRaw=JSON.stringify(oldSave.envelope);
+const upgraded=await fixture(oldRaw);
+assert.equal(upgraded.ui.needsReset(),false);
+assert.equal(upgraded.backup(),oldRaw);
+assert.equal(upgraded.writes(),1);
+assert.equal(JSON.parse(upgraded.raw()).rulesVersion,22);
+assert.equal(JSON.parse(upgraded.raw()).schemaVersion,30);
+for(const key of ['collection','rngState','sequence','xp','careMinute','activeCreatureId','partyMemberIds'])
+  assert.deepEqual(JSON.parse(JSON.stringify(upgraded.ui.state()[key])),oldSave.state[key],`Migration preserves ${key}`);
+for(const [key,value] of Object.entries(oldSave.state.expeditions)) assert.deepEqual(JSON.parse(JSON.stringify(upgraded.ui.state().expeditions[key])),value,`Migration preserves expedition ${key}`);
+assert.equal(upgraded.ui.state().expeditions.active,false);
+const restarted=await fixture(upgraded.raw());
+assert.equal(restarted.writes(),0);
+assert.equal(restarted.ui.snapshot(),upgraded.ui.snapshot());
+const unavailable=await fixture(oldRaw,{failBackup:true});
+assert.equal(unavailable.raw(),oldRaw,'Backup failure must preserve the old save');
+assert.equal(unavailable.writes(),0);
+assert.match(unavailable.elements.get('save-status').textContent,/Session only/);
+const wrongEnvelope=await fixture(JSON.stringify({...oldSave.envelope,rulesVersion:20,schemaVersion:28}));
+assert.equal(wrongEnvelope.ui.needsReset(),true,'Relabeled old snapshot must be rejected');
+assert.equal(wrongEnvelope.writes(),0);
+console.log('PASS: real rules19 save migrates once with exact backup; failed backup and mismatched version markers preserve saved data.');
+
+// Genuine rules20 and rules21 baselines migrate to the same current envelope.
+// A different existing backup or a failed backup never overwrites old progress.
+const old20=JSON.parse(await readFile(new URL('../../tests/fixtures/rules20-dungeon-golden.json',import.meta.url),'utf8')).saves[0];
+const old21=JSON.parse(await readFile(new URL('../../tests/fixtures/auto-dungeon-browser.json',import.meta.url),'utf8'));
+for(const item of [
+  {rulesVersion:20,schemaVersion:28,snapshot:Buffer.from(old20.snapshotBase64,'base64').toString('hex'),state:old20.state},
+  {rulesVersion:21,schemaVersion:29,snapshot:old21.snapshot,state:old21.state},
+]) {
+  const raw=JSON.stringify({format:1,rulesVersion:item.rulesVersion,schemaVersion:item.schemaVersion,snapshot:item.snapshot});
+  const f=await fixture(raw);assert.equal(f.ui.needsReset(),false);assert.equal(f.backup(),raw);assert.equal(f.writes(),1);
+  assert.deepEqual([JSON.parse(f.raw()).rulesVersion,JSON.parse(f.raw()).schemaVersion],[22,30]);
+  for(const key of ['collection','rngState','sequence','xp','careMinute','activeCreatureId','partyMemberIds'])
+    assert.deepEqual(JSON.parse(JSON.stringify(f.ui.state()[key])),item.state[key],`rules${item.rulesVersion}: ${key}`);
+  for(const [key,value] of Object.entries(item.state.expeditions))
+    assert.deepEqual(JSON.parse(JSON.stringify(f.ui.state().expeditions[key])),value,`rules${item.rulesVersion}: expedition ${key}`);
+  const reload=await fixture(f.raw());assert.equal(reload.writes(),0);assert.equal(reload.ui.snapshot(),f.ui.snapshot());
+  for(const options of [{failBackup:true},{initialBackup:'different earlier backup'}]) {
+    const blocked=await fixture(raw,options);assert.equal(blocked.raw(),raw);assert.equal(blocked.writes(),0);
+    assert.match(blocked.elements.get('save-status').textContent,/Session only/);
+    if(options.initialBackup)assert.equal(blocked.backup(),options.initialBackup);
+  }
+  const mismatch=await fixture(JSON.stringify({format:1,rulesVersion:22,schemaVersion:30,snapshot:item.snapshot}));
+  assert.equal(mismatch.ui.needsReset(),true);assert.equal(mismatch.writes(),0);
+}
+console.log('PASS: genuine rules20/21 saves migrate with exact backups; restarts and backup conflicts preserve progress.');

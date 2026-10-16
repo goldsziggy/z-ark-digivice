@@ -7,6 +7,7 @@
 #include "local_form_facing.hpp"
 #include "background_decode.hpp"
 #include "forms.hpp"
+#include "capture_ring.hpp"
 #include "../firmware/tests/catalog_fixture.hpp"
 #include <array>
 #include <algorithm>
@@ -77,7 +78,7 @@ struct Frame {
   result={form,animation,pixels.data(),static_cast<std::size_t>(info.width)*info.height,mask.data(),stride,info.width,info.height,bounds.x,bounds.y,bounds.width,bounds.height};result.nativeFacing=sprite::localFormFacing(form);return true;}
 };
 struct Audit {
- std::string pack,output;std::array<std::uint16_t,ui::kPixels> scene{};std::array<std::uint16_t,ui::kPixels+2> pixels{};Frame main,partner;FILE* manifest=nullptr;
+ std::string pack,output;std::array<std::uint16_t,ui::kPixels> scene{};std::array<std::uint16_t,ui::kPixels+2> pixels{};Frame main,partner,tiles[ui::kTiles];FILE* manifest=nullptr;
  Audit(const char* p,const char* o):pack(p),output(o){manifest=std::fopen((output+"/screens.tsv").c_str(),"w");require(manifest,"manifest output");std::fprintf(manifest,"file\ttitle\tscreen\tmain_form\tmain_decoded\tpartner_form\tpartner_decoded\tscene\n");}
  ~Audit(){if(manifest)std::fclose(manifest);}
  void write(const char* name){require(pixels.front()==0xbeef&&pixels.back()==0xbeef,"framebuffer canaries");for(int y=0;y<ui::kSize;++y)for(int x=0;x<ui::kSize;++x)if(!ui::Controller::inside(x,y))require(pixels[1+y*ui::kSize+x]==0,"circular clipping");
@@ -88,7 +89,9 @@ struct Audit {
   const auto request=h.controller.artRequest(h.state,h.model,at);const std::string sceneId=request.sceneId?request.sceneId:"scene-digital-412-v1";auto key=sceneId.substr(6,sceneId.size()-13);for(auto& ch:key)ch=static_cast<char>(std::toupper(ch));background(pack+"/"+key+".JPG",scene);
   h.model.artwork={scene.data(),scene.size(),request.sceneId,{}};const auto loaded=!omitEnemy&&main.load(pack,request.formId,request.animation,request.elapsedMs,h.model.artwork.sprite);
   const auto partnerRequest=h.controller.partnerArtRequest(h.state,h.model,at);
-  h.model.partnerArtwork={};const auto owned=!omitPartner&&partner.load(pack,partnerRequest.formId,partnerRequest.animation,partnerRequest.elapsedMs,h.model.partnerArtwork);pixels.fill(0xbeef);require(h.controller.render(h.state,h.model,pixels.data()+1,ui::kPixels,at),"native renderer");write(name);
+  h.model.partnerArtwork={};const auto owned=!omitPartner&&partner.load(pack,partnerRequest.formId,partnerRequest.animation,partnerRequest.elapsedMs,h.model.partnerArtwork);
+  for(std::size_t i=0;i<ui::kTiles;++i){const auto tile=h.controller.tileArtRequest(h.state,h.model,i,at);h.model.tileArtwork[i]={};if(tile.formId)tiles[i].load(pack,tile.formId,tile.animation,tile.elapsedMs,h.model.tileArtwork[i]);}
+  pixels.fill(0xbeef);require(h.controller.render(h.state,h.model,pixels.data()+1,ui::kPixels,at),"native renderer");write(name);
   std::fprintf(manifest,"%s.png\t%s\t%s\t%u\t%d\t%u\t%d\t%s\n",name,title,ui::screenName(h.controller.screen()),request.formId,loaded,partnerRequest.formId,owned,request.sceneId?request.sceneId:"");}
  void setup(const char* name,const char* title,setupui::Controller& controller,const setupui::Model& model){pixels.fill(0xbeef);require(controller.render(model,pixels.data()+1,ui::kPixels),"setup renderer");write(name);std::fprintf(manifest,"%s.png\t%s\tsetup\t0\t0\t0\t0\tnative setup palette\n",name,title);}
 };
@@ -168,7 +171,55 @@ void battleSequences(Audit& audit) {
  std::fclose(reversed);reverseSave("Unavailable Impmon art / neutral status",reverse.now,true);
  std::printf("PASS native battle sequence: %u screens; 5 committed wild turns with Impmon on both sides; both Nearby actors; exact local art; no device or save access\n",index-53);
 }
-int main(int argc,char** argv){require(argc==3 || (argc==4&&std::strcmp(argv[3],"--battle-sequences")==0),"usage: render-native-ui PACK OUTPUT [--battle-sequences]");Audit audit(argv[1],argv[2]);if(argc==4){battleSequences(audit);return 0;}
+
+// Showcase stills for the public site: current screens from valid synthetic saves.
+// Names start at 101 so save() checks each against its explicitly expected screen.
+void tapLabel(Harness& h,const char* label){h.sync();ui::Controller::Button b[ui::Controller::kMaxButtons];const auto n=h.controller.layout(h.state,h.model,b,ui::Controller::kMaxButtons);
+ for(std::size_t i=0;i<n;++i)if(std::strcmp(b[i].label,label)==0){h.tap(b[i].x+b[i].w/2,b[i].y+b[i].h/2);return;}
+ std::fprintf(stderr,"no '%s' button on %s\n",label,ui::screenName(h.controller.screen()));require(false,"labelled button");}
+void roster(Harness& h,std::initializer_list<std::uint32_t> forms,unsigned squad){
+ h.hatch();h.state.sequence=h.state.foregroundSequence=100;unsigned slot=1;
+ for(const auto formId:forms){auto member=stableMemberFixture(formId).collection[1];member.id=slot+1;member.capturedAtSequence=slot;h.state.collection[slot++]=member;h.state.journal[(formId-1)/32]|=1u<<((formId-1)%32);}
+ h.state.collectionCount=slot;h.state.captures=h.state.encounters=slot-1;h.state.steps=100*(slot-1);h.state.nextMemberId=slot+1;
+ for(unsigned i=0;i<squad;++i)h.state.partyMemberIds[i]=i+2;require(isValid(h.state),"roster fixture");h.sync();}
+void partnerLevel(Harness& h,std::uint32_t level){auto& m=h.state.collection[0];m.level=h.state.level=level;m.xp=xpForLevel(level);m.hp=h.state.hp=combat::formProfile(m.formId,level).stats.maxHp;require(isValid(h.state),"partner level fixture");h.sync();}
+void wild(Harness& h,std::uint32_t formId,std::uint32_t level,bool half){
+ require(apply(h.state,Action::Walk,100)==Error::None,"showcase encounter");h.state.wildFormId=formId;h.state.wildSpecies=static_cast<Species>(forms::find(formId)->lineage);h.state.wildLevel=level;
+ h.state.wildMaxHp=forms::stats(formId,level).maxHp;h.state.wildHp=half?h.state.wildMaxHp/2:h.state.wildMaxHp;require(isValid(h.state),"showcase wild fixture");h.sync();}
+void showcase(Audit& audit){
+ constexpr std::uint32_t dawn[]{285,307,320,340,360,381,402,433,450};
+ Harness h;audit.save("101-egg","Egg",h,ui::Screen::Egg);h.tap(206,285);audit.save("102-starter","Starter carousel",h,ui::Screen::Starter);
+ h.tap(206,312);h.tap(206,278);audit.save("103-home","Home",h,ui::Screen::Home);
+ Harness hurt;hurt.hatch();hurt.state.collection[0].careState|=1u<<30;hurt.state.collection[0].hp=hurt.state.hp=hurt.state.hp/2;require(isValid(hurt.state),"injured partner");hurt.sync();
+ hurt.openHome(ui::HomePanel::Care);audit.save("104-care-treat","Care - injured partner gets TREAT",hurt,ui::Screen::Care);
+ Harness squad;roster(squad,{dawn[0],39,dawn[2],18,53,dawn[1],102,93,dawn[3],75,dawn[4],140},3);squad.openHome(ui::HomePanel::Partners);
+ audit.save("105-squad","Partners - 2x2 Squad",squad,ui::Screen::Squad);
+ squad.tap(ui::kTileX[1]+ui::kTileW/2,ui::kTileY[0]+ui::kTileH/2);audit.save("106-member","One member - one clear action",squad,ui::Screen::Collection);
+ squad.tap(206,356);tapLabel(squad,"ALL DIGIMON");audit.save("107-box","Box - every Digimon, four per page",squad,ui::Screen::Box);
+ std::uint32_t from=0,route=0;
+ for(std::uint32_t f=11;f<=276&&!from;++f)for(unsigned i=0;i<2;++i){const auto* e=forms::outgoing(f,i);if(e&&e->to>=277&&forms::productionForm(f)){from=f;route=i;break;}}
+ require(from,"route into a Dawn/Dusk form");Harness evo;evo.state=stableMemberFixture(from);
+ {const auto* e=forms::outgoing(from,route);const auto need=forms::evolutionNeed(*e);auto& m=evo.state.collection[1];m.level=need.level;m.xp=xpForLevel(need.level);m.bond=need.bond;m.careState=(m.careState&~0x7fu)|need.care;m.hp=combat::formProfile(m.formId,need.level).stats.maxHp;evo.state.level=m.level;evo.state.bond=m.bond;evo.state.hp=m.hp;require(isValid(evo.state),"evolution fixture");evo.sync();}
+ evo.openHome(ui::HomePanel::Partners);evo.tap(ui::kTileX[0]+ui::kTileW/2,ui::kTileY[0]+ui::kTileH/2);tapLabel(evo,"DETAILS");tapLabel(evo,"DIGIVOLVE");if(route)evo.tap(355,180);
+ audit.save("108-evolution","Digivolution into a new Dawn/Dusk form",evo,ui::Screen::Evolution);
+ Harness fight;fight.hatch();partnerLevel(fight,12);wild(fight,dawn[5],12,false);audit.save("109-encounter","Wild Dawn/Dusk encounter",fight,ui::Screen::Encounter);
+ fight.tap(206,274);audit.save("110-battle","Tactical battle",fight,ui::Screen::Battle);
+ fight.state.wildHp=fight.state.wildMaxHp/2;require(isValid(fight.state),"capture fixture");fight.sync();tapLabel(fight,"CATCH");
+ audit.save("111-capture","Capture ring - tap in the green",fight,ui::Screen::Capture,fight.now+700);
+ Harness focus;bool found=false;
+ for(unsigned seed=1;seed<400&&!found;++seed){auto s=newDevice(seed);if(apply(s,Action::Hatch,1)!=Error::None||apply(s,Action::Mode,1)!=Error::None||apply(s,Action::Walk,100)!=Error::None)continue;
+  for(unsigned turn=0;turn<6&&s.phase==Phase::Encounter&&!found;++turn){if(applyAutoFight(s)!=Error::None)break;if(s.autoCapture==AutoCapture::FocusStrike||s.autoCapture==AutoCapture::FocusBlock){focus.state=s;found=true;}}}
+ require(found,"rules 18 focus prompt");focus.sync();audit.save("112-focus","Auto focus - STRIKE! or BLOCK!",focus,ui::Screen::Capture,focus.now+500);
+ Harness caught;bool captured=false;
+ for(unsigned seed=1;seed<400&&!captured;++seed){Harness t;t.state=newDevice(seed);t.hatch();if(t.state.phase!=Phase::Home)continue;partnerLevel(t,12);wild(t,dawn[6],12,true);
+  for(std::uint32_t phase=0;phase<capturering::kCycleMs&&!captured;phase+=37){auto s=t.state;if(apply(s,Action::RingCapture,phase)==Error::None&&s.lastCapture.result==CaptureResult::Captured){caught.state=s;captured=true;}}}
+ require(captured,"ring capture fixture");battlepresentation::View ball;ball.locked=true;ball.capturePresentation=true;ball.captureCaught=true;ball.captureAttempt=caught.state.lastCapture.attempt;ball.captureRemaining=3-ball.captureAttempt;ball.captureChance=caught.state.lastCapture.chance;
+ ball.playerFormId=activeMember(caught.state)->formId;ball.enemyFormId=caught.state.lastCapture.targetFormId;ball.captureElapsedMs=2600;caught.model.battle=&ball;caught.sync();audit.save("113-caught","A new friend joins",caught,ui::Screen::Battle);
+ Harness n;n.hatch();n.openHome(ui::HomePanel::Nearby);nearby::View net;net.stage=nearby::Stage::Discovering;net.host=true;net.peerCount=2;net.peers[0].fighter={19,dawn[7],12};net.peers[0].mac.bytes[5]=0xAB;net.peers[0].available=true;net.peers[0].compatible=true;net.peers[1]=net.peers[0];net.peers[1].fighter={20,25,1};net.peers[1].mac.bytes[5]=0xBA;n.model.nearby=&net;n.sync();
+ audit.save("114-nearby","Nearby - find another Digivice",n,ui::Screen::Nearby);
+ std::printf("PASS showcase: 14 screens from rules %u synthetic saves; no device or save access\n",static_cast<unsigned>(kRulesVersion));
+}
+int main(int argc,char** argv){require(argc==3 || (argc==4&&(std::strcmp(argv[3],"--battle-sequences")==0||std::strcmp(argv[3],"--showcase")==0)),"usage: render-native-ui PACK OUTPUT [--battle-sequences|--showcase]");Audit audit(argv[1],argv[2]);if(argc==4){if(std::strcmp(argv[3],"--showcase")==0)showcase(audit);else battleSequences(audit);return 0;}
  Harness h;audit.save("01-egg","Egg - no saved hatch",h);h.tap(206,285);audit.save("02-starter","Starter carousel",h);h.tap(206,312);audit.save("03-hatch-review","Separate hatch confirmation",h);h.tap(206,278);audit.save("04-home","Home - Care carousel panel",h);
  h.homePanel(ui::HomePanel::Partners);audit.save("06-home-partners","Home - Partners carousel panel",h);h.homePanel(ui::HomePanel::Settings);audit.save("51-home-settings","Home - Settings carousel panel",h,ui::Screen::Home);h.homePanel(ui::HomePanel::Nearby);audit.save("52-home-nearby","Home - Nearby carousel panel",h,ui::Screen::Home);
  h.openHome(ui::HomePanel::Care);audit.save("05-care","Care",h);h.tap(206,365);h.openHome(ui::HomePanel::Settings);h.tap(206,194);audit.save("07-encounter-settings","Encounter pacing",h);h.tap(206,365);audit.save("08-settings","Device settings",h);h.tap(120,312);audit.save("09-mode-review","Auto mode review",h);h.tap(206,365);h.tap(206,365);

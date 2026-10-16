@@ -12,10 +12,10 @@ function participant(value) {
   if (!exact(value, ['species', 'name', 'level', 'combat', ...(expanded ? ['formId'] : [])])
     || (expanded ? !integer(value.formId, 1, 512) || typeof value.species !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/.test(value.species)
       : !['mote', 'flicker', 'rill', 'cinder', 'impmon', 'agumon', 'gabumon', 'patamon', 'tentomon', 'palmon', 'gomamon', 'renamon'].includes(value.species))
-    || typeof value.name !== 'string' || !value.name.length || value.name.length > 64 || !integer(value.level, 1, 20)) return false;
+    || typeof value.name !== 'string' || !value.name.length || value.name.length > 64 || !integer(value.level, 1, 99)) return false;
   const combat = value.combat;
-  return exact(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) && integer(combat.maxHp, 1, 400)
-    && ['attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 128))
+  return exact(combat, ['maxHp', 'attack', 'defense', 'magic', 'resistance', 'type', 'skills']) && integer(combat.maxHp, 1, 2048)
+    && ['attack', 'defense', 'magic', 'resistance'].every(key => integer(combat[key], 1, 256))
     && ['grove', 'tide', 'ember', 'neutral'].includes(combat.type) && exact(combat.skills, ['physical', 'heavy', 'magic'])
     && Object.values(combat.skills).every(label => typeof label === 'string' && label.length > 0 && label.length <= 64);
 }
@@ -25,7 +25,7 @@ export function validateAutoTrace(value, kind) {
   const current = object(value) && Object.hasOwn(value, 'combatRulesVersion');
   if (current && (kind !== 'wild' || value.combatRulesVersion !== 12 || !validTraceCare(value.playerCare) || !validTraceCare(value.enemyCare))) throw new Error('Unsupported Auto care record.');
   if (!['wild', 'practice'].includes(kind) || !exact(value, [...TRACE_KEYS, ...(current ? ['combatRulesVersion', 'playerCare', 'enemyCare'] : [])]) || value.formatVersion !== 1 || value.mode !== 'auto' || value.kind !== kind
-    || !integer(value.startSequence, 0, 10000) || !integer(value.endSequence, value.startSequence + 1, 10000)
+    || !integer(value.startSequence, 0, 0xffffffff) || !integer(value.endSequence, value.startSequence + 1, 0xffffffff)
     || !participant(value.player) || !participant(value.enemy)
     || !(kind === 'wild' ? ['none', 'won', 'captured', 'retreated'] : ['won', 'lost', 'draw']).includes(value.outcome)
     || !Array.isArray(value.steps) || value.steps.length < 1 || value.steps.length > (kind === 'wild' ? 48 : 40)) throw new Error('Unsupported Auto battle record.');
@@ -33,7 +33,7 @@ export function validateAutoTrace(value, kind) {
     const guarded = object(step) && Object.hasOwn(step, 'guard');
     if (!exact(step, [...STEP_KEYS, ...(guarded ? ['guard'] : []), ...(current && step.action === 'capture' ? ['capture'] : [])]) || guarded && (kind !== 'wild' || !['brace', 'ward', 'counter'].includes(step.guard)) || step.turn !== index + 1 || !['attack', 'defend'].includes(step.phase) || !actions.has(step.action)
       || !(step.opponentAction === null || actions.has(step.opponentAction))
-      || !['playerHpBefore', 'playerHpAfter', 'enemyHpBefore', 'enemyHpAfter'].every(key => integer(step[key], 0, 400))
+      || !['playerHpBefore', 'playerHpAfter', 'enemyHpBefore', 'enemyHpAfter'].every(key => integer(step[key], 0, 2048))
       || typeof step.reflected !== 'boolean' || typeof step.captured !== 'boolean'
       || current && step.action === 'capture' && !validTraceCapture(step.capture, step.captured)
       || kind === 'practice' && (step.captured || step.action === 'capture')) throw new Error('Unsupported Auto battle step.');

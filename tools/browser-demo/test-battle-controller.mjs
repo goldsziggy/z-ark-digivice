@@ -13,8 +13,9 @@ import { buildBattleFrames, createBattlePlayback } from '../../docs/play/battle-
 import * as party from '../../docs/play/shared/party.js';
 import * as starter from '../../docs/play/shared/starter-onboarding.js';
 import * as ring from '../../docs/play/shared/capture-ring.js';
+import * as expedition from '../../docs/play/shared/expedition-presentation.js';
 
-const SAVE_KEY = 'zark.browser-demo.v1.rules15';
+const SAVE_KEY = 'zark.browser-demo.v1.rules19';
 const source = await readFile(new URL('../../docs/play/app.js', import.meta.url), 'utf8');
 assert.match(source, /\ninit\(\);\s*$/);
 const controller = source.replace(/^import .+;\n/gm, '')
@@ -55,7 +56,7 @@ function eventTarget(target = {}) {
 }
 
 async function fixture(initialRaw = null, { reducedMotion = false } = {}) {
-  let raw = initialRaw, writes = 0, clock = 1000;
+  let raw = initialRaw, backup = null, writes = 0, clock = 1000;
   const calls = [], elements = new Map();
   const window = eventTarget();
   const document = eventTarget({ hidden: false, defaultView: window });
@@ -95,10 +96,10 @@ async function fixture(initialRaw = null, { reducedMotion = false } = {}) {
       return callback();
     } } },
     localStorage: {
-      getItem(key) { assert.equal(key, SAVE_KEY); return raw; },
-      setItem(key, value) { assert.equal(key, SAVE_KEY); raw = value; writes++; },
+      getItem(key) { if(key===`${SAVE_KEY}.before-rules22`)return backup; assert.equal(key, SAVE_KEY); return raw; },
+      setItem(key, value) { if(key===`${SAVE_KEY}.before-rules22`){backup=value;return;} assert.equal(key, SAVE_KEY); raw = value; writes++; },
     },
-    ...party, ...starter, ...ring, createDeviceView, buildBattleFrames, createBattlePlayback,
+    ...party, ...starter, ...ring, ...expedition, createDeviceView, buildBattleFrames, createBattlePlayback,
     createDeviceTouchInput: (surface, options) => createDeviceTouchInput(surface, { ...options, now: () => clock }),
     createCaptureRingInput: () => ({ refresh() {}, cancel() {} }),
     loadGameArt: async () => ({ prepare: async () => {}, drawForm: () => true,
@@ -288,4 +289,64 @@ test('Reset and damaged-save recovery invalidate playback without a delayed resu
   f.tick(120000); f.ui.finishBattlePlayback();
   assert.equal(f.ui.captureOpen(), false); assert.equal(f.raw(), committed);
   assert.equal(f.mutatingCalls(), beforeError);
+});
+
+
+test('a zero-step native focus pause commits state once, reloads and accepts focus', async () => {
+  const history=JSON.parse(await readFile(new URL('../../tests/fixtures/zero-step-focus.json',import.meta.url),'utf8'));
+  const engine=await createDemoCore();
+  engine.ccall('demo_reset','string',['number'],[history.seed]);
+  for(const {a,v} of history.commands){const result=JSON.parse(engine.ccall('demo_command','string',['string','number'],[a,v]));assert.equal(result.ok,true,`${a}: ${result.error}`);}
+  const snapshot=engine.ccall('demo_snapshot','string',[],[]);
+  const raw=JSON.stringify({format:1,rulesVersion:22,schemaVersion:30,snapshot});
+  const f=await fixture(raw), sequence=f.ui.state().sequence, writes=f.writes();
+  await f.ui.command('auto-fight');
+  assert.equal(f.ui.state().sequence,sequence+1);assert.equal(f.ui.state().focus.kind,'strike');
+  assert.equal(f.writes(),writes+1);assert.notEqual(f.raw(),raw);assert.equal(f.ui.captureOpen(),true);
+  assert.equal(f.ui.active(),false,'No invented attack animation for an empty trace');
+  const restored=await fixture(f.raw());assert.equal(restored.ui.state().focus.kind,'strike');
+  await restored.ui.command('focus',2400);assert.equal(restored.ui.state().sequence,sequence+2);
+  assert(!/incompatible/i.test(restored.elements.get('game-status').textContent));
+});
+
+
+test('Auto completes three dungeon tiers with manual timing, reloads and one clear', async () => {
+  const initial=JSON.parse(await readFile(new URL('../../tests/fixtures/auto-dungeon-browser.json',import.meta.url),'utf8'));
+  let f=await fixture(JSON.stringify({format:1,rulesVersion:21,schemaVersion:29,snapshot:initial.snapshot}));
+  assert.equal(f.ui.state().battleMode,'auto');
+  const initialKeys=f.ui.state().expeditions.dungeonKeys,initialClears=f.ui.state().expeditions.dungeonClears;
+  await f.ui.command('start-expedition',0);
+  let focus=0,captures=0,attempts=0;
+  for(let tier=1;tier<=3;tier++){
+    assert.equal(f.ui.state().expeditions.tier,tier);assert.equal(f.ui.state().battleMode,'auto');
+    f=await fixture(f.raw());assert.equal(f.ui.state().expeditions.tier,tier);
+    for(let actions=0;f.ui.state().phase==='encounter'&&actions<30;actions++){
+      const state=f.ui.state(),timing=state.focus||state.autoCapture===1;
+      let phase=0;if(timing)while(ring.sampleCaptureRing(phase,state.wildFormId).grade!=='green')phase++;
+      const action=state.focus?'focus':state.autoCapture===1?'ring-capture':'auto-fight';
+      if(state.focus)focus++;if(action==='ring-capture')attempts++;
+      const sequence=state.sequence,writes=f.writes();await f.ui.command(action,timing?phase:0);
+      assert.equal(f.ui.state().sequence,sequence+1);assert.equal(f.writes(),writes+1);
+      const saved=f.raw();f.finish();assert.equal(f.raw(),saved,'Playback cannot rerun an Auto action');
+      if(f.ui.state().phase==='encounter'&&(f.ui.state().focus||f.ui.state().autoCapture===1)){
+        assert.equal(f.ui.captureOpen(),true);f=await fixture(f.raw());
+        assert.equal(f.ui.captureOpen(),true,'Reload reopens the durable timing opportunity');
+      }
+    }
+    assert.notEqual(f.ui.state().phase,'encounter','Bounded Auto fixture finishes each tier');
+    assert(['captured','escaped'].includes(f.ui.state().lastCapture.result));
+    if(f.ui.state().lastCapture.result==='captured')captures++;
+    assert.equal(f.ui.state().expeditions.dungeonKeys,initialKeys-1);
+    if(tier<3){
+      assert.equal(f.ui.state().phase,'expedition');assert.equal(f.ui.state().expeditions.dungeonClears,initialClears);
+      f=await fixture(f.raw());assert.equal(f.ui.view().page(),'expedition-next');
+      const before=f.ui.state();await f.ui.command('next-expedition');
+      assert.equal(f.ui.state().hp,before.hp);assert.equal(f.ui.state().energy,before.energy);
+      assert.equal(f.ui.state().battleMode,'auto');assert.equal(f.ui.view().page(),'encounter');
+    }
+  }
+  assert(focus>=1);assert(attempts>=3,'Every tier accepts native capture timing input');
+  assert(attempts>captures,'Fixture includes failed capture attempts without replaying them');
+  assert.equal(f.ui.state().phase,'home');assert.equal(f.ui.state().expeditions.dungeonClears,initialClears+1);
+  assert.equal(f.ui.state().expeditions.active,false);f=await fixture(f.raw());assert.equal(f.ui.state().battleMode,'auto');
 });

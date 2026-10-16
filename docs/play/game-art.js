@@ -24,11 +24,14 @@ export async function loadGameArt({onChange = () => {}} = {}) {
     throw new Error('The game artwork catalog is incompatible.');
   const entries = new Map(manifest.forms.map(form => [form.id, form]));
   const scenes = new Map(manifest.scenes.map(scene => [scene.id, scene]));
+  // The two authored GrapLeomon profiles share species art only when their
+  // exact descriptor is absent. A broken listed image never triggers fallback.
+  const descriptorFor = id => entries.get(id) || entries.get(id === 30 ? 357 : id === 357 ? 30 : 0);
   const forms = new Map(), backgrounds = new Map();
   let wanted = [], wantedScene = 'meadow';
   const emit = () => onChange(status());
   function formStatus(id) {
-    if (!entries.has(id)) return 'missing';
+    if (!descriptorFor(id)) return 'missing';
     const entry = forms.get(id);
     return entry?.image ? 'ready' : entry?.error ? 'error' : 'loading';
   }
@@ -36,7 +39,7 @@ export async function loadGameArt({onChange = () => {}} = {}) {
     const selected = wanted.map(id => [id, forms.get(id)]);
     return {ready:selected.filter(([,entry]) => entry?.image).map(([id]) => id),
       loading:selected.filter(([,entry]) => entry?.promise && !entry.image && !entry.error).map(([id]) => id),
-      missing:wanted.filter(id => !entries.has(id)),
+      missing:wanted.filter(id => !descriptorFor(id)),
       failed:selected.filter(([,entry]) => entry?.error).map(([id]) => id),
       background:{id:wantedScene, state:backgrounds.get(wantedScene)?.image ? 'ready'
         : backgrounds.get(wantedScene)?.error ? 'failed' : scenes.has(wantedScene) ? 'loading' : 'missing'}};
@@ -67,7 +70,7 @@ export async function loadGameArt({onChange = () => {}} = {}) {
     wanted = [...new Set(ids.filter(id => Number.isInteger(id) && id > 0))].slice(0, MAX_FORMS);
     wantedScene = scene;
     const jobs = wanted.map(id => {
-      const form = entries.get(id);
+      const form = descriptorFor(id);
       return load(forms,id,form,form?.frameWidth * form?.atlasFrames,form?.frameHeight);
     });
     const descriptor = scenes.get(scene);
@@ -82,7 +85,7 @@ export async function loadGameArt({onChange = () => {}} = {}) {
     context.drawImage(bitmap,x,y,width,height); context.restore(); return true;
   }
   function drawForm(context, id, {x,y,maxSide,facing=null,time=0,animation='idle'} = {}) {
-    const descriptor = entries.get(id), bitmap = forms.get(id)?.image;
+    const descriptor = descriptorFor(id), bitmap = forms.get(id)?.image;
     if (!descriptor || !bitmap || !Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(maxSide)) return false;
     // This demo uses native idle loops only. Other animation names do not
     // invent attacks or request unused clips from the source game packs.

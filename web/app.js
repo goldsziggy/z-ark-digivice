@@ -13,7 +13,7 @@ import { setupTwoButtonInput } from './two-button-input.js';
 import { createBackgroundPlayer, BACKGROUND_SCENES } from './background-player.js';
 import { validateStarterCatalog, isEggState, paintStarterEgg, paintRookiePlaceholder } from './starter-onboarding.js';
 import { validateAutoTrace, autoStepText, autoResultTitle, captureChoice, awaitingAutoCapture, awaitingAutoFocus, pausedAutoTraceMatchesState } from './auto-battle.js';
-import { validProgressCombat, validateEvolutionOptions, evolutionRequirements, paintFormPlaceholder } from './progression.js';
+import { validProgressCombat, validateEvolutionOptions, evolutionRequirements, paintFormPlaceholder, levelProgress } from './progression.js';
 import { createFormArt } from './form-art.js';
 import { fetchRosterPage, fetchRosterDetail, fetchEvolutionGraph, fetchRosterIds, rosterReferences, rosterEncyclopediaMoves, ROSTER_PAGE_SIZE, ROSTER_STAGES } from './roster-client.js';
 import { validRecoveryCount, recoveryReview, reviewedRecoveryEvents, validEncounterRarity, rarityLabel } from './care-actions.js';
@@ -21,6 +21,7 @@ import { createCaptureRingInput } from './capture-ring-input.js';
 import { CAPTURE_RING, sampleCaptureRing, captureRingChance } from './capture-ring.js';
 import { decodeCaptureFlick, captureFlightPoint } from './capture-trajectory.js';
 import { displayGameMessage as displayMessage } from './game-message.js';
+import { expeditionView, paintBossAura } from './expedition-presentation.js';
 
 // This browser harness sends commands to the service's native game-core runner.
 // Canvas animation is presentation only; no game rules are duplicated in JS.
@@ -79,8 +80,8 @@ let assetState = { ready: false, busy: false, packs: [], selectedId: 'scene-mead
 const backgroundPlayer = createBackgroundPlayer({ onChange: () => { if (deviceReady) { syncBackgroundStatus(); scheduleDraw(); } } });
 const battleClient = createBattleClient({ storage: (() => { try { return localStorage; } catch { return null; } })(), onChange: () => { if (deviceReady) render(); } });
 const formArt = createFormArt({ getCredential: () => identity, onChange: () => { artGeneration++; if (deviceReady) render(); } });
-const RULES_VERSION = 19;
-const SCHEMA_VERSION = 27;
+const RULES_VERSION = 22;
+const SCHEMA_VERSION = 30;
 const FOCUS_NO_TAP = 2400;
 let focusShownAt = 0, focusShownSequence = -1;
 const activeCareMember = () => game?.collection?.find(member => member.id === game.activeCreatureId) ?? null;
@@ -106,6 +107,35 @@ const CREATURE_DESCRIPTIONS = {
   pyrel: 'A spirited guardian with sweeping fire wings.',
 };
 
+const HOME_PANELS = [
+  { id: 'care', label: 'Care', scene: 'meadow' }, { id: 'companions', label: 'Partners', scene: 'forest' },
+  { id: 'settings', label: 'Settings', scene: 'ruins' }, { id: 'nearby', label: 'Find Nearby', scene: 'digital' },
+  { id: 'dungeons', label: 'Dungeons', scene: 'beach' },
+];
+let expeditionIndex = 0;
+let wildAutoScene = null;
+const sceneImages = new Map();
+function sceneImage(id) {
+  if (!sceneImages.has(id)) {
+    const image = new Image(); image.decoding = 'async'; image.src = `/scenes/${id}.jpg`;
+    image.onload = scheduleDraw; sceneImages.set(id, image);
+  }
+  const image = sceneImages.get(id); return image.complete && image.naturalWidth ? image : null;
+}
+for (const panel of HOME_PANELS) sceneImage(panel.scene);
+function moveDevice(delta) {
+  if (navigation.state().screen === 'dungeons') {
+    const count = game?.expeditions?.scenarios?.length || 0;
+    if (count) { expeditionIndex = (expeditionIndex + delta + count) % count; renderDevice(); }
+    return Boolean(count);
+  }
+  return navigation.move(delta);
+}
+function expeditionChoice() {
+  const scenario = game?.expeditions?.scenarios?.[expeditionIndex];
+  const boss = scenario?.kind === 'boss', held = game?.expeditions?.[boss ? 'bossSigils' : 'dungeonKeys'] || 0;
+  return { scenario, boss, held, unit: boss ? 'Sigil' : 'Key', ready: Boolean(scenario && held >= 1 && game?.phase === 'home' && canAct()) };
+}
 let twoButtonInput = null;
 let inputScreen = null;
 let companionDetailId = 1;
@@ -118,7 +148,7 @@ let lastDevicePhase = null;
 let deviceInputMode = new URLSearchParams(location.search).get('controls') === 'buttons' ? 'buttons' : 'touch';
 $('device-input-mode').value = deviceInputMode;
 document.body.dataset.deviceInput = deviceInputMode;
-const deviceScreen = createDeviceScreen($('device-ui'), { activate: deviceAction, select: index => navigation.select(index), move: delta => navigation.move(delta), paintPortrait: paintRosterPortrait });
+const deviceScreen = createDeviceScreen($('device-ui'), { activate: deviceAction, select: index => navigation.select(index), move: moveDevice, paintPortrait: paintRosterPortrait });
 const navigation = createDeviceNavigation({ getItems: screen => deviceView(screen).items, onChange: renderDevice });
 deviceReady = true;
 const PRACTICE_LABELS = { physical: 'Quick Claw', heavy: 'Power Crush', magic: 'Spark Bolt', brace: 'Brace', counter: 'Reversal', ward: 'Rune Ward' };
@@ -342,7 +372,7 @@ async function loadStarters() {
 const chosenStarter = () => startersOwner === identity?.deviceId ? starters.find(starter => starter.id === draftStarterId) : undefined;
 function canWriteGame() { return Boolean(identity?.token && game && !pending && !busy && !transitionBusy && !conflict && storageAvailable && ownsWriter && online && !document.hidden); }
 function canHatch() { const practice = battleClient.getState(); return canWriteGame() && isEggState(game) && Boolean(chosenStarter()) && !startersBusy && game.onboarding.offerSeed > 0 && !practice.pending && !practice.recoveryRequired; }
-function initialDeviceScreen() { return isEggState(game) ? 'starter-select' : 'home'; }
+function initialDeviceScreen() { return isEggState(game) ? 'starter-select' : game?.phase === 'expedition' ? 'expedition-next' : 'home'; }
 
 function autoBattleView(screen, view, item) {
   const kind = screen.startsWith('wild-') ? 'wild' : 'practice';
@@ -359,7 +389,7 @@ function autoBattleView(screen, view, item) {
     detail: progress && step ? autoStepText(step, trace) : trace ? kind === 'wild'
       ? pausedForCapture ? 'Attacks are paused. Tap the play area at the right time, or resume fighting.' : trace.outcome === 'captured' ? `${trace.enemy.name} joined your collection. The result is saved.` : trace.outcome === 'retreated' ? 'Your partner returned safely. Rest whenever you are ready.' : `${trace.steps.length} turns completed. Your progress is saved.`
       : `${trace.steps.length} exchanges completed. Care and collection are unchanged.` : 'No saved Auto battle is available.',
-    items: progress ? [item('auto-pause', autoPlayback?.paused ? 'Resume replay' : 'Pause replay'), item('auto-finish', pausedForCapture ? 'Go to capture' : 'Show saved result')] : [item(kind === 'wild' ? 'wild-auto-done' : 'practice-auto-done', kind === 'wild' ? 'Return home' : 'Back to practice'),
+    items: progress ? [item('auto-pause', autoPlayback?.paused ? 'Resume replay' : 'Pause replay'), item('auto-finish', pausedForCapture ? 'Go to capture' : 'Show saved result')] : [item(kind === 'wild' ? 'wild-auto-done' : 'practice-auto-done', kind === 'wild' ? game?.phase === 'expedition' ? 'Next tier' : 'Return home' : 'Back to practice'),
       ...(trace ? [item(kind === 'wild' ? 'wild-auto-replay' : 'practice-auto-replay', 'Replay saved battle')] : [])],
     footer: progress ? autoPlayback?.paused ? 'REPLAY PAUSED · RESULT ALREADY SAVED' : 'SAVED RESULT · REPLAY ONLY' : 'TAP A CHOICE TO CONTINUE' });
   return view;
@@ -367,7 +397,7 @@ function autoBattleView(screen, view, item) {
 
 function autoVisualScene(trace, index = trace.steps.length - 1) {
   const step = trace.steps[index];
-  return { creature: trace.player.name, formId: trace.player.formId, level: trace.player.level, hp: step.playerHpAfter, combat: trace.player.combat,
+  return { ...(trace === wildAutoTrace && wildAutoScene ? { expeditions: wildAutoScene.expeditions } : {}), creature: trace.player.name, formId: trace.player.formId, level: trace.player.level, hp: step.playerHpAfter, combat: trace.player.combat,
     energy: 100, phase: 'encounter', wildName: trace.enemy.name, wildArtId: trace.enemy.name.toLowerCase(),
     wildFormId: trace.enemy.formId, wildHp: step.enemyHpAfter, wildMaxHp: trace.enemy.combat.maxHp, wildCombat: trace.enemy.combat };
 }
@@ -484,6 +514,9 @@ function visualScene() {
 function backgroundSceneId() {
   const screen = navigation.state().screen;
   const practice = battleClient.getState();
+  if (screen === 'home' && game?.phase === 'home') return 'meadow';
+  if (['dungeons', 'dungeon-lobby'].includes(screen)) return ({ grove: 'forest', tide: 'beach', ember: 'volcanic' })[expeditionChoice().scenario?.theme] || 'forest';
+  if (screen === 'nearby') return 'meadow';
   if (captureAim || captureFlight) {
     const encounter = captureFlight?.scene || game;
     return BACKGROUND_SCENES[Math.max(0, (encounter?.encounters || 1) - 1) % BACKGROUND_SCENES.length];
@@ -549,6 +582,8 @@ async function practiceCommand(type, value = 0) {
 }
 
 
+function evolutionProfileLabel(formId) { return formId === 30 ? 'Guardian form' : formId === 357 ? 'Mystic form' : ''; }
+
 function progressionView(screen, view, item) {
   const member = progressionMember();
   const option = evolutionOption();
@@ -566,29 +601,29 @@ function progressionView(screen, view, item) {
         items: member ? [item('evolution-options', active && game.evolution.options.length ? 'Digivolution choices' : active ? 'No further forms' : 'Set Partner to evolve', !active || !game.evolution.options.length), item('evolution-tree', 'Evolution graph'), ...(!active ? [item('progression-set-partner', 'Set Partner', !canSetPartner(member.id))] : [])] : [item('companions', 'Choose companion')], footer: member ? `COMPANION #${String(member.id).padStart(2, '0')} · XP IS SAVED` : '' }); break;
     case 'evolution-options':
       Object.assign(view, { title: 'Choose a path', eyebrow: member?.name || 'DIGIVOLUTION', layout: 'carousel',
-        items: active ? game.evolution.options.map(form => ({ ...item(`evolve-${form.formId}`, form.name, false, `${form.stage || 'Form'} · Lv ${form.requiredLevel} · Bond ${form.requiredBond} · Care ${form.requiredCare}`, '◇'), formId: form.formId, eligible: form.eligible })) : [],
+        items: active ? game.evolution.options.map(form => ({ ...item(`evolve-${form.formId}`, form.name, false, `${evolutionProfileLabel(form.formId) || form.stage || 'Form'} · Lv ${form.requiredLevel} · Bond ${form.requiredBond}`, '◇'), formId: form.formId, eligible: form.eligible })) : [],
         footer: 'PREVIEW FIRST · NOTHING CHANGES' }); break;
     case 'evolution-preview':
-      Object.assign(view, { title: option?.name || 'Form preview', eyebrow: option ? `${option.stage || 'FORM'} · PREVIEW LEVEL ${option.previewLevel}` : 'DIGIVOLUTION', layout: 'evolution-stats-carousel',
-        portrait: option ? portrait(option) : null, detail: option ? `Current → preview${option.artId || findArt(option.name.toLowerCase()) ? '' : ' · Artwork pending'}` : 'This choice is no longer available.',
+      Object.assign(view, { title: option?.name || 'Form preview', eyebrow: option ? `${evolutionProfileLabel(option.formId) || option.stage || 'FORM'} · PREVIEW LEVEL ${option.previewLevel}` : 'DIGIVOLUTION', layout: 'evolution-stats-carousel',
+        portrait: option ? portrait(option) : null, detail: option ? `Current → preview${findArt(option.artId || `ds-form-${option.formId}`) ? '' : ' · Artwork pending'}` : 'This choice is no longer available.',
         stats: option && member ? [['Max HP', 'maxHp'], ['Attack', 'attack'], ['Defence', 'defense'], ['Magic', 'magic'], ['Resistance', 'resistance']].map(([name, key]) => [name, `${member.combat[key]} → ${option.combat[key]}`, key]) : [],
         items: [item('evolution-requirements', 'Requirements', !option), item('evolution-skills', 'Compare moves', !option), item('evolution-review', 'Review Digivolution', !canEvolve())] }); break;
     case 'evolution-requirements':
       Object.assign(view, { title: 'Ready to Digivolve?', eyebrow: option?.name || 'REQUIREMENTS', layout: 'evolution-requirements',
-        facts: option && member ? evolutionRequirements(member, option) : [], detail: lock || (option?.eligible ? 'Digivolution requirements met. Review your choice before saving.' : member?.injury ? 'Treat the injury first, then return here.' : option && !option.careRouteOpen ? 'Too many care mistakes this stage for this route. The other route is still open.' : 'Raise the missing level, bond or care, then return here.'),
+        facts: option && member ? evolutionRequirements(member, option) : [], detail: lock || (option?.eligible ? 'Digivolution requirements met. Review your choice before saving.' : member?.injury ? 'Treat the injury first, then return here.' : 'Raise the missing level or bond, then return here.'),
         items: [item('evolution-review', 'Review Digivolution', !canEvolve())] }); break;
     case 'evolution-skills':
       Object.assign(view, { title: 'Compare moves', eyebrow: option?.name || 'DIGIVOLUTION', layout: 'carousel',
         items: option && member ? ['physical', 'heavy', 'magic'].map(key => item(`evo-skill-${key}`, key[0].toUpperCase() + key.slice(1), false, `${member.combat.skills[key]} → ${option.combat.skills[key]}`, '✦')) : [], footer: 'CURRENT → PREVIEW' }); break;
     case 'evolution-confirm': {
       const reviewed = evolutionDraft?.deviceId === identity?.deviceId && evolutionDraft.revision === revision && evolutionDraft.memberId === member?.id && evolutionDraft.formId === option?.formId;
-      Object.assign(view, { title: 'Digivolve this partner?', eyebrow: option?.stage || 'CONFIRM YOUR CHOICE', layout: 'auto-confirm',
+      Object.assign(view, { title: 'Digivolve this partner?', eyebrow: evolutionProfileLabel(option?.formId) || option?.stage || 'CONFIRM YOUR CHOICE', layout: 'auto-confirm',
         detail: option && member ? `${member.name} → ${option.name}. Same companion #${String(member.id).padStart(2, '0')}; this form choice is saved.` : 'Return to review current choices.',
         items: [item('confirm-evolution', 'Confirm Digivolution', !reviewed || !canEvolve())], footer: 'BACK KEEPS THE CURRENT FORM' }); break;
     }
     case 'evolution-result': {
       const confirmed = evolutionConfirmation?.deviceId === identity?.deviceId && evolutionConfirmation.memberId === member?.id && evolutionConfirmation.formId === member?.formId;
-      Object.assign(view, { title: member?.name || 'Digivolution saved', eyebrow: member ? `${member.stage || 'FORM'} · LEVEL ${member.level}` : 'SAVED', scene: Boolean(member && active), layout: 'auto-result-carousel', back: false,
+      Object.assign(view, { title: member?.name || 'Digivolution saved', eyebrow: member ? `${evolutionProfileLabel(member.formId) || member.stage || 'FORM'} · LEVEL ${member.level}` : 'SAVED', scene: Boolean(member && active), layout: 'auto-result-carousel', back: false,
         detail: confirmed ? `Digivolution saved for companion #${String(member.id).padStart(2, '0')}. XP, bond and identity are kept.` : 'Earlier Digivolution confirmed. Your latest saved form is kept.',
         items: [item('evolution-done', 'View progression'), item('evolution-home', 'Return home')], footer: 'SAVED · NO SECOND EVOLUTION' }); break;
     }
@@ -719,11 +754,17 @@ function deviceView(screen) {
           detail: busy ? 'Loading your saved companion…' : 'Your paired identity is kept. Reconnect to load your companion and progress.',
           items: [item('connection', 'Restore saved game')], footer: 'NO NEW GAME CREATED' }); break;
       }
-      Object.assign(view, { title: activeDisplayName(), eyebrow: game ? `${game.stage ? `${game.stage} · ` : ''}Level ${game.level} · Bond ${game.bond}` : 'Your first companion', scene: true, meter: game?.combat ? `${game.hp} / ${game.combat.maxHp} HP` : '',
-        footer: pending ? 'SAVE WAITING' : game ? `${game.walking.eligibleSteps.toLocaleString()} EXPLORE STEPS · ${game.bond} BOND` : 'LOCAL VIRTUAL DEVICE',
-        items: encounter ? [item(game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle', 'Encounter'), item('menu', 'Menu')] : [item(game ? 'menu' : 'connection', game ? 'Open menu' : 'Set up device'), ...(wildAutoTrace ? [item('wild-auto-result', 'Last Auto result')] : [])], focusActions: !encounter && Boolean(wildAutoTrace) }); break;
+      Object.assign(view, { title: activeDisplayName(), eyebrow: game ? '' : 'Your first companion', scene: true,
+        layout: game && !encounter ? 'home-carousel' : 'list', levelProgress: game ? levelProgress(game) : null,
+        homeHealth: game ? { value: game.hp, maximum: game.combat.maxHp } : null,
+        lifetime: game ? 'Lifetime steps · On handheld' : '',
+        footer: pending ? 'SAVE WAITING' : '',
+        homePanel: game && !encounter ? 'care' : null,
+        items: encounter ? [item(game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle', 'Encounter'), item('menu', 'Menu')]
+          : game ? HOME_PANELS.map(panel => item(panel.id, panel.label)) : [item('connection', 'Set up device')],
+        utility: game && !encounter ? { id: 'menu', label: 'Menu' } : null }); break;
     case 'menu':
-      Object.assign(view, { title: 'Your little world', eyebrow: '', layout: 'carousel', items: [navItem('care', 'Care', '◒'), navItem('companions', 'Companions', '✳'), navItem('explore', 'Explore', '↗'), navItem('cards', 'Cards', '▱'), navItem('settings', 'Settings', '⚙'), navItem('battle-mode', 'Battle', '⚔'), navItem('stats', 'Stats', '▥'), navItem('progression', 'Progression', '◇'), navItem('type-chart', 'Type chart', '↻'), navItem('roster', 'World DS roster', '▤'), navItem('journal', 'Discovery journal', '✧')] }); break;
+      Object.assign(view, { title: 'Your little world', eyebrow: '', layout: 'carousel', items: [navItem('care', 'Care', '◒'), navItem('companions', 'Companions', '✳'), navItem('explore', 'Explore', '↗'), navItem('cards', 'Cards', '▱'), navItem('settings', 'Settings', '⚙'), navItem('nearby', 'Find Nearby', '↔'), navItem('dungeons', 'Dungeons', '◇'), navItem('battle-mode', 'Battle', '⚔'), navItem('stats', 'Stats', '▥'), navItem('progression', 'Progression', '◇'), navItem('type-chart', 'Type chart', '↻'), navItem('roster', 'World DS roster', '▤'), navItem('journal', 'Discovery journal', '✧')] }); break;
     case 'roster': case 'roster-filters': case 'roster-letters': case 'roster-stages': case 'roster-detail': case 'roster-stats': case 'roster-growth': case 'roster-moves': case 'roster-notes': case 'journal':
       catalogView(screen, view, item); break;
     case 'progression': case 'evolution-options': case 'evolution-preview': case 'evolution-skills': case 'evolution-requirements':
@@ -754,11 +795,41 @@ function deviceView(screen) {
       const battle = battleClient.getState().state;
       Object.assign(view, { title: 'Know your rival', eyebrow: 'PRACTICE BATTLE', items: [item('practice-player-stats', battle?.companion.name || 'Your companion', !battle), item('practice-enemy-stats', battle?.enemy.name || 'Practice rival', !battle), item('type-chart', 'Type chart')] }); break;
     }
-    case 'care':
-      Object.assign(view, { title: `Care for ${game?.creature || 'Partner'}`, stats: [['Health', game?.hp ?? '—'], ['Energy', game?.energy ?? '—'], ['Fullness', game?.fullness ?? '—'], ['Mood', game?.mood ?? '—']],
-        layout: 'care-carousel', portrait: { artId: playerId(), name: activeDisplayName(), type: game?.combat?.type || 'grove', artAvailable: Boolean(findArt(playerId())), personal: true, rookie: game?.stage === 'Rookie' },
-        detail: encounter ? 'Finish this encounter before care.' : game ? [`${game.bond} bond`, careSummary(activeCareMember()), careQualitySummary(activeCareMember())].filter(Boolean).join(' · ') : 'Set up your device first.',
-        items: [item('recover-review', 'Recover fully', !act || !recoveryReview(game, identity?.deviceId, revision), '', '☾'), item('feed', 'Feed', !act || encounter, '', '◒'), item('play', 'Play', !act || encounter, '', '✧'), item('rest', 'Rest once', !act || encounter, '', '☾'), item('treat', 'Treat injury', !act || encounter || !activeCareMember()?.injury, '', '✚')] }); break;
+    case 'care': {
+      const member = activeCareMember(), injured = Boolean(member?.injury);
+      Object.assign(view, { title: 'Care', layout: 'care-grid', scene: true, grid: true,
+        careHealth: { value: game?.hp || 0, maximum: game?.combat?.maxHp || 1, injured },
+        careBars: [['Food', game?.fullness || 0], ['Mood', game?.mood || 0], ['Energy', game?.energy || 0]],
+        detail: encounter ? 'Finish this encounter first.' : injured ? 'Treat injury, then rest to heal.' : member?.careMissed || member?.toilet >= 25 ? 'Toilet needed' : '',
+        items: [item('feed', 'Feed', !act || encounter), item('play', 'Play', !act || encounter),
+          item(injured ? 'treat' : 'rest', injured ? 'Treat' : 'Rest', !act || encounter),
+          item('toilet', 'Toilet', !act || encounter || !(member?.toilet >= 25 || member?.careMissed))],
+        utility: { id: 'recover-review', label: 'Recover', disabled: !act || injured || !recoveryReview(game, identity?.deviceId, revision) } }); break;
+    }
+    case 'dungeons': {
+      const { scenario, held, unit, ready } = expeditionChoice();
+      Object.assign(view, { title: scenario?.name || 'Dungeons', layout: 'dungeon-picker',
+        eyebrow: scenario?.kind === 'boss' ? 'Boss' : 'Dungeon', pager: { index: expeditionIndex, count: game?.expeditions?.scenarios?.length || 0 },
+        held: `${held} ${unit}s Held`, detail: game?.phase === 'encounter' ? 'Finish this encounter first.' : '',
+        items: [item('open-dungeon-lobby', 'Open Lobby', !ready)] }); break;
+    }
+    case 'dungeon-lobby': {
+      const { scenario, held, unit, ready } = expeditionChoice();
+      Object.assign(view, { title: scenario?.name || 'Dungeons', layout: 'dungeon-lobby',
+        detail: `${scenario?.kind === 'dungeon' ? 'Three fights. ' : ''}Spends 1 ${unit.toLowerCase()} now. Loss or retreat still uses it.`, held: `${held} ${unit}s Held`,
+        items: [item('start-solo-expedition', 'Start Solo', !ready)], footer: 'Nearby co-op requires handheld radio.' }); break;
+    }
+    case 'expedition-next': {
+      const run = expeditionView(game);
+      Object.assign(view, { title: `Tier ${run?.tier || 1} cleared`, eyebrow: run?.name || 'DUNGEON', layout: 'auto-confirm', scene: false,
+        detail: `${game?.hp || 0} HP · ${game?.energy || 0} energy. Continue to tier ${(run?.tier || 1) + 1} / ${run?.tiers || 3}. No additional key is spent.`,
+        items: [item('next-expedition', 'Next fight', !act || !run?.awaitingNext), item('retreat', 'Leave dungeon', !act)],
+        footer: 'HEALTH CARRIES INTO THE NEXT FIGHT', back: false }); break;
+    }
+    case 'nearby':
+      Object.assign(view, { title: 'Find Nearby', layout: 'nearby-grid', scene: true, grid: true, backLabel: 'Leave',
+        items: [item('nearby-battle', 'Battle', true), item('nearby-trade', 'Trade', true)],
+        detail: 'Use a handheld for nearby play.' }); break;
     case 'recover-confirm': {
       const reviewed = reviewedRecoveryEvents(recoveryDraft, game, identity?.deviceId, revision);
       Object.assign(view, { title: 'Recover fully?', eyebrow: game?.creature || 'YOUR PARTNER', layout: 'auto-confirm',
@@ -851,6 +922,7 @@ function deviceView(screen) {
         detail: transitionBusy ? presentation?.title : `${game?.creature || 'Partner'} ${game?.hp || 0} HP · ${game?.wildGuard ? `Rival: ${game.wildGuard === 'brace' ? 'Brace' : game.wildGuard === 'ward' ? 'Ward' : 'Counter'}` : `Energy ${game?.energy || 0}`}`,
         items: [item('attack', game?.combat.skills.physical || 'Attack', !act || !encounter, game?.wildGuard === 'brace' ? 'Physical · Brace halves damage' : 'Physical · 2 energy'), item('heavy', game?.combat.skills.heavy || 'Heavy', !act || !encounter || game.energy < 6, game?.wildGuard === 'counter' ? 'Heavy · Counter reflects this hit' : 'Heavy · 6 energy · Watch Counter'), item('magic', game?.combat.skills.magic || 'Magic', !act || !encounter, game?.wildGuard === 'ward' ? 'Magic · Ward halves damage' : 'Magic · 2 energy'), item('capture', captureChoice(game).label, !act || !captureChoice(game).available, captureChoice(game).detail), item('cards', 'Cards', !act || !encounter || game.cardUsed, 'One card per encounter'), item('wild-stats', 'Stats', !game?.wildCombat, 'Meet this wild companion')],
         footer: encounter ? game.collection.length >= game.collectionCapacity ? game.wildRules >= 10 ? 'Collection full · Make room to capture' : 'Collection full · Finish battle to release' : game.cardUsed ? (game.attackBoost ? `Spark +${game.attackBoost} ready` : game.shield ? `Shelter ${game.shield} ready` : 'Field card used') : 'L Next · R Use' : 'RETURN HOME' });
+      if (encounter && expeditionView(game)) { view.title = game.wildName; view.eyebrow = `${expeditionView(game).label} · ${game.wildHp} / ${game.wildMaxHp} HP`; view.items.push(item('retreat', 'Retreat', !act)); }
       if (encounter && game.collection.length >= game.collectionCapacity && game.wildRules >= 10) view.items.splice(4, 0, item('make-room', 'Make room', !act, 'Release a non-partner · Encounter waits'));
       break;
     case 'capture':
@@ -941,6 +1013,7 @@ function renderDevice() {
   captureGesture?.refresh();
   if (inputScreen !== current) { twoButtonInput?.cancel(); inputScreen = current; }
   const phase = game?.phase || null;
+  if (phase === 'expedition' && !pending && !transitionBusy && !current.startsWith('wild-auto') && current !== 'expedition-next') { navigation.setScreen('expedition-next'); return; }
   if (pending && !['saving', 'recovery', 'recovery-confirm'].includes(current)) {
     const selection = pending.events?.at(-1);
     if (['select', 'party-add', 'party-remove'].includes(selection?.type) && Number.isInteger(selection.value)) {
@@ -959,12 +1032,12 @@ function renderDevice() {
   if ((practice.pending || practice.recoveryRequired) && !['battle-resolve', 'battle-recovery', 'battle-recovery-confirm'].includes(current)) { navigation.setScreen('battle-resolve'); return; }
   if (captureWindup && current !== 'capture') { navigation.setScreen('capture'); return; }
   if (!pending && !captureWindup && (['saving', 'recovery', 'recovery-confirm', 'capture'].includes(current))) {
-    const target = phase === 'egg' ? 'starter-select' : phase === 'encounter' ? game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle' : ['saving', 'recovery', 'recovery-confirm', 'capture', 'battle'].includes(devicePendingReturn) ? 'home' : devicePendingReturn || 'home';
+    const target = phase === 'egg' ? 'starter-select' : phase === 'expedition' ? 'expedition-next' : phase === 'encounter' ? game.battleMode === 'auto' ? 'wild-auto-confirm' : 'battle' : ['saving', 'recovery', 'recovery-confirm', 'capture', 'battle'].includes(devicePendingReturn) ? 'home' : devicePendingReturn || 'home';
     devicePendingReturn = null; lastDevicePhase = phase; navigation.setScreen(target); return;
   }
   if (isEggState(game) && !['starter-select', 'starter-review', 'connection', 'saving', 'recovery', 'recovery-confirm'].includes(current)) { navigation.setScreen('starter-select'); return; }
   if (!isEggState(game) && (['starter-select', 'starter-review'].includes(current) || current === 'starter-hatched' && hatchedIdentity !== identity?.deviceId)) { navigation.setScreen('home'); return; }
-  if (phase !== 'encounter' && current === 'wild-auto-confirm') { navigation.setScreen('home'); return; }
+  if (phase !== 'encounter' && current === 'wild-auto-confirm') { navigation.setScreen(phase === 'expedition' ? 'expedition-next' : 'home'); return; }
   if (phase === 'encounter' && game.battleMode === 'auto' && current === 'battle') { navigation.setScreen('wild-auto-confirm'); return; }
   if (practice.mode === 'auto' && ['battle-choice', 'battle-cards', 'battle-result'].includes(current)) { navigation.setScreen('battle-auto-result'); return; }
   if (phase !== lastDevicePhase) {
@@ -975,14 +1048,18 @@ function renderDevice() {
   if (awaitingAutoCapture(game) && ['home', 'battle', 'wild-auto-confirm', 'wild-auto-result'].includes(current) && canAct() && !connectionError && armCaptureAim()) return;
   if (awaitingAutoFocus(game) && ['home', 'battle', 'wild-auto-result'].includes(current) && !presentation) { navigation.setScreen('wild-auto-confirm'); return; }
   const state = navigation.state();
+  sceneImage(backgroundSceneId());
   backgroundPlayer.select(backgroundSceneId()); syncBackgroundStatus();
   const scene = visualScene();
   const selectedMember = current === 'companion' || current === 'release-review' ? game?.collection.find(member => member.id === companionDetailId)
     : current.startsWith('evolution') || current === 'progression' ? progressionMember() : null;
-  formArt.select(current === 'starter-select' && starters[state.index]?.formId ? [starters[state.index].formId] : current === 'starter-review' && chosenStarter()?.formId ? [chosenStarter().formId] : graphNode && current === 'evolution-node' ? [graphNode.formId] : rosterDetail && ['roster-detail', 'roster-stats', 'roster-growth'].includes(current) ? [rosterDetail.formId] : selectedMember ? [selectedMember.formId] : [scene?.formId, scene?.phase === 'encounter' ? scene.wildFormId : null]);
+  const selectedEvolution = ['evolution-preview', 'evolution-confirm'].includes(current) ? evolutionOption() : null;
+  formArt.select(current === 'starter-select' && starters[state.index]?.formId ? [starters[state.index].formId] : current === 'starter-review' && chosenStarter()?.formId ? [chosenStarter().formId] : graphNode && current === 'evolution-node' ? [graphNode.formId] : rosterDetail && ['roster-detail', 'roster-stats', 'roster-growth'].includes(current) ? [rosterDetail.formId] : selectedEvolution ? [selectedEvolution.formId, selectedMember?.formId] : selectedMember ? [selectedMember.formId] : [scene?.formId, scene?.phase === 'encounter' ? scene.wildFormId : null]);
   if (preparedPlayer !== artKey(playerId(scene)) || preparedWild !== artKey(wildId(scene))) prepareCompanion();
   audio.setScene(state.screen.startsWith('battle-') && practice.state?.status === 'active' ? 'battle' : game?.phase === 'encounter' ? 'battle' : 'home');
-  deviceScreen.render({ ...deviceView(state.screen), index: state.index, inputMode: deviceInputMode });
+  const view = deviceView(state.screen);
+  if (view.homePanel) view.homePanel = HOME_PANELS[Math.max(0, state.index)]?.id;
+  deviceScreen.render({ ...view, index: state.index, inputMode: deviceInputMode });
   $('device-confirm-button').disabled = !captureAim && !navigation.selected();
   $('device-back-button').disabled = !navigation.selected() && !canDeviceBack();
 }
@@ -1072,6 +1149,9 @@ async function deviceAction(id, event) {
   }
   if (captureWindup) { if (id === 'cancel-capture') cancelCapture(); return; }
   if (busy || transitionBusy || practice.busy || practiceRequestRunning) return;
+  if (id === 'open-dungeon-lobby') { if (expeditionChoice().ready) navigation.go('dungeon-lobby'); return; }
+  if (id === 'start-solo-expedition') { if (expeditionChoice().ready) await sendAction('start-expedition', expeditionIndex); return; }
+  if (id === 'next-expedition') { if (game?.phase === 'expedition' && expeditionView(game)?.awaitingNext) await sendAction('next-expedition'); return; }
   if (id === 'reload-starters') return loadStarters();
   if (id === 'roster') { navigation.go('roster'); return loadRoster(); }
   if (id === 'journal') { journalOffset = 0; navigation.go('journal'); return loadRoster('journal'); }
@@ -1178,7 +1258,7 @@ async function deviceAction(id, event) {
   if (id === 'wild-auto-resume') { if (awaitingAutoCapture(game)) return sendAction('auto-resume'); return; }
   if (id === 'focus-tap') { if (awaitingAutoFocus(game)) return sendAction('focus', Math.floor(performance.now() - focusShownAt) % CAPTURE_RING.cycleMs); return; }
   if (id === 'focus-skip') { if (awaitingAutoFocus(game)) return sendAction('focus', FOCUS_NO_TAP); return; }
-  if (id === 'wild-auto-done') { presentation = null; navigation.setScreen('home'); return; }
+  if (id === 'wild-auto-done') { presentation = null; navigation.setScreen(game?.phase === 'expedition' ? 'expedition-next' : 'home'); return; }
   if (id === 'wild-auto-replay') return playAutoBattle('wild');
   if (id === 'practice-auto-start') { practiceDraftMode = 'auto'; return practiceCommand('start'); }
   if (id === 'practice-auto-result') { navigation.go('battle-auto-result'); return; }
@@ -1204,7 +1284,7 @@ async function deviceAction(id, event) {
   if (id === 'reload-catalog') return loadCombatCatalog();
   if (id.startsWith('member-')) { companionDetailId = Number(id.slice(7)); navigation.go('companion'); return; }
   if (id.startsWith('load-')) { $('saved-playtest-select').value = id.slice(5); await loadPlaytest(); renderDevice(); return; }
-  if (['feed', 'play', 'rest', 'treat', 'walk', 'attack', 'heavy', 'magic', 'capture'].includes(id)) return requestAction(id, id === 'walk' ? 100 : 0);
+  if (['feed', 'play', 'rest', 'treat', 'toilet', 'retreat', 'walk', 'attack', 'heavy', 'magic', 'capture'].includes(id)) return requestAction(id, id === 'walk' ? 100 : 0);
   if (id === 'select-companion') return requestAction('select', companionDetailId);
   if (id === 'party-add' || id === 'party-remove') return sendAction(id, companionDetailId);
   if (id === 'card-spark' || id === 'card-shelter') return requestAction('card', id === 'card-spark' ? 1 : 2);
@@ -1244,7 +1324,11 @@ function personalArtKey(id) {
   return null;
 }
 function findArt(id) { return /^ds-form-\d+$/.test(id) ? formArt.get(Number(id.slice(8))) : personalArtKey(id) ? personalPack : findOriginalArt(id); }
-function resolvedArtKey(id, art = findArt(id)) { return art === personalPack ? personalArtKey(id) || id : id; }
+function resolvedArtKey(id, art = findArt(id)) {
+  if (art === personalPack) return personalArtKey(id) || id;
+  const source = /^ds-form-\d+$/.test(id) ? formArt.sourceId(Number(id.slice(8))) : null;
+  return source ? `ds-form-${source}` : id;
+}
 function artKey(id) {
   const candidate = findArt(id);
   return `${artGeneration}/${candidate?.packId || 'missing'}/${candidate?.version || 0}/${id}`;
@@ -1419,7 +1503,7 @@ function validateSave(save) {
     && (onboarding.starterId === null || Number.isInteger(onboarding.starterId) && onboarding.starterId >= 1 && onboarding.starterId <= 11);
   const validEgg = isEggState(state) && onboarding.starterId === null && Array.isArray(state.collection) && state.collection.length === 0
     && state.activeCreatureId === 0 && state.creature === null && state.species === null && state.combat === null && state.wildCombat === null;
-  const validCompleted = onboarding?.completed && ['home', 'encounter'].includes(state.phase)
+  const validCompleted = onboarding?.completed && ['home', 'encounter', 'expedition'].includes(state.phase)
     && Array.isArray(state.collection) && state.collection.length >= 1 && state.collection.length <= COLLECTION_CAPACITY
     && validCombat(state.combat) && state.collection.every(member => validCombat(member.combat) && validCare(member))
     && (state.phase === 'encounter' ? validCombat(state.wildCombat) : state.wildCombat === null)
@@ -1703,7 +1787,7 @@ async function presentResult(type, before, after) {
   transitionBusy = true;
   const captured = after.collection.length > before.collection.length;
   const retreated = before.phase === 'encounter' && after.phase === 'home' && /retreat/i.test(after.message);
-  const won = ['attack', 'heavy', 'magic'].includes(type) && before.phase === 'encounter' && after.phase === 'home' && !retreated;
+  const won = ['attack', 'heavy', 'magic'].includes(type) && before.phase === 'encounter' && ['home', 'expedition'].includes(after.phase) && !retreated;
   try {
     if (type === 'hatch' && after.onboarding.completed) {
       paintStarterEgg(hatchEgg, after.onboarding.starterId);
@@ -1742,7 +1826,7 @@ async function presentResult(type, before, after) {
         addNote(responseTitle, `${after.hp} companion health remaining`);
         await waitStage(420);
       }
-      if (won) { setStage('win', 'A friendly battle won.', displayMessage(after.message), after, { animation: 'celebrate', cue: 'win' }); await waitStage(600); }
+      if (won) { setStage('win', after.phase === 'expedition' ? `Tier ${after.expeditions.tier} cleared!` : expeditionView(before) ? 'Expedition complete!' : 'A friendly battle won.', displayMessage(after.message), after, { animation: 'celebrate', cue: 'win' }); await waitStage(600); }
     } else if (type === 'capture' || type === 'flick' || type === 'ring-capture') {
       const aim = ['flick', 'ring-capture'].includes(type) && captureFlight ? decodeCaptureFlick(captureFlight.value) : null;
       // The committed record supplies result odds. Animation never rolls,
@@ -2037,6 +2121,7 @@ async function retryPending() {
       presentation = null; navigation.setScreen('evolution-result');
       addNote('Digivolution confirmed.', 'The same companion and its saved XP are kept');
     } else if (['auto', 'auto-fight', 'auto-resume', 'focus'].includes(actionType)) {
+      if (result.revision > beforeRevision && !receiptIsOlder) wildAutoScene = before;
       addNote(autoResultTitle(wildAutoTrace), 'Saved once · playback never changes the result');
       await playAutoBattle('wild', { animate: result.revision > beforeRevision && !receiptIsOlder });
     } else if (actionType === 'mode') {
@@ -2137,6 +2222,7 @@ function sprite(id, x, y, scale, time, role = 'player', fit = null) {
   const spec = art?.sprites[resolvedArtKey(id, art)];
   if (!spec) {
     if (fit) {
+      fit = Math.min(fit, 160);
       // Neutral missing-art portrait; no alternate species or implementation label.
       ctx.save(); ctx.fillStyle = '#fff5d9'; ctx.strokeStyle = '#234a4d'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.roundRect(x - fit / 2, y - fit / 2, fit, fit, 20); ctx.fill(); ctx.stroke();
@@ -2162,7 +2248,8 @@ function sprite(id, x, y, scale, time, role = 'player', fit = null) {
     const frame = prepared.frames[reducedMotion ? 0 : Math.floor(time / prepared.frameMs) % prepared.frames.length];
     if (fit) {
       const bounds = fittedSpriteBounds(prepared); if (!bounds) return;
-      const pixelScale = fit / Math.max(bounds.width, bounds.height);
+      let pixelScale = fit / Math.max(bounds.width, bounds.height);
+      if (fit > 300) pixelScale = Math.min(pixelScale, 2 * (236 - Math.hypot(x - 240, y - 240)) / Math.hypot(bounds.width, bounds.height));
       const width = bounds.width * pixelScale, height = bounds.height * pixelScale;
       ctx.drawImage(frame, bounds.x, bounds.y, bounds.width, bounds.height, x - width / 2, y - height / 2, width, height); return;
     }
@@ -2172,7 +2259,10 @@ function sprite(id, x, y, scale, time, role = 'player', fit = null) {
   }
   const frameMs = Math.max(150, Math.min(2000, spec.frameMs || 480));
   const frame = spec.frames[reducedMotion ? 0 : Math.floor(time / frameMs) % spec.frames.length];
-  if (fit) scale = fit / Math.max(spec.width, spec.height);
+  if (fit) {
+    scale = fit / Math.max(spec.width, spec.height);
+    if (fit > 300) scale = Math.min(scale, 2 * (236 - Math.hypot(x - 240, y - 240)) / Math.hypot(spec.width, spec.height));
+  }
   const left = Math.round(x - spec.width * scale / 2);
   const top = Math.round(y - spec.height * scale / 2);
   frame.forEach((row, rowIndex) => [...row].forEach((pixel, colIndex) => {
@@ -2213,8 +2303,13 @@ function draw(time) {
   if (document.hidden) return;
   if (!captureAim && time - lastFrame < 80) { scheduleDraw(); return; }
   lastFrame = time;
+  ctx.clearRect(0, 0, 480, 480);
+  drawScene(time);
+}
+function drawScene(time) {
+  if (document.hidden) return;
   ctx.imageSmoothingEnabled = true;
-  if (!backgroundPlayer.draw(ctx)) landscape(time);
+  if (!backgroundPlayer.draw(ctx)) { const image = sceneImage(backgroundSceneId()); if (image) ctx.drawImage(image, 0, 0, 480, 480); else landscape(time); }
   ctx.imageSmoothingEnabled = false;
   if (captureAim || captureFlight) { drawCapture(time); scheduleDraw(); return; }
   // Utility panels and choice cards own their portraits. Never show an unrelated
@@ -2228,7 +2323,7 @@ function draw(time) {
     ctx.restore(); scheduleDraw(); return;
   }
   const scene = visualScene();
-  const encounter = scene?.phase === 'encounter';
+  const encounter = scene?.phase === 'encounter' && navigation.state().screen !== 'nearby';
 
 
 
@@ -2236,15 +2331,32 @@ function draw(time) {
     if (encounter) {
       const wildControls = navigation.state().screen === 'battle' && !transitionBusy;
       const lift = wildControls ? -30 : 0;
+      const run = expeditionView(scene);
       ctx.fillStyle = '#073d3b55';ctx.beginPath();ctx.ellipse(wildControls ? 240 : 169,305 + lift,47,9,0,0,Math.PI*2);ctx.fill();
       ctx.beginPath();ctx.ellipse(310,277 + lift,34,7,0,0,Math.PI*2);ctx.fill();
       const lunge = !reducedMotion && presentation?.stage === 'attack' && transitionBusy ? 12 : 0;
       const recoil = !reducedMotion && presentation?.stage === 'retaliation' && transitionBusy ? -5 : 0;
-      if (wildControls) sprite(wildId(scene), 240, 224, 8, time + 130, 'wild');
-      else { sprite(playerId(scene), 164 + lunge + recoil, 257, 6, time); sprite(wildId(scene), 310, 231, 5, time + 130, 'wild'); }
+      if (wildControls) {
+        if (run?.boss) paintBossAura(ctx, 332, 217, 140, time, reducedMotion);
+        sprite(playerId(scene), 148, 217, 8, time, 'player', 140);
+        sprite(wildId(scene), 332, 217, 8, time + 130, 'wild', 140);
+        roundedRect(120, 289, 240, 20, 7, '#fff6dff2');
+        text(`${scene.creature} · ${scene.hp}/${scene.combat.maxHp} HP · ${scene.energy} EN`, 240, 303, 12, '#0e4145');
+      } else {
+        if (run?.boss) paintBossAura(ctx, 324, 235, 136, time, reducedMotion);
+        sprite(playerId(scene), 150 + lunge + recoil, 249, 6, time, 'player', 136);
+        sprite(wildId(scene), 324, 235, 5, time + 130, 'wild', 136);
+      }
+      // Identity survives critical/focus prompts and terminal playback, whose
+      // authoritative post-command save may already have cleared the enemy.
+      const nameY = 139;
+      if (!wildControls) { roundedRect(100, nameY - 20, 280, 29, 8, '#fff6dff2');
+        text(scene.wildName, 240, nameY, 15, '#0e4145'); }
     } else {
-      ctx.fillStyle = '#073d3b55';ctx.beginPath();ctx.ellipse(239,306,54,10,0,0,Math.PI*2);ctx.fill();
-      sprite(playerId(scene), 240, 230, 9, time);
+      const home = navigation.state().screen === 'home';
+      ctx.fillStyle = '#073d3b55';ctx.beginPath();ctx.ellipse(239,home ? 286 : 306,home ? 38 : 54,10,0,0,Math.PI*2);ctx.fill();
+      const partnerBackground = ['care', 'nearby'].includes(navigation.state().screen);
+      sprite(playerId(scene), 240, partnerBackground ? 275 : home ? 228 : 245, 9, time, 'player', partnerBackground ? 420 : home ? 120 : 210);
     }
     if (effectFrames && time - effectStarted < 1200 && !reducedMotion) {
       // A queued animation-frame timestamp may precede a just-started effect.
@@ -2268,12 +2380,15 @@ function drawCapture(time) {
   const scale = 480 / 412;
   const sample = captureAim ? sampleCaptureRing(Math.max(0, Math.floor(time - captureAim.started)), game.wildFormId) : captureFlight?.sample;
   const targetRadius = sample?.targetRadius || 60;
+  const opponent = captureFlight?.scene || game;
   ctx.save(); ctx.scale(scale, scale);
   // The translucent green area is the best timing window, behind the creature.
   // Color and the explicit grade/chance cue describe timing, never a touch target.
   ctx.strokeStyle = 'rgba(84,234,134,0.75)'; ctx.lineWidth = 2 * CAPTURE_RING.bandHalfWidth;
   ctx.beginPath(); ctx.arc(206, 176, targetRadius, 0, Math.PI * 2); ctx.stroke();
-  sprite(wildId(captureFlight?.scene || game), 206, 176, 11, time, 'wild', 176);
+  if (expeditionView(opponent)?.boss) paintBossAura(ctx, 206, 176, 176, time, reducedMotion);
+  sprite(wildId(opponent), 206, 176, 11, time, 'wild', 176);
+
   const gradeColors = { red: '#f6534a', orange: '#ffa43c', green: '#54ea86' };
   if (captureAim && sample) {
     ctx.strokeStyle = '#163334'; ctx.lineWidth = 7;
@@ -2298,17 +2413,18 @@ function drawCapture(time) {
       ctx.restore();
     }
   }
+  roundedRect(74, 284, 264, 24, 8, '#fff6dff5');
+  text(opponent.wildName, 206, 301, 15, '#0e4145');
   ctx.textAlign = 'center'; ctx.fillStyle = '#0e4145';
   ctx.font = 'bold 13px "Trebuchet MS", Arial, sans-serif';
   if (captureAim) {
     const chance = captureRingChance(game.wildCaptureChance, sample.grade);
     const cue = `${sample.grade.toUpperCase()} ${chance}% - TAP PLAY AREA`;
-    ctx.fillStyle = '#fff6dff5'; ctx.beginPath(); ctx.roundRect(69, 278, 274, 52, 12); ctx.fill();
-    ctx.fillStyle = '#0e4145'; ctx.fillText(cue, 206, 290);
+    ctx.fillStyle = '#fff6dff5'; ctx.beginPath(); ctx.roundRect(69, 258, 274, 20, 8); ctx.fill();
+    ctx.fillStyle = '#0e4145'; ctx.fillText(cue, 206, 272);
     ctx.font = '12px "Trebuchet MS", Arial, sans-serif';
-    ctx.fillText('Green area = best chance', 206, 308);
-    ctx.fillText(`${3 - game.captureAttempts} throws left · No guaranteed catch`, 206, 325);
-    const accessible = `${cue}. Tap anywhere in the main play area to throw immediately. ${3 - game.captureAttempts} throws left. No guaranteed catch.`;
+    ctx.fillText(`${3 - game.captureAttempts} throws left · No guaranteed catch`, 206, 324);
+    const accessible = `${game.wildName}. ${cue}. Tap anywhere in the main play area to throw immediately. ${3 - game.captureAttempts} throws left. No guaranteed catch.`;
     if (canvas.getAttribute('aria-label') !== accessible) canvas.setAttribute('aria-label', accessible);
   }
   ctx.restore();
@@ -2334,7 +2450,7 @@ captureGesture = createCaptureRingInput($('screen-surface'), {
 
 twoButtonInput = setupTwoButtonInput({
   left: $('device-back-button'), right: $('device-confirm-button'), holdMs: 600,
-  onNext: () => navigation.move(1), onBack: deviceBack, canBack: canDeviceBack,
+  onNext: () => moveDevice(1), onBack: deviceBack, canBack: canDeviceBack,
   onConfirm: event => { const item = navigation.selected(); if (item) deviceAction(item.id, event); },
 });
 $('device-input-mode').addEventListener('change', event => {
@@ -2351,7 +2467,7 @@ document.addEventListener('keydown', event => {
   // Native buttons retain their own Enter action, especially Back. Arrow keys
   // move focus to the screen so the next Enter confirms the highlighted item.
   if (event.key === 'Enter' && event.target.closest?.('button')) { if (event.repeat) event.preventDefault(); return; }
-  const consumed = handleDeviceKey(event, navigation, { confirm: item => deviceAction(item.id, event), back: deviceBack });
+  const consumed = handleDeviceKey(event, { ...navigation, move: moveDevice }, { confirm: item => deviceAction(item.id, event), back: deviceBack });
   if (consumed && event.key.startsWith('Arrow')) $('screen-surface').focus({ preventScroll: true });
 });
 $('device-ui').addEventListener('focusin', event => {

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { validateEvolutionGraph, validateEvolutionOptions, evolutionRequirements } from '../web/progression.js';
+import { validateEvolutionGraph, validateEvolutionOptions, evolutionRequirements, levelProgress } from '../web/progression.js';
 import { fetchEvolutionGraph } from '../web/roster-client.js';
 const native = (args, input = '') => JSON.parse(execFileSync(process.env.DIGIVICE_TEST_CORE_PATH ?? 'build/digivice-core', args, { input, encoding: 'utf8', maxBuffer: 65536 }));
 const graph = (id, offset = 0) => validateEvolutionGraph(native(['--evolution-graph', String(id), String(offset), '8']), id, offset);
@@ -49,4 +49,22 @@ test('bounded graph metadata rejects mismatched versions, pagination and malform
   await assert.rejects(fetchEvolutionGraph(513), /position/);
   const options = native(['--replay-onboarding', '12345'], 'hatch 1\n').evolution.options; options[0].eligible = 'true';
   assert.throws(() => validateEvolutionOptions(options));
+});
+
+test('Home XP meter represents within-level progress and the native maximum', () => {
+  assert.deepEqual(levelProgress({level:1,xp:0,xpToNext:40}), {level:1,maximum:false,percent:0});
+  assert.deepEqual(levelProgress({level:1,xp:20,xpToNext:20}), {level:1,maximum:false,percent:50});
+  assert.deepEqual(levelProgress({level:2,xp:40,xpToNext:80}), {level:2,maximum:false,percent:0});
+  assert.deepEqual(levelProgress({level:99,xp:194040,xpToNext:0}), {level:99,maximum:true,percent:100});
+});
+
+test('current evolution metadata rejects stale care gates and shows only level, bond and injury', () => {
+  const state=native(['--replay-onboarding','12345'],'hatch 1\n');
+  const choices=validateEvolutionOptions(state.evolution.options);
+  assert.ok(choices.every(choice=>choice.requiredCare===0 && choice.maxCareMistakes===null && choice.careRouteOpen));
+  const member={...state.collection[0],carePoints:0,careMistakes:7,injury:2};
+  assert.deepEqual(evolutionRequirements(member,choices[0]).map(([name])=>name),['Level','Bond','Injury']);
+  for(const mutate of [option=>option.requiredCare=40,option=>option.maxCareMistakes=3,option=>option.careRouteOpen=false]) {
+    const old=structuredClone(choices);mutate(old[0]);assert.throws(()=>validateEvolutionOptions(old));
+  }
 });
