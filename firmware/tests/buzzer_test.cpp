@@ -16,16 +16,16 @@ using namespace digivice;
 namespace {
 unsigned checks=0,io=0,failAt=0,lastIO=0;
 #define CHECK(x) do{++checks;if(!(x)){std::fprintf(stderr,"FAIL %d %s\n",__LINE__,#x);std::exit(1);}}while(false)
-bool locked=false,busy=false,createFail=false,corrupt=false;
+bool locked=false,busy=false,createFail=false,corrupt=false,periodicBusy=false;
 std::uint8_t regs[4]{},allowedMask=0x80;
 std::uint64_t now=100,finish=0;
 std::vector<std::pair<std::uint64_t,bool>> edges;
-std::function<void()> progress;
+std::function<void()> progress,onWait;
 struct Queue{unsigned capacity;std::size_t size;std::deque<std::vector<unsigned char>> items;};
 std::unique_ptr<Queue> queue;
 TaskFunction_t worker=nullptr;void* context=nullptr;
 struct Stop{};
-void fresh(){io=failAt=lastIO=0;locked=busy=createFail=corrupt=false;now=100;finish=0;edges.clear();progress={};regs[1]=0x57;regs[3]=0xff;allowedMask=0x80;queue.reset();worker=nullptr;context=nullptr;audioTestNvs={};audioTestRhythmNvs={};}
+void fresh(){io=failAt=lastIO=0;locked=busy=createFail=corrupt=false,periodicBusy=false;now=100;finish=0;edges.clear();progress={};onWait={};periodicBusy=false;regs[1]=0x57;regs[3]=0xff;allowedMask=0x80;queue.reset();worker=nullptr;context=nullptr;audioTestNvs={};audioTestRhythmNvs={};}
 void run(unsigned duration){CHECK(worker);finish=now+duration;lastIO=io;try{worker(context);}catch(const Stop&){}CHECK(now>=finish&&!locked);}
 void noBus(const std::function<void()>& fn){const auto before=io;fn();CHECK(io==before);}
 }
@@ -34,7 +34,7 @@ esp_err_t gpio_set_level(gpio_num_t,std::uint32_t){CHECK(false);return ESP_FAIL;
 esp_err_t gpio_config(const gpio_config_t*){CHECK(false);return ESP_FAIL;}
 int gpio_get_level(gpio_num_t){CHECK(false);return 0;}
 SemaphoreHandle_t xSemaphoreCreateMutexStatic(StaticSemaphore_t* p){return p;}
-int xSemaphoreTake(SemaphoreHandle_t,TickType_t timeout){CHECK(!locked&&timeout==(allowedMask==0x80?0u:10u));if(busy)return pdFALSE;locked=true;return pdTRUE;}
+int xSemaphoreTake(SemaphoreHandle_t,TickType_t timeout){CHECK(!locked&&timeout==(allowedMask==0x80?1u:10u));if(onWait)onWait();if(busy)return pdFALSE;if(periodicBusy && now%20<2)now+=2-now%20;locked=true;return pdTRUE;}
 int xSemaphoreGive(SemaphoreHandle_t){CHECK(locked);locked=false;return pdTRUE;}
 esp_err_t i2c_new_master_bus(const i2c_master_bus_config_t* c,i2c_master_bus_handle_t* out){CHECK(c->scl_io_num==7&&c->sda_io_num==15);*out=reinterpret_cast<i2c_master_bus_handle_t>(1);return ESP_OK;}
 esp_err_t i2c_master_bus_add_device(i2c_master_bus_handle_t,const i2c_device_config_t* c,i2c_master_dev_handle_t* out){CHECK(locked&&c->device_address==0x20&&c->scl_speed_hz==100000);*out=reinterpret_cast<i2c_master_dev_handle_t>(2);return ESP_OK;}
@@ -91,7 +91,7 @@ int main(){
   run(600);CHECK(stage==3&&a.lastError()==ESP_FAIL);}
  {fresh();Audio a;CHECK(a.begin()==ESP_OK&&a.play(AudioCue::DigiPower));unsigned stage=0;
   progress=[&]{if(stage==0&&now>=160){corrupt=true;a.pause(true);stage=1;}
-   else if(stage==1&&now>=500){CHECK(!a.quiescent()&&!a.ready());corrupt=false;stage=2;}
+   else if(stage==1&&now>=500){CHECK(!a.quiescent()&&!a.ready());corrupt=false,periodicBusy=false;stage=2;}
    else if(stage==2&&now>=700){CHECK(a.quiescent()&&!(regs[1]&0x80));stage=3;}};
   run(900);CHECK(stage==3);}
  {fresh();busy=true;Audio a;CHECK(a.begin()==ESP_OK&&a.play(AudioCue::DigiElement));progress=[&]{if(now>=700)busy=false;};run(1200);CHECK(edges.empty()&&a.quiescent());}
@@ -168,5 +168,23 @@ int main(){
   CHECK(!a.play(AudioCue::Boot)&&a.lastPlayResult()==PlayResult::Cooldown);
   run(500);const auto d=a.buzzerDiagnostics();CHECK(d.queued==1&&d.started==1&&d.onWrites==2&&d.offWrites==3&&d.outputKnown&&!d.outputOn);
  }
+
+ // A 2ms occupant every 20ms previously starved this worker despite 90% free bus.
+ for(bool afterInit:{false,true}) {
+  fresh();periodicBusy=!afterInit;Audio a;CHECK(a.begin()==ESP_OK&&!a.ready());CHECK(a.play(AudioCue::Boot));
+  if(afterInit)progress=[&]{periodicBusy=true;};
+  run(1000);const auto d=a.buzzerDiagnostics();
+  CHECK(d.outputKnown&&!d.outputOn&&d.onWrites==2&&d.offWrites==3&&d.confirmedCues==1&&d.completedCues==1&&a.ready()&&a.quiescent());
+  CHECK(edges.size()==4);
+  for(unsigned i:{0u,2u})CHECK(edges[i+1].first-edges[i].first>=40 && edges[i+1].first-edges[i].first<=80);
+ }
+ // Recheck cancellation under the acquired lock, before asserting P7.
+ for(unsigned cancel=0;cancel<4;++cancel) {
+  fresh();Audio a;CHECK(a.begin()==ESP_OK&&a.play(AudioCue::Boot));unsigned waits=0;
+  onWait=[&]{if(++waits==2){if(cancel==0)a.setMuted(true);if(cancel==1)a.pause(true);if(cancel==2)a.setScreenBlanked(true);if(cancel==3)now+=400;}};
+  run(1000);CHECK(edges.empty()&&a.buzzerDiagnostics().onWrites==0&&a.quiescent());
+ }
+ {fresh();busy=true;Audio a;CHECK(a.begin()==ESP_OK&&a.play(AudioCue::Boot));run(1000);
+  CHECK(!a.ready()&&!a.buzzerDiagnostics().outputKnown&&a.buzzerDiagnostics().expired==1&&a.buzzerDiagnostics().started==0);}
  std::printf("PASS %u buzzer checks; actual Audio worker and board HAL, exhaustive output/direction preservation, six distinct rhythms, pause/mute/zero-volume/idle, contention, partial-write and readback faults; no I2S or GPIO calls.\n",checks);
 }

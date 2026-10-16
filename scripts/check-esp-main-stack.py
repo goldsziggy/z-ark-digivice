@@ -34,7 +34,7 @@ def analyze(path,demangler):
       'intent':'HandheldRuntime::interfaceIntent(', 'live_apply':'livebattle::applyAction(',
       'step':'digivice::applyAutoStep(', 'engine':'anonymous namespace)::autoEngine(',
       'apply':'digivice::apply(digivice::State', 'valid':'digivice::isValid(digivice::State',
-      'nfc_poll':'nfcdiag::Device::poll(', 'nfc_test':'nfcdiag::Device::pollTest(',
+      'nfc_poll':'nfcdiag::Device::poll(', 'nfc_service':'nfcdiag::Device::serviceDiagnostics(', 'flush_service':'HandheldRuntime::sampleTouchDuringFlush(', 'nfc_test':'nfcdiag::Device::pollTest(',
       'session_poll':'nfcdiag::Session::poll(', 'nfc_status':'nfcdiag::Device::status()',
       'render':'deviceui::Controller::render(',
     }
@@ -45,8 +45,9 @@ def analyze(path,demangler):
       'legacy_auto_readiness':common+['auto_ready','apply','engine','apply','valid'],
       'current_auto_dispatch':common+['intent','live_apply','step','engine','apply','valid'],
       'care_commit':common+['care_minute','apply','valid'],
-      'nfc_session_poll':['main','console','poll','nfc_poll','nfc_test','session_poll'],
-      'nfc_status':['main','console','poll','nfc_poll','nfc_test','nfc_status'],
+      'nfc_session_poll':['main','console','poll','nfc_poll','nfc_service','nfc_test','session_poll'],
+      'nfc_status':['main','console','poll','nfc_poll','nfc_service','nfc_test','nfc_status'],
+      'nfc_flush_callback':['main','console','poll','ui','flush_service','nfc_service','nfc_test','session_poll'],
       'nfc_render':['main','console','poll','ui','render'],
     }
     totals={name:sum(selected[key]['frame_bytes'] for key in path) for name,path in paths.items()}
@@ -56,6 +57,7 @@ def analyze(path,demangler):
     assert totals['current_auto_dispatch']<=44*1024,totals
     assert totals['legacy_auto_readiness']<=56*1024,totals
     assert totals['care_commit']<=30*1024,totals
+    assert totals['nfc_flush_callback']<=4096,totals
     assert totals['nfc_session_poll']<=2048 and totals['nfc_status']<=2048 and totals['nfc_render']<=4096,totals
     return dict(elf=str(path),configured_stack_bytes=65536,selected_frames=selected,paths=paths,frame_subtotals=totals,
       scope='Static entry-frame subtotals only; deeper callbacks/library/interrupt/spill usage not included. Hardware high-water and stable Auto boot still required.',passed=True)

@@ -17,6 +17,7 @@ enum class PlayResult : std::uint8_t { Queued, NotReady, Muted, Off, Paused, Coo
 struct BuzzerDiagnostics {
     std::uint32_t queued, started, backgroundStarted, expired, busyRetries, onWrites, offWrites;
     bool outputKnown, outputOn;
+    std::uint32_t confirmedCues, completedCues, maxOnMs, lastOnMs, lastOffMs;
 };
 
 // App-lifetime object. begin/play/preferences are called by the runtime owner;
@@ -53,7 +54,7 @@ public:
         return (!task_ || settledEpoch_.load() == epoch_.load()) && !active_.load() &&
             (!queue_ || uxQueueMessagesWaiting(queue_) == 0);
     }
-    bool ready() const { return ready_.load(); }
+    bool ready() const { return ready_.load() && (!buzzer_ || buzzerOutputKnown_.load()); }
     esp_err_t lastError() const { return error_.load(); }
 private:
     struct Request { AudioCue cue; std::uint64_t createdMs; std::uint32_t epoch; };
@@ -75,6 +76,8 @@ private:
     PlayResult lastPlayResult_ = PlayResult::NotReady;
     std::atomic<std::uint32_t> buzzerQueued_{0}, buzzerStarted_{0}, backgroundStarted_{0},
         buzzerExpired_{0}, buzzerBusyRetries_{0}, buzzerOnWrites_{0}, buzzerOffWrites_{0};
+    std::atomic<std::uint32_t> buzzerConfirmedCues_{0}, buzzerCompletedCues_{0},
+        buzzerMaxOnMs_{0}, buzzerLastOnMs_{0}, buzzerLastOffMs_{0};
     std::atomic<bool> buzzerOutputKnown_{false}, buzzerOutputOn_{false};
     std::atomic<bool> ready_{false}, active_{false}, effectsActive_{false}, muted_{false}, paused_{false}, musicEnabled_{false};
     std::atomic<MusicScene> scene_{MusicScene::Home};

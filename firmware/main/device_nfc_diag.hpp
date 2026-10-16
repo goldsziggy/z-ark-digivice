@@ -6,6 +6,13 @@
 #include "freertos/queue.h"
 
 namespace digivice::nfcdiag {
+struct TransportDiagnostics {
+    unsigned txBytes=0, discardedBytes=0, uartErrors=0, uartErrorMask=0;
+    std::uint64_t maxPollGapMs=0;
+    std::uint8_t tx[64]{}, rx[64]{}, discarded[64]{};
+    unsigned txSize=0, rxSize=0, discardedSize=0;
+    bool discardLimit=false;
+};
 class Device final : private Link {
 public:
     // Observations come from completed transactions, never repeated cached
@@ -27,6 +34,10 @@ public:
 
     bool command(const char* line, std::uint64_t now, bool allowed);
     void poll(std::uint64_t now, bool allowed, bool cardsAllowed=false,std::uint32_t encounter=0);
+    // Same owner task only, including safe render/flush boundaries. Does not
+    // deliver gameplay samples or bypass explicit sleep/navigation cancellation.
+    bool serviceDiagnostics(std::uint64_t now, bool allowed);
+    const TransportDiagnostics& transportDiagnostics() const { return transport_; }
     bool takeCardSample(digimodify::Sample& sample) {if(!pending_)return false;sample=sample_;pending_=false;return true;}
     void status() const;
 private:
@@ -36,7 +47,12 @@ private:
     int read(std::uint8_t*, std::size_t) override;
     bool flush() override;
     enum class Owner : std::uint8_t { None, Diagnostic, Cards, Test };
-    bool pollTest(std::uint64_t now, bool allowed, bool stale);
+    bool pollTest(std::uint64_t now, bool allowed);
+    void discardInput();
+    bool readEvents();
+    TransportDiagnostics transport_;
+    std::uint64_t lastService_=0;
+    bool seenService_=false;
     nfctest::Tracker test_;
     bool testActive_=false, testFault_=false, testCancelled_=false;
     void invalidate() {sample_={};pending_=true;identity_.reset();}

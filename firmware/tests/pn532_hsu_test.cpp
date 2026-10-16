@@ -132,6 +132,10 @@ static void sessions() {
         if(failure==1 || failure==2 || failure==9) CHECK(trial.result().rfOff);
         if(failure==0 || failure==3 || failure==4 || failure==5 || failure==6) CHECK(!trial.result().rfOff);
     }
+    { Fake silent;silent.missing=true;Session timeout(silent);CHECK(timeout.start(false,0));run(timeout);
+      CHECK(!std::strcmp(timeout.result().error,"ack_timeout") && timeout.result().failedCommand==0x14);
+      CHECK(!std::strcmp(timeout.result().failedPhase,"ack") && !std::strcmp(timeout.result().cleanupError,"ack_timeout"));
+      CHECK(!timeout.result().noCard && !timeout.result().firmwareValid && !timeout.result().uidValid); }
     for(unsigned cancelAt=0;cancelAt<200;++cancelAt) {
         Fake cancel;cancel.readChunk=1;cancel.writeChunk=1;Session trial(cancel);trial.start(true,0);
         for(unsigned now=0;now<cancelAt;++now)trial.poll(now);

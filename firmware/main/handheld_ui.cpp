@@ -325,6 +325,7 @@ void HandheldRuntime::sampleTouchDuringFlush(void* context) {
     auto& self = *static_cast<HandheldRuntime*>(context);
     const auto now = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
     // Same 20 ms cadence as the loop: the UI rejects taps shorter than 20 ms.
+    self.nfc_.serviceDiagnostics(now,self.nfcAllowed());
     if (self.flushTouchCount_ >= kFlushTouchQueue || !display::touchReady() || now < self.lastTouchMs_ + 20) return;
     self.lastTouchMs_ = now;
     display::TouchPoint point;
@@ -364,6 +365,8 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
     pollCareAndAuto(now);
     pollIdle(now);
     updateMusicScene();
+    nfc_.setTestEnabled(ui_.screen()==deviceui::Screen::NfcTest && !setup_.active(),
+        static_cast<std::uint64_t>(esp_timer_get_time()/1000));
     // Full frames remain the fallback for entry, state changes and other screens.
     // Capture redraws only the bounded creature/ring region at a 33 ms start-to-
     // start cadence. The same framebuffer and existing rotated DMA stripe are
@@ -406,6 +409,7 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
             drawnFrame = ui_.render(state_, model, frame_, deviceui::kPixels, now);
         }
         bool completed = false;
+        nfc_.serviceDiagnostics(static_cast<std::uint64_t>(esp_timer_get_time()/1000),nfcAllowed());
         if (drawnFrame) {
             const auto drawn = esp_timer_get_time();
             const auto renderUs = static_cast<std::uint32_t>(drawn - started);
@@ -516,6 +520,9 @@ void HandheldRuntime::printInterface() const {
             static_cast<unsigned long>(d.queued),static_cast<unsigned long>(d.started),static_cast<unsigned long>(d.backgroundStarted),
             static_cast<unsigned long>(d.expired),static_cast<unsigned long>(d.busyRetries),static_cast<unsigned long>(d.onWrites),
             static_cast<unsigned long>(d.offWrites),d.outputKnown,d.outputOn);
+        std::printf("device buzzer confirmedCues=%lu completedCues=%lu maxOnMs=%lu lastOnMs=%lu lastOffMs=%lu initialization=%s\n",
+            static_cast<unsigned long>(d.confirmedCues),static_cast<unsigned long>(d.completedCues),static_cast<unsigned long>(d.maxOnMs),
+            static_cast<unsigned long>(d.lastOnMs),static_cast<unsigned long>(d.lastOffMs),d.outputKnown?"verified":audio_.lastError()==ESP_OK?"pending-off":"fault");
     }
     std::printf("device accelG=%.3f,%.3f,%.3f gyroDps=%.2f,%.2f,%.2f sampleMs=%llu\n",
         static_cast<double>(sample.accelerationG.x), static_cast<double>(sample.accelerationG.y), static_cast<double>(sample.accelerationG.z),

@@ -66,6 +66,9 @@ struct Result {
     std::uint8_t firmware[4]{}, uid[10]{}, uidSize = 0, atqa[2]{}, sak = 0;
     unsigned ackCount = 0, rxBytes = 0;
     const char* error = "not_run";
+    std::uint8_t failedCommand=0;
+    const char* failedPhase="none";
+    const char* cleanupError="none";
 };
 inline bool target(const std::uint8_t* data, std::size_t size, Result& result) {
     if (!data || !size) return false;
@@ -173,7 +176,10 @@ private:
         phase_ = Phase::Send;
     }
     void fail(const char* error, std::uint64_t now) {
-        if (cleanup_) { phase_ = Phase::Idle; return; } // One cleanup attempt, never a retry loop.
+        if (cleanup_) { result_.cleanupError=error;phase_ = Phase::Idle; return; } // One cleanup attempt, never a retry loop.
+        result_.failedCommand=code(command_);
+        result_.failedPhase=phase_==Phase::Ack?"ack":phase_==Phase::Response?"response":
+            phase_==Phase::Wake || phase_==Phase::WakeWait?"wake":"send";
         result_.error = error; result_.rfOff = false; cleanup_ = true; since_ = now;
         const std::uint8_t abort[] = {0, 0, 0xff, 0, 0xff, 0}; // Host ACK aborts pending command.
         raw(abort, sizeof(abort)); phase_ = Phase::Abort;

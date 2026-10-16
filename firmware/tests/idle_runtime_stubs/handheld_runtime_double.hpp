@@ -65,7 +65,7 @@ public:
     HandheldRuntime(State& s,storage::SaveStore& saves,usage::Backend& backend):usage_(backend),state_(s),saves_(saves){}
     bool nfcAllowed()const;
     bool battlePlaybackLocked()const{return battle_.locked();}
-    struct NfcDouble {bool active=false;bool busy()const{return active;}} nfc_;
+    struct NfcDouble {bool active=false;bool busy()const{return active;} void setTestEnabled(bool,std::uint64_t){} bool serviceDiagnostics(std::uint64_t,bool){return false;}} nfc_;
     bool idleBlocked()const;void interfaceActivity(std::uint64_t);void pollIdle(std::uint64_t);
     bool idleForegroundActive()const;bool idleDiscovery()const;
     void pollInterface(std::uint64_t);void pauseInterface(bool);

@@ -39,6 +39,25 @@ int main(){
  }
  nfcmock::reset();profile=board::ProfileId::Waveshare146;nfcdiag::Device small;small.setTestEnabled(true,clockMs);run(small,9000);
  assert(!small.testView().available&&nfcmock::calls==0);
+ // Repeated render stalls must not cancel a healthy diagnostic session.
+ profile=board::ProfileId::Waveshare21;
+ for(unsigned gap:{10u,100u,300u,500u}) {
+  nfcmock::reset();nfcmock::responseDelayMs=100;nfcdiag::Device delayed;
+  delayed.setTestEnabled(true,clockMs);
+  for(unsigned frame=0;frame<50;++frame) {
+   clockMs+=gap;delayed.poll(clockMs,true);
+   // The actual UI services UART at render completion and during DMA stripes.
+   for(unsigned stripe=0;stripe<8;++stripe)delayed.serviceDiagnostics(clockMs+=20,true);
+  }
+  assert(delayed.testView().connected&&delayed.testView().swipes==0);
+  assert(delayed.transportDiagnostics().maxPollGapMs<=(gap<20?20:gap));
+  delayed.setTestEnabled(false,clockMs);run(delayed,7500);assert(delayed.quiescent());
+ }
+ // Even without stripe service, recurring 300ms polls complete under the session budget.
+ nfcmock::reset();nfcdiag::Device gapOnly;gapOnly.setTestEnabled(true,clockMs);
+ for(unsigned i=0;i<70;++i)gapOnly.poll(clockMs+=300,true);
+ assert(gapOnly.testView().connected);
+ gapOnly.setTestEnabled(false,clockMs);run(gapOnly,7500);assert(gapOnly.quiescent());
  // Tracker rejects failed cleanup and only re-arms after consecutive clean absence.
  nfctest::Tracker t;t.begin(true);nfcdiag::Result r;r.error="none";r.samReady=r.firmwareValid=r.rfOff=true;r.noCard=true;
  t.fault("ack_timeout");t.observe(r,0);t.observe(r,50);assert(!t.view().armed);t.observe(r,200);assert(t.view().armed);

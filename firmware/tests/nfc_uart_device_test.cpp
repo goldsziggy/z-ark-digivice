@@ -8,7 +8,7 @@
 #include <vector>
 using namespace digivice;
 static unsigned calls=0,removed=0,resets=0,writes=0;
-static bool installed=false,normal=false;
+static bool installed=false,normal=false,flushFail=false;
 static int failStep=0,step=0,eventError=0;
 static board::ProfileId profile=board::ProfileId::Waveshare21;
 static std::deque<unsigned char> rx;
@@ -29,7 +29,7 @@ esp_err_t uart_set_pin(uart_port_t p,int tx,int r,int rts,int cts) {
     assert(tx==43&&r==44&&rts==-1&&cts==-1);return check(p)?ESP_FAIL:ESP_OK;
 }
 esp_err_t uart_driver_delete(uart_port_t p) { check(p);assert(installed);installed=false;++removed;return ESP_OK; }
-esp_err_t uart_flush_input(uart_port_t p) { rx.clear();return check(p)?ESP_FAIL:ESP_OK; }
+esp_err_t uart_flush_input(uart_port_t p) { rx.clear();return (check(p)||flushFail)?ESP_FAIL:ESP_OK; }
 esp_err_t gpio_reset_pin(gpio_num_t pin) { ++calls;++resets;assert(pin==43||pin==44);return ESP_OK; }
 int xQueueReset(QueueHandle_t q) { assert(q==&installed);++calls;eventError=0;return 1; }
 int xQueueReceive(QueueHandle_t q,void* out,TickType_t t) { assert(q==&installed&&t==0);++calls;if(eventError){static_cast<uart_event_t*>(out)->type=eventError;eventError=0;return 1;}return 0; }
@@ -51,7 +51,7 @@ int uart_read_bytes(uart_port_t p,void* buffer,std::uint32_t size,TickType_t wai
     check(p);assert(wait==0);unsigned n=0;auto* b=static_cast<unsigned char*>(buffer);
     while(n<size&&!rx.empty()) {b[n++]=rx.front();rx.pop_front();}return n;
 }
-static void reset() { calls=removed=resets=writes=0;step=failStep=eventError=0;installed=normal=false;rx.clear();profile=board::ProfileId::Waveshare21; }
+static void reset() { calls=removed=resets=writes=0;step=failStep=eventError=0;installed=normal=flushFail=false;rx.clear();profile=board::ProfileId::Waveshare21; }
 int main() {
     reset();nfcdiag::Device d;d.poll(0,true);d.status();assert(calls==0);
     d.poll(1,true,true);assert(!d.cardsConfigured()&&calls==0); // Empty production allowlist.
@@ -63,11 +63,17 @@ int main() {
     d.command("nfc probe",0,true);assert(calls==0);std::puts("UART adapter disabled: zero hardware calls passed.");
 #else
     installed=true;d.command("nfc probe",0,true);assert(removed==0&&writes==0&&installed);installed=false;
-    for(int fail=1;fail<=4;++fail) {
+    for(int fail=1;fail<=3;++fail) {
         reset();failStep=fail;nfcdiag::Device bad;bad.command("nfc probe",0,true);
         assert(!bad.busy()&&!installed&&writes==0);assert(removed==(fail>=3?1U:0U));
         assert(resets==(fail>=3?2U:0U));
     }
+    reset();flushFail=true;nfcdiag::Device flushBad;flushBad.command("nfc probe",0,true);assert(!flushBad.busy()&&!installed&&writes==0);
+    reset();rx={0x55,0xaa,0x00};nfcdiag::Device discarded;discarded.command("nfc probe",0,true);
+    assert(discarded.transportDiagnostics().discardedBytes==3&&discarded.transportDiagnostics().discardedSize==3);
+    assert(discarded.transportDiagnostics().discarded[0]==0x55&&discarded.transportDiagnostics().discarded[1]==0xaa);
+    for(unsigned now=0;now<2000&&discarded.busy();++now)discarded.poll(now,true);
+    assert(discarded.quiescent()&&discarded.transportDiagnostics().txBytes==48);
     reset();nfcdiag::Device live;live.command("nfc probe",0,true);assert(live.busy()&&installed&&writes==0);
     live.command("nfc scan",0,true);assert(writes==0); // Cannot replace an active operation.
     for(unsigned now=0;now<2000&&live.busy();++now)live.poll(now,true);
@@ -81,6 +87,7 @@ int main() {
         unsigned now=0;while(writes<2&&now<1000)noisy.poll(now++,true);eventError=event;
         while(noisy.busy()&&now<2000)noisy.poll(now++,true);
         assert(!noisy.busy()&&!installed&&removed==1&&resets==2);
+        assert(noisy.transportDiagnostics().uartErrors==1&&noisy.transportDiagnostics().uartErrorMask==(1u<<event));
     }
     std::puts("UART adapter: build/profile/runtime gates, setup faults, UART error events, existing owner, nonblocking I/O and cleanup passed.");
 #endif

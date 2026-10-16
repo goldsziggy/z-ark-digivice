@@ -113,7 +113,8 @@ const char* Audio::playResultText() const {
 }
 BuzzerDiagnostics Audio::buzzerDiagnostics() const {
     return {buzzerQueued_,buzzerStarted_,backgroundStarted_,buzzerExpired_,buzzerBusyRetries_,
-        buzzerOnWrites_,buzzerOffWrites_,buzzerOutputKnown_,buzzerOutputOn_};
+        buzzerOnWrites_,buzzerOffWrites_,buzzerOutputKnown_,buzzerOutputOn_,
+        buzzerConfirmedCues_,buzzerCompletedCues_,buzzerMaxOnMs_,buzzerLastOnMs_,buzzerLastOffMs_};
 }
 esp_err_t Audio::persistPreferences() {
     preferencesError_ = settings_.save({static_cast<std::uint8_t>(volume_.load()),muted_.load(),

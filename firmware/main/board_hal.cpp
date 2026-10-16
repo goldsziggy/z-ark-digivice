@@ -128,14 +128,20 @@ esp_err_t lockSharedI2c(std::uint32_t timeoutMs) {
 void unlockSharedI2c() { if (busMutex) xSemaphoreGive(busMutex); }
 
 namespace {
-[[maybe_unused]] esp_err_t setExpanderOutput(std::uint8_t mask, bool high, bool nonblocking = false) {
+[[maybe_unused]] esp_err_t setExpanderOutput(std::uint8_t mask, bool high, bool buzzer = false,
+                                          bool (*allowOn)(void*) = nullptr, void* context = nullptr) {
 #if ((defined(CONFIG_DIGIVICE_BOARD_WAVESHARE_146) && CONFIG_DIGIVICE_BOARD_WAVESHARE_146) || (defined(CONFIG_DIGIVICE_BOARD_WAVESHARE_21) && CONFIG_DIGIVICE_BOARD_WAVESHARE_21)) && \
     ((defined(CONFIG_DIGIVICE_SD_ASSETS) && CONFIG_DIGIVICE_SD_ASSETS) || \
      (defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH))
     if (selectedProfile().id == ProfileId::Waveshare146 && !powerHoldReady()) return ESP_ERR_INVALID_STATE;
-    esp_err_t error = lockSharedI2c(nonblocking ? 0 : 100);
-    if (nonblocking && error == ESP_ERR_TIMEOUT) return ESP_ERR_NOT_FINISHED;
+    // Joining the mutex wait queue avoids phase-locking with the 20ms IMU and
+    // touch workers. Always wait at least one tick on supported tick rates.
+    const auto wait = buzzer ? (pdMS_TO_TICKS(10) ? pdMS_TO_TICKS(10) : 1) : pdMS_TO_TICKS(100);
+    if (!sharedBus || !busMutex) return ESP_ERR_INVALID_STATE;
+    esp_err_t error = xSemaphoreTake(busMutex, wait) == pdTRUE ? ESP_OK : ESP_ERR_TIMEOUT;
+    if (buzzer && error == ESP_ERR_TIMEOUT) return ESP_ERR_NOT_FINISHED;
     if (error != ESP_OK) return error;
+    if (high && allowOn && !allowOn(context)) { unlockSharedI2c(); return ESP_ERR_NOT_FINISHED; }
     if (!expander) {
         i2c_device_config_t config{};
         config.dev_addr_length = I2C_ADDR_BIT_LEN_7;
@@ -145,15 +151,18 @@ namespace {
         if (error != ESP_OK) expander = nullptr;
     }
     constexpr std::uint8_t outputRegister = 0x01, directionRegister = 0x03;
-    const auto readRegister = [nonblocking](std::uint8_t reg, std::uint8_t& value) {
-        return i2c_master_transmit_receive(expander, &reg, 1, &value, 1, nonblocking ? 10 : 20);
+    const auto readRegister = [buzzer](std::uint8_t reg, std::uint8_t& value) {
+        return i2c_master_transmit_receive(expander, &reg, 1, &value, 1, buzzer ? 10 : 20);
     };
-    const auto writeRegister = [nonblocking](std::uint8_t reg, std::uint8_t value) {
+    const auto writeRegister = [buzzer](std::uint8_t reg, std::uint8_t value) {
         const std::uint8_t bytes[] = {reg, value};
-        return i2c_master_transmit(expander, bytes, sizeof(bytes), nonblocking ? 10 : 20);
+        return i2c_master_transmit(expander, bytes, sizeof(bytes), buzzer ? 10 : 20);
     };
     std::uint8_t output = 0, direction = 0, observed = 0;
     if (error == ESP_OK) error = readRegister(outputRegister, output);
+    if (error == ESP_OK && high && allowOn && !allowOn(context)) {
+        unlockSharedI2c(); return ESP_ERR_NOT_FINISHED;
+    }
     output = high ? static_cast<std::uint8_t>(output | mask)
                   : static_cast<std::uint8_t>(output & static_cast<std::uint8_t>(~mask));
     // Preload the selected level BEFORE direction; preserve every other bit.
@@ -168,13 +177,13 @@ namespace {
     unlockSharedI2c();
     return error;
 #else
-    (void)mask; (void)high; (void)nonblocking;
+    (void)mask; (void)high; (void)buzzer; (void)allowOn; (void)context;
     return ESP_ERR_NOT_SUPPORTED;
 #endif
 }
 } // namespace
 
-esp_err_t setBuzzer(bool on) {
+esp_err_t setBuzzer(bool on, bool (*allowOn)(void*), void* context) {
 #if defined(CONFIG_DIGIVICE_BUZZER_21) && CONFIG_DIGIVICE_BUZZER_21
     const auto& p = selectedProfile();
     if (p.id != ProfileId::Waveshare21 || p.buzzerExpanderMask != 0x80)
@@ -183,11 +192,11 @@ esp_err_t setBuzzer(bool on) {
         (kWaveshare21.lcdResetExpanderMask | kWaveshare21.touchResetExpanderMask |
          kWaveshare21.lcdSelectExpanderMask | kWaveshare21.sdSelectExpanderMask)) == 0,
         "Buzzer must not overlap display/touch/SD ownership");
-    // EXIO8/P7 is active high. Worker only: zero-wait mutex and <=10 ms per
+    // EXIO8/P7 is active high. Worker only: bounded mutex wait and <=10 ms per
     // transfer, one six-transfer masked/verified transaction group per edge.
-    return setExpanderOutput(p.buzzerExpanderMask, on, true);
+    return setExpanderOutput(p.buzzerExpanderMask, on, true, allowOn, context);
 #else
-    (void)on; return ESP_ERR_NOT_SUPPORTED;
+    (void)on; (void)allowOn; (void)context; return ESP_ERR_NOT_SUPPORTED;
 #endif
 }
 

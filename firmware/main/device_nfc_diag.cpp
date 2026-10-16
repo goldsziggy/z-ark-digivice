@@ -37,11 +37,13 @@ void Device::retryTest(std::uint64_t now) {
     if(!testActive_ || busy() || !testAvailable())return;
     testFault_=false; testCancelled_=false; test_.retry(); nextScan_=now;
 }
-bool Device::pollTest(std::uint64_t now, bool allowed, bool stale) {
+bool Device::pollTest(std::uint64_t now, bool allowed) {
     if(owner_!=Owner::Test && !testActive_)return false;
     if(owner_==Owner::Cards || owner_==Owner::Diagnostic)return false;
     if(owner_==Owner::Test) {
-        if(!testActive_ || !allowed || stale) { testCancelled_=true; session_.cancel(now); }
+        // The gameplay latch's 250ms freshness limit is not a transport timeout.
+        // Session owns bounded ACK/response/overall deadlines during long frames.
+        if(!testActive_ || !allowed) { testCancelled_=true; session_.cancel(now); }
         if(session_.busy())session_.poll(now);
         if(session_.busy())return true;
         if(testCancelled_) {
@@ -73,6 +75,7 @@ bool Device::open() {
         error_ = ESP_ERR_NOT_SUPPORTED; return false;
     }
     if (installed_ || uart_is_driver_installed(kPort)) { error_ = ESP_ERR_INVALID_STATE; return false; }
+    transport_={};seenService_=false;
     uart_config_t config{};
     config.baud_rate = 115200; config.data_bits = UART_DATA_8_BITS;
     config.parity = UART_PARITY_DISABLE; config.stop_bits = UART_STOP_BITS_1;
@@ -89,11 +92,13 @@ bool Device::open() {
     return true;
 }
 void Device::close() {
+    if(installed_)discardInput();
     if (installed_) { (void)uart_driver_delete(kPort); installed_ = false; events_ = nullptr; }
     if (pins_) { (void)gpio_reset_pin(kTx); (void)gpio_reset_pin(kRx); pins_ = false; }
 }
 bool Device::flush() {
     if (!installed_) return false;
+    discardInput();
     const auto error = uart_flush_input(kPort);
     if (error != ESP_OK) error_ = error; // Retain the first I/O failure through successful cleanup.
     if (events_) xQueueReset(events_);
@@ -102,19 +107,46 @@ bool Device::flush() {
 int Device::write(const std::uint8_t* bytes, std::size_t size) {
     const int count = installed_ ? uart_tx_chars(kPort, reinterpret_cast<const char*>(bytes), static_cast<std::uint32_t>(size)) : -1;
     if (count < 0) error_ = ESP_FAIL;
+    if(count>0 && static_cast<std::size_t>(count)<=size) {
+        transport_.txBytes+=static_cast<unsigned>(count);
+        for(int i=0;i<count && transport_.txSize<sizeof(transport_.tx);++i)transport_.tx[transport_.txSize++]=bytes[i];
+    }
     return count;
 }
-int Device::read(std::uint8_t* bytes, std::size_t size) {
-    if (!installed_) return -1;
+bool Device::readEvents() {
+    bool ok=true;
     uart_event_t event{};
     for (unsigned i = 0; i < 8 && xQueueReceive(events_, &event, 0) == pdTRUE; ++i) {
         if (event.type == UART_FIFO_OVF || event.type == UART_BUFFER_FULL ||
             event.type == UART_FRAME_ERR || event.type == UART_PARITY_ERR || event.type == UART_BREAK) {
-            error_ = ESP_FAIL; return -1;
+            ++transport_.uartErrors;
+            transport_.uartErrorMask|=1u<<static_cast<unsigned>(event.type);
+            error_ = ESP_FAIL; ok=false;
         }
     }
+    return ok;
+}
+void Device::discardInput() {
+    (void)readEvents();
+    // Bound work even with a continuously noisy input. Keep the first 64 bytes
+    // and a count; indicate when the 256-byte drain bound was exhausted.
+    for(unsigned i=0;i<4;++i) {
+        std::uint8_t bytes[64];const int count=uart_read_bytes(kPort,bytes,sizeof(bytes),0);
+        if(count<0 || count>64) {error_=ESP_FAIL;return;}
+        transport_.discardedBytes+=static_cast<unsigned>(count);
+        for(int j=0;j<count && transport_.discardedSize<sizeof(transport_.discarded);++j)
+            transport_.discarded[transport_.discardedSize++]=bytes[j];
+        if(count<64)return;
+    }
+    transport_.discardLimit=true;
+}
+int Device::read(std::uint8_t* bytes, std::size_t size) {
+    if (!installed_) return -1;
+    if(!readEvents())return -1;
     const int count = uart_read_bytes(kPort, bytes, static_cast<std::uint32_t>(size), 0);
     if (count < 0) error_ = ESP_FAIL;
+    if(count>0 && static_cast<std::size_t>(count)<=size)
+        for(int i=0;i<count && transport_.rxSize<sizeof(transport_.rx);++i)transport_.rx[transport_.rxSize++]=bytes[i];
     return count;
 }
 void Device::status() const {
@@ -129,6 +161,13 @@ void Device::status() const {
         cardsConfigured()?"configured":"unconfigured",static_cast<unsigned>(nfccards::config::count),
         owner_==Owner::Cards?"cards":owner_==Owner::Diagnostic?"diagnostic":owner_==Owner::Test?"test":"none",stopped_);
     const auto& t=test_.view();
+    std::printf("NFC transport tx_bytes=%u discarded_bytes=%u discard_limit=%d uart_errors=%u uart_error_mask=%x max_poll_gap_ms=%llu failed_command=%02x failed_phase=%s cleanup_error=%s framing=8N1 flow=none console=nativeUSB tx_trace=",
+        transport_.txBytes,transport_.discardedBytes,transport_.discardLimit,transport_.uartErrors,transport_.uartErrorMask,
+        static_cast<unsigned long long>(transport_.maxPollGapMs),r.failedCommand,r.failedPhase,r.cleanupError);
+    for(unsigned i=0;i<transport_.txSize;++i)std::printf("%02x",transport_.tx[i]);
+    std::printf(" rx_trace=");for(unsigned i=0;i<transport_.rxSize;++i)std::printf("%02x",transport_.rx[i]);
+    std::printf(" discarded_trace=");for(unsigned i=0;i<transport_.discardedSize;++i)std::printf("%02x",transport_.discarded[i]);
+    std::putchar('\n');
     std::printf("NFC test active=%d state=%s connected=%d scanning=%d swipes=%lu armed=%d last_uid=%s type=%s error=%s rf_off=%s physical_uid_received=%d\n",
         testActive_,t.state,t.connected,t.scanning,static_cast<unsigned long>(t.swipes),t.armed,
         t.uid[0]?t.uid:"-",t.type[0]?t.type:"-",t.error,t.rfOff?"confirmed":"unknown",r.uidValid);
@@ -169,16 +208,24 @@ bool Device::command(const char* line, std::uint64_t now, bool allowed) {
         "NFC firmware probe started; USB enumeration alone is not NFC detection.");
     return true;
 }
-void Device::poll(std::uint64_t now, bool allowed, bool cardsAllowed,std::uint32_t encounter) {
-    const bool stale=seenPoll_ && (now<lastPoll_ || now-lastPoll_>digimodify::ReaderLatch::kMaxGapMs);
-    lastPoll_=now;seenPoll_=true;
-    if(pollTest(now,allowed,stale))return;
+bool Device::serviceDiagnostics(std::uint64_t now, bool allowed) {
+    if(session_.busy()) {
+        if(seenService_ && now>=lastService_ && now-lastService_>transport_.maxPollGapMs)transport_.maxPollGapMs=now-lastService_;
+        lastService_=now;seenService_=true;
+    }
+    if(pollTest(now,allowed))return true;
     if(owner_==Owner::Diagnostic) {
         if(!allowed)session_.cancel(now);
         session_.poll(now);
         if(!session_.busy()){close();owner_=Owner::None;status();}
-        return; // Diagnostic UID results NEVER enter the gameplay mailbox.
+        return true; // Diagnostic UID results NEVER enter the gameplay mailbox.
     }
+    return false;
+}
+void Device::poll(std::uint64_t now, bool allowed, bool cardsAllowed,std::uint32_t encounter) {
+    const bool stale=seenPoll_ && (now<lastPoll_ || now-lastPoll_>digimodify::ReaderLatch::kMaxGapMs);
+    lastPoll_=now;seenPoll_=true;
+    if(serviceDiagnostics(now,allowed))return;
     const bool eligible=cardsAllowed && cardsConfigured() && !stopped_ && !testActive_;
     if(owner_==Owner::Cards && (!eligible||stale||encounter!=encounter_)) {
         cancelCards_=true;invalidate();session_.cancel(now);
