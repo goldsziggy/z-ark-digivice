@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "digi_modify_cards.hpp"
 #include "expeditions.hpp"
 #include "capture_ring.hpp"
 #include "combat.hpp"
@@ -217,13 +218,14 @@ void loadActive(State& state) {
     state.hp = member.hp; state.energy = member.energy; state.fullness = member.fullness;
     state.mood = member.mood; state.bond = member.bond; state.level = member.level;
 }
-std::uint32_t random(State& state) {
-    std::uint32_t x = state.rngState;
+std::uint32_t drawRandom(std::uint32_t& rng) {
+    std::uint32_t x = rng;
     x ^= x << 13;
     x ^= x >> 17;
     x ^= x << 5;
-    return state.rngState = x;
+    return rng = x;
 }
+std::uint32_t random(State& state) { return drawRandom(state.rngState); }
 void addBond(State& state, std::uint32_t amount) { state.bond = cappedAdd(state.bond, amount, 200); }
 void addXp(State& state,std::uint32_t amount,std::uint32_t rules=0) {
     auto& member=active(state);
@@ -302,18 +304,16 @@ CreatureMember* oldestExact(State& state, std::uint32_t formId) {
 Error evolveOwned(State& next, CreatureMember& member, std::uint32_t formId) {
     const auto* target = forms::find(formId);
     const forms::EvolutionEdge* edge = nullptr;
-    std::size_t edgeIndex = 0;
     for (std::size_t i = 0; i < 2; ++i) {
         const auto* candidate = forms::outgoing(member.formId, i);
-        if (candidate && candidate->to == formId) { edge = candidate; edgeIndex = i; }
+        if (candidate && candidate->to == formId) { edge = candidate; }
     }
     if (!target || !edge) return Error::EvolutionUnavailable;
     const auto need = forms::evolutionNeed(*edge);
     const auto level = member.id == next.activeCreatureId ? next.level : member.level;
     const auto bond = member.id == next.activeCreatureId ? next.bond : member.bond;
-    if (level < need.level || bond < need.bond || carePointsOf(member.careState) < need.care) return Error::EvolutionUnavailable;
+    if (level < need.level || bond < need.bond) return Error::EvolutionUnavailable;
     if (injuryOf(member.careState)) return Error::MemberInjured;
-    if (!careRouteOpen(member, edgeIndex)) return Error::CareRouteLocked;
     const auto oldMax = maxHp(member.formId, level);
     member.formId = formId;
     member.species = static_cast<Species>(target->lineage);
@@ -344,7 +344,11 @@ void noteCareReward(State& state, CreatureMember& member, CareKind kind) {
     else toiletCd = cooldown;
     member.careState = repackCare(member.careState, packCare(care < 100 ? care + 4 : 100, toilet, missed, feed, play, rest, toiletCd));
 }
-void home(State& state) {
+void clearExpedition(State& state) {
+    state.expeditionScenario = state.expeditionTier = state.expeditionForm = state.expeditionLevel = 0;
+}
+void home(State& state, bool keepExpedition = false) {
+    if (!keepExpedition) clearExpedition(state);
     state.phase = Phase::Home;
     state.autoCapture = AutoCapture::None;
     state.captureDeferred = 0;
@@ -352,13 +356,19 @@ void home(State& state) {
     state.wildHp = state.wildMaxHp = state.captureAttempts = 0;
     state.attackBoost = state.shield = 0;
     state.cardUsed = false;
+    state.digiModifyReady = false;
     state.wildSpecies = Species::None;
     state.wildLevel=state.wildTurn=state.wildFormId=state.wildRules=0;
 }
 void receiveDamage(State& state,std::uint32_t damage) {
     const auto maximum=maxHpForRules(active(state).formId,state.level,state.wildRules);
     const auto blocked=state.shield<damage ? state.shield : damage; state.shield-=blocked;
-    const auto received=damage-blocked;
+    auto received=damage-blocked;
+    if(state.digiModifyReady==3 && received) {
+        const auto reduction=std::min((received*30+99)/100,(maximum+4)/5);
+        received-=std::min(received,reduction);
+        state.digiModifyReady=0;
+    }
     if(received>=state.hp) {
         const auto rules=state.wildRules;
         home(state);state.hp=(maximum+9)/10;state.message=Message::Retreated;
@@ -387,7 +397,7 @@ combat::Hit encounterHit(const State& state,std::uint32_t attacker,std::uint32_t
         const auto power=kWildPowerDivisor ? attackerLevel/kWildPowerDivisor : 0u;
         std::uint32_t floor=4;
         if(kWildFloorDivisor){const auto defenderMax=combat::formProfile(defender,defenderLevel).stats.maxHp;floor=(defenderMax+kWildFloorDivisor-1)/kWildFloorDivisor;if(floor<4)floor=4;if(floor>32)floor=32;}
-        return combat::resolveCareForms(attacker,attackerLevel,defender,defenderLevel,move,guard,playerAttacking?bonus:combat::CareBonus{},playerAttacking?combat::CareBonus{}:bonus,floor,power>16?16u:power);}
+        return combat::resolveCareForms(attacker,attackerLevel,defender,defenderLevel,move,guard,playerAttacking?bonus:combat::CareBonus{},playerAttacking?combat::CareBonus{}:bonus,floor,power>16?16u:power,playerAttacking && state.digiModifyReady>=5 ? static_cast<combat::AttackElement>(state.digiModifyReady-4) : combat::AttackElement::FromForm);}
     if(state.wildRules>=12){const auto bonus=memberCare(*activeMember(state));
         return combat::resolveCareForms(attacker,attackerLevel,defender,defenderLevel,move,guard,playerAttacking?bonus:combat::CareBonus{},playerAttacking?combat::CareBonus{}:bonus);}
     return combat::resolveForms(attacker,attackerLevel,defender,defenderLevel,move,guard);
@@ -399,12 +409,17 @@ struct FocusScope {
     ~FocusScope(){gStrikePercent=gBlockPercent=100;}
 };
 void applyCrit(State& state, combat::Hit& hit, bool record) {
-    if (state.wildRules < 16 || hit.reflected) return;
-    const bool critical = random(state) % 100 < 5;
+    if (state.wildRules < 16 || hit.reflected || !hit.damage) return;
+    // Keep the ordinary RNG draw, including a natural critical. Never double crit.
+    const bool rolled = random(state) % 100 < 5;
+    const bool critical = rolled || (record && state.digiModifyReady==1 && hit.damage);
+    if(record && state.digiModifyReady==2) hit.damage=hit.damage*120/100;
+    if(record && (state.digiModifyReady<=2 || state.digiModifyReady>=5)) state.digiModifyReady=0;
     if (critical) {
         const auto scaled = hit.damage * 3 / 2;
         hit.damage = scaled ? scaled : 1;
     }
+    hit.critical = critical;
     if (record) state.lastCritical = critical ? 1u : 0u;
 }
 void wildResponse(State& state) {
@@ -607,6 +622,18 @@ static bool validRules4State(const State& state, bool /* legacy */) {
 }
 
 static bool validForVersion(const State& s,bool) {
+    if (s.expeditionScenario) {
+        const auto scenario = s.expeditionScenario - 1;
+        const auto tiers = expeditions::tierCount(scenario);
+        if (!s.onboardingComplete || !tiers || !s.expeditionTier || s.expeditionTier > tiers ||
+            !forms::productionForm(s.expeditionForm) || !forms::hasInstalledArt(s.expeditionForm) ||
+            !combat::validFormProfile(s.expeditionForm, s.expeditionLevel)) return false;
+        if (s.phase == Phase::Encounter) {
+            if ((s.wildRules != 21 && s.wildRules != kRulesVersion) || s.wildFormId != s.expeditionForm ||
+                s.wildLevel != expeditions::tierLevel(s.expeditionLevel, s.expeditionTier)) return false;
+        } else if (s.phase != Phase::Expedition || s.expeditionTier >= tiers ||
+                   (s.message != Message::Won && s.message != Message::Captured && s.message != Message::Trained)) return false;
+    } else if (s.expeditionTier || s.expeditionForm || s.expeditionLevel || s.phase == Phase::Expedition) return false;
     if(s.foregroundSequence>s.sequence)return false;
     bool partyTail=false;
     for(std::size_t i=0;i<kPartyCapacity;++i){const auto id=s.partyMemberIds[i];
@@ -619,6 +646,11 @@ static bool validForVersion(const State& s,bool) {
        (s.phase!=Phase::Encounter || s.battleMode!=BattleMode::Auto || s.wildRules<18 || s.wildTurn!=focusTurn(s) ||
         (s.autoCapture==AutoCapture::FocusStrike)!=focusIsStrike(s)))return false;
     if(s.lastCritical>1 || s.captureDeferred>1)return false;
+    if(s.digiModifyReady>7 || s.digiModifyReady==4 || (s.message==Message::DigiModified && (!s.cardUsed || s.phase!=Phase::Encounter))) return false;
+    if(s.digiModifyReady>=5 && (static_cast<unsigned>(combat::counterElement(s.wildFormId))+4!=s.digiModifyReady ||
+       !activeMember(s) || combat::formTypePercent(activeMember(s)->formId,s.wildFormId)>=125)) return false;
+    if(s.digiModifyReady && (s.phase!=Phase::Encounter || s.wildRules<22 ||
+       !s.cardUsed || s.attackBoost || s.shield)) return false;
     if(s.dungeonKeys>expeditions::kMaxDungeonKeys || s.bossSigils>expeditions::kMaxBossSigils ||
        s.dungeonWins>=expeditions::kDungeonWinsPerKey || s.bossSteps>=expeditions::kBossStepsPerSigil)return false;
     if(s.captureDeferred && (s.phase!=Phase::Encounter || !s.captureAttempts))return false;
@@ -641,7 +673,7 @@ static bool validForVersion(const State& s,bool) {
     const auto& pending=s.pendingEncounter;
     if(pending.formId) {
         if(!s.onboardingComplete || !combat::validFormProfile(pending.formId,pending.level) ||
-           (pending.rules<12||pending.rules>19) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
+           (pending.rules<12||pending.rules>kRulesVersion) || (pending.rules>=13&&!forms::productionForm(pending.formId)) || !s.explorationSteps || !s.encounterTarget || s.encounterTarget<160 ||
            s.encounterProgress || s.encounters==kMax) return false;
     } else if(pending.level || pending.rules) return false;
     static_assert(forms::kFormCount<=kJournalCapacity);
@@ -682,11 +714,11 @@ static bool validForVersion(const State& s,bool) {
     const auto& m=*activeMember(s);
     if(s.hp!=m.hp || s.energy!=m.energy || s.fullness!=m.fullness || s.mood!=m.mood || s.bond!=m.bond || s.level!=m.level ||
        !s.rngState || s.steps<s.stepCredit || (s.steps-s.stepCredit)%100 || static_cast<std::uint64_t>(s.encounters)!=(s.steps-s.stepCredit)/100+static_cast<std::uint64_t>(s.walkingEncounters) ||
-       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::Treated)) return false;
-    if(s.phase==Phase::Home) return !s.wildHp&&!s.wildMaxHp&&!s.captureAttempts&&!s.captureDeferred&&!s.cardUsed&&!s.attackBoost&&!s.shield&&
+       s.captures>s.encounters || s.encounters>s.sequence || static_cast<unsigned>(s.message)>static_cast<unsigned>(Message::DigiModified)) return false;
+    if(s.phase==Phase::Home || s.phase==Phase::Expedition) return !s.wildHp&&!s.wildMaxHp&&!s.captureAttempts&&!s.captureDeferred&&!s.cardUsed&&!s.attackBoost&&!s.shield&&
         s.wildSpecies==Species::None&&!s.wildLevel&&!s.wildTurn&&!s.wildFormId&&!s.wildRules;
     if(s.phase!=Phase::Encounter || !s.encounters || !forms::validForLineage(s.wildFormId,static_cast<unsigned>(s.wildSpecies)) ||
-       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16&&s.wildRules!=17&&s.wildRules!=18&&s.wildRules!=19) ||
+       !combat::validFormProfile(s.wildFormId,s.wildLevel) || (s.wildRules!=4&&s.wildRules!=5&&s.wildRules!=6&&s.wildRules!=7&&s.wildRules!=8&&s.wildRules!=9&&s.wildRules!=10&&s.wildRules!=11&&s.wildRules!=12&&s.wildRules!=13&&s.wildRules!=14&&s.wildRules!=15&&s.wildRules!=16&&s.wildRules!=17&&s.wildRules!=18&&s.wildRules!=19&&s.wildRules!=20&&s.wildRules!=21&&s.wildRules!=kRulesVersion) ||
        (s.wildRules>=13&&!forms::productionForm(s.wildFormId)) ||
        (s.wildRules==4&&(s.wildSpecies<Species::Flicker||s.wildSpecies>Species::Cinder||s.wildFormId!=rootForm(s.wildSpecies))) ||
        s.wildTurn>1000 || s.wildMaxHp!=maxHpForRules(s.wildFormId,s.wildLevel,s.wildRules) || !s.wildHp || s.wildHp>s.wildMaxHp || s.captureAttempts>3 || (s.wildRules>=12&&s.wildRules<16&&s.captureAttempts==3) ||
@@ -762,9 +794,102 @@ bool themeFits(const forms::Form* form, expeditions::Theme theme, int pass) {
     if (pass == 1) return exact || std::strcmp(form->type, "neutral") == 0;
     return true;
 }
+// Project the whole three-fight run using Auto's visible max-damage policy.
+// This uses the native resolver, never private RNG, Focus, capture, or a heal.
+// Three guard offsets cover any entry encounter count. A compact member copy
+// carries the same energy costs, XP/level HP scaling, and bond rewards as play.
+struct DungeonForecast {
+    bool valid = false, safe = false;
+    std::uint32_t remainingPercent = 0, hardestReply = 0;
+    unsigned exchanges = 0;
+};
+DungeonForecast forecastDungeonFoe(const CreatureMember& partner, std::uint32_t foeId, std::uint32_t level) {
+    if (!combat::validFormProfile(foeId, level) || !combat::validFormProfile(partner.formId, partner.level)) return {};
+    constexpr combat::Defense guards[]{combat::Defense::Brace, combat::Defense::Ward, combat::Defense::Counter};
+    constexpr combat::Move moves[]{combat::Move::Physical, combat::Move::Magic, combat::Move::Heavy};
+    const auto initialMaximum = combat::formProfile(partner.formId, partner.level).stats.maxHp;
+    std::uint32_t worstRemaining = 100, hardestReply = 0;
+    unsigned longestRun = 0;
+    bool safe = partner.hp != 0;
+    for (unsigned phase = 0; phase < 3; ++phase) {
+        auto projected = partner;
+        unsigned exchanges = 0;
+        bool finished = true;
+        for (unsigned tier = 1; tier <= 3 && finished; ++tier) {
+            const auto foeLevel = expeditions::tierLevel(level, tier);
+            const auto foeMaximum = combat::formProfile(foeId, foeLevel).stats.maxHp;
+            auto foeHp = foeMaximum;
+            const auto playerMaximum = combat::formProfile(projected.formId, projected.level).stats.maxHp;
+            const auto care = memberCare(projected);
+            const auto replyBonus = std::min<std::uint32_t>(kWildDamageBonusMax, kWildDamageBonusPerLevel * foeLevel);
+            unsigned turn = 0;
+            while (foeHp && projected.hp && turn < autobattle::kMaxTraceSteps) {
+                std::uint32_t damage = 0, cost = 2;
+                const auto guard = guards[(phase + tier - 1 + turn) % 3];
+                for (unsigned i = 0; i < (projected.energy >= 6 ? 3u : 2u); ++i) {
+                    const auto hit = combat::resolveCareForms(projected.formId, projected.level, foeId, foeLevel,
+                        moves[i], guard, care, {}, chipFloor(foeMaximum), movePower(projected.level));
+                    if (!hit.reflected && hit.damage > damage) {
+                        damage = hit.damage; cost = i == 2 ? 6u : 2u;
+                    }
+                }
+                // Basic attacks remain legal at zero energy during play. The
+                // entry budget does not rely on those free exhausted attacks.
+                if (projected.energy < cost) { finished = false; break; }
+                projected.energy -= cost;
+                ++exchanges;
+                if (damage >= foeHp) { foeHp = 0; break; }
+                foeHp -= damage;
+                const auto reply = combat::resolveCareForms(foeId, foeLevel, projected.formId, projected.level,
+                    turn % 2 ? combat::Move::Magic : combat::Move::Physical, combat::Defense::None,
+                    {}, care, chipFloor(playerMaximum), movePower(foeLevel));
+                const auto received = reply.damage * (100 + replyBonus) / 100;
+                hardestReply = std::max(hardestReply, received);
+                projected.hp = received >= projected.hp ? 0 : projected.hp - received;
+                ++turn;
+            }
+            if (foeHp || !projected.hp) { finished = false; break; }
+            projected.bond = cappedAdd(projected.bond, 8, 200);
+            projected.xp = cappedAdd(projected.xp, 20 + 6 * foeLevel, kMaxXp);
+            const auto nextLevel = levelForXp(projected.xp);
+            if (nextLevel > projected.level) {
+                projected.hp = scaleHp(projected.hp, playerMaximum,
+                    combat::formProfile(projected.formId, nextLevel).stats.maxHp);
+                projected.level = nextLevel;
+            }
+        }
+        longestRun = std::max(longestRun, exchanges);
+        const auto normalizedHp = scaleHp(projected.hp,
+            combat::formProfile(projected.formId, projected.level).stats.maxHp, initialMaximum);
+        const auto remaining = partner.hp ? normalizedHp * 100 / partner.hp : 0;
+        worstRemaining = std::min(worstRemaining, remaining);
+        // Do not count favorable player criticals. Leave room for one extra
+        // half-strength enemy reply (the critical increment), without promising
+        // survival against an arbitrary sequence of random critical hits.
+        if (!finished || normalizedHp <= (hardestReply + 1) / 2) safe = false;
+    }
+    return {true, safe, worstRemaining, hardestReply, longestRun};
+}
+int rateDungeonFoe(const CreatureMember& partner, std::uint32_t foeId, std::uint32_t level) {
+    const auto forecast = forecastDungeonFoe(partner, foeId, level);
+    if (!forecast.valid) return -1000000;
+    if (!forecast.safe) return -1000 + static_cast<int>(forecast.remainingPercent);
+    // Prefer a demanding but complete run: about 25% of starting HP remains.
+    // The 9..24 exchange band is a whole-run pacing preference, not a gate.
+    int distance = static_cast<int>(forecast.remainingPercent) - 25;
+    if (distance < 0) distance = -distance;
+    int score = 1000 - distance * 8;
+    if (forecast.exchanges < 9) score -= static_cast<int>(9 - forecast.exchanges) * 20;
+    else if (forecast.exchanges > 24) score -= static_cast<int>(forecast.exchanges - 24) * 8;
+    int levelGap = static_cast<int>(level) - static_cast<int>(partner.level);
+    if (levelGap < 0) levelGap = -levelGap;
+    return score - levelGap;
+}
+
 // Plays the physical exchange, including the rotating guard, and keeps the
 // natural form HP. A higher tier is preferred when that fight is still winnable.
 int rateExpeditionFoe(const CreatureMember& partner, std::uint32_t foeId, std::uint32_t level, bool boss) {
+    if (!boss) return rateDungeonFoe(partner, foeId, level);
     if (!combat::validFormProfile(foeId, level) || !combat::validFormProfile(partner.formId, partner.level)) return -1000000;
     const auto foeHp = combat::formProfile(foeId, level).stats.maxHp;
     const auto playerHp = partner.hp ? partner.hp : 1u;
@@ -844,6 +969,12 @@ bool chooseExpeditionFoe(const State& state, std::uint32_t scenarioIndex, std::u
             const std::uint32_t minLevel = form->minLevel ? form->minLevel : 1u;
             const std::uint32_t options[]{
                 minLevel,
+                // Whole-run budgets can need an intermediate level. Keep the
+                // boss candidate set unchanged (duplicates have no effect).
+                boss ? minLevel : std::max(minLevel, partner->level * 2 / 3),
+                boss ? minLevel : std::max(minLevel, partner->level > 6 ? partner->level - 6 : 1u),
+                boss ? minLevel : std::max(minLevel, partner->level > 4 ? partner->level - 4 : 1u),
+                boss ? minLevel : std::max(minLevel, partner->level > 2 ? partner->level - 2 : 1u),
                 std::min<std::uint32_t>(kMaxLevel, std::max(minLevel, partner->level)),
                 std::min<std::uint32_t>(kMaxLevel, std::max(minLevel, partner->level + 1)),
                 std::min<std::uint32_t>(kMaxLevel, std::max(minLevel, partner->level + (boss ? 3u : 2u))),
@@ -851,8 +982,12 @@ bool chooseExpeditionFoe(const State& state, std::uint32_t scenarioIndex, std::u
             };
             int formBest = -1000000;
             std::uint32_t formLevel = minLevel;
-            for (const auto candidate : options) {
-                if (candidate < 1 || candidate > kMaxLevel) continue;
+            for (std::size_t option = 0; option < std::size(options); ++option) {
+                const auto candidate = options[option];
+                bool duplicate = false;
+                for (std::size_t earlier = 0; earlier < option; ++earlier)
+                    if (options[earlier] == candidate) duplicate = true;
+                if (duplicate || candidate < 1 || candidate > kMaxLevel) continue;
                 const auto score = rateExpeditionFoe(*partner, id, candidate, boss);
                 if (score > formBest) { formBest = score; formLevel = candidate; }
             }
@@ -874,11 +1009,70 @@ bool chooseExpeditionFoe(const State& state, std::uint32_t scenarioIndex, std::u
     }
     return formId && combat::validFormProfile(formId, level) && forms::productionForm(formId) && forms::hasInstalledArt(formId);
 }
+// A resolved fight keeps its existing combat/capture reward. The run itself
+// adds only one clear and one key-progress victory, after its final tier.
+Error finishExpeditionTier(State& state, bool captured) {
+    if (!state.expeditionScenario) {
+        if (!captured) noteDungeonVictory(state);
+        return Error::None;
+    }
+    const auto scenario = state.expeditionScenario - 1;
+    if (state.expeditionTier < expeditions::tierCount(scenario)) {
+        state.phase = Phase::Expedition;
+        return Error::None;
+    }
+    auto& clears = scenario < 3 ? state.dungeonClears : state.bossClears;
+    if (clears == kMax) return Error::CounterOverflow;
+    ++clears;
+    noteDungeonVictory(state);
+    clearExpedition(state);
+    return Error::None;
+}
+Error startExpeditionTier(State& state, std::uint32_t tier) {
+    if (!state.expeditionScenario || !tier || tier > expeditions::tierCount(state.expeditionScenario - 1))
+        return Error::InvalidState;
+    if (state.encounters == kMax || state.walkingEncounters == kMax || state.explorationSteps == kMax)
+        return Error::CounterOverflow;
+    const auto* foe = forms::find(state.expeditionForm);
+    if (!foe) return Error::InvalidState;
+    // Keep the existing accounting invariant: each expedition fight is one
+    // encounter backed by one synthetic walking step, without sigil progress.
+    ++state.explorationSteps;
+    if (!state.encounterTarget) drawEncounterTarget(state);
+    ++state.walkingEncounters; ++state.encounters;
+    state.phase = Phase::Encounter;
+    state.expeditionTier = tier;
+    state.wildFormId = state.expeditionForm;
+    state.wildLevel = expeditions::tierLevel(state.expeditionLevel, tier);
+    state.wildRules = kRulesVersion;
+    state.wildSpecies = static_cast<Species>(foe->lineage);
+    state.wildMaxHp = state.wildHp = maxHp(state.wildFormId, state.wildLevel);
+    state.wildTurn = state.captureAttempts = state.attackBoost = state.shield = 0;
+    state.cardUsed = false;
+    state.digiModifyReady = 0;
+    state.autoCapture = AutoCapture::None;
+    state.captureDeferred = state.lastCritical = 0;
+    state.message = Message::Encounter;
+    return Error::None;
+}
 } // namespace
 bool previewExpeditionFoe(const State& state, std::uint32_t scenario, std::uint32_t& formId, std::uint32_t& level) {
     return chooseExpeditionFoe(state, scenario, formId, level);
 }
 
+combat::Hit previewWildAttack(const State& state,combat::Move move) {
+    const auto* member=activeMember(state);
+    if(!member || state.phase!=Phase::Encounter) return {0,false,100};
+    auto hit=encounterHit(state,member->formId,state.level,state.wildFormId,state.wildLevel,move,wildGuard(state));
+    auto rng=state.rngState;
+    if(!hit.damage) return hit;
+    if(state.wildRules>=16 && !hit.reflected) {
+        hit.critical=drawRandom(rng)%100<5 || (state.digiModifyReady==1 && hit.damage);
+        if(state.digiModifyReady==2) hit.damage=hit.damage*120/100;
+        if(hit.critical) hit.damage=std::max<std::uint32_t>(1u,hit.damage*3/2);
+    }
+    return hit;
+}
 bool needsTestEncounterResolution(const State& state) {
     return (state.phase==Phase::Encounter && state.wildFormId>=1 && state.wildFormId<forms::kFirstProductionFormId) ||
            (state.pendingEncounter.formId>=1 && state.pendingEncounter.formId<forms::kFirstProductionFormId);
@@ -886,8 +1080,12 @@ bool needsTestEncounterResolution(const State& state) {
 
 Error apply(State& state, Action action, std::uint32_t value) {
     if (!isValid(state)) return Error::InvalidState;
-    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::ClaimExpedition)) return Error::InvalidAction;
+    if (static_cast<unsigned>(action) > static_cast<unsigned>(Action::AutoStep)) return Error::InvalidAction;
     if (state.sequence == kMax) return Error::CounterOverflow;
+    if (state.phase == Phase::Expedition && action != Action::NextExpedition && action != Action::Retreat &&
+        action != Action::AccrueSteps && action != Action::CareMinute && action != Action::WorldSeed && action != Action::EncounterSeed)
+        return Error::WrongPhase;
+    if (state.expeditionScenario && (action == Action::Walk || action == Action::PresentEncounter)) return Error::WrongPhase;
     if(needsTestEncounterResolution(state)&&action!=Action::ResolveTestEncounter)return Error::InvalidAction;
     if(action==Action::StarterOfferSeed){
         if(!value)return Error::InvalidValue;
@@ -934,6 +1132,12 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (value < 1 || value > 1000) return Error::InvalidValue;
         if (state.steps > kMax - value || state.stepCredit > kMax - value)
             return Error::CounterOverflow;
+    } else if (action == Action::DigiModify) {
+        if (!digimodify::find(value)) return Error::InvalidValue;
+        if (state.phase != Phase::Encounter) return Error::WrongPhase;
+        if (state.wildRules < 22 || state.autoCapture==AutoCapture::Awaiting) return Error::InvalidAction;
+    } else if (action == Action::AutoStep) {
+        if (value > kFocusNoTap + 2) return Error::InvalidValue;
     } else if (action == Action::Card) {
         if (value != 1 && value != 2) return Error::InvalidValue;
     } else if (action == Action::Flick) {
@@ -947,6 +1151,9 @@ Error apply(State& state, Action action, std::uint32_t value) {
         if (!value) return Error::InvalidValue;
     } else if (action == Action::Focus) {
         if (value > kFocusNoTap) return Error::InvalidValue;
+    } else if (action == Action::NextExpedition) {
+        if (value) return Error::InvalidValue;
+        if (state.phase != Phase::Expedition) return Error::WrongPhase;
     } else if (action == Action::StartExpedition) {
         if (value >= std::size(expeditions::kScenarios)) return Error::InvalidValue;
         if (state.phase != Phase::Home) return Error::WrongPhase;
@@ -967,13 +1174,14 @@ Error apply(State& state, Action action, std::uint32_t value) {
     } else if (value != 0) {
         return Error::InvalidValue;
     }
+    if (action == Action::AutoStep) return applyAutoStep(state, value);
     if (action == Action::Auto) return applyAuto(state);
     if (action == Action::AutoFight) return applyAutoFight(state);
     if (action == Action::AutoResume) return applyAutoResume(state);
     if (action == Action::Focus) return applyFocus(state, value);
     if (state.phase == Phase::Encounter && state.battleMode == BattleMode::Auto && action != Action::Walk &&
         action != Action::AccrueSteps && action != Action::EncounterSeed && action != Action::WorldSeed && action != Action::ResolveTestEncounter &&
-        action != Action::Retreat &&
+        action != Action::Retreat && action != Action::DigiModify &&
         !(action==Action::Release && state.wildRules>=10) &&
         !((action==Action::Flick || action==Action::RingCapture) && state.autoCapture==AutoCapture::Awaiting))
         return Error::WrongMode;
@@ -1029,6 +1237,9 @@ Error apply(State& state, Action action, std::uint32_t value) {
         break;
     }
     case Action::Retreat: {
+        if (next.phase == Phase::Expedition) {
+            home(next); next.message = Message::Retreated; break;
+        }
         if (next.phase != Phase::Encounter) return Error::WrongPhase;
         const auto maximum = maxHpForRules(active(next).formId, next.level, next.wildRules);
         home(next);
@@ -1214,6 +1425,22 @@ Error apply(State& state, Action action, std::uint32_t value) {
             next.message = Message::Encounter;
         }
         break;
+    case Action::DigiModify: {
+        if (next.cardUsed) return Error::CardAlreadyUsed;
+        const auto effect=digimodify::find(value)->effect;
+        if(effect==digimodify::Effect::Recovery) {
+            const auto maximum=maxHp(active(next).formId,next.level);
+            if(next.hp>=maximum) return Error::InvalidAction;
+            next.hp=std::min(maximum,next.hp+std::max<std::uint32_t>(1u,maximum/10));
+        } else if(effect==digimodify::Effect::ElementShift) {
+            const auto element=combat::counterElement(next.wildFormId);
+            if(element==combat::AttackElement::FromForm || combat::formTypePercent(active(next).formId,next.wildFormId)>=125) return Error::InvalidAction;
+            next.digiModifyReady=4+static_cast<std::uint8_t>(element);
+        } else next.digiModifyReady=static_cast<std::uint8_t>(effect);
+        next.cardUsed=true;
+        next.message=Message::DigiModified;
+        break;
+    }
     case Action::Card:
         if (next.phase != Phase::Encounter) return Error::WrongPhase;
         if (next.cardUsed) return Error::CardAlreadyUsed;
@@ -1248,11 +1475,12 @@ Error apply(State& state, Action action, std::uint32_t value) {
         const auto damage=hit.damage+next.attackBoost; next.attackBoost=0;
         if (damage >= next.wildHp) {
             const auto xpReward=20+6*next.wildLevel, encounterRules=next.wildRules;
-            home(next);
+            home(next, true);
             next.lastCritical=critical;
             next.message = Message::Won;
             addBond(next, 8); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward); addPartyBond(next,8);
-            noteDungeonVictory(next);
+            const auto completed = finishExpeditionTier(next, false);
+            if (completed != Error::None) return completed;
         } else {
             next.wildHp -= damage;
             next.message = Message::Attacked;
@@ -1303,8 +1531,10 @@ Error apply(State& state, Action action, std::uint32_t value) {
                 ++next.captures;
                 addBond(next, 12); addXp(next,xpReward,encounterRules); addPartyXp(next,xpReward); addPartyBond(next,12);
             }
-            home(next);
+            home(next, true);
             next.message = Message::Captured;
+            const auto completed = finishExpeditionTier(next, true);
+            if (completed != Error::None) return completed;
         } else if(calm&&next.captureAttempts==3&&next.wildRules<16){
             home(next);next.message=Message::CaptureEnded;
         } else {
@@ -1326,30 +1556,21 @@ Error apply(State& state, Action action, std::uint32_t value) {
     case Action::StartExpedition: {
         if (next.phase != Phase::Home) return Error::WrongPhase;
         if (value >= std::size(expeditions::kScenarios)) return Error::InvalidValue;
-        const auto& scenario = expeditions::kScenarios[value];
-        const bool dungeon = scenario.kind == expeditions::Kind::Dungeon;
+        const bool dungeon = expeditions::kScenarios[value].kind == expeditions::Kind::Dungeon;
         if (dungeon ? !next.dungeonKeys : !next.bossSigils) return Error::InvalidAction;
-        if (next.encounters == kMax || next.walkingEncounters == kMax || next.explorationSteps == kMax) return Error::CounterOverflow;
         std::uint32_t formId = 0, foeLevel = 0;
         if (!chooseExpeditionFoe(next, value, formId, foeLevel)) return Error::InvalidState;
-        const auto* foe = forms::find(formId);
-        if (!foe) return Error::InvalidState;
+        next.expeditionScenario = value + 1;
+        next.expeditionForm = formId; next.expeditionLevel = foeLevel;
+        const auto started = startExpeditionTier(next, 1);
+        if (started != Error::None) return started;
         if (dungeon) --next.dungeonKeys; else --next.bossSigils;
-        // A walking encounter must be backed by a step and a live target.
-        ++next.explorationSteps;
-        if (!next.encounterTarget) drawEncounterTarget(next);
-        ++next.walkingEncounters; ++next.encounters;
-        next.phase = Phase::Encounter;
-        next.wildFormId = formId;
-        next.wildLevel = foeLevel;
-        next.wildRules = kRulesVersion;
-        next.wildSpecies = static_cast<Species>(foe->lineage);
-        next.wildMaxHp = next.wildHp = maxHp(formId, foeLevel);
-        next.wildTurn = next.captureAttempts = next.attackBoost = next.shield = 0;
-        next.cardUsed = false;
-        next.captureDeferred = 0;
-        next.lastCritical = 0;
-        next.message = Message::Encounter;
+        break;
+    }
+    case Action::NextExpedition: {
+        if (next.phase != Phase::Expedition) return Error::WrongPhase;
+        const auto started = startExpeditionTier(next, next.expeditionTier + 1);
+        if (started != Error::None) return started;
         break;
     }
     case Action::ClaimExpedition: {
@@ -1361,7 +1582,10 @@ Error apply(State& state, Action action, std::uint32_t value) {
             !forms::productionForm(formId) || !forms::hasInstalledArt(formId)) return Error::InvalidValue;
         const bool dungeon = expeditions::kScenarios[scenario].kind == expeditions::Kind::Dungeon;
         if (dungeon ? !next.dungeonKeys : !next.bossSigils) return Error::InvalidAction;
+        auto& clears = dungeon ? next.dungeonClears : next.bossClears;
+        if (clears == kMax) return Error::CounterOverflow;
         if (dungeon) --next.dungeonKeys; else --next.bossSigils;
+        ++clears;
         const auto xpReward = 20u + 6u * level;
         next.message = Message::Won;
         addBond(next, 8);
@@ -1428,19 +1652,15 @@ std::uint32_t cleanRouteMistakeLimit(std::uint32_t destinationFormId) {
     return form->stage == forms::Stage::Mega ? 1u : form->stage == forms::Stage::Ultimate ? 2u : 3u;
 }
 bool careRouteOpen(const CreatureMember& member, std::size_t outgoingIndex) {
-    const auto* edge = forms::outgoing(member.formId, outgoingIndex);
-    if (!edge) return false;
-    if (outgoingIndex != 0) return true;
-    const auto* second = forms::outgoing(member.formId, 1);
-    if (!second || !forms::productionForm(second->to)) return true; // A single real route is never care-locked.
-    return mistakesOf(member.careState) <= cleanRouteMistakeLimit(edge->to);
+    // Rules20: care remains part of partner health, never a branch restriction.
+    return forms::outgoing(member.formId, outgoingIndex) != nullptr;
 }
 
 namespace {
 enum class AutoFlow { Legacy, PauseForFlick, ResumeWithoutCapture, FocusAnswer };
 bool focusPending(const State& s) { return s.autoCapture==AutoCapture::FocusStrike || s.autoCapture==AutoCapture::FocusBlock; }
-Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uint32_t focusPhase=kFocusNoTap) {
-    if (trace) { trace->count = 0; trace->outcome = autobattle::Outcome::None; }
+Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uint32_t focusPhase=kFocusNoTap, bool singleStep=false) {
+    if (trace) { trace->count = 0; trace->outcome = autobattle::Outcome::None; trace->partial = singleStep; }
     if (!isValid(state)) return Error::InvalidState;
     if (state.phase != Phase::Encounter) return Error::WrongPhase;
     if (state.battleMode != BattleMode::Auto) return Error::WrongMode;
@@ -1515,22 +1735,24 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
         auto enemyRemaining = next.wildHp;
         const auto guard=wildGuard(next);
         frame.guard=guard==combat::Defense::Brace?autobattle::Move::Brace:guard==combat::Defense::Ward?autobattle::Move::Ward:guard==combat::Defense::Counter?autobattle::Move::Counter:autobattle::Move::None;
+        const bool focusTurnNow=flow==AutoFlow::FocusAnswer && turn==0;
+        const auto focusPct=focusTurnNow ? focusPercent(strikeFocus,focusPhase,next.wildFormId) : 100u;
         if (chosen != Action::Capture) {
             const auto move = chosen == Action::Heavy ? combat::Move::Heavy : chosen == Action::Magic ? combat::Move::Magic : combat::Move::Physical;
-            const auto hit=encounterHit(next,active(next).formId,next.level,next.wildFormId,next.wildLevel,move,guard);
+            const auto hit=previewWildAttack(next,move);
+            frame.critical=hit.critical;
             frame.reflected=hit.reflected;
-            const auto damage=hit.reflected?0:hit.damage+next.attackBoost;
+            frame.element=next.digiModifyReady>=5 && !hit.reflected ? next.digiModifyReady-4 : 0;
+            const auto damage=hit.reflected?0:hit.damage*(focusTurnNow&&strikeFocus?focusPct:100u)/100+next.attackBoost;
             enemyRemaining = damage >= enemyRemaining ? 0 : enemyRemaining - damage;
         }
         const auto opponentMove=next.wildTurn%2 ? autobattle::Move::Magic : autobattle::Move::Physical;
         const auto members = next.collectionCount;
-        const bool focusTurnNow=flow==AutoFlow::FocusAnswer && turn==0;
-        const auto focusPct=focusTurnNow ? focusPercent(strikeFocus,focusPhase,next.wildFormId) : 100u;
         const auto result = [&]{ FocusScope scope(focusTurnNow&&strikeFocus?focusPct:100u, focusTurnNow&&!strikeFocus?focusPct:100u); return apply(next, chosen); }();
         if (result != Error::None) { if (trace) trace->count = 0; return result; }
         frame.captured = next.collectionCount > members ||
-            (chosen == Action::Capture && next.phase == Phase::Home && next.message == Message::Captured);
-        if (next.phase == Phase::Home && !frame.captured &&
+            (chosen == Action::Capture && next.phase != Phase::Encounter && next.message == Message::Captured);
+        if (next.phase != Phase::Encounter && !frame.captured &&
             (next.message == Message::Won || next.message == Message::Trained)) enemyRemaining = 0;
         const bool calmCapture=state.wildRules>=12 && chosen==Action::Capture;
         if(calmCapture) {
@@ -1545,10 +1767,10 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
         frame.enemyHpAfter = next.phase == Phase::Encounter ? next.wildHp : enemyRemaining;
         frame.opponentAction = calmCapture || frame.captured || !enemyRemaining ? autobattle::Move::None : frame.reflected ? autobattle::Move::Counter : opponentMove;
         if (trace) { trace->steps[turn] = frame; trace->count = turn + 1; }
-        if (next.phase == Phase::Home) {
+        if (next.phase != Phase::Encounter) {
             if(captureRecorded)next.lastCapture.sequence=startSequence+1;
             next.battleMode = BattleMode::Auto;
-            next.lastAutoTurns = turn + 1; next.lastAutoSequence = startSequence + 1;
+            next.lastAutoTurns = singleStep ? state.wildTurn + turn + 1 : turn + 1; next.lastAutoSequence = startSequence + 1;
             next.lastAutoOutcome = frame.captured ? autobattle::Outcome::Captured :
                 !enemyRemaining ? autobattle::Outcome::Won : autobattle::Outcome::Retreated;
             if (!isValid(next)) { if (trace) trace->count = 0; return Error::InvalidState; }
@@ -1560,6 +1782,11 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
             // The crossing attack AND its response have finished. No throw or
             // capture RNG draw is included in this durable attack-only chunk.
             next.battleMode=BattleMode::Auto;next.autoCapture=AutoCapture::Awaiting;
+            if(!isValid(next)){if(trace)trace->count=0;return Error::InvalidState;}
+            state=next;return Error::None;
+        }
+        if(singleStep) {
+            next.battleMode=BattleMode::Auto;
             if(!isValid(next)){if(trace)trace->count=0;return Error::InvalidState;}
             state=next;return Error::None;
         }
@@ -1582,6 +1809,21 @@ Error autoEngine(State& state, autobattle::Trace* trace, AutoFlow flow, std::uin
     state=next; return Error::None;
 }
 } // namespace
+Error applyAutoStep(State& state,std::uint32_t value,autobattle::Trace* trace) {
+    if(value>kFocusNoTap+2) return Error::InvalidValue;
+    if(!isValid(state)) return Error::InvalidState;
+    if(state.phase!=Phase::Encounter) return Error::WrongPhase;
+    if(state.battleMode!=BattleMode::Auto) return Error::WrongMode;
+    if(state.wildRules<20) return Error::InvalidAction;
+    if((value==1)!=(state.autoCapture==AutoCapture::Awaiting) || (value>=2)!=focusPending(state)) return Error::InvalidAction;
+    // Bound the entire encounter, rather than permitting unlimited one-step calls.
+    if(state.wildTurn>=autobattle::kMaxTraceSteps) {
+        if(trace){trace->count=0;trace->outcome=autobattle::Outcome::None;}
+        return apply(state,Action::Retreat);
+    }
+    return autoEngine(state,trace,value==0?AutoFlow::PauseForFlick:value==1?AutoFlow::ResumeWithoutCapture:AutoFlow::FocusAnswer,
+                      value>=2?value-2:kFocusNoTap,true);
+}
 Error applyAuto(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::Legacy);}
 Error applyAutoFight(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::PauseForFlick);}
 Error applyAutoResume(State& state,autobattle::Trace* trace){return autoEngine(state,trace,AutoFlow::ResumeWithoutCapture);}
@@ -1629,6 +1871,7 @@ const char* messageText(Message message) {
     case Message::Rested: return "Rested and ready.";
     case Message::Walked: return "Every step counts.";
     case Message::Encounter: return "A wild creature appeared!";
+    case Message::DigiModified: return "Digi-Modify card applied. One card per fight.";
     case Message::AttackCard: return "Spark card read. Your next attack is stronger.";
     case Message::ShieldCard: return "Shelter card read. A gentle shield surrounds you.";
     case Message::Attacked: return "Your creature used a skill.";
@@ -1669,8 +1912,8 @@ const char* wildName(const State& state) {
 }
 bool parseAction(const char* name, Action& action) {
     if (!name) return false;
-    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member", "treat", "focus", "start-expedition", "claim-expedition"};
-    static_assert(sizeof(names) / sizeof(names[0]) == static_cast<unsigned>(Action::ClaimExpedition) + 1, "Action names must follow the enum");
+    const char* names[] = {"feed", "play", "rest", "walk", "card", "attack", "capture", "select", "heavy", "magic", "hatch", "mode", "auto", "evolve", "release", "flick", "explore", "encounter-rate", "encounter-seed", "starter-offer-seed", "accrue-steps", "present-encounter", "resolve-test-encounter", "auto-fight", "auto-resume", "world-seed", "ring-capture", "party-add", "party-remove", "toilet", "retreat", "care-minute", "evolve-member", "treat", "focus", "start-expedition", "claim-expedition", "next-expedition", "digi-modify", "auto-step"};
+    static_assert(sizeof(names) / sizeof(names[0]) == static_cast<unsigned>(Action::AutoStep) + 1, "Action names must follow the enum");
     if (std::strcmp(name, "physical") == 0) { action = Action::Attack; return true; }
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (std::strcmp(name, names[i]) == 0) {
@@ -1729,9 +1972,9 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     append("{\"schemaVersion\":%u,\"rulesVersion\":%u,\"sequence\":%u,\"seed\":%u,\"rngState\":%u,\"steps\":%u,\"stepCredit\":%u,"
            "\"hp\":%u,\"energy\":%u,\"fullness\":%u,\"mood\":%u,\"bond\":%u,\"level\":%u,\"maxLevel\":%u,\"captures\":%u,\"encounters\":%u,"
            "\"phase\":\"%s\",\"wildHp\":%u,\"wildMaxHp\":%u,\"wildLevel\":%u,\"wildTurn\":%u,\"captureAttempts\":%u,\"cardUsed\":%s,\"attackBoost\":%u,\"shield\":%u,",
-           number(kSchemaVersion),number(kRulesVersion),number(s.sequence),number(s.seed),number(s.rngState),number(s.steps),number(s.stepCredit),
+           number(snapshotSchema(s)),number(kRulesVersion),number(s.sequence),number(s.seed),number(s.rngState),number(s.steps),number(s.stepCredit),
            number(s.hp),number(s.energy),number(s.fullness),number(s.mood),number(s.bond),number(s.level),number(kMaxLevel),number(s.captures),number(s.encounters),
-           s.phase==Phase::Egg ? "egg" : s.phase==Phase::Home ? "home" : "encounter",number(s.wildHp),number(s.wildMaxHp),number(s.wildLevel),number(s.wildTurn),
+           s.phase==Phase::Egg ? "egg" : s.phase==Phase::Home ? "home" : s.phase==Phase::Expedition ? "expedition" : "encounter",number(s.wildHp),number(s.wildMaxHp),number(s.wildLevel),number(s.wildTurn),
            number(s.captureAttempts),s.cardUsed ? "true" : "false",number(s.attackBoost),number(s.shield));
     if(s.onboardingComplete) {
         const auto& m=(*activeMember(s));
@@ -1771,6 +2014,7 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
     append(",\"partyCapacity\":%u,\"partyMemberIds\":[",number(kPartyCapacity));
     for(std::size_t i=0;i<partyCount(s);++i)append("%s%u",i?",":"",number(s.partyMemberIds[i]));
     append("]");
+    if(s.digiModifyReady) append(",\"digiModifyReady\":%u",static_cast<unsigned>(s.digiModifyReady));
     append(",\"careMinute\":%u,\"critical\":%s,\"captureDeferred\":%u",number(s.careMinute),s.lastCritical?"true":"false",number(s.captureDeferred));
     if(s.autoCapture==AutoCapture::FocusStrike || s.autoCapture==AutoCapture::FocusBlock)
         append(",\"focus\":{\"kind\":\"%s\",\"turn\":%u}",s.autoCapture==AutoCapture::FocusStrike?"strike":"block",number(s.wildTurn));
@@ -1795,13 +2039,10 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
             if(!forms::productionForm(id))continue;
             const auto* nextForm=forms::find(id); const auto need=forms::evolutionNeed(*edge);
             const auto preview=m.level<need.level ? need.level : m.level;
-            const auto routeOpen=careRouteOpen(m,i);
-            const auto locked=i==0 && forms::outgoing(m.formId,1) && forms::productionForm(forms::outgoing(m.formId,1)->to);
-            const auto eligible=s.phase==Phase::Home && m.level>=need.level && m.bond>=need.bond && carePointsOf(m.careState)>=need.care && routeOpen && !injuryOf(m.careState);
+            const auto eligible=s.phase==Phase::Home && m.level>=need.level && m.bond>=need.bond && !injuryOf(m.careState);
             append("%s{\"formId\":%u,\"name\":\"%s\",",comma ? "," : "",number(id),nextForm->name); metadata(id);
-            append(",\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u,\"previewLevel\":%u,\"eligible\":%s,",number(need.level),number(need.bond),number(need.care),number(preview),eligible ? "true" : "false");
-            if(locked)append("\"maxCareMistakes\":%u,",number(cleanRouteMistakeLimit(id)));else append("\"maxCareMistakes\":null,");
-            append("\"careRouteOpen\":%s,",routeOpen?"true":"false");
+            append(",\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u,\"previewLevel\":%u,\"eligible\":%s,",number(need.level),number(need.bond),0u,number(preview),eligible ? "true" : "false");
+            append("\"maxCareMistakes\":null,\"careRouteOpen\":true,");
             profile(id,preview); append("}"); comma=true;
         }
     }
@@ -1813,7 +2054,10 @@ std::size_t writeJson(const State& s,char* output,std::size_t capacity) {
                i ? "," : "",scenario.name,expeditions::kindName(scenario.kind),expeditions::themeName(scenario.theme),
                number(scenario.floors),number(scenario.minPlayers),number(scenario.maxPlayers));
     }
-    append("]}}"); if(!ok){output[0]='\0';return 0;} return used;
+    append("],\"active\":%s,\"scenarioIndex\":", s.expeditionScenario ? "true" : "false");
+    if (s.expeditionScenario) append("%u", number(s.expeditionScenario - 1)); else append("null");
+    append(",\"tier\":%u,\"tiers\":%u,\"awaitingNext\":%s}}", number(s.expeditionTier),
+           number(s.expeditionScenario ? expeditions::tierCount(s.expeditionScenario - 1) : 0), s.phase == Phase::Expedition ? "true" : "false"); if(!ok){output[0]='\0';return 0;} return used;
 }
 
 bool encodeSnapshot(const State& s, Snapshot& snapshot) {
@@ -1825,7 +2069,7 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
     auto* bytes = snapshot.bytes;
     std::memset(bytes,0,kSnapshotSize);
     std::memcpy(bytes, "DGVS", 4);
-    bytes[4] = static_cast<std::uint8_t>(kSchemaVersion);
+    bytes[4] = static_cast<std::uint8_t>(snapshotSchema(s));
     constexpr auto payload = kSnapshotSize - 12;
     bytes[6] = static_cast<std::uint8_t>(payload);
     bytes[7] = static_cast<std::uint8_t>(payload >> 8);
@@ -1833,7 +2077,7 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
         kRulesVersion, s.sequence, s.seed, s.rngState, s.steps, s.stepCredit,
         s.hp, s.energy, s.fullness, s.mood, s.bond, s.level, s.captures, s.encounters,
         s.wildHp, s.wildMaxHp, s.captureAttempts, static_cast<std::uint32_t>(s.phase),
-        s.cardUsed ? 1u : 0u, s.attackBoost, s.shield, static_cast<std::uint32_t>(s.message),
+        (s.cardUsed ? 1u : 0u) | (static_cast<unsigned>(s.digiModifyReady) << 1), s.attackBoost, s.shield, static_cast<std::uint32_t>(s.message),
         s.legacyCaptures, s.activeCreatureId, s.collectionCount, static_cast<std::uint32_t>(s.wildSpecies)
     };
     std::size_t offset = 8;
@@ -1877,24 +2121,28 @@ bool encodeSnapshot(const State& s, Snapshot& snapshot) {
     offset+=28+kPartyCapacity*4;
     put32(bytes+offset,s.careMinute); put32(bytes+offset+4,s.lastCritical); put32(bytes+offset+8,s.captureDeferred);
     offset += 12;
-    const std::uint32_t expedition[]{s.dungeonKeys,s.bossSigils,s.dungeonWins,s.bossSteps,s.dungeonClears,s.bossClears};
+    const std::uint32_t expedition[]{s.dungeonKeys,s.bossSigils,s.dungeonWins,s.bossSteps,s.dungeonClears,s.bossClears,s.expeditionScenario,s.expeditionTier,s.expeditionForm,s.expeditionLevel};
     for(const auto value:expedition){put32(bytes+offset,value);offset+=4;}
     if (offset + 4 != kSnapshotSize) return false;
     put32(bytes + kSnapshotSize - 4, crc32(bytes, kSnapshotSize - 4));
     return true;
 }
 
+std::uint32_t snapshotSchema(const State& s) {
+    if(s.digiModifyReady>=5) return kElementShiftSchemaVersion;
+    return s.digiModifyReady || s.message==Message::DigiModified ? kDigiModifySchemaVersion : kSchemaVersion;
+}
 SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, State& state) {
     if (!bytes || length < 8) return SnapshotStatus::InvalidLength;
     if (std::memcmp(bytes, "DGVS", 4) != 0) return SnapshotStatus::BadMagic;
     const auto version = static_cast<unsigned>(bytes[4]) | (static_cast<unsigned>(bytes[5]) << 8);
-    if (version < 1 || version > kSchemaVersion) return SnapshotStatus::UnsupportedVersion;
+    if (version < 1 || version > kElementShiftSchemaVersion) return SnapshotStatus::UnsupportedVersion;
     const auto required = version == 1 ? kLegacySnapshotSize : version == 2 ? kV2SnapshotSize :
-                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : version==22 ? kV22SnapshotSize : version<=26 ? kSchema26SnapshotSize : kSnapshotSize;
+                          version < 5 ? kPreviousSnapshotSize : version == 5 ? kV5SnapshotSize : version == 6 ? kV6SnapshotSize : version==7 ? kV7SnapshotSize : version<=13 ? kV13SnapshotSize : version==14 ? kV14SnapshotSize : version==15 ? kV15SnapshotSize : version<=17 ? kV17SnapshotSize : version==18 ? kV18SnapshotSize : version==19 ? kV19SnapshotSize : version==20 ? kV20SnapshotSize : version==21 ? kV21SnapshotSize : version==22 ? kV22SnapshotSize : version<=26 ? kSchema26SnapshotSize : version<=28 ? kSchema28SnapshotSize : kSnapshotSize;
     const auto payload = static_cast<unsigned>(bytes[6]) | (static_cast<unsigned>(bytes[7]) << 8);
     if (length != required || payload != length - 12) return SnapshotStatus::InvalidLength;
     if (get32(bytes + length - 4) != crc32(bytes, length - 4)) return SnapshotStatus::BadChecksum;
-    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : version==22 ? 15u : version==23 ? 16u : version==24 ? 17u : version==25 ? 18u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
+    if (get32(bytes + 8) != (version < 3 ? 1u : version == 3 ? 2u : version < 7 ? 3u : version==7 ? 4u : version==8 ? 5u : version==9 ? 6u : version==10 ? 7u : version==11 ? 8u : version==12 ? 9u : version==13 ? 10u : version==14 ? 11u : version<=16 ? 12u : version<=20 ? 13u : version==21 ? 14u : version==22 ? 15u : version==23 ? 16u : version==24 ? 17u : version==25 ? 18u : version<=27 ? 19u : version==28 ? 20u : version==29 ? 21u : kRulesVersion)) return SnapshotStatus::UnsupportedRules;
     std::size_t offset = 12;
     const auto read = [&]() { const auto value = get32(bytes + offset); offset += 4; return value; };
     State next;
@@ -1909,11 +2157,15 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     next.attackBoost = read();
     next.shield = version == 1 ? 0 : read();
     const auto message = read();
-    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : version<22 ? Message::EncounterCleared : version<23 ? Message::PartyRemoved : version<24 ? Message::Toileted : Message::Treated;
-    if (phase > (version < 5 ? 1u : 2u) || card > 1 || message > static_cast<unsigned>(lastMessage))
+    const auto lastMessage = version < 3 ? Message::Evolved : version < 5 ? Message::Selected : version<8 ? Message::Trained : version<15 ? Message::Released : version<17 ? Message::CaptureEnded : version<22 ? Message::EncounterCleared : version<23 ? Message::PartyRemoved : version<24 ? Message::Toileted : version<kDigiModifySchemaVersion ? Message::Treated : Message::DigiModified;
+    if (phase > (version < 5 ? 1u : version < 29 ? 2u : 3u) || card > (version>=kElementShiftSchemaVersion ? 15u : version>=kDigiModifySchemaVersion ? 7u : 1u) || message > static_cast<unsigned>(lastMessage))
         return SnapshotStatus::InvalidState;
     next.phase = static_cast<Phase>(phase);
-    next.cardUsed = card != 0;
+    next.cardUsed = (card & 1u) != 0;
+    next.digiModifyReady = static_cast<std::uint8_t>(card >> 1);
+    if(version==kElementShiftSchemaVersion && next.digiModifyReady<5) return SnapshotStatus::InvalidState;
+    //31/32 extend the rules22 schema30 card word without a layout change.
+    if(version==kDigiModifySchemaVersion && !next.digiModifyReady && message!=static_cast<unsigned>(Message::DigiModified)) return SnapshotStatus::InvalidState;
     next.message = static_cast<Message>(message);
     if (version < 3) {
         next.legacyCaptures = next.captures;
@@ -2003,6 +2255,10 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
            next.dungeonWins>=expeditions::kDungeonWinsPerKey || next.bossSteps>=expeditions::kBossStepsPerSigil)
             return SnapshotStatus::InvalidState;
     } else next.dungeonKeys=expeditions::kMaxDungeonKeys;
+    if (version >= 29) {
+        next.expeditionScenario=read(); next.expeditionTier=read();
+        next.expeditionForm=read(); next.expeditionLevel=read();
+    }
     if(version==7 && !validRules4State(next,false)) return SnapshotStatus::InvalidState;
     if(version<7) {
         if(!validLegacyForVersion(next,version<4)) return SnapshotStatus::InvalidState;
@@ -2047,6 +2303,10 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
     }
     if(version<=24 && (next.wildRules>17 || next.pendingEncounter.rules>17)) return SnapshotStatus::InvalidState;
     if(version<=25 && (next.wildRules>18 || next.pendingEncounter.rules>18)) return SnapshotStatus::InvalidState;
+    // A historical header cannot introduce a future encounter epoch.
+    if(version<=29 && (next.wildRules>21 || next.pendingEncounter.rules>21)) return SnapshotStatus::InvalidState;
+    if(version<=28 && (next.wildRules>20 || next.pendingEncounter.rules>20)) return SnapshotStatus::InvalidState;
+    if(version<=27 && (next.wildRules>19 || next.pendingEncounter.rules>19)) return SnapshotStatus::InvalidState;
     if(version<=23 && (next.wildRules>16 || next.pendingEncounter.rules>16)) return SnapshotStatus::InvalidState;
     // Older rules never wrote mistakes/injury bits.
     if(version<=23) for(std::size_t i=0;i<next.collectionCount && i<kCollectionCapacity;++i) if(next.collection[i].careState & ~kCareLowMask) return SnapshotStatus::InvalidState;
@@ -2080,7 +2340,7 @@ SnapshotStatus decodeSnapshot(const std::uint8_t* bytes, std::size_t length, Sta
 const char* snapshotStatusText(SnapshotStatus status) {
     switch (status) {
     case SnapshotStatus::Ok: return "ok";
-    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 27";
+    case SnapshotStatus::Migrated: return "migrated legacy snapshot to version 30";
     case SnapshotStatus::InvalidLength: return "invalid snapshot length";
     case SnapshotStatus::BadMagic: return "invalid snapshot magic";
     case SnapshotStatus::UnsupportedVersion: return "unsupported snapshot version";

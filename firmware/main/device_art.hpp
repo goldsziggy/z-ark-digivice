@@ -25,10 +25,12 @@ private:
     std::uint16_t* spritePixels_ = nullptr;
     std::uint8_t* spriteMasks_ = nullptr;
     std::uint16_t* background_ = nullptr;
+    std::uint16_t* priorBackground_ = nullptr;
+    int priorScene_ = -1;
     sprite::Info spriteInfo_{};
     sprite::OpaqueBounds spriteBounds_[sprite::kAnimationCount]{};
     std::size_t spriteBytes_ = 0;
-    std::uint32_t requestedForm_ = 0, loadedForm_ = 0;
+    std::uint32_t requestedForm_ = 0, loadedForm_ = 0, loadedArtForm_ = 0;
     int requestedScene_ = -2, loadedScene_ = -1;
     bool paused_ = false, loading_ = false, previousStorageReady_ = false;
     const char* spriteDiagnostic_ = "no exact-form artwork requested";

@@ -127,7 +127,7 @@ void everySelectableLevel() {
         for(unsigned frame=0;frame<kAudioSampleRate*2;++frame)
             musicEnergy+=std::abs(music.sample(level,true,MusicScene::Home));
         CHECK(level==0?musicEnergy==0:musicEnergy>previousMusic);previousMusic=musicEnergy;
-        std::printf("Audio level %u%%: all19 effects energy=%lld, music energy=%lld, mixed peak=%u/32767 (synthetic)\n",
+        std::printf("Audio level %u%%: all cue effects energy=%lld, music energy=%lld, mixed peak=%u/32767 (synthetic)\n",
             level,total,musicEnergy,peak);
     }
 }

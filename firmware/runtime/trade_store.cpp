@@ -12,11 +12,11 @@ bool encode(const trade::Record& r,std::uint32_t revision,Bytes& out){
     if(!trade::encodeRecord(r,out.data+16,trade::kRecordBytes))return false;
     put(out.data+kJournalBytes-4,crc(out.data,kJournalBytes-4));return true;
 }
-bool decode(const Slot& slot,trade::Record& r,std::uint32_t& revision){
+bool decode(const Slot& slot,trade::Record& r,std::uint32_t& revision,trade::Record& scratch){
     const auto* p=slot.bytes.data;
     if(!supportedJournalSize(slot.length) || std::memcmp(p,"DVTJ",4) || get(p+4)!=1 || !get(p+8) || get(p+12) ||
        get(p+slot.length-4)!=crc(p,slot.length-4))return false;
-    if(!trade::decodeRecord(p+16,slot.length-20,r))return false;
+    if(!trade::decodeRecord(p+16,slot.length-20,r,scratch))return false;
     revision=get(p+8);return true;
 }
 bool terminal(trade::Phase p){return p==trade::Phase::Applied || p==trade::Phase::Aborted;}
@@ -40,10 +40,12 @@ bool successor(const trade::Record& from,const trade::Record& to){
 }
 Boot Store::restore(){
     present_=writable_=mirrored_=false;revision_=0;
+    // record_ is unpublished until both slots validate. Reuse that PSRAM-owned
+    // record as decode scratch instead of reserving another 24 KiB stack frame.
     Read reads[2];bool valid[2]{};std::uint32_t revisions[2]{};
     for(unsigned i=0;i<2;++i){
         scratch_[i]={};reads[i]=backend_.read(i,scratch_[i]);
-        if(reads[i]==Read::Unreadable || (reads[i]==Read::Present && !(valid[i]=decode(scratch_[i],decoded_[i],revisions[i])))){
+        if(reads[i]==Read::Unreadable || (reads[i]==Read::Present && !(valid[i]=decode(scratch_[i],decoded_[i],revisions[i],record_)))){
             diagnostic_="trade journal unreadable/invalid; preserve records and recover";return Boot::RecoveryRequired;
         }
     }
@@ -51,14 +53,19 @@ Boot Store::restore(){
     unsigned chosen=valid[1]&&(!valid[0]||revisions[1]>revisions[0])?1:0;
     if(valid[0]&&valid[1]){
         if(revisions[0]==revisions[1]){
-            const bool sameLength=scratch_[0].length==scratch_[1].length;
-            if(sameLength ? std::memcmp(scratch_[0].bytes.data,scratch_[1].bytes.data,scratch_[0].length)!=0 :
+            // Schemas27/28 share a length, but migration may leave one mirror
+            // in each representation after a power cut. Both already decoded.
+            constexpr auto schemaOffset=16+16+trade::kTranscriptBytes+4;
+            const bool sameRepresentation=scratch_[0].length==scratch_[1].length &&
+                scratch_[0].bytes.data[schemaOffset]==scratch_[1].bytes.data[schemaOffset] &&
+                scratch_[0].bytes.data[schemaOffset+1]==scratch_[1].bytes.data[schemaOffset+1];
+            if(sameRepresentation ? std::memcmp(scratch_[0].bytes.data,scratch_[1].bytes.data,scratch_[0].length)!=0 :
                !sameRecord(decoded_[0],decoded_[1])){
                 diagnostic_="trade journal conflicting mirrored revision";return Boot::RecoveryRequired;
             }
             // Only schema representation may differ at the same revision. Keep
             // ownership locked until both new-format copies have been verified.
-            mirrored_=sameLength;
+            mirrored_=sameRepresentation;
         }else if(revisions[chosen]-revisions[1-chosen]!=1 || !successor(decoded_[1-chosen],decoded_[chosen])){
             diagnostic_="trade journal has ambiguous phase history";return Boot::RecoveryRequired;
         }

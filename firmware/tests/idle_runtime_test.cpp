@@ -49,7 +49,7 @@ struct Harness {
     void input(std::uint64_t now,display::TouchPoint p={false,0,0,true}){fake::now=now;fake::touch=p;runtime.imu_.sample.observedAtMs=now;runtime.pollInterface(now);}
 };
 void quietAndWrites(){
-    Harness h;h.idle(30000);CHECK(h.runtime.idle_.blanked()&&fake::panel.idleBlanked);
+    Harness h;h.idle(30000);CHECK(h.runtime.idle_.blanked()&&fake::panel.idleBlanked&&h.runtime.audio_.screenBlanked);
     CHECK(fake::blanks==1&&!h.game.writes&&!h.usage.writes&&!h.runtime.imu_.paused);
     for(unsigned n=1;n<=100;++n)h.idle(30000+n*20);
     CHECK(fake::blanks==1&&!h.game.writes&&!h.usage.writes);
@@ -78,7 +78,7 @@ void resultIdle(){
     CHECK(!h.game.writes&&!h.usage.writes&&!h.runtime.intents);
     CHECK(h.runtime.ui_.screen()==deviceui::Screen::Result&&!h.runtime.imu_.paused);
     h.input(30020,{true,206,300,true});
-    CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&h.runtime.touch_.awaitingRelease());
+    CHECK(!h.runtime.idle_.blanked()&&fake::wakes==1&&h.runtime.touch_.awaitingRelease()&&!h.runtime.audio_.screenBlanked);
     CHECK(!h.runtime.intents&&!h.runtime.ui_.downs&&!h.runtime.ui_.ups);
     h.input(30040,{false,206,300,true});
     CHECK(!h.runtime.touch_.awaitingRelease()&&!h.runtime.intents);
@@ -150,15 +150,28 @@ void storageFaults(){
         if(fault==2){storage::SaveStore restored(h.game);State disk;CHECK(restored.restore(disk)==storage::BootStatus::Loaded&&disk.explorationSteps==5);}
     }
 }
+void nfcPolicy(){
+    Harness baseline;CHECK(baseline.runtime.nfcAllowed());baseline.runtime.nfc_.active=true;
+    CHECK(baseline.runtime.idleBlocked());baseline.idle(30000);CHECK(!baseline.runtime.idle_.blanked());
+    baseline.runtime.nfc_.active=false;baseline.idle(30001);CHECK(baseline.runtime.idle_.blanked());CHECK(!baseline.runtime.nfcAllowed());
+    const std::function<void(Harness&)> cases[]{
+        [](auto&h){h.runtime.interfacePaused_=true;},[](auto&h){h.runtime.setup_.active_=true;},
+        [](auto&h){h.runtime.frozen=true;},[](auto&h){h.runtime.usbTransferLease_=true;},
+        [](auto&h){h.runtime.encounterRecoveryRequired_=true;},[](auto&h){h.runtime.tradeSession_.healthy_=false;},
+        [](auto&h){h.runtime.tradeSession_.blocked=true;},[](auto&h){h.runtime.nearby=true;},
+        [](auto&h){h.runtime.battle_.locked_=true;},[](auto&h){h.runtime.practice_.allowed=false;},
+        [](auto&h){h.saves.requireRecovery("test");}
+    };
+    for(const auto& block:cases){Harness h;block(h);CHECK(!h.runtime.nfcAllowed());CHECK(!h.game.writes&&!h.usage.writes);}
+}
 void blockers(){
     const std::function<void(Harness&)> cases[]{
         [](auto&h){h.runtime.ui_.selected=deviceui::Screen::Battle;},
         [](auto&h){h.runtime.ui_.selected=deviceui::Screen::Capture;},
-        [](auto&h){h.runtime.ui_.selected=deviceui::Screen::EvolutionReview;},
         [](auto&h){h.runtime.ui_.pending_=true;},[](auto&h){h.runtime.forcePressedForTest();},
         [](auto&h){h.runtime.battle_.locked_=true;},[](auto&h){h.runtime.nearby=true;},
         [](auto&h){h.runtime.setup_.active_=true;},[](auto&h){h.runtime.interfacePaused_=true;},
-        [](auto&h){h.runtime.frozen=true;},[](auto&h){h.runtime.power_.s.phase=power::Phase::Holding;},
+        [](auto&h){h.runtime.frozen=true;},[](auto&h){h.runtime.power_.tick({1,true});},
         [](auto&h){h.runtime.usbTransferLease_=true;},[](auto&h){h.runtime.usbTransfer_.active_=true;},
         [](auto&h){h.runtime.usbTransfer_.quiet=false;},[](auto&h){h.runtime.network_.leased=true;},
         [](auto&h){h.runtime.network_.scan.busy=true;},[](auto&h){h.runtime.network_.s.state=net::State::Joining;},
@@ -229,6 +242,17 @@ void musicIdleAndWake(){
     CHECK(effect.runtime.idleBlocked());effect.input(30000);CHECK(!effect.runtime.idle_.blanked());
 }
 void musicScenePolicy(){
+    { Harness b;b.runtime.audio_.buzzer=true;
+      for(const auto screen:{deviceui::Screen::Sound,deviceui::Screen::NfcTest,deviceui::Screen::Settings}) {
+        b.runtime.ui_.selected=screen;b.runtime.updateMusicScene();CHECK(b.runtime.audio_.scene==device::MusicScene::Quiet);
+      }
+      b.runtime.ui_.selected=deviceui::Screen::Home;b.runtime.updateMusicScene();CHECK(b.runtime.audio_.scene==device::MusicScene::Home);
+      b.runtime.ui_.selected=deviceui::Screen::Battle;b.runtime.battle_.locked_=true;
+      b.runtime.updateMusicScene();CHECK(b.runtime.audio_.scene==device::MusicScene::Battle);
+      b.runtime.ui_.selected=deviceui::Screen::Home;b.runtime.battle_.locked_=false;b.runtime.audio_.musicActive=true;
+      CHECK(!b.runtime.idleBlocked());b.input(30000);CHECK(b.runtime.idle_.blanked()&&b.runtime.audio_.screenBlanked);
+    }
+
     Harness h;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Home);
     h.runtime.battle_.locked_=true;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Battle);
     h.runtime.setup_.active_=true;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Quiet);
@@ -241,4 +265,139 @@ void musicScenePolicy(){
     CHECK(!h.runtime.audio_.paused&&h.runtime.audio_.scene==device::MusicScene::Home);
     h.runtime.frozen=true;h.runtime.updateMusicScene();CHECK(h.runtime.audio_.scene==device::MusicScene::Quiet);
 }
-int main(){quietAndWrites();resultIdle();pendingBeforeBlank();flushStartsEncounter();homeWalkingWhileBlanked();menuIdleQueuesEncounter();storageFaults();blockers();wakeContact();wakeFaultAndMotion();strongerSuspension();musicIdleAndWake();musicScenePolicy();std::printf("Idle runtime: %u checks passed; actual idle/usage methods + exact touch dispatch/pause body, hardware/UI publication doubles\n",checks);}
+void backgroundCareTimeouts(){
+    for(const unsigned seconds:{30u,60u,120u,300u})for(const unsigned offset:{0u,980u}){
+        Harness h;h.runtime.careAwakeMs_=20;
+        CHECK(h.runtime.idle_.configure(seconds,20+offset));
+        const auto before=h.state.careMinute;
+        for(std::uint64_t now=20+offset;now<=601000;now+=20)h.input(now);
+        CHECK(h.state.careMinute==before+10 && h.game.writes==10);
+        CHECK(fake::blanks==1 && fake::wakes==0 && h.runtime.idle_.blanked());
+        CHECK(!h.runtime.intents && !h.runtime.audio_.cues);
+        CHECK(h.runtime.uiSequence_==h.state.sequence);
+        State restored;storage::SaveStore reboot(h.game);
+        CHECK(reboot.restore(restored)==storage::BootStatus::Loaded && restored.careMinute==h.state.careMinute);
+    }
+    // A real touch just before expiry extends the window, including across a care tick.
+    Harness h;h.runtime.careAwakeMs_=20;CHECK(h.runtime.idle_.configure(60,20));
+    h.input(20);h.input(59980,{true,200,200,true});h.input(60000,{false,200,200,true});
+    h.input(60020,{false,200,200,false});h.input(119960);
+    CHECK(!h.runtime.idle_.blanked());h.input(120000);CHECK(h.runtime.idle_.blanked());
+    // A pending foreground publication must still wake and play its own cue.
+    Harness pending;pending.idle(30000);pending.runtime.careAwakeMs_=1;
+    CHECK(apply(pending.state,Action::Feed)==Error::None);
+    const auto unacknowledged=pending.runtime.uiSequence_;
+    pending.runtime.pollCareAndAuto(60001);
+    CHECK(pending.runtime.uiSequence_==unacknowledged);
+    pending.input(60020);CHECK(!pending.runtime.idle_.blanked() && pending.runtime.audio_.cues==1);
+    // Failed care checkpoints never publish the candidate or fabricate activity.
+    Harness failed;failed.idle(30000);failed.runtime.careAwakeMs_=1;failed.game.fail=true;
+    const auto sequence=failed.state.sequence;
+    failed.input(60001);CHECK(failed.state.sequence==sequence && !failed.saves.writable());
+    CHECK(failed.runtime.idle_.blanked() && !fake::wakes && !failed.runtime.audio_.cues);
+}
+void nfcQuietGapAndAutoCareIsolation(){
+    Harness n;n.runtime.ui_.selected=deviceui::Screen::NfcTest;n.runtime.nfc_.active=true;
+    CHECK(!n.runtime.idleForegroundActive());n.idle(30000);CHECK(!n.runtime.idle_.blanked());
+    // A completed scan's normal quiet gap permits screen idle; scanning is not activity.
+    n.runtime.nfc_.active=false;n.idle(30001);CHECK(n.runtime.idle_.blanked()&&!n.runtime.nfcAllowed());
+    CHECK(!n.game.writes&&!n.usage.writes);
+    Harness a;CHECK(apply(a.state,Action::Mode,1)==Error::None);
+    CHECK(apply(a.state,Action::Explore,1000)==Error::None);CHECK(a.state.phase==Phase::Encounter);
+    a.runtime.testModel.writable=true;a.runtime.careAwakeMs_=1;
+    const auto before=a.state;a.runtime.pollCareAndAuto(60001);
+    CHECK(a.runtime.intents==1&&a.runtime.autoStartSequence_==a.state.sequence);
+    CHECK(a.runtime.careAwakeMs_==60001&&a.game.writes==0);
+    CHECK(!std::memcmp(&before,&a.state,sizeof(before)));
+    a.runtime.pollCareAndAuto(120001);CHECK(a.runtime.intents==1&&a.game.writes==0);
+}
+void screenPolicy(){
+    using S=deviceui::Screen;
+    const S passive[]{S::Egg,S::Starter,S::StarterReview,S::Home,S::Care,S::Explore,S::Result,
+        S::Collection,S::Stats,S::ReleaseReview,S::Evolution,S::EvolutionReview,S::EvolutionResult,
+        S::Settings,S::NfcTest,S::EncounterSettings,S::ModeReview,S::Nearby,S::Sound,S::Squad,S::Box,
+        S::Expeditions,S::ExpeditionLobby};
+    const S active[]{S::Encounter,S::Battle,S::Capture,S::NearbyReview,S::TradeChoose,S::TradeReview};
+    CHECK(std::size(passive)+std::size(active)==static_cast<unsigned>(S::NfcTest)+1);
+    for(const auto s:passive){Harness h;h.runtime.ui_.selected=s;CHECK(!h.runtime.idleBlocked());h.idle(30000);CHECK(h.runtime.idle_.blanked());}
+    for(const auto s:active){
+        Harness h;h.runtime.ui_.selected=s;h.idle(30000);CHECK(!h.runtime.idle_.blanked());
+        h.runtime.ui_.selected=S::Home;h.idle(59999);CHECK(!h.runtime.idle_.blanked());
+        h.idle(60000);CHECK(h.runtime.idle_.blanked());
+        h.runtime.ui_.selected=s;h.idle(60020);CHECK(!h.runtime.idle_.blanked() && fake::wakes==1);
+    }
+}
+void temporaryWork(){
+    using Set=std::function<void(Harness&,bool)>;
+    const Set cases[]{
+        [](auto& h,bool v){h.runtime.audio_.quiet=!v;},
+        [](auto& h,bool v){h.runtime.network_.s.probePending=v;},
+        [](auto& h,bool v){h.runtime.network_.scan.busy=v;},
+        [](auto& h,bool v){h.runtime.network_.s.state=v?net::State::Joining:net::State::Unconfigured;},
+        [](auto& h,bool v){h.runtime.network_.s.state=v?net::State::Backoff:net::State::Unconfigured;},
+        [](auto& h,bool v){h.runtime.assets_.s.busy=v;},
+        [](auto& h,bool v){h.runtime.art_.quiet=!v;},
+        [](auto& h,bool v){h.runtime.partnerArt_.quiet=!v;},
+        [](auto& h,bool v){h.runtime.tileArt_[0].quiet=!v;},
+        [](auto&,bool v){fake::dmaQuiet=!v;},
+        [](auto& h,bool v){h.runtime.imu_.available=!v;}
+    };
+    for(const auto& set:cases){
+        Harness h;set(h,true);h.idle(29980);h.idle(30000);CHECK(!h.runtime.idle_.blanked());
+        set(h,false);h.idle(30020);CHECK(h.runtime.idle_.blanked());
+        for(unsigned n=1;n<=10;++n){set(h,true);h.idle(30020+n*60000);set(h,false);h.idle(30040+n*60000);}
+        CHECK(fake::blanks==1 && fake::wakes==0);
+    }
+}
+void discoveryPolicy(){
+    using P=HandheldRuntime::NearbyPhase;
+    for(const auto screen:{deviceui::Screen::Nearby,deviceui::Screen::ExpeditionLobby}){
+        Harness h;h.runtime.ui_.selected=screen;h.runtime.nearbyPhase_=P::Active;
+        h.runtime.nearby_.v.stage=nearby::Stage::Discovering;
+        h.runtime.tradeWire_.v.stage=tradewire::Stage::Discovering;h.runtime.network_.leased=true;
+        CHECK(h.runtime.idleDiscovery());h.idle(30000);CHECK(h.runtime.idle_.blanked());
+        const auto sequence=h.state.sequence;
+        h.runtime.nearby_.v.stage=nearby::Stage::Incoming;h.idle(30020);
+        CHECK(!h.runtime.idle_.blanked() && fake::wakes==1 && h.state.sequence==sequence);
+        CHECK(h.runtime.nearby_.v.stage==nearby::Stage::Incoming && h.runtime.network_.leased);
+    }
+    for(const auto stage:{nearby::Stage::Outgoing,nearby::Stage::Incoming,nearby::Stage::Accepting,
+        nearby::Stage::Playing,nearby::Stage::Reconnecting,nearby::Stage::Finished,
+        nearby::Stage::Cancelled,nearby::Stage::TimedOut,nearby::Stage::Incompatible}){
+        Harness h;h.runtime.ui_.selected=deviceui::Screen::ExpeditionLobby;h.runtime.nearbyPhase_=P::Active;
+        h.runtime.nearby_.v.stage=stage;CHECK(h.runtime.idleBlocked());h.idle(30000);CHECK(!fake::blanks);
+    }
+    for(const auto phase:{P::Starting,P::Stopping,P::Fault}){
+        Harness h;h.runtime.nearbyPhase_=phase;h.runtime.nearby_.v.stage=nearby::Stage::Discovering;
+        CHECK(h.runtime.idleBlocked());h.idle(30000);CHECK(!fake::blanks);
+    }
+    for(const auto stage:{tradewire::Stage::Inviting,tradewire::Stage::Reviewing,tradewire::Stage::Preparing,
+        tradewire::Stage::Prepared,tradewire::Stage::Committing,tradewire::Stage::Applying,
+        tradewire::Stage::Applied,tradewire::Stage::Aborted,tradewire::Stage::Cancelled,tradewire::Stage::Recovering}){
+        Harness h;h.runtime.ui_.selected=deviceui::Screen::Nearby;h.runtime.nearbyPhase_=P::Active;
+        h.runtime.nearby_.v.stage=nearby::Stage::Discovering;h.runtime.tradeWire_.v.stage=stage;
+        CHECK(!h.runtime.idleDiscovery());h.idle(30000);CHECK(!fake::blanks);
+    }
+    Harness h;h.runtime.negotiating=true;CHECK(h.runtime.idleBlocked());
+}
+void powerSamplingAndWake(){
+    for(const bool enabled:{true,false}){
+        Harness h;h.runtime.powerEnabled_=enabled;
+        unsigned rearms=0;
+        for(std::uint64_t now=20;now<=180000;now+=20){
+            if(now%5000==0)now+=300;
+            h.runtime.power_.tick({now,false});
+            if(h.runtime.power_.status().phase==power::Phase::AwaitInitialRelease)++rearms;
+            h.input(now);
+        }
+        CHECK(rearms>30 && fake::blanks==1 && fake::wakes==0 && h.runtime.idle_.blanked());
+        const auto next=fake::now+20;
+        h.runtime.power_.tick({next,true});h.idle(next);
+        CHECK(h.runtime.idle_.blanked()==!enabled);CHECK(fake::wakes==(enabled?1u:0u));
+    }
+    // Contact while still release-to-arm wakes, without authorizing a long hold.
+    Harness h;h.idle(30000);h.runtime.power_.tick({30020,true});h.idle(30020);
+    CHECK(!h.runtime.idle_.blanked() && h.runtime.power_.status().phase==power::Phase::AwaitInitialRelease);
+    CHECK(!h.runtime.power_.frozen() && !h.game.writes);
+}
+int main(){nfcQuietGapAndAutoCareIsolation();nfcPolicy();quietAndWrites();resultIdle();pendingBeforeBlank();flushStartsEncounter();homeWalkingWhileBlanked();menuIdleQueuesEncounter();storageFaults();blockers();wakeContact();wakeFaultAndMotion();strongerSuspension();musicIdleAndWake();musicScenePolicy();backgroundCareTimeouts();screenPolicy();temporaryWork();discoveryPolicy();powerSamplingAndWake();std::printf("Idle runtime: %u checks passed; actual idle/usage/care methods + power controller + exact touch dispatch/pause body, hardware/UI publication doubles\n",checks);}

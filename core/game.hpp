@@ -9,19 +9,25 @@
 // This core has no heap allocation, clock, network, filesystem, or hardware dependency.
 namespace digivice {
 
-constexpr std::uint32_t kSchemaVersion = 27;
-constexpr std::uint32_t kRulesVersion = 19;
+constexpr std::uint32_t kSchemaVersion = 30;
+constexpr std::uint32_t kRulesVersion = 22;
+constexpr std::uint32_t kDigiModifySchemaVersion = 31;
+constexpr std::uint32_t kElementShiftSchemaVersion = 32;
 constexpr std::uint32_t kDevelopmentSeed = 12345;
+// Schema 30 preserves the schema-29 layout; rules22 scores the whole dungeon.
+// Schema 29 appends durable expedition progress; rules21 resolves three dungeon fights.
+// Schema 28 preserves the schema-27 binary layout; rules20 removes care evolution gates.
 // Schema 27 stores each Digimon in 26 bytes so 250 of them still fit the
 // existing NVS partition beside two trade journals. Schemas 23-26 are 3,216 bytes.
 constexpr std::size_t kRoster60Capacity = 60;
 constexpr std::size_t kMemberSnapshotBytes = 26;
 constexpr std::size_t kSnapshotLeadBytes = 112;
 constexpr std::size_t kSnapshotTailBytes = 220;
-constexpr std::size_t kExpeditionWords = 6;
+constexpr std::size_t kExpeditionWords = 10;
 constexpr std::size_t kSnapshotSize = kSnapshotLeadBytes + 250 * kMemberSnapshotBytes + kSnapshotTailBytes + kExpeditionWords * 4 + 4;
 constexpr std::size_t kSchema26SnapshotSize = 3216; // V23 through V26 share this layout.
-static_assert(kSnapshotSize == 6860, "schema 27 snapshot size");
+constexpr std::size_t kSchema28SnapshotSize = 6860; // Schemas27/28.
+static_assert(kSnapshotSize == 6876, "schema 29 snapshot size");
 constexpr std::size_t kV22SnapshotSize = 2964;
 constexpr std::size_t kV21SnapshotSize = 2952;
 constexpr std::size_t kV20SnapshotSize = 664;
@@ -51,7 +57,7 @@ constexpr std::size_t kSnapshotPartyOffset = kSnapshotLeadBytes + kCollectionCap
 constexpr std::size_t kLegacyCollectionCapacity = 8; // Snapshot schemas1..20.
 constexpr std::uint32_t kMaxReplayEvents = 10000;
 
-enum class Phase : std::uint8_t { Home, Encounter, Egg };
+enum class Phase : std::uint8_t { Home, Encounter, Egg, Expedition };
 enum class BattleMode : std::uint8_t { Tactical, Auto };
 // Rules 18 adds the two focus pauses: one timed tap per AutoFight encounter.
 enum class AutoCapture : std::uint8_t { None, Awaiting, FocusStrike, FocusBlock };
@@ -60,10 +66,10 @@ enum class Species : std::uint16_t {
     None, Mote, Flicker, Rill, Cinder, Impmon, Agumon, Gabumon, Patamon,
     Tentomon, Palmon, Gomamon, Renamon
 };
-enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember, Treat, Focus, StartExpedition, ClaimExpedition };
+enum class Action : std::uint8_t { Feed, Play, Rest, Walk, Card, Attack, Capture, Select, Heavy, Magic, Hatch, Mode, Auto, Evolve, Release, Flick, Explore, EncounterRate, EncounterSeed, StarterOfferSeed, AccrueSteps, PresentEncounter, ResolveTestEncounter, AutoFight, AutoResume, WorldSeed, RingCapture, PartyAdd, PartyRemove, Toilet, Retreat, CareMinute, EvolveMember, Treat, Focus, StartExpedition, ClaimExpedition, NextExpedition, DigiModify, AutoStep };
 enum class Message : std::uint8_t {
     Welcome, Fed, Played, Rested, Walked, Encounter, AttackCard, ShieldCard,
-    Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared, PartyAdded, PartyRemoved, Toileted, Treated
+    Attacked, Won, Captured, CaptureMissed, Retreated, Evolved, Selected, EggReady, Hatched, Trained, Released, CaptureEnded, EncounterCleared, PartyAdded, PartyRemoved, Toileted, Treated, DigiModified
 };
 enum class Error : std::uint8_t {
     None, InvalidState, InvalidAction, InvalidValue, WrongPhase, LowEnergy,
@@ -142,6 +148,7 @@ struct State {
     std::uint32_t captureAttempts = 0;
     Phase phase = Phase::Home;
     bool cardUsed = false;
+    std::uint8_t digiModifyReady = 0; // Pending effect (0..3, or5..7 for Grove/Tide/Ember); one card per fight, saved.
     std::uint32_t attackBoost = 0;
     std::uint32_t shield = 0;
     Message message = Message::Welcome;
@@ -193,6 +200,14 @@ struct State {
     std::uint32_t bossSteps = 0;
     std::uint32_t dungeonClears = 0;
     std::uint32_t bossClears = 0;
+    // Schema29. Zero context is an ordinary encounter. A run freezes its first
+    // foe; later tiers use that same form at +1/+2 levels, capped at99.
+    // Expedition phase waits after a resolved nonfinal tier. Entry is already
+    // paid; NextExpedition continues without healing or charging again.
+    std::uint32_t expeditionScenario = 0; // scenario index +1; zero means none.
+    std::uint32_t expeditionTier = 0; // 1-based current/resolved tier.
+    std::uint32_t expeditionForm = 0;
+    std::uint32_t expeditionLevel = 0;
 };
 
 struct Snapshot { std::uint8_t bytes[kSnapshotSize]{}; };
@@ -227,6 +242,8 @@ const char* captureResultName(CaptureResult);
 std::uint32_t starterForm(const State&,std::uint32_t slot);
 bool validStarterOfferForm(std::uint32_t formId);
 combat::Defense wildGuard(const State& state);
+// Exact outgoing preview, including crit, with no RNG mutation or roster copy.
+combat::Hit previewWildAttack(const State& state,combat::Move move);
 // Native capture odds; zero outside a legal attempt. Auto may use the same helper.
 std::uint32_t captureChance(const State& state);
 // Rules-19 saves were recorded with a 60-Digimon roster. Replay pins that cap
@@ -298,6 +315,10 @@ bool needsTestEncounterResolution(const State& state);
 Error apply(State& state, Action action, std::uint32_t value = 0);
 // Equivalent to Action::Auto. A trace is optional and valid only on success;
 // firmware can persist just State's summary. One whole fight advances sequence once.
+// Device live Auto: value0 normal,1 resume capture,2+focus phase (0..kFocusNoTap).
+// Resolves at most one exchange; old batch/replay actions retain their behavior.
+Error applyAutoStep(State& state, std::uint32_t value, autobattle::Trace* trace = nullptr);
+std::uint32_t snapshotSchema(const State& state);
 Error applyAuto(State& state, autobattle::Trace* trace = nullptr);
 // Current UI flow: attack-only chunk ending at a capture opportunity or terminal
 // result. Outcome::None means the full last exchange finished, then Awaiting was

@@ -1,0 +1,39 @@
+{
+  "description": "Frozen rules21/schema29 before dungeon balance fixes. Namespace and local include remapping only.",
+  "sourceHead": "9875f773a6812406f0cfb2eff3d8ea74236272a5",
+  "sourceManifestSha256": "e670f5534e801504d80cfbb3bbc32cfff613326d4ccf33b5d659c08305efc6d6",
+  "sourceSha256": {
+    "core/game.cpp": "ccedc0250a585c4216c419224914381b017dcdf586a9d83830428c9c19ee2ac4",
+    "core/game.hpp": "d64416d87e6804b166e082b0af20df76ec6369547f7fcb3a934aeac12862e10f",
+    "core/forms.cpp": "95f17ef70684dc7f906323fa367cdc6d8b8dd7da43b31258b51e9868d7e39aa7",
+    "core/forms.hpp": "501b7b126f7485a8e12c583c197e4bccdbda73970b092bd906a2c6898adfb3bf",
+    "core/combat.cpp": "0f3b1dea64c31dc170748d02fe7f5a00daafe482569c413d42c4568c7b242d7c",
+    "core/combat.hpp": "fd1fcd36e8a87cdd7e7a53309ca803d1695584fe3671084fa39e13f5015588a3",
+    "core/encounters.cpp": "77f8515cb8b2f47e49ab83b39e9bc293fe3a3e130c50f6cf3e7d7dc643ea6fde",
+    "core/encounters.hpp": "6fdf1c15e2a5baf07953335a837e0570dacce164b68c9cc97e02ab4d29a02f95",
+    "core/expeditions.hpp": "3f0d93e5358deaebc099ecb41dde5e51648c7e89024ae47d863741b2ade2a082",
+    "core/world_ds_forms_generated.inc": "b014c5c01590476165dc6e2684d2dcd8c92141923ff17e5c34365ea825f49c65",
+    "core/world_ds_catalog_generated.inc": "81bf5d44a94a7db543934f402bc53dd46cdd1fc096273bcaea0e0d8dd1a76b8c",
+    "core/world_ds_evolutions_generated.inc": "7729b8dbce366dbc5c7cfce8e25ed1cc5b6e401d3abf5f5155e4b0f29fad1ec7",
+    "core/forms_rules18_frozen.inc": "34070e51288fec103d302ed6c29ea64b80c0772ea6e9f6742196d50288566707",
+    "core/encounter_rarity_generated.inc": "b55643b3ea59c562915dcde3f61e571fe10cf090985a553479843a92df57c2be",
+    "core/battle_skill_bindings_generated.inc": "cc150e7b90c0b6d5e5044450a20d3322fc245e4f9f10867b0d8d177c16d9634a"
+  },
+  "files": {
+    "core/game.cpp": "core/legacy_v21.cpp",
+    "core/game.hpp": "core/legacy_v21.hpp",
+    "core/forms.cpp": "core/legacy_forms_v21.cpp",
+    "core/forms.hpp": "core/legacy_forms_v21.hpp",
+    "core/combat.cpp": "core/legacy_combat_v21.cpp",
+    "core/combat.hpp": "core/legacy_combat_v21.hpp",
+    "core/encounters.cpp": "core/legacy_encounters_v21.cpp",
+    "core/encounters.hpp": "core/legacy_encounters_v21.hpp",
+    "core/expeditions.hpp": "core/legacy_expeditions_v21.hpp",
+    "core/world_ds_forms_generated.inc": "core/rules21_world_ds_forms_generated.inc",
+    "core/world_ds_catalog_generated.inc": "core/rules21_world_ds_catalog_generated.inc",
+    "core/world_ds_evolutions_generated.inc": "core/rules21_world_ds_evolutions_generated.inc",
+    "core/forms_rules18_frozen.inc": "core/rules21_forms_rules18_frozen.inc",
+    "core/encounter_rarity_generated.inc": "core/rules21_encounter_rarity_generated.inc",
+    "core/battle_skill_bindings_generated.inc": "core/rules21_battle_skill_bindings_generated.inc"
+  }
+}

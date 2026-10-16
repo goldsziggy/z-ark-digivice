@@ -1,4 +1,5 @@
 #include "local_form_art.hpp"
+#include "form_presentation.hpp"
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
@@ -16,7 +17,7 @@ LocalFormArt::LocalFormArt(const char* directory) {
 void LocalFormArt::close() {
     sprite_.close();
     if (descriptor_ >= 0) ::close(descriptor_);
-    descriptor_ = -1; bytes_ = 0; formId_ = 0;
+    descriptor_ = -1; bytes_ = 0; formId_ = sourceFormId_ = 0;
 }
 Result LocalFormArt::open(std::uint32_t formId) {
     close();
@@ -32,7 +33,19 @@ Result LocalFormArt::open(std::uint32_t formId) {
 #ifdef O_NOFOLLOW
     flags |= O_NOFOLLOW;
 #endif
+    auto sourceForm = formId;
     descriptor_ = ::open(path, flags);
+    if (descriptor_ < 0 && errno == ENOENT) {
+        const auto alternate = presentation::sameSpeciesArtFallback(formId);
+        if (alternate) {
+            const auto count = std::snprintf(path, sizeof(path), "%s/DSF%05u.DVA", directory_, static_cast<unsigned>(alternate));
+            if (count < 0 || static_cast<std::size_t>(count) >= sizeof(path)) {
+                diagnostic_ = "private same-species path exceeds bound"; return Result::InvalidReader;
+            }
+            descriptor_ = ::open(path, flags);
+            sourceForm = alternate;
+        }
+    }
     if (descriptor_ < 0) {
         diagnostic_ = errno == ENOENT ? "exact-form private file missing" : "private file unavailable";
         return Result::Io;
@@ -47,8 +60,9 @@ Result LocalFormArt::open(std::uint32_t formId) {
     if (result != Result::Ok) {
         close(); diagnostic_ = "private DVA validation failed; fallback required"; return result;
     }
-    formId_ = formId;
-    diagnostic_ = "exact-form private DVA verified; local unsigned source";
+    formId_ = formId; sourceFormId_ = sourceForm;
+    diagnostic_ = sourceForm == formId ? "exact-form private DVA verified; local unsigned source"
+        : "same-species GrapLeomon DVA verified; exact file absent";
     return Result::Ok;
 }
 bool LocalFormArt::read(void* context, std::size_t offset, void* output, std::size_t length) {

@@ -1,0 +1,2722 @@
+[
+  {
+    "fixtureLevel": 21,
+    "description": "Native AutoFight output from synthetic valid trained partner, sequence above10000. No invented trace frames.",
+    "before": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10003,
+      "seed": 1,
+      "rngState": 1,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 161,
+      "energy": 100,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 0,
+      "level": 21,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 136,
+      "wildMaxHp": 136,
+      "wildLevel": 5,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Impmon",
+      "species": "impmon",
+      "formId": 11,
+      "xp": 8400,
+      "xpToNext": 840,
+      "stage": "Rookie",
+      "artId": null,
+      "combat": {
+        "maxHp": 161,
+        "attack": 41,
+        "defense": 35,
+        "magic": 62,
+        "resistance": 50,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "care": {
+        "bondRank": 0,
+        "offenseBonus": 1,
+        "protectionBonus": 0,
+        "effective": {
+          "maxHp": 161,
+          "attack": 42,
+          "defense": 35,
+          "magic": 63,
+          "resistance": 50
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "A wild Tyrannomon appeared!",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "agumon",
+      "wildName": "Tyrannomon",
+      "wildCombat": {
+        "maxHp": 136,
+        "attack": 34,
+        "defense": 25,
+        "magic": 25,
+        "resistance": 23,
+        "type": "ember",
+        "skills": {
+          "physical": "Tail Swipe",
+          "heavy": "Dino Stomp",
+          "magic": "Fire Breath"
+        }
+      },
+      "wildFormId": 22,
+      "wildRules": 21,
+      "wildCaptureChance": 0,
+      "wildGuard": "brace",
+      "wildRarity": "common",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10003,
+      "autoCapture": 0,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Impmon",
+          "hp": 161,
+          "energy": 100,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 21,
+          "capturedAtSequence": 0,
+          "formId": 11,
+          "xp": 8400,
+          "xpToNext": 840,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 161,
+            "attack": 41,
+            "defense": 35,
+            "magic": 62,
+            "resistance": 50,
+            "type": "ember",
+            "skills": {
+              "physical": "Prank Jab",
+              "heavy": "Imp Rush",
+              "magic": "Night of Fire"
+            }
+          },
+          "care": {
+            "bondRank": 0,
+            "offenseBonus": 1,
+            "protectionBonus": 0,
+            "effective": {
+              "maxHp": 161,
+              "attack": 42,
+              "defense": 35,
+              "magic": 63,
+              "resistance": 50
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 12,
+            "name": "Wizardmon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 21,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 168,
+              "attack": 42,
+              "defense": 37,
+              "magic": 69,
+              "resistance": 58,
+              "type": "ember",
+              "skills": {
+                "physical": "Staff Tap",
+                "heavy": "Rune Crash",
+                "magic": "Thunder Cloud"
+              }
+            }
+          },
+          {
+            "formId": 15,
+            "name": "Devimon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 21,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 184,
+              "attack": 59,
+              "defense": 37,
+              "magic": 68,
+              "resistance": 40,
+              "type": "ember",
+              "skills": {
+                "physical": "Death Claw",
+                "heavy": "Shadow Lunge",
+                "magic": "Void Claw"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "state": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10004,
+      "seed": 1,
+      "rngState": 307599695,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 144,
+      "energy": 92,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 0,
+      "level": 21,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 34,
+      "wildMaxHp": 136,
+      "wildLevel": 5,
+      "wildTurn": 2,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Impmon",
+      "species": "impmon",
+      "formId": 11,
+      "xp": 8400,
+      "xpToNext": 840,
+      "stage": "Rookie",
+      "artId": null,
+      "combat": {
+        "maxHp": 161,
+        "attack": 41,
+        "defense": 35,
+        "magic": 62,
+        "resistance": 50,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "care": {
+        "bondRank": 0,
+        "offenseBonus": 1,
+        "protectionBonus": 0,
+        "effective": {
+          "maxHp": 161,
+          "attack": 42,
+          "defense": 35,
+          "magic": 63,
+          "resistance": 50
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "Your creature used a skill.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "agumon",
+      "wildName": "Tyrannomon",
+      "wildCombat": {
+        "maxHp": 136,
+        "attack": 34,
+        "defense": 25,
+        "magic": 25,
+        "resistance": 23,
+        "type": "ember",
+        "skills": {
+          "physical": "Tail Swipe",
+          "heavy": "Dino Stomp",
+          "magic": "Fire Breath"
+        }
+      },
+      "wildFormId": 22,
+      "wildRules": 21,
+      "wildCaptureChance": 70,
+      "wildGuard": "counter",
+      "wildRarity": "common",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10004,
+      "autoCapture": 1,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Impmon",
+          "hp": 144,
+          "energy": 92,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 21,
+          "capturedAtSequence": 0,
+          "formId": 11,
+          "xp": 8400,
+          "xpToNext": 840,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 161,
+            "attack": 41,
+            "defense": 35,
+            "magic": 62,
+            "resistance": 50,
+            "type": "ember",
+            "skills": {
+              "physical": "Prank Jab",
+              "heavy": "Imp Rush",
+              "magic": "Night of Fire"
+            }
+          },
+          "care": {
+            "bondRank": 0,
+            "offenseBonus": 1,
+            "protectionBonus": 0,
+            "effective": {
+              "maxHp": 161,
+              "attack": 42,
+              "defense": 35,
+              "magic": 63,
+              "resistance": 50
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 12,
+            "name": "Wizardmon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 21,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 168,
+              "attack": 42,
+              "defense": 37,
+              "magic": 69,
+              "resistance": 58,
+              "type": "ember",
+              "skills": {
+                "physical": "Staff Tap",
+                "heavy": "Rune Crash",
+                "magic": "Thunder Cloud"
+              }
+            }
+          },
+          {
+            "formId": 15,
+            "name": "Devimon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 21,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 184,
+              "attack": 59,
+              "defense": 37,
+              "magic": 68,
+              "resistance": 40,
+              "type": "ember",
+              "skills": {
+                "physical": "Death Claw",
+                "heavy": "Shadow Lunge",
+                "magic": "Void Claw"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "trace": {
+      "formatVersion": 1,
+      "mode": "auto",
+      "kind": "wild",
+      "startSequence": 10003,
+      "endSequence": 10004,
+      "outcome": "none",
+      "combatRulesVersion": 12,
+      "playerCare": {
+        "offenseBonus": 1,
+        "protectionBonus": 0
+      },
+      "enemyCare": {
+        "offenseBonus": 0,
+        "protectionBonus": 0
+      },
+      "player": {
+        "species": "impmon",
+        "name": "Impmon",
+        "level": 21,
+        "combat": {
+          "maxHp": 161,
+          "attack": 41,
+          "defense": 35,
+          "magic": 62,
+          "resistance": 50,
+          "type": "ember",
+          "skills": {
+            "physical": "Prank Jab",
+            "heavy": "Imp Rush",
+            "magic": "Night of Fire"
+          }
+        },
+        "formId": 11
+      },
+      "enemy": {
+        "species": "agumon",
+        "name": "Tyrannomon",
+        "level": 5,
+        "combat": {
+          "maxHp": 136,
+          "attack": 34,
+          "defense": 25,
+          "magic": 25,
+          "resistance": 23,
+          "type": "ember",
+          "skills": {
+            "physical": "Tail Swipe",
+            "heavy": "Dino Stomp",
+            "magic": "Fire Breath"
+          }
+        },
+        "formId": 22
+      },
+      "steps": [
+        {
+          "turn": 1,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "physical",
+          "playerHpBefore": 161,
+          "playerHpAfter": 152,
+          "enemyHpBefore": 136,
+          "enemyHpAfter": 81,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        },
+        {
+          "turn": 2,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "magic",
+          "playerHpBefore": 152,
+          "playerHpAfter": 144,
+          "enemyHpBefore": 81,
+          "enemyHpAfter": 34,
+          "reflected": false,
+          "captured": false,
+          "guard": "ward"
+        }
+      ]
+    }
+  },
+  {
+    "fixtureLevel": 51,
+    "description": "Native AutoFight output from synthetic valid trained partner, sequence above10000. No invented trace frames.",
+    "before": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10003,
+      "seed": 1,
+      "rngState": 1,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 251,
+      "energy": 100,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 0,
+      "level": 51,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 216,
+      "wildMaxHp": 216,
+      "wildLevel": 15,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Impmon",
+      "species": "impmon",
+      "formId": 11,
+      "xp": 51000,
+      "xpToNext": 2040,
+      "stage": "Rookie",
+      "artId": null,
+      "combat": {
+        "maxHp": 251,
+        "attack": 71,
+        "defense": 65,
+        "magic": 122,
+        "resistance": 110,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "care": {
+        "bondRank": 0,
+        "offenseBonus": 1,
+        "protectionBonus": 0,
+        "effective": {
+          "maxHp": 251,
+          "attack": 72,
+          "defense": 65,
+          "magic": 123,
+          "resistance": 110
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "A wild Imperialdramon: Fighter Mode appeared!",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "imperialdramon-fighter-mode",
+      "wildName": "Imperialdramon: Fighter Mode",
+      "wildCombat": {
+        "maxHp": 216,
+        "attack": 60,
+        "defense": 54,
+        "magic": 62,
+        "resistance": 56,
+        "type": "ember",
+        "skills": {
+          "physical": "Imperial Fistblade",
+          "heavy": "Fighter Mode Blitz",
+          "magic": "Positron Starburst"
+        }
+      },
+      "wildFormId": 245,
+      "wildRules": 21,
+      "wildCaptureChance": 0,
+      "wildGuard": "brace",
+      "wildRarity": "uncommon",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10003,
+      "autoCapture": 0,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Impmon",
+          "hp": 251,
+          "energy": 100,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 51,
+          "capturedAtSequence": 0,
+          "formId": 11,
+          "xp": 51000,
+          "xpToNext": 2040,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 251,
+            "attack": 71,
+            "defense": 65,
+            "magic": 122,
+            "resistance": 110,
+            "type": "ember",
+            "skills": {
+              "physical": "Prank Jab",
+              "heavy": "Imp Rush",
+              "magic": "Night of Fire"
+            }
+          },
+          "care": {
+            "bondRank": 0,
+            "offenseBonus": 1,
+            "protectionBonus": 0,
+            "effective": {
+              "maxHp": 251,
+              "attack": 72,
+              "defense": 65,
+              "magic": 123,
+              "resistance": 110
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 12,
+            "name": "Wizardmon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 51,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 258,
+              "attack": 72,
+              "defense": 67,
+              "magic": 129,
+              "resistance": 118,
+              "type": "ember",
+              "skills": {
+                "physical": "Staff Tap",
+                "heavy": "Rune Crash",
+                "magic": "Thunder Cloud"
+              }
+            }
+          },
+          {
+            "formId": 15,
+            "name": "Devimon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 51,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 304,
+              "attack": 119,
+              "defense": 67,
+              "magic": 128,
+              "resistance": 70,
+              "type": "ember",
+              "skills": {
+                "physical": "Death Claw",
+                "heavy": "Shadow Lunge",
+                "magic": "Void Claw"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "state": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10004,
+      "seed": 1,
+      "rngState": 307599695,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 221,
+      "energy": 92,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 0,
+      "level": 51,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 59,
+      "wildMaxHp": 216,
+      "wildLevel": 15,
+      "wildTurn": 2,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Impmon",
+      "species": "impmon",
+      "formId": 11,
+      "xp": 51000,
+      "xpToNext": 2040,
+      "stage": "Rookie",
+      "artId": null,
+      "combat": {
+        "maxHp": 251,
+        "attack": 71,
+        "defense": 65,
+        "magic": 122,
+        "resistance": 110,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "care": {
+        "bondRank": 0,
+        "offenseBonus": 1,
+        "protectionBonus": 0,
+        "effective": {
+          "maxHp": 251,
+          "attack": 72,
+          "defense": 65,
+          "magic": 123,
+          "resistance": 110
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "Your creature used a skill.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "imperialdramon-fighter-mode",
+      "wildName": "Imperialdramon: Fighter Mode",
+      "wildCombat": {
+        "maxHp": 216,
+        "attack": 60,
+        "defense": 54,
+        "magic": 62,
+        "resistance": 56,
+        "type": "ember",
+        "skills": {
+          "physical": "Imperial Fistblade",
+          "heavy": "Fighter Mode Blitz",
+          "magic": "Positron Starburst"
+        }
+      },
+      "wildFormId": 245,
+      "wildRules": 21,
+      "wildCaptureChance": 58,
+      "wildGuard": "counter",
+      "wildRarity": "uncommon",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10004,
+      "autoCapture": 1,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Impmon",
+          "hp": 221,
+          "energy": 92,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 51,
+          "capturedAtSequence": 0,
+          "formId": 11,
+          "xp": 51000,
+          "xpToNext": 2040,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 251,
+            "attack": 71,
+            "defense": 65,
+            "magic": 122,
+            "resistance": 110,
+            "type": "ember",
+            "skills": {
+              "physical": "Prank Jab",
+              "heavy": "Imp Rush",
+              "magic": "Night of Fire"
+            }
+          },
+          "care": {
+            "bondRank": 0,
+            "offenseBonus": 1,
+            "protectionBonus": 0,
+            "effective": {
+              "maxHp": 251,
+              "attack": 72,
+              "defense": 65,
+              "magic": 123,
+              "resistance": 110
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 12,
+            "name": "Wizardmon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 51,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 258,
+              "attack": 72,
+              "defense": 67,
+              "magic": 129,
+              "resistance": 118,
+              "type": "ember",
+              "skills": {
+                "physical": "Staff Tap",
+                "heavy": "Rune Crash",
+                "magic": "Thunder Cloud"
+              }
+            }
+          },
+          {
+            "formId": 15,
+            "name": "Devimon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 51,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 304,
+              "attack": 119,
+              "defense": 67,
+              "magic": 128,
+              "resistance": 70,
+              "type": "ember",
+              "skills": {
+                "physical": "Death Claw",
+                "heavy": "Shadow Lunge",
+                "magic": "Void Claw"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "trace": {
+      "formatVersion": 1,
+      "mode": "auto",
+      "kind": "wild",
+      "startSequence": 10003,
+      "endSequence": 10004,
+      "outcome": "none",
+      "combatRulesVersion": 12,
+      "playerCare": {
+        "offenseBonus": 1,
+        "protectionBonus": 0
+      },
+      "enemyCare": {
+        "offenseBonus": 0,
+        "protectionBonus": 0
+      },
+      "player": {
+        "species": "impmon",
+        "name": "Impmon",
+        "level": 51,
+        "combat": {
+          "maxHp": 251,
+          "attack": 71,
+          "defense": 65,
+          "magic": 122,
+          "resistance": 110,
+          "type": "ember",
+          "skills": {
+            "physical": "Prank Jab",
+            "heavy": "Imp Rush",
+            "magic": "Night of Fire"
+          }
+        },
+        "formId": 11
+      },
+      "enemy": {
+        "species": "imperialdramon-fighter-mode",
+        "name": "Imperialdramon: Fighter Mode",
+        "level": 15,
+        "combat": {
+          "maxHp": 216,
+          "attack": 60,
+          "defense": 54,
+          "magic": 62,
+          "resistance": 56,
+          "type": "ember",
+          "skills": {
+            "physical": "Imperial Fistblade",
+            "heavy": "Fighter Mode Blitz",
+            "magic": "Positron Starburst"
+          }
+        },
+        "formId": 245
+      },
+      "steps": [
+        {
+          "turn": 1,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "physical",
+          "playerHpBefore": 251,
+          "playerHpAfter": 236,
+          "enemyHpBefore": 216,
+          "enemyHpAfter": 125,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        },
+        {
+          "turn": 2,
+          "phase": "attack",
+          "action": "heavy",
+          "opponentAction": "magic",
+          "playerHpBefore": 236,
+          "playerHpAfter": 221,
+          "enemyHpBefore": 125,
+          "enemyHpAfter": 59,
+          "reflected": false,
+          "captured": false,
+          "guard": "ward"
+        }
+      ]
+    }
+  },
+  {
+    "fixtureLevel": 99,
+    "description": "Native AutoFight output from synthetic valid trained partner, sequence above10000. No invented trace frames.",
+    "before": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10003,
+      "seed": 1,
+      "rngState": 1,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 395,
+      "energy": 100,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 0,
+      "level": 99,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 248,
+      "wildMaxHp": 248,
+      "wildLevel": 15,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Impmon",
+      "species": "impmon",
+      "formId": 11,
+      "xp": 194040,
+      "xpToNext": 0,
+      "stage": "Rookie",
+      "artId": null,
+      "combat": {
+        "maxHp": 395,
+        "attack": 119,
+        "defense": 113,
+        "magic": 218,
+        "resistance": 206,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "care": {
+        "bondRank": 0,
+        "offenseBonus": 1,
+        "protectionBonus": 0,
+        "effective": {
+          "maxHp": 395,
+          "attack": 120,
+          "defense": 113,
+          "magic": 219,
+          "resistance": 206
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "A wild Cannondramon appeared!",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "cannondramon",
+      "wildName": "Cannondramon",
+      "wildCombat": {
+        "maxHp": 248,
+        "attack": 52,
+        "defense": 66,
+        "magic": 54,
+        "resistance": 52,
+        "type": "ember",
+        "skills": {
+          "physical": "Gunmetal Tail",
+          "heavy": "Artillery Bodyslam",
+          "magic": "Twin Siege Salvo"
+        }
+      },
+      "wildFormId": 223,
+      "wildRules": 21,
+      "wildCaptureChance": 0,
+      "wildGuard": "brace",
+      "wildRarity": "common",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10003,
+      "autoCapture": 0,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Impmon",
+          "hp": 395,
+          "energy": 100,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 99,
+          "capturedAtSequence": 0,
+          "formId": 11,
+          "xp": 194040,
+          "xpToNext": 0,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 395,
+            "attack": 119,
+            "defense": 113,
+            "magic": 218,
+            "resistance": 206,
+            "type": "ember",
+            "skills": {
+              "physical": "Prank Jab",
+              "heavy": "Imp Rush",
+              "magic": "Night of Fire"
+            }
+          },
+          "care": {
+            "bondRank": 0,
+            "offenseBonus": 1,
+            "protectionBonus": 0,
+            "effective": {
+              "maxHp": 395,
+              "attack": 120,
+              "defense": 113,
+              "magic": 219,
+              "resistance": 206
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 12,
+            "name": "Wizardmon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 99,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 402,
+              "attack": 120,
+              "defense": 115,
+              "magic": 225,
+              "resistance": 214,
+              "type": "ember",
+              "skills": {
+                "physical": "Staff Tap",
+                "heavy": "Rune Crash",
+                "magic": "Thunder Cloud"
+              }
+            }
+          },
+          {
+            "formId": 15,
+            "name": "Devimon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 99,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 496,
+              "attack": 215,
+              "defense": 115,
+              "magic": 224,
+              "resistance": 118,
+              "type": "ember",
+              "skills": {
+                "physical": "Death Claw",
+                "heavy": "Shadow Lunge",
+                "magic": "Void Claw"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "state": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10004,
+      "seed": 1,
+      "rngState": 67634689,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 372,
+      "energy": 98,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 0,
+      "level": 99,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 57,
+      "wildMaxHp": 248,
+      "wildLevel": 15,
+      "wildTurn": 1,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Impmon",
+      "species": "impmon",
+      "formId": 11,
+      "xp": 194040,
+      "xpToNext": 0,
+      "stage": "Rookie",
+      "artId": null,
+      "combat": {
+        "maxHp": 395,
+        "attack": 119,
+        "defense": 113,
+        "magic": 218,
+        "resistance": 206,
+        "type": "ember",
+        "skills": {
+          "physical": "Prank Jab",
+          "heavy": "Imp Rush",
+          "magic": "Night of Fire"
+        }
+      },
+      "care": {
+        "bondRank": 0,
+        "offenseBonus": 1,
+        "protectionBonus": 0,
+        "effective": {
+          "maxHp": 395,
+          "attack": 120,
+          "defense": 113,
+          "magic": 219,
+          "resistance": 206
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "Your creature used a skill.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "cannondramon",
+      "wildName": "Cannondramon",
+      "wildCombat": {
+        "maxHp": 248,
+        "attack": 52,
+        "defense": 66,
+        "magic": 54,
+        "resistance": 52,
+        "type": "ember",
+        "skills": {
+          "physical": "Gunmetal Tail",
+          "heavy": "Artillery Bodyslam",
+          "magic": "Twin Siege Salvo"
+        }
+      },
+      "wildFormId": 223,
+      "wildRules": 21,
+      "wildCaptureChance": 71,
+      "wildGuard": "ward",
+      "wildRarity": "common",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10004,
+      "autoCapture": 1,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Impmon",
+          "hp": 372,
+          "energy": 98,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 0,
+          "level": 99,
+          "capturedAtSequence": 0,
+          "formId": 11,
+          "xp": 194040,
+          "xpToNext": 0,
+          "stage": "Rookie",
+          "artId": null,
+          "combat": {
+            "maxHp": 395,
+            "attack": 119,
+            "defense": 113,
+            "magic": 218,
+            "resistance": 206,
+            "type": "ember",
+            "skills": {
+              "physical": "Prank Jab",
+              "heavy": "Imp Rush",
+              "magic": "Night of Fire"
+            }
+          },
+          "care": {
+            "bondRank": 0,
+            "offenseBonus": 1,
+            "protectionBonus": 0,
+            "effective": {
+              "maxHp": 395,
+              "attack": 120,
+              "defense": 113,
+              "magic": 219,
+              "resistance": 206
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 12,
+            "name": "Wizardmon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 99,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 402,
+              "attack": 120,
+              "defense": 115,
+              "magic": 225,
+              "resistance": 214,
+              "type": "ember",
+              "skills": {
+                "physical": "Staff Tap",
+                "heavy": "Rune Crash",
+                "magic": "Thunder Cloud"
+              }
+            }
+          },
+          {
+            "formId": 15,
+            "name": "Devimon",
+            "stage": "Champion",
+            "artId": null,
+            "requiredLevel": 18,
+            "requiredBond": 64,
+            "requiredCare": 0,
+            "previewLevel": 99,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 496,
+              "attack": 215,
+              "defense": 115,
+              "magic": 224,
+              "resistance": 118,
+              "type": "ember",
+              "skills": {
+                "physical": "Death Claw",
+                "heavy": "Shadow Lunge",
+                "magic": "Void Claw"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "trace": {
+      "formatVersion": 1,
+      "mode": "auto",
+      "kind": "wild",
+      "startSequence": 10003,
+      "endSequence": 10004,
+      "outcome": "none",
+      "combatRulesVersion": 12,
+      "playerCare": {
+        "offenseBonus": 1,
+        "protectionBonus": 0
+      },
+      "enemyCare": {
+        "offenseBonus": 0,
+        "protectionBonus": 0
+      },
+      "player": {
+        "species": "impmon",
+        "name": "Impmon",
+        "level": 99,
+        "combat": {
+          "maxHp": 395,
+          "attack": 119,
+          "defense": 113,
+          "magic": 218,
+          "resistance": 206,
+          "type": "ember",
+          "skills": {
+            "physical": "Prank Jab",
+            "heavy": "Imp Rush",
+            "magic": "Night of Fire"
+          }
+        },
+        "formId": 11
+      },
+      "enemy": {
+        "species": "cannondramon",
+        "name": "Cannondramon",
+        "level": 15,
+        "combat": {
+          "maxHp": 248,
+          "attack": 52,
+          "defense": 66,
+          "magic": 54,
+          "resistance": 52,
+          "type": "ember",
+          "skills": {
+            "physical": "Gunmetal Tail",
+            "heavy": "Artillery Bodyslam",
+            "magic": "Twin Siege Salvo"
+          }
+        },
+        "formId": 223
+      },
+      "steps": [
+        {
+          "turn": 1,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "physical",
+          "playerHpBefore": 395,
+          "playerHpAfter": 372,
+          "enemyHpBefore": 248,
+          "enemyHpAfter": 57,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        }
+      ]
+    }
+  },
+  {
+    "fixtureLevel": 99,
+    "description": "Native AutoFight output from synthetic valid trained partner, sequence above10000. No invented trace frames.",
+    "before": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10003,
+      "seed": 1,
+      "rngState": 1,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 402,
+      "energy": 100,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 200,
+      "level": 99,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 248,
+      "wildMaxHp": 248,
+      "wildLevel": 15,
+      "wildTurn": 0,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Wizardmon",
+      "species": "impmon",
+      "formId": 12,
+      "xp": 194040,
+      "xpToNext": 0,
+      "stage": "Champion",
+      "artId": null,
+      "combat": {
+        "maxHp": 402,
+        "attack": 120,
+        "defense": 115,
+        "magic": 225,
+        "resistance": 214,
+        "type": "ember",
+        "skills": {
+          "physical": "Staff Tap",
+          "heavy": "Rune Crash",
+          "magic": "Thunder Cloud"
+        }
+      },
+      "care": {
+        "bondRank": 4,
+        "offenseBonus": 5,
+        "protectionBonus": 4,
+        "effective": {
+          "maxHp": 402,
+          "attack": 125,
+          "defense": 119,
+          "magic": 230,
+          "resistance": 218
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "A wild Cannondramon appeared!",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "cannondramon",
+      "wildName": "Cannondramon",
+      "wildCombat": {
+        "maxHp": 248,
+        "attack": 52,
+        "defense": 66,
+        "magic": 54,
+        "resistance": 52,
+        "type": "ember",
+        "skills": {
+          "physical": "Gunmetal Tail",
+          "heavy": "Artillery Bodyslam",
+          "magic": "Twin Siege Salvo"
+        }
+      },
+      "wildFormId": 223,
+      "wildRules": 21,
+      "wildCaptureChance": 0,
+      "wildGuard": "brace",
+      "wildRarity": "common",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10003,
+      "autoCapture": 0,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11,
+          12
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Wizardmon",
+          "hp": 402,
+          "energy": 100,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 99,
+          "capturedAtSequence": 0,
+          "formId": 12,
+          "xp": 194040,
+          "xpToNext": 0,
+          "stage": "Champion",
+          "artId": null,
+          "combat": {
+            "maxHp": 402,
+            "attack": 120,
+            "defense": 115,
+            "magic": 225,
+            "resistance": 214,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Thunder Cloud"
+            }
+          },
+          "care": {
+            "bondRank": 4,
+            "offenseBonus": 5,
+            "protectionBonus": 4,
+            "effective": {
+              "maxHp": 402,
+              "attack": 125,
+              "defense": 119,
+              "magic": 230,
+              "resistance": 218
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 13,
+            "name": "Baalmon",
+            "stage": "Ultimate",
+            "artId": null,
+            "requiredLevel": 33,
+            "requiredBond": 96,
+            "requiredCare": 0,
+            "previewLevel": 99,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 423,
+              "attack": 129,
+              "defense": 123,
+              "magic": 232,
+              "resistance": 220,
+              "type": "ember",
+              "skills": {
+                "physical": "Charm Slash",
+                "heavy": "Script Break",
+                "magic": "Dusk Seal"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "state": {
+      "schemaVersion": 29,
+      "rulesVersion": 21,
+      "sequence": 10004,
+      "seed": 1,
+      "rngState": 67634689,
+      "steps": 0,
+      "stepCredit": 0,
+      "hp": 379,
+      "energy": 98,
+      "fullness": 70,
+      "mood": 80,
+      "bond": 200,
+      "level": 99,
+      "maxLevel": 99,
+      "captures": 0,
+      "encounters": 1,
+      "phase": "encounter",
+      "wildHp": 46,
+      "wildMaxHp": 248,
+      "wildLevel": 15,
+      "wildTurn": 1,
+      "captureAttempts": 0,
+      "cardUsed": false,
+      "attackBoost": 0,
+      "shield": 0,
+      "creature": "Wizardmon",
+      "species": "impmon",
+      "formId": 12,
+      "xp": 194040,
+      "xpToNext": 0,
+      "stage": "Champion",
+      "artId": null,
+      "combat": {
+        "maxHp": 402,
+        "attack": 120,
+        "defense": 115,
+        "magic": 225,
+        "resistance": 214,
+        "type": "ember",
+        "skills": {
+          "physical": "Staff Tap",
+          "heavy": "Rune Crash",
+          "magic": "Thunder Cloud"
+        }
+      },
+      "care": {
+        "bondRank": 4,
+        "offenseBonus": 5,
+        "protectionBonus": 4,
+        "effective": {
+          "maxHp": 402,
+          "attack": 125,
+          "defense": 119,
+          "magic": 230,
+          "resistance": 218
+        }
+      },
+      "carePoints": 0,
+      "toilet": 0,
+      "careMissed": false,
+      "message": "Your creature used a skill.",
+      "activeCreatureId": 1,
+      "collectionCapacity": 250,
+      "legacyCaptures": 0,
+      "onboarding": {
+        "completed": true,
+        "starterId": 1,
+        "offerSeed": 0,
+        "offers": [
+          0,
+          0,
+          0
+        ]
+      },
+      "lastCapture": {
+        "sequence": 0,
+        "targetFormId": 0,
+        "targetLevel": 0,
+        "chance": 0,
+        "attempt": 0,
+        "result": "none"
+      },
+      "battleMode": "auto",
+      "lastAutoBattle": null,
+      "wildSpecies": "cannondramon",
+      "wildName": "Cannondramon",
+      "wildCombat": {
+        "maxHp": 248,
+        "attack": 52,
+        "defense": 66,
+        "magic": 54,
+        "resistance": 52,
+        "type": "ember",
+        "skills": {
+          "physical": "Gunmetal Tail",
+          "heavy": "Artillery Bodyslam",
+          "magic": "Twin Siege Salvo"
+        }
+      },
+      "wildFormId": 223,
+      "wildRules": 21,
+      "wildCaptureChance": 75,
+      "wildGuard": "ward",
+      "wildRarity": "common",
+      "recoveryRestCount": 0,
+      "queuedEncounters": 0,
+      "stepsToNextEncounter": 100,
+      "walking": {
+        "rate": 2,
+        "name": "Normal",
+        "eligibleSteps": 1,
+        "encounters": 1,
+        "rngState": 52921100,
+        "target": 124,
+        "progress": 0,
+        "remainingSteps": 62,
+        "pendingEncounter": null
+      },
+      "partyCapacity": 3,
+      "partyMemberIds": [],
+      "careMinute": 0,
+      "critical": false,
+      "captureDeferred": 0,
+      "focus": null,
+      "foregroundSequence": 10004,
+      "autoCapture": 1,
+      "worldSeed": 0,
+      "receivedTrades": 0,
+      "nextMemberId": 2,
+      "journal": {
+        "capacity": 512,
+        "obtainedFormIds": [
+          11,
+          12
+        ]
+      },
+      "collection": [
+        {
+          "id": 1,
+          "species": "impmon",
+          "name": "Wizardmon",
+          "hp": 379,
+          "energy": 98,
+          "fullness": 70,
+          "mood": 80,
+          "bond": 200,
+          "level": 99,
+          "capturedAtSequence": 0,
+          "formId": 12,
+          "xp": 194040,
+          "xpToNext": 0,
+          "stage": "Champion",
+          "artId": null,
+          "combat": {
+            "maxHp": 402,
+            "attack": 120,
+            "defense": 115,
+            "magic": 225,
+            "resistance": 214,
+            "type": "ember",
+            "skills": {
+              "physical": "Staff Tap",
+              "heavy": "Rune Crash",
+              "magic": "Thunder Cloud"
+            }
+          },
+          "care": {
+            "bondRank": 4,
+            "offenseBonus": 5,
+            "protectionBonus": 4,
+            "effective": {
+              "maxHp": 402,
+              "attack": 125,
+              "defense": 119,
+              "magic": 230,
+              "resistance": 218
+            }
+          },
+          "carePoints": 0,
+          "toilet": 0,
+          "careMissed": false,
+          "careMistakes": 0,
+          "injury": 0
+        }
+      ],
+      "evolution": {
+        "options": [
+          {
+            "formId": 13,
+            "name": "Baalmon",
+            "stage": "Ultimate",
+            "artId": null,
+            "requiredLevel": 33,
+            "requiredBond": 96,
+            "requiredCare": 0,
+            "previewLevel": 99,
+            "eligible": false,
+            "maxCareMistakes": null,
+            "careRouteOpen": true,
+            "combat": {
+              "maxHp": 423,
+              "attack": 129,
+              "defense": 123,
+              "magic": 232,
+              "resistance": 220,
+              "type": "ember",
+              "skills": {
+                "physical": "Charm Slash",
+                "heavy": "Script Break",
+                "magic": "Dusk Seal"
+              }
+            }
+          }
+        ]
+      },
+      "expeditions": {
+        "dungeonKeys": 2,
+        "bossSigils": 1,
+        "dungeonWins": 0,
+        "bossSteps": 0,
+        "dungeonClears": 0,
+        "bossClears": 0,
+        "maxDungeonKeys": 3,
+        "scenarios": [
+          {
+            "name": "Grove Dungeon",
+            "kind": "dungeon",
+            "theme": "grove",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Dungeon",
+            "kind": "dungeon",
+            "theme": "tide",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Dungeon",
+            "kind": "dungeon",
+            "theme": "ember",
+            "floors": 3,
+            "minPlayers": 2,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Grove Boss",
+            "kind": "boss",
+            "theme": "grove",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Tide Boss",
+            "kind": "boss",
+            "theme": "tide",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          },
+          {
+            "name": "Ember Boss",
+            "kind": "boss",
+            "theme": "ember",
+            "floors": 1,
+            "minPlayers": 1,
+            "maxPlayers": 2
+          }
+        ],
+        "active": true,
+        "scenarioIndex": 2,
+        "tier": 1,
+        "tiers": 3,
+        "awaitingNext": false
+      }
+    },
+    "trace": {
+      "formatVersion": 1,
+      "mode": "auto",
+      "kind": "wild",
+      "startSequence": 10003,
+      "endSequence": 10004,
+      "outcome": "none",
+      "combatRulesVersion": 12,
+      "playerCare": {
+        "offenseBonus": 5,
+        "protectionBonus": 4
+      },
+      "enemyCare": {
+        "offenseBonus": 0,
+        "protectionBonus": 0
+      },
+      "player": {
+        "species": "impmon",
+        "name": "Wizardmon",
+        "level": 99,
+        "combat": {
+          "maxHp": 402,
+          "attack": 120,
+          "defense": 115,
+          "magic": 225,
+          "resistance": 214,
+          "type": "ember",
+          "skills": {
+            "physical": "Staff Tap",
+            "heavy": "Rune Crash",
+            "magic": "Thunder Cloud"
+          }
+        },
+        "formId": 12
+      },
+      "enemy": {
+        "species": "cannondramon",
+        "name": "Cannondramon",
+        "level": 15,
+        "combat": {
+          "maxHp": 248,
+          "attack": 52,
+          "defense": 66,
+          "magic": 54,
+          "resistance": 52,
+          "type": "ember",
+          "skills": {
+            "physical": "Gunmetal Tail",
+            "heavy": "Artillery Bodyslam",
+            "magic": "Twin Siege Salvo"
+          }
+        },
+        "formId": 223
+      },
+      "steps": [
+        {
+          "turn": 1,
+          "phase": "attack",
+          "action": "magic",
+          "opponentAction": "physical",
+          "playerHpBefore": 402,
+          "playerHpAfter": 379,
+          "enemyHpBefore": 248,
+          "enemyHpAfter": 46,
+          "reflected": false,
+          "captured": false,
+          "guard": "brace"
+        }
+      ]
+    }
+  }
+]

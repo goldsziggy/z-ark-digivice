@@ -99,11 +99,11 @@ bool decodeJpeg(const std::uint8_t* data, std::size_t bytes, std::uint16_t* outp
 #endif
 }
 
-std::size_t Art::allocatedBytes() const { return spriteBytes_ + (background_ ? backgroundBytes : 0); }
-void Art::retry() { requestedForm_ = UINT32_MAX; requestedScene_ = -2; }
+std::size_t Art::allocatedBytes() const { return spriteBytes_ + (background_ ? backgroundBytes : 0) + (priorBackground_ ? backgroundBytes : 0); }
+void Art::retry() { requestedForm_ = UINT32_MAX; requestedScene_ = -2; loadedScene_ = priorScene_ = -1; }
 
 void Art::loadSprite(std::uint32_t formId) {
-    requestedForm_ = formId; loadedForm_ = 0; spriteInfo_ = {};
+    requestedForm_ = formId; loadedForm_ = loadedArtForm_ = 0; spriteInfo_ = {};
     for (auto& bounds : spriteBounds_) bounds = {};
     heap_caps_free(spritePixels_); spritePixels_ = nullptr; spriteMasks_ = nullptr; spriteBytes_ = 0;
     if (!formId) { spriteDiagnostic_ = "no exact-form artwork requested"; return; }
@@ -137,10 +137,12 @@ void Art::loadSprite(std::uint32_t formId) {
             spriteDiagnostic_ = "exact-form bounds invalid; artwork unavailable"; return;
         }
     }
+    const auto sourceForm = source.sourceFormId();
     source.close(); // No SD descriptor survives publication or a power barrier.
     spritePixels_ = values; spriteMasks_ = masks; spriteBytes_ = pixelBytes+maskBytes;
-    spriteInfo_ = info; loadedForm_ = formId; decoded.data = nullptr;
-    spriteDiagnostic_ = "local exact-form DVA verified and decoded";
+    spriteInfo_ = info; loadedForm_ = formId; loadedArtForm_ = sourceForm; decoded.data = nullptr;
+    spriteDiagnostic_ = sourceForm == formId ? "local exact-form DVA verified and decoded"
+        : "local same-species GrapLeomon DVA verified and decoded";
 #else
     spriteDiagnostic_ = "private SD artwork disabled in this build";
 #endif
@@ -211,7 +213,21 @@ deviceui::Artwork Art::prepare(const deviceui::ArtRequest& request, bool storage
     const auto scene = sceneIndex(request.sceneId);
     loading_ = true;
     if (request.formId != requestedForm_) loadSprite(request.formId);
-    if (scene != requestedScene_) loadBackground(scene);
+    if (scene != requestedScene_) {
+        if(scene>=0 && scene==priorScene_ && priorBackground_) {
+            // Reverse navigation reuses the two already decoded scenes.
+            std::swap(background_,priorBackground_);
+            std::swap(loadedScene_,priorScene_);
+            requestedScene_=scene;
+        } else {
+            if(loadedScene_>=0) {
+                // Keep the last scene cached for a quick return from another screen.
+                std::swap(background_,priorBackground_);
+                priorScene_=loadedScene_;
+            }
+            loadBackground(scene);
+        }
+    }
     loading_ = false;
     if (loadedScene_ >= 0 && loadedScene_ == scene) {
         artwork.background = background_; artwork.backgroundPixels = assets::kBackgroundPixels;
@@ -223,7 +239,7 @@ deviceui::Artwork Art::prepare(const deviceui::ArtRequest& request, bool storage
         const auto index = clip.firstFrame+(request.elapsedMs/clip.frameMs)%clip.frames;
         const auto pixels = static_cast<std::size_t>(spriteInfo_.width)*spriteInfo_.height;
         artwork.sprite.formId = loadedForm_; artwork.sprite.animation = request.animation;
-        artwork.sprite.nativeFacing = sprite::localFormFacing(loadedForm_);
+        artwork.sprite.nativeFacing = sprite::localFormFacing(loadedArtForm_);
         artwork.sprite.pixels = spritePixels_+index*pixels; artwork.sprite.pixelCount = pixels;
         artwork.sprite.mask = spriteMasks_+index*(pixels/8); artwork.sprite.maskBytes = pixels/8;
         artwork.sprite.width = spriteInfo_.width; artwork.sprite.height = spriteInfo_.height;

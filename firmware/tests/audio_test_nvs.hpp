@@ -7,4 +7,4 @@ struct AudioTestNvs {
     esp_err_t openError=ESP_OK;
     unsigned opens=0,closes=0,sets=0,commits=0,reads=0;
 };
-extern AudioTestNvs audioTestNvs;
+extern AudioTestNvs audioTestNvs, audioTestRhythmNvs;

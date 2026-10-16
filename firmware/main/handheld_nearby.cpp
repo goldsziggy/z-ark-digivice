@@ -1,5 +1,7 @@
 #include "handheld_runtime.hpp"
 #include "expeditions.hpp"
+#include "expedition_party.hpp"
+#include "nearby_reward.hpp"
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
 #include "esp_random.h"
 #include "esp_timer.h"
@@ -32,8 +34,8 @@ void HandheldRuntime::beginNearby() {
 }
 void HandheldRuntime::closeNearby() {
     if (!nearbyBusy() || nearbyPhase_ == NearbyPhase::Stopping) return;
-    // Results carry no game rewards or care writes. Ending a radio session can
-    // never replay a capture, restore duel HP into care, or clone a companion.
+    // Closing an ephemeral session cannot resume or replay its result. Versus
+    // has no rewards; a completed co-op claim was checkpointed exactly once.
     nearby_.close(); tradeWire_.close(); nearbyPhase_ = NearbyPhase::Stopping;
     nearbyDeadline_ = clockMs() + 5000;
     nearbyStatus_ = "Closing nearby / restoring Wi-Fi";
@@ -118,15 +120,10 @@ void HandheldRuntime::pollNearby(std::uint64_t now) {
         }
     }
     const auto& view = nearby_.view();
-    if (view.offeredMode == nearby::Mode::Coop && view.stage == nearby::Stage::Finished &&
-        view.raid.status == nearby::RaidStatus::Cleared && view.session && claimedRaid_ != view.session &&
-        saves_.writable() && state_.phase == Phase::Home && !battle_.locked()) {
-        State candidate = state_;
-        const auto value = expeditions::claimExpeditionValue(view.raid.scenario, view.raid.foeForm, view.raid.foeLevel);
-        const auto error = apply(candidate, Action::ClaimExpedition, value);
-        if (error == Error::None && saves_.checkpoint(candidate)) {
-            state_ = candidate; claimedRaid_ = view.session; interfaceDirty_ = true;
-        } else if (error != Error::None) claimedRaid_ = view.session;
+    if (saves_.writable() && state_.phase == Phase::Home && !battle_.locked()) {
+        const auto reward = nearby::checkpointRaidReward(view, state_, claimedRaid_,
+            [this](const State& candidate) { return saves_.checkpoint(candidate); });
+        if (reward == nearby::RewardResult::Committed) interfaceDirty_ = true;
     }
     if (nearbyShownSession_ != view.session) {
         nearbyShownSession_ = view.session; nearbyShownSequence_ = 0; nearbyCuePhase_ = 0;
@@ -178,9 +175,9 @@ void HandheldRuntime::nearbyIntent(deviceui::Intent intent) {
             const bool dungeon=expeditions::kScenarios[nearbyActivity_].kind==expeditions::Kind::Dungeon;
             std::uint32_t form=0, level=0;
             if (dungeon ? !state_.dungeonKeys : !state_.bossSigils) nearbyStatus_ = "Need a key or sigil";
-            else if (!previewExpeditionFoe(state_, nearbyActivity_, form, level) ||
+            else if (!nearby::previewCoopExpeditionFoe(nearbyFighter_, peer->fighter, nearbyActivity_, form, level) ||
                      !nearby_.challenge(intent.value, nearby::Mode::Coop, (std::uint64_t(randomNonzero())<<32)|randomNonzero(),
-                                        nearby::raidSeed(form, level, nearbyActivity_), now))
+                                        nearby::raidSeed(form, level, nearbyActivity_), now, intent.nearbyCoopAuto))
                 nearbyStatus_ = "No shared foe for this lobby";
         } else {
             const auto session = (std::uint64_t(randomNonzero()) << 32) | randomNonzero();
@@ -190,7 +187,7 @@ void HandheldRuntime::nearbyIntent(deviceui::Intent intent) {
     } else if (intent.kind == K::NearbyAccept) {
         const auto& view=nearby_.view();
         const bool reviewed=view.stage==nearby::Stage::Incoming && view.session==intent.nearbySession &&
-            std::memcmp(view.opponent.bytes,intent.peer.bytes,sizeof(view.opponent.bytes))==0 && view.offeredMode==intent.nearbyMode &&
+            std::memcmp(view.opponent.bytes,intent.peer.bytes,sizeof(view.opponent.bytes))==0 && view.offeredMode==intent.nearbyMode && view.coopAuto==intent.nearbyCoopAuto &&
             nearby::sameFighter(view.offered[0],intent.nearbyFighters[0]) && nearby::sameFighter(view.offered[1],intent.nearbyFighters[1]);
         const bool coop=view.offeredMode==nearby::Mode::Coop;
         const bool held=!coop || (view.activity<=5 && (expeditions::kScenarios[view.activity].kind==expeditions::Kind::Dungeon ? state_.dungeonKeys : state_.bossSigils));

@@ -61,7 +61,7 @@ void codec(){
  CHECK(sizeof(Protocol)<4096);std::printf("DGT1 codec: Hello84B, transcript packets172B, Protocol%zuB, no legacy battle mutation\n",sizeof(Protocol));
 }
 void legacyConsentEpoch(){
- for(unsigned epoch:{13u,14u}){
+ for(unsigned epoch:{13u,14u,15u,16u,17u,18u,19u}){
  Pair source;source.review();auto consent=source.a.view().transcript;consent.rules=epoch;
  std::uint8_t original[trade::kTranscriptBytes],encoded[trade::kTranscriptBytes];
  CHECK(trade::encodeTranscript(consent,original,sizeof(original)));
@@ -71,15 +71,15 @@ void legacyConsentEpoch(){
  CHECK(trade::fingerprint(consent)==trade::fingerprint(restored));
  auto current=consent;current.rules=kRulesVersion;CHECK(!trade::sameTranscript(consent,current));
  auto unknown=consent;unknown.rules=kRulesVersion+1;CHECK(!trade::valid(unknown));
- // Both updated peers complete an installed rules13/14 promise using the exact
- // old canonical bytes, despite advertising rules15 for new discovery.
+ // Both updated peers complete an installed rules13-19 promise using the exact
+ // old canonical bytes, despite advertising current rules for new discovery.
  Pair recovering;recovering.now=0;
  CHECK(recovering.a.restore(ma,consent,Durable::Prepared,0));
  CHECK(recovering.b.restore(mb,consent,Durable::Prepared,0));
  recovering.pump();CHECK(recovering.a.view().requested==Request::Commit);recovering.complete();
  CHECK(trade::sameTranscript(recovering.a.view().transcript,consent));
  CHECK(trade::sameTranscript(recovering.b.view().transcript,consent));
- // Recognizing an old epoch for recovery never permits new rules13/14 offers.
+ // Recognizing an old epoch for recovery never permits new rules13-19 offers.
  Pair fresh;fresh.open();CHECK(fresh.a.invite(mb,123456,fresh.now));
  auto obsolete=fresh.a.view().transcript;obsolete.rules=epoch;
  const auto invite=packet(Kind::Invite,obsolete,0);

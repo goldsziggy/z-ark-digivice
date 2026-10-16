@@ -19,7 +19,7 @@ constexpr unsigned kMaximumInterruptedRetries = 3;
 }
 
 bool SdAssetStorage::buildEnabled() {
-#if defined(CONFIG_DIGIVICE_BOARD_WAVESHARE_146) && CONFIG_DIGIVICE_BOARD_WAVESHARE_146 && \
+#if ((defined(CONFIG_DIGIVICE_BOARD_WAVESHARE_146) && CONFIG_DIGIVICE_BOARD_WAVESHARE_146) || (defined(CONFIG_DIGIVICE_BOARD_WAVESHARE_21) && CONFIG_DIGIVICE_BOARD_WAVESHARE_21)) && \
     defined(CONFIG_DIGIVICE_SD_ASSETS) && CONFIG_DIGIVICE_SD_ASSETS
     return true;
 #else
@@ -42,7 +42,8 @@ esp_err_t SdAssetStorage::begin() {
         return error_ = ESP_ERR_NOT_SUPPORTED;
     }
     const auto& profile = board::selectedProfile();
-    if (profile.id != board::ProfileId::Waveshare146 || !board::powerHoldReady()) {
+    if ((profile.id != board::ProfileId::Waveshare146 && profile.id != board::ProfileId::Waveshare21) ||
+        (profile.id == board::ProfileId::Waveshare146 && !board::powerHoldReady()) || !board::sdPinsAvailable()) {
         diagnostic_ = "verified SD board/power hold unavailable; card untouched";
         return error_ = ESP_ERR_INVALID_STATE;
     }

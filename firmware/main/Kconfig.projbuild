@@ -13,20 +13,49 @@ config DIGIVICE_BOARD_WAVESHARE_146
         Asserts verified GPIO7 high early to sustain battery power. Native USB
         command/save reboot operation is verified; peripheral acceptance is
         recorded separately. Never formats storage or changes charging control.
+config DIGIVICE_BOARD_WAVESHARE_21
+    bool "Waveshare ESP32-S3-Touch-LCD-2.1 flat panel, SKU28169"
 config DIGIVICE_BOARD_HELTEC_UNVERIFIED
     bool "Heltec WiFi LoRa 32 V4 (revision unverified; no board GPIOs)"
 endchoice
+config DIGIVICE_NFC_UART_DIAGNOSTICS
+    bool "Enable explicit PN532 UART diagnostics on GPIO43/44"
+    depends on DIGIVICE_BOARD_WAVESHARE_21 && ESP_CONSOLE_USB_SERIAL_JTAG && ESP_CONSOLE_SECONDARY_NONE
+    default n
+    help
+        No boot-time probe. Explicit nfc probe/scan commands use UART1 TX43
+        RX44 at 115200 8N1. Both PN532 mode pads must be open and the UART
+        Type-C socket must be unplugged. Native USB remains the console.
+        No card writing, gameplay bindings, save or asset changes.
+config DIGIVICE_NFC_UART_GAMEPLAY
+    bool "Enable allowlisted UART NFC battle polling"
+    depends on DIGIVICE_NFC_UART_DIAGNOSTICS
+    default n
+    help
+        Uses the existing nonblocking UART1 PN532 session on TX43/RX44.
+        Polls only in eligible local battles and only with a nonempty explicit
+        UID allowlist in nfc_uid_allowlist.hpp. No default or learned bindings.
+        No card writes. Unknown cards cannot grant effects. Physical reader
+        validation and exact owner-selected UID mappings are still required.
 config DIGIVICE_DISPLAY_TOUCH
-    bool "Enable physical SPD2010 display, touch and game screens"
-    depends on DIGIVICE_BOARD_WAVESHARE_146
+    bool "Enable physical display, touch and game screens"
+    depends on DIGIVICE_BOARD_WAVESHARE_146 || DIGIVICE_BOARD_WAVESHARE_21
     default n
     help
         Exact SKU29565 QSPI panel and shared-bus touch. The game uses an
         explicitly allocated PSRAM framebuffer and one internal DMA stripe.
         Missing framebuffer/display leaves USB and saves available.
+config DIGIVICE_BUZZER_21
+    bool "Enable 2.1 onboard buzzer rhythm cues"
+    depends on DIGIVICE_BOARD_WAVESHARE_21 && DIGIVICE_DISPLAY_TOUCH
+    default n
+    help
+        Uses only TCA9554 EXIO8/P7, active high, through the board-owned mutex.
+        Fixed loudness on/off rhythms; no PCM, pitch synthesis or music.
+        Mute and zero volume silence it. Hardware sound remains unverified.
 config DIGIVICE_AUDIO_MOTION
     bool "Enable physical speaker cues, raw motion and walking detector"
-    depends on DIGIVICE_DISPLAY_TOUCH
+    depends on DIGIVICE_DISPLAY_TOUCH && DIGIVICE_BOARD_WAVESHARE_146
     default n
     help
         PCM5101 I2S output and QMI8658 raw acceleration/gyro on the existing
@@ -35,6 +64,10 @@ config DIGIVICE_AUDIO_MOTION
         is cosmetic. Real walking accuracy still requires bench acceptance;
         no built-in hardware step-counter register is assumed.
         No microphone or background streaming.
+config DIGIVICE_MOTION
+    bool "Enable QMI8658 raw motion and walking on 2.1"
+    depends on DIGIVICE_DISPLAY_TOUCH && DIGIVICE_BOARD_WAVESHARE_21
+    default y
 choice DIGIVICE_DISPLAY_ORIENTATION
     prompt "Display and touch orientation"
     depends on DIGIVICE_DISPLAY_TOUCH
@@ -52,7 +85,7 @@ config DIGIVICE_DISPLAY_ORIENTATION_CCW90
 endchoice
 config DIGIVICE_SD_ASSETS
     bool "Use microSD as the primary downloaded-asset cache"
-    depends on DIGIVICE_BOARD_WAVESHARE_146
+    depends on DIGIVICE_BOARD_WAVESHARE_146 || (DIGIVICE_BOARD_WAVESHARE_21 && DIGIVICE_DISPLAY_TOUCH)
     default y
     help
         Mount the existing FAT card using verified one-bit SDMMC wiring and
@@ -106,4 +139,11 @@ config DIGIVICE_DEVELOPMENT_ASSETS
         and provides no production authenticity. Enable only for local tests.
         Production signed assets need a private publisher key and a distinct
         firmware trust pin; do not ship this option as a production trust root.
+config DIGIVICE_DIGI_SIMULATION
+    bool "Enable explicit Digi-Modify simulated card commands (test only)"
+    default n
+    help
+        Enables digi-sim logical card inputs. This never enables physical NFC.
+        Leave disabled for normal firmware; use the native host simulator for demos.
+
 endmenu

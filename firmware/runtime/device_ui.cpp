@@ -2,6 +2,7 @@
 #include "capture_ring.hpp"
 #include "expeditions.hpp"
 #include "forms.hpp"
+#include "form_presentation.hpp"
 #include <algorithm>
 #include <array>
 #include <cstdio>
@@ -16,6 +17,7 @@ constexpr std::uint16_t rgb(int r, int g, int b) {
 constexpr auto bg = rgb(9, 20, 29), panel = rgb(18, 42, 51), edge = rgb(38, 83, 87);
 constexpr auto ink = rgb(236, 246, 217), dim = rgb(173, 196, 190);
 constexpr auto mint = rgb(144, 231, 174), amber = rgb(255, 193, 96), red = rgb(239, 118, 108);
+constexpr auto xpBlue = rgb(105, 185, 255);
 // Original hand-entered 5x7 glyphs, dedicated to CC0 with this source. Each
 // row uses the low five bits. No external font files or private artwork.
 constexpr const char* alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+:/%.!?<>=";
@@ -88,6 +90,11 @@ struct Canvas {
             }
         }
     }
+    // Bounded integer line raster; effect geometry never leaves the play area.
+    void fxLine(int x0,int y0,int x1,int y1,std::uint16_t color,int width=2) {
+        const int steps=std::max(std::abs(x1-x0),std::abs(y1-y0));
+        for(int i=0;i<=steps;++i)rect(x0+(x1-x0)*i/std::max(1,steps),y0+(y1-y0)*i/std::max(1,steps),width,width,color);
+    }
     void shadedAnnulus(int x,int y,int innerRadius,int outerRadius,std::uint16_t color) {
         const int inner=innerRadius*innerRadius,outer=outerRadius*outerRadius;
         int reach=0,hole=-1;
@@ -124,6 +131,12 @@ struct Canvas {
         }
         return true;
     }
+    void dimScene() {
+        for(int y=clipTop;y<clipBottom;++y) for(int x=std::max<int>(clipLeft,clipSpans[y].begin);x<std::min<int>(clipRight,clipSpans[y].end);++x) {
+            const auto value=p[y*kSize+x];
+            p[y*kSize+x]=static_cast<std::uint16_t>(((((value>>11)&31)*2/5)<<11)|((((value>>5)&63)*2/5)<<5)|((value&31)*2/5));
+        }
+    }
     void shadow(int x,int y,int halfWidth) {
         for(int dy=-2;dy<=2;++dy) for(int dx=-halfWidth+std::abs(dy)*3;dx<=halfWidth-std::abs(dy)*3;++dx) {
             const int xx=x+dx,yy=y+dy;
@@ -132,7 +145,7 @@ struct Canvas {
             p[yy*kSize+xx]=static_cast<std::uint16_t>(((((value>>11)&31)*3/5)<<11)|((((value>>5)&63)*3/5)<<5)|((value&31)*3/5));
         }
     }
-    bool spriteFrame(int x,int y,int maximumSide,const SpriteFrame& frame,const ArtRequest& request,bool mirror=false) {
+    bool spriteFrame(int x,int y,int maximumSide,const SpriteFrame& frame,const ArtRequest& request,bool mirror=false,bool roundFit=false) {
         if (!request.formId || frame.formId!=request.formId || frame.animation!=request.animation ||
             !frame.pixels || !frame.mask || (frame.width!=16 && frame.width!=32) || frame.height!=frame.width ||
             frame.pixelCount<static_cast<std::size_t>(frame.width)*frame.height ||
@@ -141,7 +154,15 @@ struct Canvas {
         if((frame.contentWidth!=0)!=(frame.contentHeight!=0) ||
            (bounded && (frame.contentX+frame.contentWidth>frame.width || frame.contentY+frame.contentHeight>frame.height))) return false;
         const int width=bounded ? frame.contentWidth : frame.width, height=bounded ? frame.contentHeight : frame.height;
-        const int scale=std::min(16,maximumSide/std::max(width,height));
+        int scale=std::min(16,maximumSide/std::max(width,height));
+        // Fit the stable opaque animation bounds, not the padded source canvas.
+        // Backdrops stay large without losing hands/ears against the round bezel.
+        if(roundFit) while(scale>0) {
+            const int left=x-width*scale/2,top=y-height*scale/2;
+            if(Controller::inside(left,top) && Controller::inside(left+width*scale-1,top) &&
+               Controller::inside(left,top+height*scale-1) && Controller::inside(left+width*scale-1,top+height*scale-1)) break;
+            --scale;
+        }
         if (scale<1) return false;
         const int contentX=bounded ? (mirror ? frame.width-frame.contentX-frame.contentWidth : frame.contentX) : 0;
         const int left=x-width*scale/2-contentX*scale,top=y-height*scale/2-(bounded ? frame.contentY*scale : 0);
@@ -156,6 +177,18 @@ struct Canvas {
             if (frame.mask[index/8] & (1u<<(index%8))) rect(left+(mirror ? frame.width-1-column : column)*scale,top+row*scale,scale,scale,frame.pixels[index]);
         }
         return true;
+    }
+    void bossAura(int x,int y,int side) {
+        // A quiet two-tone aura sits behind pixels and HUD, never over them.
+        // Its geometry is fixed: no flashing or moving timing target.
+        const auto violet=rgb(168,132,224);
+        const int radius=side/2+8;
+        shadedAnnulus(x,y,radius-4,radius, violet);
+        circle(x,y,radius+4,amber,false);
+        for(int direction:{-1,1}) {
+            rect(x+direction*(radius+6)-2,y-2,5,5,amber);
+            rect(x-2,y+direction*(radius+6)-2,5,5,violet);
+        }
     }
     void text(int x, int y, const char* value, int scale, std::uint16_t color, std::size_t max = 32) {
         if (!value) return;
@@ -244,11 +277,16 @@ const char* timingName(capturering::Grade grade) {
     return grade==capturering::Grade::Green ? "GREEN" : grade==capturering::Grade::Orange ? "ORANGE" : "RED";
 }
 bool captureAction(Action action) { return action==Action::Flick || action==Action::RingCapture || action==Action::Focus; }
+bool expeditionBoss(const State& state) {
+    return state.expeditionScenario>=1 && state.expeditionScenario<=6 &&
+        state.expeditionTier==expeditions::tierCount(state.expeditionScenario-1);
+}
 void captureScene(Canvas& c,const State& state,const Model& model,const ArtRequest& art,const capturering::Sample& ring) {
     const bool focus=state.autoCapture==AutoCapture::FocusStrike || state.autoCapture==AutoCapture::FocusBlock;
     const bool strike=state.autoCapture==AutoCapture::FocusStrike;
     c.rect(62,49,288,28,panel);
     c.center(55,focus ? (strike ? "STRIKE! TIME THE RING" : "BLOCK! TIME THE RING") : "TIME THE RING",2,amber);
+    if(expeditionBoss(state)) c.bossAura(206,176,176);
     // The broad target is below the exact encountered sprite; its colors never
     // obscure the creature. Only the moving timing ring is drawn above it.
     c.shadedAnnulus(206,176,ring.targetRadius-capturering::kBandHalfWidth,
@@ -258,20 +296,23 @@ void captureScene(Canvas& c,const State& state,const Model& model,const ArtReque
     const auto color=timingColor(ring.grade);
     c.circle(206,176,radius,color,false);
     c.circle(206,176,std::max(1,radius-1),color,false);
+    // Keep the exact opponent visible during capture and both focus prompts.
+    // This fixed badge stays outside the animated partial-update region.
+    c.badge(288,wildName(state),std::strlen(wildName(state))<=24 ? 2 : 1,amber,42);
     char label[48];
     if(focus) {
         const auto percent=focusPercent(strike,ring.phaseMs,state.wildFormId);
         if(strike) std::snprintf(label,sizeof(label),"%s HIT X%u.%u - TAP PLAY AREA",timingName(ring.grade),static_cast<unsigned>(percent/100),static_cast<unsigned>(percent%100/10));
         else std::snprintf(label,sizeof(label),percent==0 ? "%s BLOCKS ALL - TAP PLAY AREA" : "%s TAKES %u%% - TAP PLAY AREA",timingName(ring.grade),static_cast<unsigned>(percent));
         c.badge(269,label,1,color,32);
-        c.badge(298,"AUTO PAUSED - ONE TAP",1,dim,36);
+        c.badge(314,"AUTO PAUSED - ONE TAP",1,dim,36);
         return;
     }
     std::snprintf(label,sizeof(label),"%s %u%% - TAP PLAY AREA",timingName(ring.grade),static_cast<unsigned>(ringCaptureChance(state,ring.phaseMs)));
     c.badge(269,label,1,color,32);
     std::snprintf(label,sizeof(label),"%u THROWS LEFT%s",static_cast<unsigned>(3-std::min<std::uint32_t>(3,state.captureAttempts)),
         state.autoCapture==AutoCapture::Awaiting ? " - AUTO PAUSED" : "");
-    c.badge(298,label,1,dim,36);
+    c.badge(314,label,1,dim,36);
 }
 sprite::Animation battleAnimation(const battlepresentation::View* view,battlepresentation::Actor actor) {
     using Actor=battlepresentation::Actor;
@@ -331,6 +372,11 @@ bool anyRouteReady(const State& state, const Model& model, const CreatureMember&
 std::size_t peerCount(const nearby::View* view) {
     return view ? std::min(view->peerCount,nearby::kMaxPeers) : 0;
 }
+bool nearbyRoom(const Model& model) {
+    const auto stage=model.nearby ? model.nearby->stage : nearby::Stage::Closed;
+    return stage==nearby::Stage::Discovering || stage==nearby::Stage::Closed ||
+        stage==nearby::Stage::TimedOut || stage==nearby::Stage::Incompatible || stage==nearby::Stage::Cancelled;
+}
 const nearby::Peer* expeditionPeer(const Model& model, std::uint8_t scenario, std::size_t& index) {
     if (!model.nearby || model.nearby->stage != nearby::Stage::Discovering) return nullptr;
     for (std::size_t i = 0; i < peerCount(model.nearby); ++i) {
@@ -351,6 +397,13 @@ bool nearbyFeedback(const Model& model) {
         model.nearbyTurnElapsedMs >= kNearbyFeedbackMs) return false;
     if (view->offeredMode == nearby::Mode::Coop) return view->raid.sequence != 0;
     return view->match.sequence && nearby::valid(view->match);
+}
+bool previousRaidFoe(const Model& model) {
+    return expeditionRaid(model) && nearbyFeedback(model) && model.nearby->raid.lastTier &&
+        model.nearby->raid.lastTier!=model.nearby->raid.tier;
+}
+std::uint32_t raidArtworkForm(const Model& model) {
+    return previousRaidFoe(model) ? model.nearby->raid.lastFoeForm : model.nearby->raid.foeForm;
 }
 bool activeTrade(const tradewire::View* view) {
     return view && view->stage!=tradewire::Stage::Closed && view->stage!=tradewire::Stage::Discovering;
@@ -447,7 +500,7 @@ enum Id { EggOpen=1, Prev, Next, Choose, Hatch, Back, Care, Explore, Team, Setti
  HomePrevious, HomeNext, HomeOpen, SoundOpen, Music, TradeOpen, TradeSelect, TradeChange,
  TradeConfirm, TradeCancel, TradeClose, AutoResume, NearbyTactical, NearbyAuto, PartyToggle, Treat, FocusSkip,
  Tile0, Tile1, Tile2, Tile3, BoxOpen, BoxSort, ExpeditionOpen, ExpeditionEnter, ExpeditionSolo,
- ExpeditionJoin, ExpeditionHit, ExpeditionHeavy, ExpeditionMagic, ExpeditionBrace, ExpeditionCounter, ExpeditionWard };
+ ExpeditionJoin, ExpeditionHit, ExpeditionHeavy, ExpeditionMagic, ExpeditionBrace, ExpeditionCounter, ExpeditionWard, Rotate, ExpeditionNext, ExpeditionManual, ExpeditionAuto, NfcOpen, NfcRetry, NfcReset, TestBeep };
 std::size_t boxPages(const State& state) { return std::max<std::size_t>(1,(state.collectionCount+kTiles-1)/kTiles); }
 constexpr unsigned kHomePanelCount = 5;
 constexpr std::size_t kExpeditionCount = sizeof(expeditions::kScenarios) / sizeof(expeditions::kScenarios[0]);
@@ -610,13 +663,14 @@ void Controller::update(const State& state, const Model& model) {
     const auto peerNonce=model.nearby && nearbyIndex_<peerCount(model.nearby) ? model.nearby->peers[nearbyIndex_].openNonce : 0;
     const auto opponent=model.nearby ? model.nearby->opponent : nearby::Mac{};
     const auto offeredMode=model.nearby ? model.nearby->offeredMode : nearby::Mode::Tactical;
+    const bool offeredCoopAuto=model.nearby && model.nearby->coopAuto;
     const nearby::Fighter offered[]{model.nearby ? model.nearby->offered[0] : nearby::Fighter{},model.nearby ? model.nearby->offered[1] : nearby::Fighter{}};
     const bool raidRole=model.nearby && model.nearby->offeredMode==nearby::Mode::Coop;
     const auto role=static_cast<std::uint8_t>(model.nearby ? (model.nearby->host ? 1 : 0) |
-        ((raidRole ? model.nearby->raid.sequence%2u : model.nearby->match.attacker)<<1) |
+        ((raidRole ? nearby::raidAttacker(model.nearby->raid) : model.nearby->match.attacker)<<1) |
         ((raidRole ? static_cast<unsigned>(model.nearby->offeredMode) : static_cast<unsigned>(model.nearby->match.mode))<<2) |
         ((raidRole ? static_cast<unsigned>(model.nearby->raid.status) : static_cast<unsigned>(model.nearby->match.status))<<3) : 255);
-    const bool nearbyChanged=peerNonce!=nearbyPeerNonce_ || !nearby::sameMac(opponent,nearbyOpponent_) || offeredMode!=nearbyOfferedMode_ ||
+    const bool nearbyChanged=peerNonce!=nearbyPeerNonce_ || !nearby::sameMac(opponent,nearbyOpponent_) || offeredMode!=nearbyOfferedMode_ || offeredCoopAuto!=nearbyCoopAuto_ ||
         !nearby::sameFighter(offered[0],nearbyOffered_[0]) || !nearby::sameFighter(offered[1],nearbyOffered_[1]) ||
         role!=nearbyRole_ || feedback!=nearbyFeedback_ || !nearby::sameFighter(peerFighter,nearbyFighter_) || nearbyStage!=nearbyStage_ || nearbySession!=nearbySession_ ||
         nearbySequence!=nearbySequence_ || nearbyPending!=nearbyPending_ || std::memcmp(peer.bytes,nearbyPeer_.bytes,6)!=0;
@@ -627,11 +681,12 @@ void Controller::update(const State& state, const Model& model) {
     }
     nearbyStage_=nearbyStage; nearbySession_=nearbySession; nearbySequence_=nearbySequence;
     nearbyPending_=nearbyPending; nearbyPeer_=peer; nearbyFighter_=peerFighter; nearbyFeedback_=feedback; nearbyRole_=role;
-    nearbyPeerNonce_=peerNonce; nearbyOpponent_=opponent; nearbyOfferedMode_=offeredMode;
+    nearbyPeerNonce_=peerNonce; nearbyOpponent_=opponent; nearbyOfferedMode_=offeredMode; nearbyCoopAuto_=offeredCoopAuto;
     nearbyOffered_[0]=offered[0]; nearbyOffered_[1]=offered[1];
-    if (nearbyStage==nearby::Stage::Closed) nearbyMode_=nearby::Mode::Tactical;
+    if (nearbyStage==nearby::Stage::Closed) { nearbyMode_=nearby::Mode::Tactical; coopAuto_=false; }
     const bool contextChanged = presentationLocked!=battleLocked_ || revision || starterStage_ != model.starterStage || selectedId_ != model.selectedId || starterForm_!=model.starterFormId || starterCount_!=model.starterCount ||
-        writable_ != model.writable || enabled_ != model.inputEnabled || partyEditable_ != model.partyEditable;
+        writable_ != model.writable || enabled_ != model.inputEnabled || partyEditable_ != model.partyEditable ||
+        rotationDegrees_ != model.rotationDegrees || rotationWritable_ != model.rotationWritable;
     const auto* evolvedMember = findMember(state, evolutionMember_);
     const bool evolutionCommitted = revision && screen_==Screen::EvolutionReview &&
         (lastAction_==Action::Evolve || lastAction_==Action::EvolveMember) && state.sequence==actionSequence_ &&
@@ -659,13 +714,14 @@ void Controller::update(const State& state, const Model& model) {
         screen_ = model.starterStage == onboarding::Stage::Egg ? Screen::Egg :
             model.starterStage == onboarding::Stage::Selecting ? Screen::Starter : Screen::StarterReview;
     } else if (!initialized_ || phase_ == Phase::Egg) {
-        screen_ = state.phase == Phase::Encounter ? Screen::Encounter : Screen::Home;
+        screen_ = state.phase == Phase::Encounter ? Screen::Encounter : state.phase==Phase::Expedition ? Screen::Result : Screen::Home;
     } else if (phase_ != state.phase) {
         screen_ = state.phase == Phase::Encounter ? Screen::Encounter : Screen::Result;
     } else if (revision && screen_ == Screen::Capture) {
         // Another action/step can alter capture legality; require a fresh arm.
         screen_ = Screen::Battle;
     }
+    if(state.phase==Phase::Expedition && !presentationLocked) screen_=Screen::Result;
     if (presentationLocked) screen_=Screen::Battle;
     else if (battleLocked_) screen_=state.phase==Phase::Encounter ? Screen::Battle : Screen::Result;
     if(!presentationLocked && state.phase==Phase::Encounter && (state.autoCapture==AutoCapture::Awaiting || focusOpen(state)) &&
@@ -688,6 +744,7 @@ void Controller::update(const State& state, const Model& model) {
     if(!captureEligible || captureEligible!=captureEligible_ || contextChanged || captureEpochForm_!=state.wildFormId)
         captureEpoch_=UINT64_MAX;
     captureEligible_=captureEligible; captureEpochForm_=state.wildFormId;
+    rotationDegrees_=model.rotationDegrees; rotationWritable_=model.rotationWritable;
     sequence_=state.sequence; phase_=state.phase; starterStage_=model.starterStage;
     selectedId_=model.selectedId; starterForm_=model.starterFormId; starterCount_=model.starterCount; writable_=model.writable; enabled_=model.inputEnabled; partyEditable_=model.partyEditable; initialized_=true;
 }
@@ -714,17 +771,18 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         add(328,134,54,112,"",HomeNext);
         add(116,300,180,46,homeActions[static_cast<unsigned>(homePanel_)],HomeOpen,state.phase==Phase::Home); break;
     case Screen::Care:
-        left(0,"FEED",Feed,legal(state,model,Action::Feed)); right(0,"PLAY",Play,legal(state,model,Action::Play));
-        // Rules 17: an injured partner rests only to half health, so Treat takes Rest's slot.
-        if (activeMember(state) && isInjured(*activeMember(state))) left(1,"TREAT",Treat,legal(state,model,Action::Treat));
-        else left(1,"REST +25",Rest,legal(state,model,Action::Rest));
-        right(1,"TOILET",Toilet,legal(state,model,Action::Toilet)); back(); break;
+        add(62,208,139,44,"FEED",Feed,legal(state,model,Action::Feed));
+        add(211,208,139,44,"PLAY",Play,legal(state,model,Action::Play));
+        // Treat clears injury; only a later Rest recovers the remaining health.
+        if (activeMember(state) && isInjured(*activeMember(state))) add(62,260,139,44,"TREAT",Treat,legal(state,model,Action::Treat));
+        else add(62,260,139,44,"REST",Rest,legal(state,model,Action::Rest));
+        add(211,260,139,44,"TOILET",Toilet,legal(state,model,Action::Toilet)); back(); break;
     case Screen::Explore:
         add(100,270,212,48,"ENCOUNTER SETTINGS",Encounters); back(); break;
     case Screen::Encounter:
         add(116,248,180,52,state.battleMode==BattleMode::Auto ? "AUTO BATTLE" : "BATTLE",Battle); break;
     case Screen::Battle:
-        if (state.battleMode==BattleMode::Auto) add(116,250,180,52,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
+        if (state.battleMode==BattleMode::Auto) add(116,282,180,44,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
         else {
             add(48,282,140,44,"RUN AWAY",Retreat,legal(state,model,Action::Retreat));
             add(274,282,76,44,"CATCH",Capture,canCapture(state,model));
@@ -735,7 +793,12 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         else if(focusOpen(state)) nav("LET AUTO PLAY",FocusSkip,legal(state,model,Action::Focus,kFocusNoTap));
         else back();
         break;
-    case Screen::Result: add(116,274,180,50,"HOME",Again); break;
+    case Screen::Result:
+        if(state.phase==Phase::Expedition) {
+            add(116,270,180,48,"NEXT FIGHT",ExpeditionNext,legal(state,model,Action::NextExpedition));
+            nav("LEAVE DUNGEON",Retreat,legal(state,model,Action::Retreat));
+        } else add(116,274,180,50,"HOME",Again);
+        break;
     case Screen::Collection: {
         const auto* member=selectedMember(state);
         if(member) {
@@ -808,16 +871,23 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
     case Screen::EvolutionResult:
         add(108,278,196,48,"VIEW STATS",EvolutionDone); back(); break;
     case Screen::Settings:
-        add(100,117,212,44,"SCREEN TIMEOUT",Sleep);
-        add(100,172,212,44,"ENCOUNTER SETTINGS",Encounters);
+        add(62,117,139,44,"SCREEN TIMEOUT",Sleep);
+        add(211,117,139,44,"ROTATE SCREEN",Rotate,model.rotationWritable);
+        add(62,172,139,44,"ENCOUNTERS",Encounters);
+        add(211,172,139,44,"NFC TEST",NfcOpen);
         left(0,"SOUND SETTINGS",SoundOpen);
         right(0,model.gyroEnabled ? "GYRO ON" : "GYRO OFF",Gyro,model.motionAvailable);
         left(1,state.battleMode==BattleMode::Auto ? "MODE: AUTO" : "MODE: TACTICAL",Mode,
             legal(state,model,Action::Mode,state.battleMode==BattleMode::Auto ? 0 : 1));
         right(1,"WIFI SETUP",Setup); back(); break;
+    case Screen::NfcTest:
+        left(1,"RETRY",NfcRetry,model.nfcTest.available && !model.nfcTest.scanning);
+        right(1,"RESET",NfcReset); back(); break;
     case Screen::Sound:
         left(0,model.muted ? "MUTE: ON" : "MUTE: OFF",Mute);
-        right(0,model.musicEnabled ? "MUSIC: ON" : "MUSIC: OFF",Music);
+        right(0,model.buzzerOnly ? (model.musicEnabled ? "RHYTHM ON" : "RHYTHM OFF") :
+            model.musicEnabled ? "MUSIC: ON" : "MUSIC: OFF",Music);
+        if(model.buzzerOnly) add(108,282,196,44,"TEST BEEP",TestBeep);
         back(); break;
     case Screen::TradeChoose: {
         const auto* peer=tradingPeer(model,tradePeer_);
@@ -859,14 +929,18 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
             // LEAVE remains available below; no game rule or network clock changes.
         } else if (nearby && nearby->stage==nearby::Stage::Discovering) {
             const bool peerReady=nearbyIndex_<peerCount(nearby) && nearby->peers[nearbyIndex_].available && nearby->peers[nearbyIndex_].activity>5;
-            add(62,282,149,44,"BATTLE",NearbyReview,peerReady && !activeTrade(model.trade));
+            add(62,252,139,52,"BATTLE",NearbyReview,peerReady && !activeTrade(model.trade));
             const auto* trading=peerReady ? tradingPeer(model,peerIdentity(nearby->peers[nearbyIndex_].mac)) : nullptr;
-            add(218,282,132,44,"TRADE",TradeOpen,trading && trading->compatible && trading->advertisement.available &&
+            add(211,252,139,52,"TRADE",TradeOpen,trading && trading->compatible && trading->advertisement.available &&
                 model.trade->stage==tradewire::Stage::Discovering && model.tradeWritable && model.writable);
         } else if (nearby && nearby->stage==nearby::Stage::Incoming) {
             left(0,"ACCEPT",NearbyAccept); right(0,"DECLINE",NearbyCancel);
         } else if (nearby && (nearby->stage==nearby::Stage::Outgoing || nearby->stage==nearby::Stage::Accepting || nearby->stage==nearby::Stage::Reconnecting)) {
             add(108,282,196,44,"CANCEL",NearbyCancel);
+        } else if(!nearby || nearby->stage==nearby::Stage::Closed || nearby->stage==nearby::Stage::TimedOut ||
+                  nearby->stage==nearby::Stage::Incompatible || nearby->stage==nearby::Stage::Cancelled) {
+            add(62,252,139,52,"BATTLE",NearbyReview,false);
+            add(211,252,139,52,"TRADE",TradeOpen,false);
         }
         nav("LEAVE",NearbyClose); break;
     }
@@ -874,14 +948,16 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         add(116,262,180,50,"CONFIRM",ModeConfirm,proposedMode_<=1 && legal(state,model,Action::Mode,proposedMode_));
         back(); break;
     case Screen::Expeditions:
-        add(116,270,180,44,"ENTER",ExpeditionEnter,state.phase==Phase::Home); back(); break;
+        add(108,254,196,48,"OPEN LOBBY",ExpeditionEnter,state.phase==Phase::Home && model.writable &&
+            expeditionReady(state,selectedExpedition(expeditionIndex_))); back(); break;
     case Screen::ExpeditionLobby: {
         const auto* nearby=model.nearby;
         const auto stage=nearby ? nearby->stage : nearby::Stage::Closed;
         const bool raid=expeditionRaid(model);
-        if (raid && !nearbyFeedback(model) && stage==nearby::Stage::Playing && !nearby->localChoicePending) {
+        if (raid && !nearby->coopAuto && !nearbyFeedback(model) && stage==nearby::Stage::Playing &&
+            !nearby->localChoicePending && nearby->raid.hp[nearby->host ? 0u : 1u]) {
             const unsigned local=nearby->host ? 0u : 1u;
-            const bool attacking=(nearby->raid.sequence % 2u)==local;
+            const bool attacking=nearby::raidAttacker(nearby->raid)==local;
             const auto energy=nearby->raid.energy[local];
             if (attacking) {
                 add(48,270,100,44,"HIT",ExpeditionHit,energy>=2);
@@ -900,7 +976,9 @@ std::size_t Controller::buttons(const State& state, const Model& model, Button* 
         } else if (!raid) {
             std::size_t peerIndex=0;
             const bool join=expeditionPeer(model,expeditionIndex_,peerIndex);
-            if (join) add(116,222,180,44,"JOIN",ExpeditionJoin,expeditionReady(state,selectedExpedition(expeditionIndex_)));
+            add(62,150,140,40,coopAuto_ ? "MANUAL" : "> MANUAL",ExpeditionManual,stage==nearby::Stage::Discovering);
+            add(210,150,140,40,coopAuto_ ? "> AUTO" : "AUTO",ExpeditionAuto,stage==nearby::Stage::Discovering);
+            if (join) add(116,202,180,44,"JOIN",ExpeditionJoin,expeditionReady(state,selectedExpedition(expeditionIndex_)));
             add(116,270,180,44,"START SOLO",ExpeditionSolo,legal(state,model,Action::StartExpedition,expeditionIndex_));
         }
         back(); break;
@@ -922,6 +1000,10 @@ Intent Controller::navigateHorizontal(bool next,const State& state,const Model& 
     }
     if(screen_==Screen::TradeReview) {tradePage_=static_cast<std::uint8_t>((tradePage_+(next?1:4))%5);return {IntentKind::Navigation};}
     if(screen_==Screen::Sound) {
+        if(model.buzzerOnly) {
+            if(next == (model.volumePercent != 0)) return {};
+            pending_=true; resetTouch(); return {IntentKind::Volume,Action::Feed,next ? 100u : 0u};
+        }
         constexpr std::uint8_t levels[]{0,5,15,30,50,75,100};
         if(next) {
             for(const auto level:levels) if(level>model.volumePercent) {
@@ -994,11 +1076,16 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case ExpeditionOpen:
         expeditionIndex_=0; rollExpeditionVariant(); return navigate(Screen::Expeditions);
     case ExpeditionEnter: {
+        if(state.phase!=Phase::Home || !model.writable || !expeditionReady(state,selectedExpedition(expeditionIndex_))) return {};
         navigate(Screen::ExpeditionLobby);
         Intent result{IntentKind::OpenNearby};
         result.expeditionActivity=expeditionIndex_;
         return result;
     }
+    case ExpeditionManual: case ExpeditionAuto:
+        if(!model.nearby || model.nearby->stage!=nearby::Stage::Discovering) return {};
+        coopAuto_=id==ExpeditionAuto;
+        return {IntentKind::Navigation};
     case ExpeditionSolo:
         return propose(state, model, Action::StartExpedition, expeditionIndex_);
     case ExpeditionJoin: {
@@ -1009,6 +1096,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         result.peer=peerIdentity(peer->mac);
         result.nearbyOpenNonce=peer->openNonce;
         result.nearbyMode=nearby::Mode::Coop;
+        result.nearbyCoopAuto=coopAuto_;
         result.nearbyFighters[0]=model.nearbyLocalFighter;
         result.nearbyFighters[1]=peer->fighter;
         result.expeditionActivity=expeditionIndex_;
@@ -1016,7 +1104,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     }
     case ExpeditionHit: case ExpeditionHeavy: case ExpeditionMagic:
     case ExpeditionBrace: case ExpeditionCounter: case ExpeditionWard: {
-        if(!model.nearby || !expeditionRaid(model) || nearbyFeedback(model) ||
+        if(!model.nearby || model.nearby->coopAuto || !expeditionRaid(model) || nearbyFeedback(model) ||
            model.nearby->stage!=nearby::Stage::Playing || model.nearby->localChoicePending) return {};
         const auto choice=id==ExpeditionHit ? nearby::Choice::Physical : id==ExpeditionHeavy ? nearby::Choice::Heavy :
             id==ExpeditionMagic ? nearby::Choice::Magic : id==ExpeditionBrace ? nearby::Choice::Brace :
@@ -1048,7 +1136,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         if (screen_==Screen::EvolutionResult) return navigate(Screen::Home);
         if (screen_==Screen::ExpeditionLobby) { navigate(Screen::Expeditions); return {IntentKind::CloseNearby}; }
         if (screen_==Screen::EncounterSettings) return navigate(Screen::Settings);
-        if (screen_==Screen::Sound) return navigate(Screen::Settings);
+        if (screen_==Screen::Sound || screen_==Screen::NfcTest) return navigate(Screen::Settings);
         if (screen_==Screen::ModeReview) { proposedMode_=255; return navigate(Screen::Settings); }
         return navigate(Screen::Home);
     case Care: return navigate(Screen::Care);
@@ -1068,6 +1156,10 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     }
     case Settings: return navigate(Screen::Settings);
     case SoundOpen: return navigate(Screen::Sound);
+    case NfcOpen: return navigate(Screen::NfcTest);
+    case NfcRetry: return {IntentKind::NfcRetry};
+    case NfcReset: return {IntentKind::NfcReset};
+    case TestBeep: pending_=true; resetTouch(); return {IntentKind::TestBeep};
     case TradeOpen: {
         if(!model.nearby || nearbyIndex_>=peerCount(model.nearby) || activeTrade(model.trade)) return {};
         tradePeer_=peerIdentity(model.nearby->peers[nearbyIndex_].mac);
@@ -1101,7 +1193,8 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case Retreat: return propose(state,model,Action::Retreat);
     case AutoResume: return propose(state,model,Action::AutoResume);
     case FocusSkip: return propose(state,model,Action::Focus,kFocusNoTap);
-    case Again: return navigate(Screen::Home);
+    case ExpeditionNext: return propose(state,model,Action::NextExpedition);
+    case Again: return state.phase==Phase::Expedition ? Intent{} : navigate(Screen::Home);
     case MemberNext: case MemberPrev: {
         if(state.collectionCount<2) return {};
         memberIndex_=(memberIndex_+(id==MemberNext ? 1 : state.collectionCount-1))%state.collectionCount;
@@ -1173,7 +1266,7 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
     case NearbyAccept: {
         if (!model.nearby || model.nearby->stage!=nearby::Stage::Incoming) return {};
         const auto& offer=*model.nearby; Intent result{IntentKind::NearbyAccept};
-        result.peer=peerIdentity(offer.opponent); result.nearbySession=offer.session; result.nearbyMode=offer.offeredMode;
+        result.peer=peerIdentity(offer.opponent); result.nearbySession=offer.session; result.nearbyMode=offer.offeredMode; result.nearbyCoopAuto=offer.coopAuto;
         result.nearbyFighters[0]=offer.offered[0]; result.nearbyFighters[1]=offer.offered[1]; return result;
     }
     case NearbyCancel: return {IntentKind::NearbyCancel};
@@ -1204,6 +1297,11 @@ Intent Controller::activate(int id, const State& state, const Model& model) {
         pending_=true; resetTouch();
         return {IntentKind::SleepTimeout,Action::Feed,seconds[(current+1)%5]};
     }
+    case Rotate:
+        if(!model.rotationWritable || (model.rotationDegrees!=0 && model.rotationDegrees!=90 &&
+            model.rotationDegrees!=180 && model.rotationDegrees!=270)) return {};
+        pending_=true; resetTouch();
+        return {IntentKind::RotateScreen,Action::Feed,(model.rotationDegrees+90u)%360u};
     case Mute: pending_=true; resetTouch(); return {IntentKind::ToggleMute};
     case Music: pending_=true; resetTouch(); return {IntentKind::ToggleMusic};
     case Gyro: return {IntentKind::ToggleGyro};
@@ -1246,7 +1344,7 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
     if (screen_==Screen::Capture && event.atMs<lastAt_) { resetTouch(); return {}; }
     if (event.kind==TouchKind::Down) {
         if (down_) { resetTouch(); return {}; } // A second contact invalidates the first.
-        Button choices[8]; const auto n=buttons(state,model,choices);
+        Button choices[kMaxButtons]; const auto n=buttons(state,model,choices);
         const int hit=hitIndex(choices,n,event.x,event.y);
         // The padded bottom button also accepts contacts on the bezel edge just outside the circle.
         if (!inside(event.x,event.y) && (hit<0 || !choices[hit].padded)) return {};
@@ -1272,7 +1370,7 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
     // padded bottom button's margin also reaches the bezel edge outside the circle.
     bool padHold=false;
     if (downButton_) {
-        Button choices[8]; const auto n=buttons(state,model,choices);
+        Button choices[kMaxButtons]; const auto n=buttons(state,model,choices);
         for (std::size_t i=0;i<n;++i) {
             const auto& b=choices[i];
             if (b.id!=downButton_ || !hits(b,event.x,event.y,b.padded ? kNavPad : kHoldPad)) continue;
@@ -1320,7 +1418,7 @@ Intent Controller::touch(const State& state, const Model& model, Touch event) {
     }
     if (!pressed || event.atMs-downAt_<20 || event.atMs-downAt_>1800 ||
         (!padHold && (event.x-downX_)*(event.x-downX_)+(event.y-downY_)*(event.y-downY_)>24*24)) return {};
-    Button choices[8]; const auto n=buttons(state,model,choices);
+    Button choices[kMaxButtons]; const auto n=buttons(state,model,choices);
     for (std::size_t i=0;i<n;++i) {
         const auto& b=choices[i];
         if (b.id==pressed && b.enabled && hits(b,event.x,event.y,b.padded ? kNavPad : kHoldPad))
@@ -1339,7 +1437,10 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
     switch(screen_) {
     case Screen::Starter: case Screen::StarterReview:
         request.formId=model.starterFormId ? model.starterFormId : forms::initialForm(combat::starterSpecies(model.selectedId)); break;
-    case Screen::Home: case Screen::Care: case Screen::Explore:
+    case Screen::Home:
+        // Keep the Home backdrop resident: paging must never trigger SD/JPEG work.
+        request.formId=member ? member->formId : 0; break;
+    case Screen::Care: case Screen::Explore:
         request.formId=member ? member->formId : 0; break;
     case Screen::Encounter: case Screen::Battle: case Screen::Capture:
         request.formId=model.battle && model.battle->locked ? model.battle->enemyFormId : state.wildFormId;
@@ -1366,7 +1467,7 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
         const auto theme=selectedExpedition(expeditionIndex_).theme;
         request.sceneId=theme==expeditions::Theme::Tide ? scenes[2] : theme==expeditions::Theme::Ember ? scenes[6] : scenes[1];
         if(screen_==Screen::ExpeditionLobby) {
-            if(expeditionRaid(model) && model.nearby->foeForm) request.formId=model.nearby->foeForm;
+            if(expeditionRaid(model)) request.formId=raidArtworkForm(model);
             else if(model.nearby && model.nearby->offeredMode==nearby::Mode::Coop && model.nearby->foeForm &&
                     (model.nearby->stage==nearby::Stage::Incoming || model.nearby->stage==nearby::Stage::Outgoing || model.nearby->stage==nearby::Stage::Accepting))
                 request.formId=model.nearby->foeForm;
@@ -1392,8 +1493,10 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
             else if (n.stage==nearby::Stage::Incoming || n.stage==nearby::Stage::Outgoing || n.stage==nearby::Stage::Accepting) request.formId=n.offered[n.host ? 1 : 0].formId;
             else if (n.stage==nearby::Stage::Playing || n.stage==nearby::Stage::Reconnecting || n.stage==nearby::Stage::Finished) request.formId=n.match.fighters[n.host ? 1 : 0].formId;
         }
+        if(screen_==Screen::Nearby && nearbyRoom(model) && !request.formId)
+            request.formId=member ? member->formId : 0;
         request.sceneId=scenes[7]; break;
-    case Screen::EncounterSettings: case Screen::Settings: case Screen::ModeReview: case Screen::Sound:
+    case Screen::EncounterSettings: case Screen::Settings: case Screen::ModeReview: case Screen::Sound: case Screen::NfcTest:
         request.sceneId=scenes[7]; break;
     case Screen::Egg: break;
     }
@@ -1414,7 +1517,7 @@ ArtRequest Controller::artRequest(const State& state,const Model& model,std::uin
 ArtRequest Controller::partnerArtRequest(const State& state,const Model& model,std::uint64_t now) const {
     if(model.encounterRecoveryRequired) return {};
     ArtRequest request; request.elapsedMs=now;
-    if(screen_==Screen::Battle) {
+    if(screen_==Screen::Battle || screen_==Screen::Encounter) {
         const auto* member=activeMember(state);
         const auto* view=model.battle && model.battle->locked ? model.battle : nullptr;
         request.formId=view ? view->playerFormId : member ? member->formId : 0;
@@ -1482,8 +1585,12 @@ const CreatureMember* Controller::tileMember(const State& state,const Model& mod
 ArtRequest Controller::tileArtRequest(const State& state,const Model& model,std::size_t tile,std::uint64_t now) const {
     if(model.encounterRecoveryRequired) return {};
     ArtRequest request; request.elapsedMs=now;
-    const auto* member=tileMember(state,model,tile);
-    request.formId=member ? member->formId : 0;
+    if(tile==0 && screen_==Screen::ExpeditionLobby && expeditionRaid(model)) {
+        request.formId=model.nearby->raid.players[model.nearby->host ? 1 : 0].formId;
+    } else {
+        const auto* member=tileMember(state,model,tile);
+        request.formId=member ? member->formId : 0;
+    }
     return request;
 }
 
@@ -1515,14 +1622,24 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         return true;
     }
     if(!c.scene(model.artwork,art)) c.circle(206,206,204,bg);
+    if(screen_==Screen::Care || (screen_==Screen::Nearby && nearbyRoom(model))) {
+        // The room's selected peer (or own partner) fills the same backdrop as
+        // Care. Active duels retain their independent two-actor presentation.
+        // The partner fills the scene behind every control, while opaque button
+        // faces and a subdued backdrop preserve text contrast and accurate taps.
+        if(!c.spriteFrame(206,210,368,model.artwork.sprite,art,false,true)) c.missingArt(206,210);
+        c.dimScene();
+    }
     c.circle(206,206,197,edge,false); c.circle(206,206,192,panel,false);
     auto actor=[&](int x,int y,int scale) {
         const bool supplied=c.spriteFrame(x,y,scale*16,model.artwork.sprite,art);
         if(!supplied) c.missingArt(x,y);
         return supplied;
     };
-    c.center(29,"DIGIVICE",2,mint);
-    c.rect(129,50,154,2,edge);
+    if(screen_!=Screen::Home) {
+        c.center(29,"DIGIVICE",2,mint);
+        c.rect(129,50,154,2,edge);
+    }
     const int tx=model.gyroEnabled ? std::clamp<int>(model.tiltX,-8,8) : 0;
     const int ty=model.gyroEnabled ? std::clamp<int>(model.tiltY,-8,8) : 0;
     // Opaque information plates preserve a vivid scene without asking small
@@ -1532,7 +1649,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::Egg: plate(62,66,288,30); plate(62,214,288,20); break;
     case Screen::Starter: case Screen::StarterReview: break;
     case Screen::Home: break;
-    case Screen::Care: plate(62,61,288,51); plate(62,199,288,30); break;
+    case Screen::Care: break;
     case Screen::Explore: plate(62,66,288,32); plate(52,168,308,92); break;
     case Screen::Collection: break;
     case Screen::Squad: case Screen::Box: break; // Tiles are opaque plates.
@@ -1549,15 +1666,20 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
     case Screen::Result: plate(62,69,288,33); plate(62,228,288,28); break;
     case Screen::Settings: plate(62,63,288,49); break;
     case Screen::Sound: plate(62,63,288,165); break;
+    case Screen::NfcTest: plate(62,63,288,210); break;
     case Screen::TradeChoose: break;
     case Screen::TradeReview: if(tradePage_) plate(50,61,312,218); break;
     case Screen::EncounterSettings: plate(50,66,312,163); break;
     case Screen::ModeReview: plate(50,67,312,170); break;
     case Screen::NearbyReview: plate(50,67,312,204); break;
     case Screen::Nearby:
-        if(!model.nearby || (model.nearby->stage!=nearby::Stage::Playing && model.nearby->stage!=nearby::Stage::Finished && model.nearby->stage!=nearby::Stage::Reconnecting && model.nearby->stage!=nearby::Stage::Discovering)) plate(50,90,312,180);
+        if(!nearbyRoom(model) && model.nearby && (model.nearby->stage==nearby::Stage::Incoming ||
+            model.nearby->stage==nearby::Stage::Outgoing || model.nearby->stage==nearby::Stage::Accepting)) plate(50,90,312,180);
         break;
-    case Screen::Expeditions: case Screen::ExpeditionLobby: plate(48,58,316,200); break;
+    case Screen::Expeditions: break;
+    case Screen::ExpeditionLobby:
+        if(!expeditionRaid(model)) plate(48,58,316,155);
+        break;
     }
     const bool browse=screen_==Screen::Starter || screen_==Screen::Collection || screen_==Screen::Stats || screen_==Screen::Sound ||
         (screen_==Screen::Box && boxPages(state)>1) ||
@@ -1578,11 +1700,19 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const char* attacks[]{"PHYSICAL","HEAVY","MAGIC"}; const char* guards[]{"BRACE","COUNTER","WARD"};
         const auto* labels=defense ? guards : attacks;
         c.circle(206,279,32,panel); c.circle(206,279,32,edge,false);
-        c.icon(206,278,selected,defense,2,defense ? mint : amber);
+        c.icon(206,screen_==Screen::Battle ? 268 : 278,selected,defense,2,defense ? mint : amber);
         c.icon(111,278,(selected+2)%3,defense,1,dim); c.icon(301,266,(selected+1)%3,defense,1,dim);
         c.chevron(147,278,-1,arrowColor,5); c.chevron(259,278,1,arrowColor,5);
-        c.badge(315,labels[selected],2,ink);
-        if(skill) c.badge(239,skill,std::strlen(skill)<=24 ? 2 : 1,ink,42);
+        if(screen_==Screen::Battle) {
+            // The left action button ends at188. Keep even PHYSICAL wholly
+            // inside the open central gap without changing any touch targets.
+            const int labelWidth=static_cast<int>(std::strlen(labels[selected]))*6-1;
+            c.text(std::max(190,206-labelWidth/2),292,labels[selected],1,ink);
+            if(skill && !fullRosterBattle) c.badge(65,skill,1,ink,42);
+        } else {
+            c.badge(315,labels[selected],2,ink);
+            if(skill) c.badge(239,skill,std::strlen(skill)<=24 ? 2 : 1,ink,42);
+        }
     };
     char label[48]{};
     switch(screen_) {
@@ -1605,13 +1735,25 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         break;
     }
     case Screen::Home: {
-        c.badge(60,homeTitles[static_cast<unsigned>(homePanel_)],2,mint);
-        c.badge(84,creatureName(state),std::strlen(creatureName(state))<=24 ? 2 : 1,ink,36);
-        if(!c.spriteFrame(206+tx/2,196+ty/2,176,model.artwork.sprite,art))
-            c.missingArt(206+tx/2,196+ty/2);
+        c.badge(40,homeTitles[static_cast<unsigned>(homePanel_)],2,mint);
+        c.badge(64,creatureName(state),std::strlen(creatureName(state))<=24 ? 2 : 1,ink,36);
+        const auto* partner=activeMember(state);
+        const auto level=partner ? partner->level : state.level;
+        const auto floor=xpForLevel(level), ceiling=level<kMaxLevel ? xpForLevel(level+1) : floor;
+        const auto earned=partner && partner->xp>=floor ? partner->xp-floor : 0;
+        std::snprintf(label,sizeof(label),level>=kMaxLevel ? "LEVEL %u - MAX" : "LEVEL %u",static_cast<unsigned>(level));
+        c.rect(130,82,152,16,panel); c.center(86,label,1,mint);
+        // One labeled meter per resource, clear of both the level pill and art.
+        c.rect(78,100,256,42,panel);
+        c.text(86,104,"XP",2,ink);
+        c.bar(116,107,210,level>=kMaxLevel ? 1 : earned,level>=kMaxLevel ? 1 : ceiling-floor,xpBlue);
+        c.text(86,124,"HP",2,ink);
+        c.bar(116,127,210,state.hp,maxHp(state),mint);
+        if(!c.spriteFrame(206+tx/2,220+ty/2,144,model.artwork.sprite,art))
+            c.missingArt(206+tx/2,220+ty/2);
         for(unsigned i=0;i<kHomePanelCount;++i) c.circle(206+(static_cast<int>(i)-2)*16,354,4,
             i==static_cast<unsigned>(homePanel_) ? mint : edge);
-        std::snprintf(label,sizeof(label),"STEPS %llu",static_cast<unsigned long long>(model.lifetimeSteps));
+        std::snprintf(label,sizeof(label),"LIFETIME STEPS %llu",static_cast<unsigned long long>(model.lifetimeSteps));
         c.badge(369,label,1,dim,27);
         char keys[24]{};
         const char* status=model.stepStatus && std::strcmp(model.stepStatus,"STEP SAVE RECOVERY")==0 ? "STEP SAVE RECOVERY" :
@@ -1620,36 +1762,34 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         if(homePanel_==HomePanel::Dungeons && std::strcmp(status,"LIFETIME TOTAL")==0) {
             std::snprintf(keys,sizeof(keys),"KEYS %u  SIGILS %u",static_cast<unsigned>(state.dungeonKeys),static_cast<unsigned>(state.bossSigils));
             status=keys;
-        } else if(homePanel_==HomePanel::Nearby && std::strcmp(status,"LIFETIME TOTAL")==0) {
-            std::snprintf(keys,sizeof(keys),"DUNGEON KEYS %u",static_cast<unsigned>(state.dungeonKeys));
-            status=keys;
         }
-        c.badge(384,status,1,(homePanel_==HomePanel::Nearby || homePanel_==HomePanel::Dungeons) && status==keys ? mint : dim,24);
+        if(std::strcmp(status,"LIFETIME TOTAL")) c.badge(384,status,1,status==keys ? mint : dim,24);
         break;
     }
     case Screen::Care: {
-        c.center(68,creatureName(state),2,mint);
-        std::snprintf(label,sizeof(label),"LV %u   HP %u/%u",static_cast<unsigned>(state.level),static_cast<unsigned>(state.hp),static_cast<unsigned>(maxHp(state)));
-        c.center(92,label,2,dim);
-        actor(206+tx,158+ty,5);
+        c.badge(68,creatureName(state),2,mint);
+        std::snprintf(label,sizeof(label),"LEVEL %u",static_cast<unsigned>(state.level));
+        c.badge(92,label,1,dim);
         const auto* partner=activeMember(state);
-        const auto nextXp=partner && state.level<kMaxLevel ? xpForLevel(state.level+1)-partner->xp : 0;
-        std::snprintf(label,sizeof(label),"XP %u  NEXT +%u",static_cast<unsigned>(partner?partner->xp:0),static_cast<unsigned>(nextXp));
-        c.center(186,label,1,dim,36);
-        const auto toilet=partner?toiletNeed(*partner):0;
-        const auto missed=partner && careWasMissed(*partner);
-        const auto mistakes=partner?careMistakes(*partner):0;
-        if (partner && isInjured(*partner)) {
-            std::snprintf(label,sizeof(label),injuryLevel(*partner)>=3?"HURT - TREAT NOW  MISTAKES %u":"HURT - TREAT  MISTAKES %u",static_cast<unsigned>(mistakes));
-            c.center(200,label,1,amber,36);
-        } else {
-            if (mistakes) std::snprintf(label,sizeof(label),missed?"TOILET %u  MISSED  MISTAKES %u":toilet>=25?"TOILET %u  NEEDED  MISTAKES %u":"TOILET %u  MISTAKES %u",static_cast<unsigned>(toilet),static_cast<unsigned>(mistakes));
-            else std::snprintf(label,sizeof(label),missed?"TOILET %u  MISSED CARE":toilet>=25?"TOILET %u  NEEDED":"TOILET %u",static_cast<unsigned>(toilet));
-            c.center(200,label,1,missed||toilet>=25?amber:dim,36);
+        const auto health=maxHp(state);
+        c.rect(68,106,276,70,panel);
+        c.text(78,114,"HEALTH",2,ink);
+        std::snprintf(label,sizeof(label),"%u/%u HP",static_cast<unsigned>(state.hp),static_cast<unsigned>(health));
+        c.text(336-static_cast<int>(std::strlen(label))*6,118,label,1,dim,14);
+        c.bar(78,133,256,state.hp,health,partner && isInjured(*partner) ? red : state.hp*4<health ? amber : mint);
+        const char* names[]{"FOOD","MOOD","ENERGY"};
+        const std::uint32_t values[]{state.fullness,state.mood,state.energy};
+        const std::uint16_t colors[]{amber,mint,rgb(141,207,223)};
+        for(unsigned i=0;i<3;++i) {
+            const int x=78+static_cast<int>(i)*88;
+            c.text(x,151,names[i],1,ink);
+            c.bar(x,164,80,values[i],100,values[i]<25 ? red : colors[i]);
         }
-        std::snprintf(label,sizeof(label),"FOOD %u   MOOD %u   EN %u",static_cast<unsigned>(state.fullness),static_cast<unsigned>(state.mood),static_cast<unsigned>(state.energy));
-        c.center(214,label,1,dim,40);
-        if (partner && anyRouteReady(state,model,*partner)) c.badge(228,"DIGIVOLUTION REQUIREMENTS MET",1,mint,36);
+        const char* need=partner && isInjured(*partner) ? "HURT - TREAT FIRST" :
+            partner && toiletNeed(*partner)>=25 ? "TOILET NEEDED" :
+            partner && careWasMissed(*partner) ? "MISSED CARE" :
+            partner && anyRouteReady(state,model,*partner) ? "READY TO DIGIVOLVE" : nullptr;
+        if(need) c.badge(314,need,1,partner && isInjured(*partner) ? amber : mint,36);
         break;
     }
     case Screen::Explore:
@@ -1660,13 +1800,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         c.center(218,model.stepStatus ? model.stepStatus : model.stepsAvailable ? "PEDOMETER READY" : "PEDOMETER UNAVAILABLE",1,dim,40);
         c.center(240,state.encounterRate==EncounterRate::Off ? "ENCOUNTERS PAUSED" :
             model.encounterReady ? "WALK TO MEET DIGIMON" : "SENSOR NOT READY",2,amber,40); break;
-    case Screen::Encounter: {
-        c.badge(68,wildName(state),2,amber);
-        std::snprintf(label,sizeof(label),"WILD LV %u   HP %u/%u",static_cast<unsigned>(state.wildLevel),static_cast<unsigned>(state.wildHp),static_cast<unsigned>(state.wildMaxHp));
-        c.badge(93,label,1,dim); c.bar(140,109,132,state.wildHp,state.wildMaxHp,amber);
-        actor(206+tx,180+ty,8);
-        c.badge(324,"LOWER HP TO HALF TO CAPTURE",1,dim,36); break;
-    }
+    case Screen::Encounter:
     case Screen::Battle: {
         const auto* playback=model.battle && model.battle->locked ? model.battle : nullptr;
         if(playback && playback->capturePresentation) {
@@ -1679,6 +1813,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
                 std::snprintf(label,sizeof(label),"THAT THROW: %u%%",static_cast<unsigned>(playback->captureChance)); c.badge(113,label,1,dim);
             }
             if(elapsed<500 || playback->captureMiss || revealed) {
+                if(playback->boss) c.bossAura(206,191,128);
                 actor(206,191,8);
             }
             if(elapsed<500) {
@@ -1714,11 +1849,17 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const auto enemyHp=playback ? playback->enemyHp : state.wildHp;
         const auto playerMaximum=playback ? playback->playerMaxHp : maxHp(state);
         const auto enemyMaximum=playback ? playback->enemyMaxHp : state.wildMaxHp;
+        if(playback ? playback->boss : expeditionBoss(state)) c.bossAura(294,193,128);
         if(fullRosterBattle) {
             std::snprintf(label,sizeof(label),"%s - DIGIMON %u/%u FULL",state.battleMode==BattleMode::Auto ? "AUTO" : "TACTICAL",
                 static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(kCollectionCapacity));
             c.badge(65,label,1,amber);
-        } else c.badge(65,state.battleMode==BattleMode::Auto ? "AUTO BATTLE" : "TACTICAL BATTLE",1,mint);
+        } else if(playback || state.battleMode==BattleMode::Auto || screen_==Screen::Encounter)
+            c.badge(65,state.battleMode==BattleMode::Auto ? "AUTO BATTLE" : "TACTICAL BATTLE",1,mint);
+        if(playback && playback->expeditionTiers) {
+            std::snprintf(label,sizeof(label),"TIER %u/%u%s",playback->expeditionTier,playback->expeditionTiers,playback->boss ? " BOSS" : "");
+            c.badge(79,label,1,amber);
+        }
         auto sideText=[&](int x,int y,const char* value,std::uint16_t color) {
             const auto length=std::min<std::size_t>(value ? std::strlen(value) : 0,22);
             c.rect(x-static_cast<int>(length)*3-4,y-3,static_cast<int>(length)*6+8,13,panel);
@@ -1729,10 +1870,17 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         std::snprintf(label,sizeof(label),"HP %u/%u",static_cast<unsigned>(enemyHp),static_cast<unsigned>(enemyMaximum)); sideText(294,106,label,dim);
         const bool incoming=playback && (playback->actor==battlepresentation::Actor::Opponent || playback->reflected);
         const int hitX=incoming ? 118 : 294;
-        if (playback && playback->flash) c.circle(hitX,176,58,ink);
+        if (playback && playback->flash) c.circle(hitX,193,48,playback->critical?amber:ink,false);
         const auto playerRequest=partnerArtRequest(state,model,now);
-        if(!c.spriteFrame(118,185,112,model.partnerArtwork,playerRequest,model.partnerArtwork.nativeFacing==SpriteFacing::Left)) c.missingArt(118,185);
-        if(!c.spriteFrame(294,185,112,model.artwork.sprite,art,model.artwork.sprite.nativeFacing==SpriteFacing::Right)) c.missingArt(294,185);
+        if(!c.spriteFrame(118,193,128,model.partnerArtwork,playerRequest,model.partnerArtwork.nativeFacing==SpriteFacing::Left)) c.missingArt(118,193);
+        if(!c.spriteFrame(294,193,128,model.artwork.sprite,art,model.artwork.sprite.nativeFacing==SpriteFacing::Right)) c.missingArt(294,193);
+        if(playback && playback->flash && playback->critical && !playback->reflected) {
+            // One short impact (sequencer-owned), never a fullscreen flash.
+            c.fxLine(hitX-30,227,hitX+31,158,amber,4);
+            c.fxLine(hitX-22,227,hitX+36,163,ink,2);
+            constexpr int dx[]{-43,41,-35,35},dy[]{-23,24,31,-30};
+            for(int i=0;i<4;++i)c.fxLine(hitX+dx[i]*3/4,193+dy[i]*3/4,hitX+dx[i],193+dy[i],amber);
+        }
         c.bar(64,120,108,playerHp,playerMaximum,mint); c.bar(240,120,108,enemyHp,enemyMaximum,amber);
         if (playback) {
             if (playback->actor!=battlepresentation::Actor::None && playback->phase!=battlepresentation::Phase::Summary) {
@@ -1743,7 +1891,6 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
                 c.badge(267,autobattle::outcomeName(playback->outcome),2,mint,30);
                 c.badge(298,"RESULT SAVED",1,dim);
             } else {
-                c.badge(247,playback->actorName ? playback->actorName : "",1,dim,42);
                 c.badge(270,playback->moveName ? playback->moveName : "",playback->moveName && std::strlen(playback->moveName)<=24 ? 2 : 1,ink,42);
                 if(playback->damage && playback->progressPermille>=292) {
                     std::snprintf(label,sizeof(label),"-%u",static_cast<unsigned>(playback->damage));
@@ -1758,12 +1905,19 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             const auto profile=member ? combat::formProfile(member->formId,member->level) : combat::Profile{};
             const auto selected=battleSelection_==combat::Move::Physical ? 0u : battleSelection_==combat::Move::Heavy ? 1u : 2u;
             const auto* skill=selected==2 ? profile.magicSkill : selected==1 ? profile.heavySkill : profile.physicalSkill;
-            if(state.battleMode==BattleMode::Tactical) carousel(selected,false,skill);
+            if(state.battleMode==BattleMode::Tactical && screen_==Screen::Battle) carousel(selected,false,skill);
             const auto guard=wildGuard(state);
             const auto* guardName=guard==combat::Defense::Brace ? "BRACE" : guard==combat::Defense::Counter ? "COUNTER" : guard==combat::Defense::Ward ? "WARD" : "NONE";
-            std::snprintf(label,sizeof(label),"%s  EN %u",guardName,static_cast<unsigned>(state.energy)); c.badge(79,label,1,dim,42);
+            if(state.expeditionScenario) std::snprintf(label,sizeof(label),"%u/%u%s %s EN %u",static_cast<unsigned>(state.expeditionTier),
+                static_cast<unsigned>(expeditions::tierCount(state.expeditionScenario-1)),expeditionBoss(state) ? " BOSS" : "",guardName,static_cast<unsigned>(state.energy));
+            else std::snprintf(label,sizeof(label),"%s  EN %u",guardName,static_cast<unsigned>(state.energy));
+            c.badge(79,label,1,dim,42);
             if (state.lastCritical) c.badge(307,"CRITICAL HIT",2,amber,36);
         }
+        if(playback && playback->element && playback->progressPermille>=292)
+            c.badge(307,digimodify::shiftHitName(playback->element,playback->critical),1,amber,36);
+        else if(playback && playback->critical && playback->progressPermille>=292)
+            c.badge(307,"CRITICAL HIT",2,amber,36);
         break;
     }
     case Screen::Capture:
@@ -1773,12 +1927,18 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const bool merged=state.message==Message::Captured && state.lastCapture.result==CaptureResult::Captured &&
             state.lastCapture.sequence==state.sequence && !captureJoinedCollection(state);
         const auto* caught=merged ? forms::find(state.lastCapture.targetFormId) : nullptr;
-        c.center(78,caught && caught->name ? caught->name : shortMessage(state.message),2,mint);
+        if(state.phase==Phase::Expedition) {
+            std::snprintf(label,sizeof(label),"TIER %u / %u COMPLETE",static_cast<unsigned>(state.expeditionTier),
+                static_cast<unsigned>(expeditions::tierCount(state.expeditionScenario-1)));
+            c.center(78,label,2,mint);
+        } else c.center(78,caught && caught->name ? caught->name : shortMessage(state.message),2,mint);
         if (merged) c.center(100,"BONUS XP MERGED",1,amber);
         else if (state.lastCritical) c.center(100,"CRITICAL HIT",2,amber);
-        actor(206+tx,166+ty,5);
+        actor(206+tx/2,170+ty/2,6);
         std::snprintf(label,sizeof(label),"LEVEL %u   DIGIMON %u/%u",static_cast<unsigned>(state.level),static_cast<unsigned>(state.collectionCount),static_cast<unsigned>(kCollectionCapacity));
-        c.center(235,label,1,dim); break;
+        c.center(235,label,1,dim);
+        if(state.phase==Phase::Expedition) c.badge(250,"HP / ENERGY CARRY TO THE NEXT FIGHT",1,amber,40);
+        break;
     }
     case Screen::Collection:
         if(selectedMember(state)) {
@@ -1796,10 +1956,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
                 c.heart(hx,98,static_cast<std::uint32_t>(i)<filled,static_cast<std::uint32_t>(i)<filled?red:dim);
                 hx+=heartW+heartGap;
             }
-            const auto* first=forms::outgoing(member.formId,0);
-            const auto* second=forms::outgoing(member.formId,1);
-            if(first && second) std::snprintf(label,sizeof(label),"CARE %u/%u",static_cast<unsigned>(careMistakes(member)),static_cast<unsigned>(cleanRouteMistakeLimit(first->to)));
-            else std::snprintf(label,sizeof(label),"CARE %u",static_cast<unsigned>(careMistakes(member)));
+            std::snprintf(label,sizeof(label),"CARE MISSES %u",static_cast<unsigned>(careMistakes(member)));
             const auto hurtLevel=injuryLevel(member);
             const char* hurt=hurtLevel==1?"HURT":hurtLevel==2?"WORSE":hurtLevel==3?"NEGLECTED":nullptr;
             const auto careN=std::strlen(label), hurtN=hurt?std::strlen(hurt):0;
@@ -1807,7 +1964,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             const int textX=(kSize-static_cast<int>(total)*6+1)/2;
             c.text(textX,112,label,1,dim,16);
             if(hurt) c.text(textX+static_cast<int>(careN+2)*6,112,hurt,1,hurtLevel==1?amber:red,12);
-            actor(206+tx,168+ty,4); // Stays above DETAILS; gyro tilt stays clear of the buttons.
+            if(!c.spriteFrame(206+tx,176+ty,88,model.artwork.sprite,art)) c.missingArt(206+tx,176+ty);
         }
         break;
     case Screen::Squad: case Screen::Box: {
@@ -1913,13 +2070,14 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const auto need=forms::evolutionNeed(*route);
         const auto level=member->id==state.activeCreatureId ? state.level : member->level;
         const auto bond=member->id==state.activeCreatureId ? state.bond : member->bond;
-        const auto care=carePoints(*member);
         const bool ready=routeReady(state,model,*member,*route);
         const auto previewLevel=std::max<std::uint32_t>(level,need.level);
         const auto before=combat::formProfile(member->formId,previewLevel);
         const auto after=combat::formProfile(target->id,previewLevel);
         if (evolutionPage_==0) {
-            actor(206,184,9);
+            const auto* profile=presentation::evolutionProfileLabel(target->id);
+            actor(206,profile ? 190 : 184,profile ? 8 : 9);
+            if(profile) c.badge(113,profile,1,amber);
             std::snprintf(label,sizeof(label),"%s  %u/%u",ready ? "READY" : "LOCKED",evolutionIndex_+1,forms::outgoing(member->formId,1) ? 2 : 1);
             c.badge(262,label,1,ready ? mint : amber,40);
             if (ready) c.badge(284,"DIGIVOLUTION REQUIREMENTS MET",1,mint,36);
@@ -1940,7 +2098,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         } else {
             c.center(132,"NOT READY YET",2,amber);
             c.center(166,level<need.level ? "GAIN LEVELS THROUGH PLAY" : bond<need.bond ? "CARE TO BUILD YOUR BOND" :
-                isInjured(*member) ? "TREAT THE INJURY FIRST" : !careRouteOpen(*member,evolutionIndex_) ? "TOO MANY CARE MISTAKES - TRY THE OTHER ROUTE" : "KEEP CARING TO DIGIVOLVE",1,dim,40);
+                isInjured(*member) ? "TREAT THE INJURY FIRST" : "RETURN HOME TO DIGIVOLVE",1,dim,40);
             if (ready) c.center(191,"DIGIVOLUTION REQUIREMENTS MET",1,mint,40);
             if(!model.writable) c.center(214,"SAVE RECOVERY REQUIRED",1,amber,36);
             else if(state.phase!=Phase::Home) c.center(214,"RETURN HOME TO DIGIVOLVE",1,amber,36);
@@ -1952,7 +2110,7 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.center(225,label,1,mint,42);
         }
         if(evolutionPage_) {
-            std::snprintf(label,sizeof(label),"LV %u/%u  BOND %u/%u  CARE %u/%u",static_cast<unsigned>(level),need.level,static_cast<unsigned>(bond),need.bond,static_cast<unsigned>(care),need.care);
+            std::snprintf(label,sizeof(label),"LV %u/%u  BOND %u/%u",static_cast<unsigned>(level),need.level,static_cast<unsigned>(bond),need.bond);
             c.center(240,label,1,ready ? mint : amber,40);
             if(evolutionPage_!=3) c.center(264,"TAP / SWIPE FOR STATS / SKILLS",1,dim,36);
         }
@@ -1964,7 +2122,9 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         c.badge(72,"READY TO DIGIVOLVE?",2,amber);
         c.badge(99,before ? before->name : "PARTNER",1,dim,40);
         c.badge(121,target ? target->name : "NEW FORM",2,mint,25);
-        actor(206,195,7);
+        const auto* profile=presentation::evolutionProfileLabel(evolutionTarget_);
+        actor(206,profile ? 207 : 195,profile ? 6 : 7);
+        if(profile) c.badge(144,profile,1,amber);
         c.badge(260,"SAVES FORM - LEVEL XP CARE ID KEPT",1,dim,40); break;
     }
     case Screen::EvolutionResult: {
@@ -1973,22 +2133,48 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const auto* evolved=findMember(state,evolutionMember_);
         const char* evolvedName=evolved ? memberName(*evolved) : creatureName(state);
         c.badge(249,evolvedName,std::strlen(evolvedName)>21 ? 1 : 2,mint,36);
-        c.badge(272,"NEW FORM SAVED",1,dim,36); break;
+        const auto* profile=presentation::evolutionProfileLabel(evolved ? evolved->formId : activeMember(state) ? activeMember(state)->formId : 0);
+        c.badge(268,profile ? profile : "NEW FORM SAVED",1,profile ? amber : dim,36); break;
     }
     case Screen::Settings:
         if(model.sleepTimeoutSeconds) std::snprintf(label,sizeof(label),"SCREEN IDLE: %us",static_cast<unsigned>(model.sleepTimeoutSeconds));
         else std::snprintf(label,sizeof(label),"SCREEN IDLE: OFF");
         c.center(69,label,2,ink,25);
-        c.center(96,"TAP OR MOVE TO WAKE",1,dim,32); break;
+        std::snprintf(label,sizeof(label),"ROTATION %u DEG%s",static_cast<unsigned>(model.rotationDegrees),
+            model.rotationWritable ? "" : " - READ ONLY");
+        c.center(96,label,1,model.rotationWritable ? dim : amber,40); break;
+    case Screen::NfcTest: {
+        const auto& n=model.nfcTest;
+        c.center(65,"NFC TEST",2,mint);
+        if(n.connected) std::snprintf(label,sizeof(label),"PN532 FW %u.%u",n.firmwareMajor,n.firmwareMinor);
+        else std::snprintf(label,sizeof(label),"%s",n.available ? "READER NOT CONNECTED" : "READER UNAVAILABLE");
+        c.center(94,label,1,n.connected ? mint : amber,38);
+        c.center(116,n.state,2,n.connected ? ink : amber,38);
+        if(std::strcmp(n.error,"none")) std::snprintf(label,sizeof(label),"ERROR: %s",n.error);
+        else std::snprintf(label,sizeof(label),"TYPE A 106K - NO GAME EFFECTS");
+        c.center(137,label,1,dim,40);
+        c.center(159,"LAST UID",1,dim);
+        c.center(177,n.uid[0] ? n.uid : "NO UID RECEIVED",2,ink,21);
+        c.center(201,n.type[0] ? n.type : "CARD TYPE: UNKNOWN",1,dim,38);
+        std::snprintf(label,sizeof(label),"SWIPES %lu",static_cast<unsigned long>(n.swipes));
+        c.center(224,label,2,mint,24);
+        c.center(249,n.scanning ? "RF SCAN IN PROGRESS" : n.rfOff ? "RF OFF CONFIRMED" : "RF OFF UNCONFIRMED",1,n.rfOff ? dim : amber,38);
+        break;
+    }
     case Screen::Sound:
         c.center(72,"SOUND",2,mint);
-        c.center(108,"VOLUME",1,dim);
-        std::snprintf(label,sizeof(label),"%u%%",static_cast<unsigned>(model.volumePercent));
+        c.center(108,model.buzzerOnly ? "FIXED PITCH RHYTHMS" : "VOLUME",1,dim);
+        if(model.buzzerOnly) std::snprintf(label,sizeof(label),"%s",model.volumePercent ? "ON" : "OFF");
+        else std::snprintf(label,sizeof(label),"%u%%",static_cast<unsigned>(model.volumePercent));
         c.center(148,label,3,ink); c.bar(126,192,160,model.volumePercent,100,mint);
-        c.center(211,model.muted ? "SOUND IS MUTED" : model.volumePercent ? "QUIET TO LOUD" : "SILENT",1,dim);
-        c.badge(294,"MUSIC IS OPTIONAL",1,dim,36);
+        c.center(211,model.buzzerOnly && !model.audioPreferencesWritable ? "SOUND SETTINGS NOT SAVED" :
+            model.buzzerOnly && !model.audioAvailable ? "BUZZER NOT READY" :
+            model.muted ? "SOUND IS MUTED" : model.volumePercent ? (model.buzzerOnly ? "FIXED LOUDNESS" : "QUIET TO LOUD") : "SILENT",1,
+            model.buzzerOnly && (!model.audioPreferencesWritable || !model.audioAvailable) ? amber : dim);
+        if(model.buzzerOnly) break;
+        c.badge(294,model.buzzerOnly ? "SHORT RHYTHM CUES" : "MUSIC IS OPTIONAL",1,dim,36);
         c.badge(317,!model.audioPreferencesWritable ? "SOUND SETTINGS NOT SAVED" :
-            !model.audioAvailable ? "SPEAKER NOT READY" : "SAVES AS YOU CHANGE",1,
+            !model.audioAvailable ? (model.buzzerOnly ? "BUZZER NOT READY" : "SPEAKER NOT READY") : "SAVES AS YOU CHANGE",1,
             !model.audioPreferencesWritable ? amber : dim,36); break;
     case Screen::TradeChoose: {
         const auto* member=findMember(state,tradeMemberId_);
@@ -2102,18 +2288,13 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         if (stage==nearby::Stage::Discovering) {
             if (nearbyIndex_<peerCount(n)) {
                 const auto& peer=n->peers[nearbyIndex_]; const auto* form=forms::find(peer.fighter.formId);
-                actor(206,176,8);
                 c.badge(93,form ? form->name : "UNKNOWN PARTNER",2,ink,24);
-                std::snprintf(label,sizeof(label),"PLAYER %u/%u  DEVICE %02X%02X",nearbyIndex_+1,static_cast<unsigned>(peerCount(n)),peer.mac.bytes[4],peer.mac.bytes[5]); c.badge(243,label,1,dim,40);
-                std::snprintf(label,sizeof(label),"LEVEL %u  %s",static_cast<unsigned>(peer.fighter.level),peer.available ? "AVAILABLE" : "BUSY"); c.badge(264,label,1,peer.available ? mint : amber,36);
+                std::snprintf(label,sizeof(label),"PLAYER %u/%u  DEVICE %02X%02X",nearbyIndex_+1,static_cast<unsigned>(peerCount(n)),peer.mac.bytes[4],peer.mac.bytes[5]); c.badge(213,label,1,dim,40);
+                std::snprintf(label,sizeof(label),"LEVEL %u  %s",static_cast<unsigned>(peer.fighter.level),peer.available ? "AVAILABLE" : "BUSY"); c.badge(115,label,1,peer.available ? mint : amber,36);
             } else {
-                c.center(119,"LOOKING FOR PLAYERS",2,ink);
-                c.center(157,"OPEN NEARBY ON BOTH DEVICES",1,dim,36);
-                c.center(185,"KEEP THE TWO DEVICES CLOSE",1,dim,36);
-                c.center(211,"WIFI IS PAUSED WHILE NEARBY",1,amber,36);
-                std::snprintf(label,sizeof(label),"DUNGEON KEYS %u",static_cast<unsigned>(state.dungeonKeys));
-                c.center(239,label,1,mint,36);
-                if(state.dungeonKeys) c.center(263,"GROVE, TIDE, AND EMBER",1,dim,36);
+                c.badge(119,"LOOKING FOR PLAYERS",2,ink);
+                c.badge(157,"OPEN NEARBY ON BOTH DEVICES",1,dim,36);
+                c.badge(185,"KEEP THE TWO DEVICES CLOSE",1,dim,36);
             }
         } else if (stage==nearby::Stage::Incoming || stage==nearby::Stage::Outgoing || stage==nearby::Stage::Accepting) {
             const auto* host=forms::find(n->offered[0].formId); const auto* guest=forms::find(n->offered[1].formId);
@@ -2221,28 +2402,23 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             c.center(120,stage==nearby::Stage::TimedOut ? "CONNECTION TIMED OUT" : stage==nearby::Stage::Incompatible ? "RULES DO NOT MATCH" :
                 stage==nearby::Stage::Cancelled ? "DUEL CANCELLED" : "NEARBY RADIO",2,amber);
             c.center(166,model.nearbyStatus ? model.nearbyStatus : "NO ACTIVE CONNECTION",1,dim,44);
-            c.center(201,"PARTNER SAVE UNCHANGED",1,dim,36);
-            c.center(252,"LEAVE THEN OPEN TO TRY AGAIN",1,dim,40);
+            c.center(201,"LEAVE THEN OPEN TO TRY AGAIN",1,dim,40);
         }
-        if(!picker) c.badge(kNavY+kNavH+6,"WIFI PAUSED - NO XP",1,dim,32);
         break;
     }
     case Screen::Expeditions: {
         const auto& scenario=selectedExpedition(expeditionIndex_);
         const bool dungeon=scenario.kind==expeditions::Kind::Dungeon;
-        c.center(74,dungeon ? "DUNGEON" : "BOSS",2,mint);
-        c.center(108,expeditions::variantName(scenario,expeditionVariant_),2);
-        std::snprintf(label,sizeof(label),"FLOORS %u",static_cast<unsigned>(scenario.floors));
-        c.center(148,label,2);
-        if(scenario.minPlayers==scenario.maxPlayers) std::snprintf(label,sizeof(label),"PLAYERS %u",static_cast<unsigned>(scenario.minPlayers));
-        else std::snprintf(label,sizeof(label),"PLAYERS %u-%u",static_cast<unsigned>(scenario.minPlayers),static_cast<unsigned>(scenario.maxPlayers));
-        c.center(180,label,2);
-        c.center(214,dungeon ? "COSTS 1 KEY" : "COSTS 1 SIGIL",1,dim);
-        if(dungeon) std::snprintf(label,sizeof(label),"KEYS %u",static_cast<unsigned>(state.dungeonKeys));
-        else std::snprintf(label,sizeof(label),"SIGILS %u",static_cast<unsigned>(state.bossSigils));
-        c.center(236,label,1,mint);
+        c.badge(68,dungeon ? "DUNGEON" : "BOSS",2,mint);
+        c.badge(100,expeditions::variantName(scenario,expeditionVariant_),2);
+        c.badge(157,dungeon ? "ENTRY: 1 KEY" : "ENTRY: 1 SIGIL",2,ink);
         expeditionProgress(state,scenario,label,sizeof(label));
-        c.center(252,label,1,dim);
+        c.badge(204,label,1,dim);
+        c.bar(126,222,160,dungeon ? state.dungeonWins : state.bossSteps,
+            dungeon ? expeditions::kDungeonWinsPerKey : expeditions::kBossStepsPerSigil,mint);
+        std::snprintf(label,sizeof(label),dungeon ? "%u KEYS HELD" : "%u SIGILS HELD",
+            static_cast<unsigned>(dungeon ? state.dungeonKeys : state.bossSigils));
+        c.badge(314,label,1,expeditionReady(state,scenario) ? mint : amber);
         break;
     }
     case Screen::ExpeditionLobby: {
@@ -2251,49 +2427,81 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         const bool ready=expeditionReady(state,scenario);
         const auto* nearby=model.nearby;
         const auto stage=nearby ? nearby->stage : nearby::Stage::Closed;
-        c.center(74,expeditions::variantName(scenario,expeditionVariant_),2,mint);
         if(expeditionRaid(model) && nearby) {
+            const auto& raid=nearby->raid;
             const unsigned local=nearby->host ? 0u : 1u;
-            std::snprintf(label,sizeof(label),"FOE HP %u",static_cast<unsigned>(nearby->raid.foeHp));
-            c.center(118,label,2,amber);
-            std::snprintf(label,sizeof(label),"YOU %u  PARTNER %u",static_cast<unsigned>(nearby->raid.hp[local]),static_cast<unsigned>(nearby->raid.hp[1u-local]));
-            c.center(156,label,1,dim,36);
-            if(nearbyFeedback(model)) {
-                c.center(196,nearby->raid.status==nearby::RaidStatus::Cleared ? "YOU WON TOGETHER" :
-                    nearby->raid.status==nearby::RaidStatus::Wiped ? "THE FOE STANDS" :
-                    nearby->raid.lastCritical ? "CRITICAL HIT" : nearby->raid.lastFoeDamage ? "THE FOE IS HIT" : "YOU ARE HIT",2,mint);
-            } else if(stage==nearby::Stage::Finished) {
-                c.center(196,nearby->raid.status==nearby::RaidStatus::Cleared ? "YOU WON TOGETHER" : "THE FOE STANDS",2,mint);
-            } else if(stage==nearby::Stage::Reconnecting) {
-                c.center(196,"RECONNECTING",2,amber);
-            } else if(nearby->localChoicePending) {
-                c.center(196,"CHOICE SENT",2,mint);
-            } else {
-                c.center(196,(nearby->raid.sequence%2u)==local ? "YOUR STRIKE" : "YOUR GUARD",2);
+            const bool oldFoe=previousRaidFoe(model);
+            const auto tier=oldFoe ? raid.lastTier : raid.tier;
+            const auto foe=oldFoe ? raid.lastFoeForm : raid.foeForm;
+            const auto foeLevel=oldFoe ? raid.lastFoeLevel : raid.foeLevel;
+            const auto foeMax=oldFoe ? combat::formProfile(foe,foeLevel).stats.maxHp : raid.foeMax;
+            const auto foeHp=oldFoe ? 0u : raid.foeHp;
+            const auto* enemy=forms::find(foe);
+            const auto tiers=expeditions::tierCount(raid.scenario);
+            if(tier==tiers) c.bossAura(304,184,128);
+            std::snprintf(label,sizeof(label),"%s CO-OP %s %u/%u",nearby->coopAuto ? "AUTO" : "MANUAL",tiers==1 ? "BOSS" : "DUNGEON",
+                static_cast<unsigned>(tier),static_cast<unsigned>(tiers));
+            c.badge(64,label,1,mint,40);
+            c.badge(81,enemy ? enemy->name : "SHARED FOE",1,amber,42);
+            std::snprintf(label,sizeof(label),"FOE HP %u/%u",static_cast<unsigned>(foeHp),static_cast<unsigned>(foeMax));
+            c.badge(99,label,1,dim,32);
+            c.bar(250,112,108,foeHp,foeMax,amber);
+            const auto player=partnerArtRequest(state,model,now);
+            const auto peer=tileArtRequest(state,model,0,now);
+            if(!c.spriteFrame(94,201,88,model.partnerArtwork,player,model.partnerArtwork.nativeFacing==SpriteFacing::Left)) c.missingArt(94,201);
+            if(!c.spriteFrame(186,201,88,model.tileArtwork[0],peer,model.tileArtwork[0].nativeFacing==SpriteFacing::Left)) c.missingArt(186,201);
+            if(!c.spriteFrame(304,184,128,model.artwork.sprite,art,model.artwork.sprite.nativeFacing==SpriteFacing::Right)) c.missingArt(304,184);
+            for(unsigned slot=0;slot<2;++slot) {
+                const unsigned index=slot ? 1u-local : local;
+                const int x=54+static_cast<int>(slot)*92;
+                const auto* form=forms::find(raid.players[index].formId);
+                c.rect(x-2,121,84,35,panel);
+                c.text(x,123,form ? form->name : "PARTNER",1,slot ? rgb(141,207,223) : mint,13);
+                if(raid.hp[index]) std::snprintf(label,sizeof(label),"%s HP %u",slot ? "ALLY" : "YOU",static_cast<unsigned>(raid.hp[index]));
+                else std::snprintf(label,sizeof(label),"%s KO",slot ? "ALLY" : "YOU");
+                c.text(x,136,label,1,raid.hp[index] ? dim : amber,13);
+                c.bar(x,148,80,raid.hp[index],combat::formProfile(raid.players[index].formId,raid.players[index].level).stats.maxHp,slot ? rgb(141,207,223) : mint);
             }
+            const char* status=nearbyFeedback(model) ?
+                oldFoe ? "TIER COMPLETE - NEXT FOE" :
+                raid.status==nearby::RaidStatus::Cleared ? "YOU WON TOGETHER" :
+                raid.status==nearby::RaidStatus::Wiped ? (nearby::raidEnergyExhausted(raid) ? "OUT OF ENERGY" : "THE FOE STANDS") :
+                raid.lastCritical ? "CRITICAL HIT" : raid.lastFoeDamage ? "THE FOE IS HIT" : "YOU ARE HIT" :
+                stage==nearby::Stage::Finished ? (raid.status==nearby::RaidStatus::Cleared ? "YOU WON TOGETHER" : nearby::raidEnergyExhausted(raid) ? "OUT OF ENERGY" : "THE FOE STANDS") :
+                stage==nearby::Stage::Reconnecting ? "RECONNECTING - CHOICES PAUSED" :
+                nearby->localChoicePending ? "CHOICE SENT - WAITING" :
+                !raid.hp[local] ? "KO - ALLY FIGHTS ON" :
+                nearby->coopAuto ? "AUTO BATTLE" :
+                nearby::raidAttacker(raid)==local ? (raid.hp[1u-local] ? "YOUR STRIKE" : "YOUR STRIKE - ALLY KO") : "YOUR GUARD";
+            c.badge(252,status,1,stage==nearby::Stage::Reconnecting ? amber : mint,42);
         } else if(nearby && nearby->offeredMode==nearby::Mode::Coop &&
                   (stage==nearby::Stage::Outgoing || stage==nearby::Stage::Accepting)) {
             c.center(126,"WAITING FOR ACCEPTANCE",2,amber);
-            c.center(166,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
+            c.badge(154,nearby->coopAuto ? "CO-OP AUTO BATTLE" : "CO-OP MANUAL BATTLE",2,mint);
+            c.center(184,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
         } else if(nearby && stage==nearby::Stage::Incoming && nearby->offeredMode==nearby::Mode::Coop) {
             c.center(126,"JOIN THIS FIGHT?",2,amber);
-            c.center(166,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
+            c.badge(154,nearby->coopAuto ? "CO-OP AUTO BATTLE" : "CO-OP MANUAL BATTLE",2,mint);
+            c.center(184,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
         } else {
             std::size_t peerIndex=0;
             const bool join=expeditionPeer(model,expeditionIndex_,peerIndex)!=nullptr;
-            c.center(118,join ? "PLAYER FOUND" : "WAITING",2,amber);
-            c.center(150,join ? "TAP JOIN TO FIGHT TOGETHER" : "FOR ANOTHER PLAYER",join ? 1 : 2,join ? mint : ink);
-            c.center(190,ready ? "SPENT ONLY IF YOU WIN" : dungeon ? "NEED A DUNGEON KEY" : "NEED A BOSS SIGIL",1,ready ? mint : amber);
-            if(!join) c.center(214,"OR START SOLO",1,dim);
+            c.badge(126,join ? "PLAYER FOUND - CHOOSE CO-OP MODE" : "CO-OP MODE - WAITING FOR PLAYER",1,amber,40);
+            if(!join) c.badge(218,"JOIN APPEARS WHEN A PLAYER IS READY",1,dim,40);
+            c.badge(254,state.battleMode==BattleMode::Auto ? "SOLO MODE: AUTO (SETTINGS)" : "SOLO MODE: TACTICAL (SETTINGS)",1,mint,40);
+            c.badge(318,dungeon ? "SOLO SPENDS 1 KEY NOW" : "SOLO SPENDS 1 SIGIL NOW",1,amber,36);
         }
-        expeditionProgress(state,scenario,label,sizeof(label));
-        c.center(100,label,1,mint);
+        if(!expeditionRaid(model)) {
+            c.center(74,expeditions::variantName(scenario,expeditionVariant_),2,mint);
+            expeditionProgress(state,scenario,label,sizeof(label));
+            c.center(100,label,1,mint);
+        }
         break;
     }
     case Screen::ModeReview:
         c.center(78,proposedMode_==1 ? "SWITCH TO AUTO?" : "SWITCH TO TACTICAL?",2,amber);
         c.center(127,proposedMode_==1 ? "ATTACKS RUN FOR YOU" : "YOU CHOOSE EACH",2);
-        c.center(153,proposedMode_==1 ? "YOU FLICK TO CAPTURE" : "BATTLE ACTION",2);
+        c.center(153,proposedMode_==1 ? "YOU TAP TO CAPTURE" : "BATTLE ACTION",2);
         c.center(203,"THIS SETTING IS SAVED",1,dim);
         c.center(224,"BACK KEEPS THE CURRENT MODE",1,dim,36); break;
     }
@@ -2302,12 +2510,13 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             (screen_==Screen::TradeChoose && tradeCandidate(state,tradeMemberId_,true)!=tradeMemberId_) || (screen_==Screen::Collection && state.collectionCount>1) ||
             (screen_==Screen::Box && boxPages(state)>1) || (screen_==Screen::Evolution && (evolutionPage_ || (selectedMember(state) && forms::outgoing(selectedMember(state)->formId,1)))) ||
             screen_==Screen::Nearby || screen_==Screen::Expeditions;
-        if(multiple) {
+        if(multiple && screen_!=Screen::Battle) {
+            // Battle's carousel has its own arrows below the larger portraits.
             c.chevron(49,180,-1,screen_==Screen::Sound && !model.volumePercent ? dim : arrowColor);
             c.chevron(352,180,1,screen_==Screen::Sound && model.volumePercent>=100 ? dim : arrowColor);
         }
     }
-    Button choices[8]; const auto n=battleLocked_ ? 0 : buttons(state,model,choices);
+    Button choices[kMaxButtons]; const auto n=battleLocked_ ? 0 : buttons(state,model,choices);
     // Footer hints sit under the bottom BACK/LEAVE spot when one is shown, never beneath it.
     bool navShown=false;
     for(std::size_t i=0;i<n;++i) navShown=navShown || choices[i].padded;
@@ -2327,12 +2536,14 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
         }
         if(b.id>=Tile0 && b.id<=Tile3) continue; // Drawn with their sprite, level and status above.
         const bool modeSelected=(b.id==NearbyTactical && nearbyMode_==nearby::Mode::Tactical) ||
-            (b.id==NearbyAuto && nearbyMode_==nearby::Mode::Auto);
-        c.rect(b.x,b.y,b.w,b.h,b.enabled ? (modeSelected ? mint : edge) : panel);
-        c.rect(b.x+2,b.y+2,b.w-4,b.h-4,b.enabled && down_ && b.id==downButton_ ? edge : panel);
+            (b.id==NearbyAuto && nearbyMode_==nearby::Mode::Auto) ||
+            (b.id==ExpeditionManual && !coopAuto_) || (b.id==ExpeditionAuto && coopAuto_);
+        const auto face=b.enabled ? panel : rgb(37,43,47);
+        c.rect(b.x,b.y,b.w,b.h,b.enabled ? (modeSelected ? mint : edge) : rgb(65,71,75));
+        c.rect(b.x+2,b.y+2,b.w-4,b.h-4,b.enabled && down_ && b.id==downButton_ ? edge : face);
         const int scale=std::strlen(b.label)*12 <= static_cast<std::size_t>(b.w-10) ? 2 : 1;
         const int width=static_cast<int>(std::strlen(b.label))*6*scale-scale;
-        c.text(b.x+(b.w-width)/2,b.y+(b.h-7*scale)/2,b.label,scale,b.enabled ? ink : dim);
+        c.text(b.x+(b.w-width)/2,b.y+(b.h-7*scale)/2,b.label,scale,b.enabled ? ink : rgb(143,150,153));
     }
     if(recent && captureAction(lastAction_) && !(model.battle && model.battle->locked && model.battle->capturePresentation)) {
         FlickTrajectory flight;
@@ -2343,6 +2554,69 @@ bool Controller::render(const State& state, const Model& model, std::uint16_t* p
             const int y=300+(flight.landingY-300)*progress/500-4*28*progress*(500-progress)/(500*500);
             c.circle(x,y,23-progress*13/500,mint);
             c.center(370,progress<440 ? "THROWING..." : flight.hit ? "CONNECTED!" : "MISSED THE RING",1,amber);
+        }
+    }
+    if((screen_==Screen::Battle || screen_==Screen::Encounter || screen_==Screen::Capture) &&
+       (state.phase==Phase::Encounter || (model.battle && model.battle->locked))) {
+        const bool timing=screen_==Screen::Capture || (model.battle && model.battle->capturePresentation);
+        if(timing) {
+            // Keep the timed ring, result and tap targets clear; this compact
+            // static footer also survives capture-region-only redraws.
+            if(state.digiModifyReady) c.badge(372,"DIGI-MODIFY READY",1,amber,24);
+        } else {
+        if(model.digiModify.active) {
+            const auto effect=model.digiModify.effect;
+            const auto color=effect==digimodify::Effect::ElementShift ? (model.digiModify.element==1?mint:model.digiModify.element==2?rgb(82,166,255):rgb(248,89,86)) : effect==digimodify::Effect::PowerBoost ? rgb(248,89,86) : effect==digimodify::Effect::GuardShield ? rgb(82,166,255) : effect==digimodify::Effect::Recovery ? mint : amber;
+            const auto* card=digimodify::find(effect==digimodify::Effect::ElementShift?0xD106:0xD100+static_cast<unsigned>(effect));
+            // The header changes temporarily; both name/HP rows, tier label,
+            // sprites and all actionable buttons keep their own layout.
+            c.rect(94,24,224,24,bg);
+            c.center(29,"DIGI-MODIFY",2,color);
+            c.rect(94,60,224,16,bg);
+            c.badge(65,effect==digimodify::Effect::ElementShift?digimodify::shiftName(model.digiModify.element):card?card->name:"",1,color,34);
+            const int p=std::min<int>(999,model.digiModify.progress);
+            // Fixed pool of at most eight particles, one 900ms envelope. No heap,
+            // trig, framebuffer allocation, random state, or full-screen strobes.
+            if(p<230) {
+                const int x=82+p*82/230;
+                c.fxLine(std::max(73,x-28),213,x,164,color,3);
+                c.fxLine(std::max(73,x-37),215,x-9,170,ink);
+                // Brief corner highlight keeps the exact partner sprite legible.
+                for(int side:{-1,1}) {
+                    const int xx=118+side*43;
+                    c.fxLine(xx,148,xx-side*12,148,color);
+                    c.fxLine(xx,148,xx,160,color);
+                    c.fxLine(xx,238,xx-side*12,238,color);
+                }
+            } else {
+                const int q=(p-230)*1000/770;
+                if(effect==digimodify::Effect::CriticalBoost) {
+                    c.fxLine(82+q/60,226,143+q/60,157,color,3);
+                    c.fxLine(89+q/60,228,149+q/60,161,ink);
+                    for(int i=0;i<6;++i){const int x=78+i*17,y=151+(i*31+q/14)%86;c.rect(x,y,3,3,color);}
+                } else if(effect==digimodify::Effect::PowerBoost) {
+                    for(int i=0;i<3;++i)c.circle(118,193,15+(q/32+i*10)%32,color,false);
+                    for(int i=0;i<4;++i)c.fxLine(78+i*24,234-q/60,81+i*24,224-q/60,color);
+                } else if(effect==digimodify::Effect::GuardShield) {
+                    constexpr int xs[]{118,161,161,118,75,75,118};
+                    constexpr int ys[]{145,169,216,241,216,169,145};
+                    for(int i=0;i<6;++i){c.fxLine(xs[i],ys[i],xs[i+1],ys[i+1],color);
+                        c.fxLine(xs[i],ys[i],118+(xs[i]-118)/2,193+(ys[i]-193)/2,edge);}
+                    // Six bright facets revealed in order, without a filled mask.
+                    const int n=std::min(5,q/150);c.fxLine(xs[n],ys[n],xs[n+1],ys[n+1],ink,3);
+                } else if(effect==digimodify::Effect::ElementShift) {
+                    c.circle(118,193,47,color,false);c.circle(118,193,40+q/200,color,false);
+                    constexpr int dx[]{0,32,45,32,0,-32,-45,-32},dy[]{-45,-32,0,32,45,32,0,-32};
+                    for(int i=0;i<3;++i){const int n=(q/110+i*2)%8;c.circle(118+dx[n],193+dy[n],3,color);}
+                } else {
+                    for(int i=0;i<8;++i){const int x=78+i*13,y=232-(q/14+i*11)%82;
+                        c.rect(x-2,y,7,3,mint);c.rect(x,y-2,3,7,mint);}
+                }
+            }
+        } else if(state.digiModifyReady) {
+            if(screen_==Screen::Battle) c.badge(65,digimodify::readyName(state.digiModifyReady),1,amber,34);
+            else c.badge(372,digimodify::readyName(state.digiModifyReady),1,amber,24);
+        }
         }
     }
     if(notice_[0]) {
@@ -2381,6 +2655,7 @@ const char* screenName(Screen screen) {
     case Screen::EncounterSettings: return "encounter-settings";
     case Screen::Settings: return "settings";
     case Screen::Sound: return "sound";
+    case Screen::NfcTest: return "nfc-test";
     case Screen::TradeChoose: return "trade-choose";
     case Screen::TradeReview: return "trade-review";
     case Screen::ModeReview: return "mode-review";

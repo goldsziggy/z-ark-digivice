@@ -25,6 +25,11 @@ struct Profile {
     const char* magicSkill;
     Stats stats;
 };
+// Optional one-hit override uses only the existing type chart. Zero preserves form type.
+enum class AttackElement : std::uint8_t { FromForm=0, Grove=1, Tide=2, Ember=3 };
+const char* elementName(AttackElement);
+AttackElement counterElement(std::uint32_t defenderForm);
+std::uint32_t formTypePercent(std::uint32_t attackerForm,std::uint32_t defenderForm);
 enum class Move : std::uint8_t { Physical, Heavy, Magic };
 enum class Defense : std::uint8_t { None, Brace, Counter, Ward };
 struct Hit { std::uint32_t damage; bool reflected; std::uint32_t typePercent; bool critical = false; };
@@ -53,7 +58,8 @@ Hit resolveForms(std::uint32_t attackerForm, std::uint32_t attackerLevel,
 Hit resolveCareForms(std::uint32_t attackerForm,std::uint32_t attackerLevel,
                      std::uint32_t defenderForm,std::uint32_t defenderLevel,
                      Move,Defense,CareBonus attackerCare,CareBonus defenderCare,
-                     std::uint32_t minimumRawDamage=4,std::uint32_t powerBonus=0);
+                     std::uint32_t minimumRawDamage=4,std::uint32_t powerBonus=0,
+                     AttackElement attackElement=AttackElement::FromForm);
 // Rules 18 wild combat adds level-scaled move power: Physical/Magic 8+bonus,
 // Heavy 16+2*bonus, bonus = attacker level / 3 (0..16). Zero keeps every older rule.
 std::size_t writeFormProfileJson(std::uint32_t formId, std::uint32_t level, char* output, std::size_t capacity);

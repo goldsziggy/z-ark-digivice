@@ -50,7 +50,7 @@ struct WalkingTradeSessionDouble {
     bool permitsBackground()const{return backgroundAllowed;}
     const trade::Record* record()const{return current;}
 };
-struct WalkingAudioDouble { unsigned cues=0;void play(device::AudioCue) {++cues;} };
+struct WalkingAudioDouble { unsigned cues=0;device::AudioCue last=device::AudioCue::Count;void play(device::AudioCue value) {++cues;last=value;} };
 struct WalkingAssetsDouble {
     bool paused_=false,idle=true;unsigned pauses=0;
     bool paused()const{return paused_;}void pause(bool value){paused_=value;++pauses;}
@@ -113,6 +113,8 @@ public:
     bool tradePeerTerminal_=false,tradeTxTurn_=false,tradeNegotiating_=false;
     const char* tradeStatus_="Trade disabled in walking lifecycle harness";
     nearby::Fighter nearbyFighter_{};
+    std::uint64_t claimedRaid_=0;
+    std::uint8_t nearbyActivity_=255;
     NearbyPhase nearbyPhase_=NearbyPhase::Idle;
     std::uint64_t nearbyDeadline_=0,nearbyTurnAt_=0,nearbyShownSession_=0,nearbyAttackCueAt_=0;
     std::uint32_t nearbyTxToken_=0,nearbyShownSequence_=0;

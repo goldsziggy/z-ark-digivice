@@ -59,8 +59,9 @@ void timeouts(){
     CHECK(c.blanked()&&c.tick(201001,false)==Request::None);CHECK(c.tick(201002,false)==Request::Wake);
     c.completeWake(true,201002);CHECK(!c.blanked()&&c.tick(261001,false)==Request::None);
     CHECK(c.tick(261002,false)==Request::Prepare);c.activity(261003);c.completePrepare(true,261004);CHECK(!c.blanked());
-    CHECK(c.tick(321003,true)==Request::None);CHECK(c.tick(381002,false)==Request::None);CHECK(c.tick(381003,false)==Request::Prepare);
-    c.completePrepare(true,381003);CHECK(c.tick(381004,true)==Request::Wake);c.completeWake(true,381004);
+    CHECK(c.tick(321003,true)==Request::None);CHECK(c.tick(321004,false)==Request::Prepare);
+    c.completePrepare(true,321004);CHECK(c.tick(381004,true)==Request::None);
+    c.activity(381005);CHECK(c.tick(381005,true)==Request::Wake);c.completeWake(true,381005);
     for(auto seconds:{0u,30u,60u,120u,300u}){
         idle::Controller d;CHECK(d.configure(seconds,10));
         CHECK(d.tick(10,false)==Request::None);

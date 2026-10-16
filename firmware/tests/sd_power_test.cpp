@@ -32,6 +32,7 @@ int testSync(int descriptor){++syncs;if(failSync){errno=EIO;return -1;}return ::
 namespace digivice::board {
 const BoardProfile& selectedProfile(){return kWaveshare146;}
 bool powerHoldReady(){return true;}
+bool sdPinsAvailable(){return true;}
 esp_err_t prepareSdCardSelect(){return ESP_OK;}
 }
 esp_err_t esp_vfs_fat_sdmmc_mount(const char*,const sdmmc_host_t*,const sdmmc_slot_config_t*,const esp_vfs_fat_sdmmc_mount_config_t* config,sdmmc_card_t** card){

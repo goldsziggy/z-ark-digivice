@@ -50,7 +50,17 @@ void unlockSharedI2c();
 // Future expander writers must use the same board-owned lock/API; do not create
 // another expander driver that writes whole output/configuration registers.
 esp_err_t prepareSdCardSelect();
+// 2.1 audio worker only. P7 active high; all other latch/direction bits preserved.
+// ESP_ERR_NOT_FINISHED means busy mutex with zero bus calls; retry later.
+// Other errors leave output uncertain: require a verified off before shutdown.
+esp_err_t setBuzzer(bool on);
 
+// 2.1 LCD command/SD pin ownership. Never reacquire after releasing to SD.
+// prepare also silences the active buzzer, preserving every unowned EXIO bit.
+bool sdPinsAvailable();
+esp_err_t prepareDisplayCommandPins();
+esp_err_t setDisplaySelected(bool selected);
+esp_err_t releaseDisplayCommandPins();
 enum class PeripheralReset { Display, Touch };
 // Changes only the selected EXIO1/P0 or EXIO2/P1 latch/direction bit.
 // Active low; delays between assertion/release belong to the caller.

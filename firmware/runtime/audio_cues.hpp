@@ -8,7 +8,8 @@ namespace digivice::device {
 enum class AudioCue : std::uint8_t {
     Boot, Hatch, Navigate, Back, Feed, Play, Rest, Encounter,
     Attack, Magic, Hit, CaptureArm, CaptureThrow, CaptureSuccess,
-    CaptureFail, Win, Retreat, Evolution, Error, Count
+    CaptureFail, Win, Retreat, Evolution, Error,
+    DigiCritical, DigiPower, DigiGuard, DigiRecovery, DigiElement, DigiCriticalHit, Count
 };
 unsigned cuePriority(AudioCue cue);
 const char* cueName(AudioCue cue);

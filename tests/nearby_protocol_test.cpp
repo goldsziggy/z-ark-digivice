@@ -1,5 +1,8 @@
 #include "nearby_protocol.hpp"
+#include "nearby_reward.hpp"
 #include "forms.hpp"
+#include "expeditions.hpp"
+#include "game.hpp"
 #include <cstdio>
 #include <cstring>
 #include <vector>
@@ -249,7 +252,7 @@ void autoReconnectAndReboot(){
 }
 void careBonusHandshake(){
  constexpr Fighter host{17,11,1,3,4},guest{23,18,1,5,1};
- CHECK(kRules==12&&kMatchBytes==116&&sizeof(Fighter)==20);
+ CHECK(kRules==13&&kMatchBytes==116&&sizeof(Fighter)==20);
  for(unsigned offense=0;offense<=5;++offense)for(unsigned protection=0;protection<=5;++protection){
   const Fighter selected{17,11,1,offense,protection};Match original,decoded;
   CHECK(validFighter(selected)&&begin(selected,guest,Mode::Tactical,42,original));
@@ -260,7 +263,7 @@ void careBonusHandshake(){
  CHECK(!validFighter({17,11,1,UINT32_MAX,0})&&!validFighter({17,11,1,0,UINT32_MAX}));
  Protocol invalid;CHECK(!invalid.open(ma,{17,11,1,6,0},10,100));
  Pair p;p.open(host,guest);CHECK(sameFighter(p.a.view().peers[0].fighter,guest)&&sameFighter(p.b.view().peers[0].fighter,host));
- CHECK(p.a.challenge(0,Mode::Tactical,77,42,p.now));Datagram challenge;CHECK(p.a.pop(challenge)&&challenge.bytes[5]==2&&challenge.length==87);
+ CHECK(p.a.challenge(0,Mode::Tactical,77,42,p.now));Datagram challenge;CHECK(p.a.pop(challenge)&&challenge.bytes[5]==2&&challenge.length==88);
  // Even valid-range replacements must not change either announced fighter.
  for(unsigned offset:{12u,16u,32u,36u})for(unsigned value:{0u,6u,UINT32_MAX}){
   auto changed=challenge;put(changed.bytes+34+offset,value);reseal(changed);
@@ -269,7 +272,7 @@ void careBonusHandshake(){
  CHECK(p.b.receive(ma,challenge.bytes,challenge.length,p.now));
  CHECK(p.b.receive(ma,challenge.bytes,challenge.length,p.now));
  CHECK(sameFighter(p.b.view().offered[0],host)&&sameFighter(p.b.view().offered[1],guest));
- CHECK(p.b.accept(p.now));Datagram accept;CHECK(p.b.pop(accept)&&accept.bytes[5]==3&&accept.length==87);
+ CHECK(p.b.accept(p.now));Datagram accept;CHECK(p.b.pop(accept)&&accept.bytes[5]==3&&accept.length==88);
  for(unsigned offset:{12u,16u,32u,36u})for(unsigned value:{0u,6u}){
   auto changed=accept;put(changed.bytes+34+offset,value);reseal(changed);
   CHECK(!p.a.receive(mb,changed.bytes,changed.length,p.now)&&p.a.view().stage==Stage::Outgoing);
@@ -318,6 +321,9 @@ void previousRulesHandshake(){
  const auto before=p.b.view().match;p.now+=500;p.a.tick(p.now);Datagram state;CHECK(p.a.pop(state)&&state.bytes[5]==4);
  state.bytes[14]=11;reseal(state);CHECK(!p.b.receive(ma,state.bytes,state.length,p.now)&&p.b.view().stage==Stage::Incompatible&&same(before,p.b.view().match));
 }
+Choice raidInput(const Raid& raid,unsigned actor,Choice strike=Choice::Physical,Choice guard=Choice::Brace) {
+ return !raid.hp[actor]?Choice::None:raidAttacker(raid)==actor?strike:guard;
+}
 void raidJoin(){
  Pair sameLobby;sameLobby.open(fa,fb,0,0);
  CHECK(sameLobby.a.view().peers[0].activity==0&&sameLobby.b.view().peers[0].activity==0&&sameLobby.a.view().peers[0].available);
@@ -330,9 +336,9 @@ void raidJoin(){
  CHECK(sameLobby.a.view().raid.sequence==0&&sameLobby.a.view().raid.foeHp&&sameLobby.a.view().raid.status==RaidStatus::Active);
  for(unsigned i=0;i<24&&sameLobby.a.view().stage==Stage::Playing;++i){
   const auto before=sameLobby.a.view().raid.sequence;
-  const bool hostHits=before%2u==0;
-  CHECK(sameLobby.a.choose(hostHits?Choice::Physical:Choice::Brace,sameLobby.now));
-  CHECK(sameLobby.b.choose(hostHits?Choice::Brace:Choice::Physical,sameLobby.now));
+  const auto prior=sameLobby.a.view().raid;
+  if(prior.hp[0])CHECK(sameLobby.a.choose(raidInput(prior,0),sameLobby.now));
+  if(prior.hp[1])CHECK(sameLobby.b.choose(raidInput(prior,1),sameLobby.now));
   sameLobby.pump();
   if(sameLobby.a.view().raid.sequence==before)sameLobby.tick(2400);
   CHECK(sameLobby.a.view().raid.sequence==before+1&&sameRaid(sameLobby.a.view().raid,sameLobby.b.view().raid));
@@ -342,5 +348,397 @@ void raidJoin(){
  Pair otherLobby;otherLobby.open(fa,fb,0,1);
  CHECK(!otherLobby.a.challenge(0,Mode::Coop,7,seed,otherLobby.now)&&otherLobby.a.view().stage==Stage::Discovering);
 }
+constexpr Fighter strongHost{17,11,99}, strongGuest{23,18,99};
+void startRaid(Pair& pair, unsigned scenario=0, bool automatic=false) {
+ pair.open(strongHost,strongGuest,static_cast<std::uint8_t>(scenario),static_cast<std::uint8_t>(scenario));
+ CHECK(pair.a.challenge(0,Mode::Coop,0xabcdef,raidSeed(68,1,scenario),pair.now,automatic));pair.pump();
+ CHECK(pair.b.accept(pair.now));pair.pump();
+ CHECK(pair.a.view().stage==Stage::Playing&&pair.b.view().stage==Stage::Playing);
+ CHECK(sameRaid(pair.a.view().raid,pair.b.view().raid));
 }
-int main(){core();consentAndLoss();recoverAndTimeout();simultaneous();wireGuards();boundedQueuesAndReordering();reviewedRegressions();autoPacing();autoModeConsent();autoRandomAlternation();autoReconnectAndReboot();careBonusHandshake();previousRulesHandshake();raidJoin();std::printf("%u nearby checks, %u failures; Fighter%zuB / Match%zuB / Protocol%zuB / max packet%zuB\n",checks,failures,sizeof(Fighter),sizeof(Match),sizeof(Protocol),34+kMatchBytes+4);return failures?1:0;}
+void raidTurn(Pair& pair,unsigned drop=0,bool duplicate=false) {
+ const auto sequence=pair.a.view().raid.sequence;
+ if(pair.a.view().coopAuto){
+  pair.tick(kAutoPaceMs,drop,duplicate);
+  CHECK(pair.a.view().raid.sequence==sequence+1);return;
+ }
+ const auto prior=pair.a.view().raid;
+ if(prior.hp[0])CHECK(pair.a.choose(raidInput(prior,0),pair.now));
+ if(prior.hp[1])CHECK(pair.b.choose(raidInput(prior,1),pair.now));pair.pump(drop,duplicate);
+ if(pair.a.view().raid.sequence==sequence)pair.tick(2400,drop,duplicate);
+ CHECK(pair.a.view().raid.sequence==sequence+1);
+}
+void raidTiersAndEncoding() {
+ CHECK(digivice::expeditions::tierCount(0)==3&&digivice::expeditions::tierCount(2)==3);
+ CHECK(digivice::expeditions::tierCount(3)==1&&digivice::expeditions::tierCount(5)==1&&digivice::expeditions::tierCount(6)==0);
+ CHECK(digivice::expeditions::tierLevel(1,1)==1&&digivice::expeditions::tierLevel(1,3)==3);
+ CHECK(digivice::expeditions::tierLevel(98,3)==99&&digivice::expeditions::tierLevel(99,3)==99);
+ for(unsigned scenario=0;scenario<6;++scenario){
+  Raid raid;CHECK(beginRaid(strongHost,strongGuest,raidSeed(18,1,scenario),raid));
+  const auto tiers=digivice::expeditions::tierCount(scenario);unsigned visited=1;
+  CHECK(raid.tier==1&&raid.sequence==0&&raid.tierRound==0&&!raid.lastTier);
+  while(raid.status==RaidStatus::Active&&raid.sequence<72){
+   const auto before=raid;const auto host=raidInput(raid,0),guest=raidInput(raid,1);
+   CHECK(resolveRaid(raid,before.sequence,host,guest));
+   CHECK(raid.sequence==before.sequence+1&&sameFighter(raid.players[0],strongHost)&&sameFighter(raid.players[1],strongGuest));
+   CHECK(raid.hp[0]<=before.hp[0]&&raid.hp[1]<=before.hp[1]&&raid.energy[0]<=before.energy[0]&&raid.energy[1]<=before.energy[1]);
+   CHECK(raid.lastFoeForm==before.foeForm&&raid.lastFoeLevel==before.foeLevel&&raid.lastTier==before.tier);
+   if(raid.tier!=before.tier){
+    ++visited;CHECK(raid.tier==before.tier+1&&raid.tierRound==0&&raid.foeHp==raid.foeMax);
+    CHECK(raid.status==RaidStatus::Active&&raid.foeLevel==before.foeLevel+1&&raid.foeForm==before.foeForm);
+   }
+   const auto committed=raid;CHECK(!resolveRaid(raid,before.sequence,host,guest)&&sameRaid(raid,committed));
+   std::uint8_t bytes[kRaidBytes];Raid restored;CHECK(encodeRaid(raid,bytes,sizeof(bytes)));
+   CHECK(decodeRaid(bytes,sizeof(bytes),restored)&&sameRaid(raid,restored));
+   CHECK(!decodeRaid(bytes,108,restored)); // V1 raid layout cannot be silently upgraded.
+   for(unsigned offset:{104u,108u,112u,116u}){
+    auto corrupt=std::vector<std::uint8_t>(bytes,bytes+kRaidBytes);put(corrupt.data()+offset,UINT32_MAX);
+    CHECK(!decodeRaid(corrupt.data(),corrupt.size(),restored)&&sameRaid(restored,committed));
+   }
+  }
+  CHECK(visited==tiers&&raid.tier==tiers&&raid.status==RaidStatus::Cleared&&raid.foeHp==0);
+  CHECK(!resolveRaid(raid,raid.sequence,Choice::Physical,Choice::Brace));
+ }
+ // Per-tier exhaustion cannot accidentally open a later tier or reward a loss.
+ Raid exhausted;CHECK(beginRaid(fa,fb,raidSeed(18,99,0),exhausted));
+ unsigned steps=0;while(exhausted.status==RaidStatus::Active&&steps++<24){const auto q=exhausted.sequence;
+  CHECK(resolveRaid(exhausted,q,raidInput(exhausted,0),raidInput(exhausted,1)));}
+ CHECK(exhausted.status==RaidStatus::Wiped&&exhausted.tier==1&&exhausted.sequence<=24);
+}
+void raidLossReorderAndReconnect() {
+ Pair p;startRaid(p);
+ CHECK(p.b.choose(Choice::Brace,p.now));Datagram oldChoice;CHECK(p.b.pop(oldChoice)&&oldChoice.bytes[5]==5);
+ CHECK(p.a.receive(mb,oldChoice.bytes,oldChoice.length,p.now));CHECK(p.a.choose(Choice::Physical,p.now));
+ p.pump((1u<<9)|(1u<<6));
+ CHECK(p.a.view().raid.tier==2&&p.a.view().raid.sequence==1&&p.b.view().raid.tier==1);
+ const auto committed=p.a.view().raid;
+ CHECK(!p.a.receive(mb,oldChoice.bytes,oldChoice.length,p.now)&&sameRaid(committed,p.a.view().raid));
+ p.tick(500,0,true);CHECK(sameRaid(p.a.view().raid,p.b.view().raid)&&p.b.view().raid.tier==2);
+ CHECK(!claimableRaid(p.a.view(),0)&&!claimableRaid(p.b.view(),0));
+ p.tick(6000,0xffffffffu);CHECK(p.a.view().stage==Stage::Reconnecting&&p.b.view().stage==Stage::Reconnecting);
+ CHECK(sameRaid(committed,p.a.view().raid)&&!claimableRaid(p.a.view(),0));
+ p.tick(500,0,true);CHECK(p.a.view().stage==Stage::Playing&&p.b.view().stage==Stage::Playing&&sameRaid(committed,p.b.view().raid));
+ raidTurn(p,0,true);CHECK(p.a.view().raid.tier==3&&p.a.view().raid.sequence==2&&sameRaid(p.a.view().raid,p.b.view().raid));
+ CHECK(!claimableRaid(p.a.view(),0));
+ // A stale previous-tier state is ACKed, never installed over the newer tier.
+ p.now+=500;p.a.tick(p.now);Datagram current;CHECK(p.a.pop(current)&&current.bytes[5]==9);
+ auto stale=current;CHECK(encodeRaid(committed,stale.bytes+34,kRaidBytes));put(stale.bytes+26,committed.sequence);reseal(stale);
+ const auto third=p.b.view().raid;CHECK(p.b.receive(ma,stale.bytes,stale.length,p.now)&&sameRaid(third,p.b.view().raid));p.pump();
+ // A one-sequence-ahead forged tier cannot pass deterministic replay.
+ auto forged=current;auto changed=third;changed.foeHp-=1;CHECK(encodeRaid(changed,forged.bytes+34,kRaidBytes));reseal(forged);
+ CHECK(!p.b.receive(ma,forged.bytes,forged.length,p.now)&&sameRaid(third,p.b.view().raid));
+ p.a.cancel(p.now);Datagram cancellation;CHECK(p.a.pop(cancellation)&&cancellation.bytes[5]==7);
+ CHECK(cancellation.bytes[26]==2&&p.b.receive(ma,cancellation.bytes,cancellation.length,p.now));
+ CHECK(p.a.view().stage==Stage::Cancelled&&p.b.view().stage==Stage::Cancelled&&!claimableRaid(p.a.view(),0));
+ Pair timeout;startRaid(timeout);raidTurn(timeout);const auto checkpoint=timeout.a.view().raid;
+ timeout.tick(30000,0xffffffffu);CHECK(timeout.a.view().stage==Stage::TimedOut&&timeout.b.view().stage==Stage::TimedOut);
+ CHECK(sameRaid(checkpoint,timeout.a.view().raid)&&!claimableRaid(timeout.a.view(),0)&&!timeout.a.choose(Choice::Brace,timeout.now));
+ Pair reboot;startRaid(reboot);raidTurn(reboot);reboot.b.close();
+ CHECK(reboot.b.open(mb,strongGuest,reboot.now+1,201,0));reboot.now+=1;reboot.pump();reboot.tick(500);
+ CHECK(reboot.b.view().stage==Stage::Discovering&&!claimableRaid(reboot.b.view(),0));
+ reboot.tick(30000);CHECK(reboot.a.view().stage==Stage::TimedOut&&!claimableRaid(reboot.a.view(),0));
+}
+void raidFinalClaims(bool automatic=false) {
+ Pair p;startRaid(p,0,automatic);raidTurn(p);raidTurn(p);
+ CHECK(p.a.view().raid.tier==3&&p.a.view().stage==Stage::Playing&&!claimableRaid(p.a.view(),0));
+ raidTurn(p,1u<<6,true); // Final result arrives; final ACK is lost.
+ CHECK(p.a.view().stage==Stage::Finished&&p.b.view().stage==Stage::Finished);
+ CHECK(!p.a.view().peerAcknowledged&&p.b.view().peerAcknowledged);
+ CHECK(!claimableRaid(p.a.view(),0)&&claimableRaid(p.b.view(),0));
+ p.now+=500;p.a.tick(p.now);Datagram terminal;CHECK(p.a.pop(terminal)&&terminal.bytes[5]==9);
+ CHECK(p.b.receive(ma,terminal.bytes,terminal.length,p.now));CHECK(p.b.receive(ma,terminal.bytes,terminal.length,p.now));p.pump();
+ CHECK(claimableRaid(p.a.view(),0)&&claimableRaid(p.b.view(),0));
+ digivice::State saves[]{digivice::newDevice(11),digivice::newDevice(19)};std::uint64_t claimed[2]{};
+ std::uint32_t awardedXp[2]{};unsigned checkpoints[2]{};digivice::Snapshot persisted[2];
+ for(unsigned side=0;side<2;++side){
+  auto& save=saves[side];CHECK(digivice::apply(save,digivice::Action::Hatch,1)==digivice::Error::None);save.dungeonKeys=3;
+  const auto& view=side?p.b.view():p.a.view();const auto before=save;
+  CHECK(claimableRaid(view,claimed[side]));
+  CHECK(digivice::encodeSnapshot(save,persisted[side]));const auto previousSnapshot=persisted[side];
+  CHECK(checkpointRaidReward(view,save,claimed[side],[&](const digivice::State& candidate){
+   ++checkpoints[side];CHECK(candidate.dungeonKeys==2);return false;
+  })==RewardResult::RetryCheckpoint);
+  CHECK(save.sequence==before.sequence&&save.dungeonKeys==3&&claimed[side]==0&&claimableRaid(view,claimed[side]));
+  CHECK(!std::memcmp(persisted[side].bytes,previousSnapshot.bytes,sizeof(previousSnapshot.bytes)));
+  CHECK(checkpointRaidReward(view,save,claimed[side],[&](const digivice::State& candidate){
+   ++checkpoints[side];return digivice::encodeSnapshot(candidate,persisted[side]);
+  })==RewardResult::Committed);
+  CHECK(checkpoints[side]==2);
+  CHECK(save.dungeonKeys==2&&save.dungeonWins==before.dungeonWins+1&&save.dungeonClears==before.dungeonClears+1);
+  CHECK(save.sequence==before.sequence+1&&!claimableRaid(view,claimed[side]));awardedXp[side]=digivice::activeMember(save)->xp;
+ }
+ // Duplicate final traffic and repeated runtime polling cannot spend a second
+ // key, even though two keys remain and another raw claim could be accepted.
+ const auto final=p.a.view().raid;
+ for(unsigned i=0;i<10;++i){
+  p.tick(500,0,true);CHECK(p.b.receive(ma,terminal.bytes,terminal.length,p.now));p.pump(0,true);
+  for(unsigned side=0;side<2;++side){const auto& view=side?p.b.view():p.a.view();
+   CHECK(checkpointRaidReward(view,saves[side],claimed[side],[&](const digivice::State&){++checkpoints[side];return true;})==RewardResult::Unavailable);
+  }
+ }
+ CHECK(sameRaid(final,p.a.view().raid)&&sameRaid(final,p.b.view().raid));
+ for(unsigned side=0;side<2;++side){const auto& view=side?p.b.view():p.a.view();CHECK(!claimableRaid(view,claimed[side])&&checkpoints[side]==2);
+  CHECK(saves[side].dungeonKeys==2&&saves[side].dungeonClears==1&&digivice::activeMember(saves[side])->xp==awardedXp[side]);
+  digivice::State restored;CHECK(digivice::decodeSnapshot(persisted[side].bytes,sizeof(persisted[side].bytes),restored)==digivice::SnapshotStatus::Ok);
+  CHECK(restored.dungeonKeys==2&&restored.dungeonClears==1&&digivice::activeMember(restored)->xp==awardedXp[side]);
+ }
+ CHECK(saves[0].dungeonWins==saves[1].dungeonWins&&saves[0].dungeonKeys==saves[1].dungeonKeys&&awardedXp[0]==awardedXp[1]);
+ // Closure/reopen (or reboot) gives a fresh nonce and no remembered session.
+ // A delayed terminal packet cannot create a second claim against saved state.
+ p.b.close();CHECK(p.b.open(mb,strongGuest,p.now+1,201,0));++p.now;claimed[1]=0;
+ CHECK(!p.b.receive(ma,terminal.bytes,terminal.length,p.now)&&p.b.view().stage==Stage::Discovering);
+ CHECK(checkpointRaidReward(p.b.view(),saves[1],claimed[1],[&](const digivice::State&){++checkpoints[1];return true;})==RewardResult::Unavailable);
+ CHECK(checkpoints[1]==2&&saves[1].dungeonKeys==2&&saves[1].dungeonClears==1);
+}
+void raidEnergyBudget() {
+ // A naturally reached regression: the old 24-round raid never ran long
+ // enough to spend 100 energy. Three tiers can, and must not leave no legal turn.
+ Raid raid;CHECK(beginRaid({17,25,99,5,5},{23,25,99,5,5},raidSeed(25,99,0),raid));
+ while(raid.status==RaidStatus::Active&&raid.sequence<72){
+  const auto actor=raidAttacker(raid);const auto strike=raid.energy[actor]>=6?Choice::Heavy:Choice::Physical;
+  const auto guard=actor?Choice::Ward:Choice::Brace;
+  CHECK(legalRaidChoice(raid,actor,strike));CHECK(!raidEnergyExhausted(raid));
+  CHECK(resolveRaid(raid,raid.sequence,actor?guard:strike,actor?strike:guard));
+ }
+ CHECK(raid.status==RaidStatus::Wiped&&raid.tier==3&&raid.sequence==36&&raidEnergyExhausted(raid));
+ CHECK(raid.hp[0]&&raid.hp[1]&&raid.foeHp&&!raid.energy[0]&&!raid.energy[1]);
+ CHECK(!legalRaidChoice(raid,0,Choice::Physical)&&!legalRaidChoice(raid,1,Choice::Physical));
+ std::uint8_t bytes[kRaidBytes];Raid restored;CHECK(encodeRaid(raid,bytes,sizeof(bytes))&&decodeRaid(bytes,sizeof(bytes),restored)&&sameRaid(raid,restored));
+ Pair pair;pair.open({17,25,99,5,5},{23,25,99,5,5},0,0);
+ CHECK(pair.a.challenge(0,Mode::Coop,9191,raidSeed(25,99,0),pair.now));pair.pump();CHECK(pair.b.accept(pair.now));pair.pump();
+ while(pair.a.view().stage==Stage::Playing&&pair.a.view().raid.sequence<72){
+  const auto& current=pair.a.view().raid;const auto sequence=current.sequence;const auto actor=raidAttacker(current);
+  const auto strike=current.energy[actor]>=6?Choice::Heavy:Choice::Physical;const auto guard=actor?Choice::Ward:Choice::Brace;
+  CHECK(pair.a.choose(actor?guard:strike,pair.now));CHECK(pair.b.choose(actor?strike:guard,pair.now));pair.pump(0,true);
+  if(pair.a.view().raid.sequence==sequence)pair.tick(2400,0,true);
+  CHECK(pair.a.view().raid.sequence==sequence+1&&sameRaid(pair.a.view().raid,pair.b.view().raid));
+ }
+ CHECK(pair.a.view().stage==Stage::Finished&&pair.b.view().stage==Stage::Finished&&sameRaid(raid,pair.a.view().raid));
+ CHECK(!claimableRaid(pair.a.view(),0)&&!claimableRaid(pair.b.view(),0));
+}
+
+void raidWireCompatibility() {
+ Pair p;CHECK(p.a.open(ma,strongHost,p.now,100,0));CHECK(p.b.open(mb,strongGuest,p.now,200,0));
+ Datagram hello;CHECK(p.b.pop(hello)&&hello.bytes[5]==1&&hello.bytes[4]==kProtocolVersion);
+ Datagram old;
+ for(unsigned version=1;version<kProtocolVersion;++version){
+  old=hello;old.bytes[4]=static_cast<std::uint8_t>(version);reseal(old);
+  CHECK(p.a.receive(mb,old.bytes,old.length,p.now)&&p.a.view().peerCount==1&&!p.a.view().peers[0].compatible);
+  CHECK(!p.a.challenge(0,Mode::Coop,3,raidSeed(18,1,0),p.now));
+  CHECK(!p.a.challenge(0,Mode::Coop,3,raidSeed(18,1,0),p.now,true));
+ }
+ CHECK(p.a.receive(mb,hello.bytes,hello.length,p.now)&&p.a.view().peers[0].compatible);p.pump();
+ CHECK(p.a.challenge(0,Mode::Coop,3,raidSeed(18,1,0),p.now));Datagram offer;CHECK(p.a.pop(offer));
+ old=offer;old.bytes[4]=1;reseal(old);CHECK(!p.b.receive(ma,old.bytes,old.length,p.now)&&p.b.view().stage==Stage::Discovering);
+ CHECK(p.b.receive(ma,offer.bytes,offer.length,p.now)&&p.b.accept(p.now));p.pump();
+ p.now+=500;p.a.tick(p.now);Datagram state;CHECK(p.a.pop(state)&&state.bytes[5]==9);
+ const auto unchanged=p.b.view().raid;state.bytes[4]=1;reseal(state);
+ CHECK(!p.b.receive(ma,state.bytes,state.length,p.now)&&p.b.view().stage==Stage::Incompatible&&sameRaid(unchanged,p.b.view().raid));
+}
+
+
+void autoRaidCore() {
+ unsigned physical=0,magic=0,guards[3]{},critical=0;
+ for(unsigned scenario=0;scenario<6;++scenario)for(unsigned level=1;level<=24;++level){
+  Raid raid;CHECK(beginRaid(strongHost,strongGuest,raidSeed(18,level,scenario),raid));
+  unsigned visited=1;
+  while(raid.status==RaidStatus::Active&&raid.sequence<72){
+   const auto before=raid;auto replay=raid;const auto actor=raidAttacker(before);
+   CHECK(resolveAutoRaid(raid,before.sequence)&&resolveAutoRaid(replay,before.sequence)&&sameRaid(raid,replay));
+   CHECK(raid.sequence==before.sequence+1&&raid.lastAttack!=Choice::Heavy);
+   CHECK(raid.lastAttack==Choice::Physical||raid.lastAttack==Choice::Magic);
+   CHECK(sameFighter(raid.players[0],before.players[0])&&sameFighter(raid.players[1],before.players[1]));
+   CHECK(raid.hp[0]<=before.hp[0]&&raid.hp[1]<=before.hp[1]);
+   CHECK(raid.energy[actor]==before.energy[actor]-2&&raid.energy[1u-actor]==before.energy[1u-actor]);
+   CHECK(raid.lastTier==before.tier&&raid.lastFoeForm==before.foeForm&&raid.lastFoeLevel==before.foeLevel);
+   if(raid.tier!=before.tier){++visited;CHECK(raid.tier==before.tier+1&&raid.tierRound==0&&raid.foeHp==raid.foeMax);}
+   physical+=raid.lastAttack==Choice::Physical;magic+=raid.lastAttack==Choice::Magic;
+   if(raid.lastDefense!=Choice::None)++guards[static_cast<unsigned>(raid.lastDefense)-static_cast<unsigned>(Choice::Brace)];
+   critical+=raid.lastCritical;
+   const auto committed=raid;CHECK(!resolveAutoRaid(raid,before.sequence)&&sameRaid(raid,committed));
+   std::uint8_t bytes[kRaidBytes];Raid restored;CHECK(encodeRaid(raid,bytes,sizeof(bytes))&&decodeRaid(bytes,sizeof(bytes),restored)&&sameRaid(raid,restored));
+  }
+  CHECK(raid.status!=RaidStatus::Active);
+  if(level==1)CHECK(raid.status==RaidStatus::Cleared&&visited==digivice::expeditions::tierCount(scenario));
+  const auto final=raid;CHECK(!resolveAutoRaid(raid,raid.sequence)&&sameRaid(raid,final));
+ }
+ CHECK(physical&&magic&&guards[0]&&guards[1]&&guards[2]&&critical);
+ std::printf("Auto co-op144 runs: physical%u magic%u guards%u/%u/%u critical%u\n",physical,magic,guards[0],guards[1],guards[2],critical);
+}
+void autoRaidConsent() {
+ Pair duel;duel.open();CHECK(!duel.a.challenge(0,Mode::Auto,7,42,duel.now,true));
+ Pair manual;startRaid(manual);CHECK(!manual.a.view().coopAuto&&!manual.b.view().coopAuto);
+ const auto before=manual.a.view().raid;manual.tick(kAutoPaceMs,0,true);CHECK(sameRaid(before,manual.a.view().raid));
+ CHECK(manual.a.choose(Choice::Physical,manual.now));CHECK(manual.b.choose(Choice::Brace,manual.now));manual.pump();
+ CHECK(manual.a.view().raid.sequence==1&&sameRaid(manual.a.view().raid,manual.b.view().raid));
+ Pair p;p.open(strongHost,strongGuest,0,0);
+ CHECK(p.a.challenge(0,Mode::Coop,908,raidSeed(68,1,0),p.now,true));
+ Datagram offer;CHECK(p.a.pop(offer)&&offer.bytes[5]==2&&offer.length==88);
+ auto invalid=offer;invalid.bytes[34+49]=2;reseal(invalid);
+ CHECK(!p.b.receive(ma,invalid.bytes,invalid.length,p.now)&&p.b.view().stage==Stage::Discovering);
+ CHECK(p.b.receive(ma,offer.bytes,offer.length,p.now)&&p.b.view().coopAuto&&p.b.view().stage==Stage::Incoming);
+ invalid=offer;invalid.bytes[34+49]=0;reseal(invalid);
+ CHECK(!p.b.receive(ma,invalid.bytes,invalid.length,p.now)&&p.b.view().coopAuto);
+ p.tick(2500,0,true);CHECK(p.b.view().stage==Stage::Incoming&&p.a.view().raid.sequence==0);
+ CHECK(p.b.accept(p.now));Datagram acceptance;CHECK(p.b.pop(acceptance)&&acceptance.bytes[5]==3);
+ invalid=acceptance;invalid.bytes[34+49]=0;reseal(invalid);
+ CHECK(!p.a.receive(mb,invalid.bytes,invalid.length,p.now)&&p.a.view().stage==Stage::Outgoing);
+ CHECK(p.a.receive(mb,acceptance.bytes,acceptance.length,p.now));p.pump();
+ CHECK(p.a.view().coopAuto&&p.b.view().coopAuto&&sameRaid(p.a.view().raid,p.b.view().raid));
+ CHECK(!p.a.choose(Choice::Physical,p.now)&&!p.b.choose(Choice::Brace,p.now));
+ // A raw manual choice packet cannot bypass the agreed Auto policy.
+ auto injected=acceptance;injected.bytes[5]=5;injected.length=39;injected.bytes[6]=39;injected.bytes[7]=0;
+ injected.bytes[34]=static_cast<std::uint8_t>(Choice::Brace);reseal(injected);
+ CHECK(!p.a.receive(mb,injected.bytes,injected.length,p.now)&&p.a.view().raid.sequence==0);
+ // Explicit decline cancels the negotiated offer without resolving a turn.
+ Pair declined;declined.open(strongHost,strongGuest,0,0);
+ CHECK(declined.a.challenge(0,Mode::Coop,910,raidSeed(68,1,0),declined.now,true));declined.pump();
+ declined.b.cancel(declined.now);declined.pump();
+ CHECK(declined.a.view().stage==Stage::Cancelled&&declined.b.view().stage==Stage::Cancelled&&!validRaid(declined.a.view().raid));
+ // Crossed offers freeze the same winner's mode and require fresh recipient consent.
+ for(bool lowerMacAuto:{false,true}){
+  Pair crossed;crossed.open(strongHost,strongGuest,0,0);
+  CHECK(crossed.a.challenge(0,Mode::Coop,911,raidSeed(68,1,0),crossed.now,lowerMacAuto));
+  CHECK(crossed.b.challenge(0,Mode::Coop,912,raidSeed(68,1,0),crossed.now,!lowerMacAuto));crossed.pump(0,true);
+  CHECK(crossed.a.view().host&&!crossed.b.view().host&&crossed.b.view().stage==Stage::Incoming);
+  CHECK(crossed.a.view().coopAuto==lowerMacAuto&&crossed.b.view().coopAuto==lowerMacAuto);
+  CHECK(crossed.b.accept(crossed.now));crossed.pump();CHECK(sameRaid(crossed.a.view().raid,crossed.b.view().raid));
+ }
+}
+void autoRaidPacingAndVerification() {
+ for(unsigned scenario=0;scenario<6;++scenario){
+  Pair p;startRaid(p,scenario,true);const auto initial=p.a.view().raid;
+  p.tick(kAutoPaceMs-1,0,true);CHECK(sameRaid(initial,p.a.view().raid));
+  p.tick(1,1u<<9,true);CHECK(p.a.view().raid.sequence==1&&p.b.view().raid.sequence==0&&!p.a.view().peerAcknowledged);
+  const auto committed=p.a.view().raid;p.tick(kAutoPaceMs,1u<<9,true);CHECK(sameRaid(committed,p.a.view().raid));
+  p.tick(500,0,true);CHECK(sameRaid(committed,p.b.view().raid)&&p.a.view().peerAcknowledged);
+  if(p.a.view().stage==Stage::Playing){
+   p.tick(kAutoPaceMs-1,0,true);CHECK(sameRaid(committed,p.a.view().raid));p.tick(1,0,true);
+   CHECK(p.a.view().raid.sequence==committed.sequence+1);
+  }
+  while(p.a.view().stage==Stage::Playing&&p.a.view().raid.sequence<72){
+   const auto q=p.a.view().raid.sequence;p.tick(kAutoPaceMs,0,true);CHECK(p.a.view().raid.sequence==q+1);
+   CHECK(p.a.view().coopAuto&&p.b.view().coopAuto&&sameRaid(p.a.view().raid,p.b.view().raid));
+  }
+  CHECK(p.a.view().stage==Stage::Finished&&p.b.view().stage==Stage::Finished&&p.a.view().raid.status==RaidStatus::Cleared);
+  CHECK(p.a.view().raid.tier==digivice::expeditions::tierCount(scenario));
+ }
+ Pair p;startRaid(p,0,true);const auto before=p.b.view().raid;
+ p.now+=kAutoPaceMs;p.a.tick(p.now);Datagram frame;CHECK(p.a.pop(frame)&&frame.bytes[5]==9);
+ // Manual results can be internally valid but are not the agreed random Auto turn.
+ auto manual=before;CHECK(resolveRaid(manual,manual.sequence,Choice::Physical,Choice::Brace));
+ auto forged=frame;CHECK(encodeRaid(manual,forged.bytes+34,kRaidBytes));put(forged.bytes+26,manual.sequence);reseal(forged);
+ CHECK(!p.b.receive(ma,forged.bytes,forged.length,p.now)&&sameRaid(before,p.b.view().raid));
+ // A host cannot skip the acknowledgement barrier with a future tier result.
+ auto future=before;CHECK(resolveAutoRaid(future,future.sequence)&&resolveAutoRaid(future,future.sequence));
+ forged=frame;CHECK(encodeRaid(future,forged.bytes+34,kRaidBytes));put(forged.bytes+26,future.sequence);reseal(forged);
+ CHECK(!p.b.receive(ma,forged.bytes,forged.length,p.now)&&sameRaid(before,p.b.view().raid));
+ CHECK(p.b.receive(ma,frame.bytes,frame.length,p.now));p.pump(1u<<6);const auto committed=p.a.view().raid;
+ p.now+=kAutoPaceMs;p.a.tick(p.now);CHECK(sameRaid(committed,p.a.view().raid));
+ Datagram retransmit;CHECK(p.a.pop(retransmit)&&retransmit.bytes[5]==9);
+ CHECK(p.b.receive(ma,retransmit.bytes,retransmit.length,p.now));p.pump();
+ p.tick(kAutoPaceMs-1);CHECK(sameRaid(committed,p.a.view().raid));p.tick(1);CHECK(p.a.view().raid.sequence==committed.sequence+1);
+}
+void autoRaidReconnectAndRewards() {
+ // Challenge, acceptance, raid result, ACK and sync loss recover without
+ // changing the negotiated mode or resolving an extra exchange.
+ for(unsigned lost:{2u,3u,9u,6u,8u}){
+  Pair fault;fault.open(strongHost,strongGuest,0,0);
+  CHECK(fault.a.challenge(0,Mode::Coop,1000+lost,raidSeed(68,1,0),fault.now,true));fault.pump(1u<<lost,true);fault.tick(500,0,true);
+  CHECK(fault.b.view().stage==Stage::Incoming&&fault.b.view().coopAuto);CHECK(fault.b.accept(fault.now));fault.pump(1u<<lost,true);fault.tick(500,0,true);
+  CHECK(fault.a.view().stage==Stage::Playing&&fault.b.view().stage==Stage::Playing&&sameRaid(fault.a.view().raid,fault.b.view().raid));
+  fault.tick(kAutoPaceMs,1u<<lost,true);fault.tick(500,0,true);
+  CHECK(fault.a.view().raid.sequence==1&&sameRaid(fault.a.view().raid,fault.b.view().raid));
+  CHECK(fault.a.view().coopAuto&&fault.b.view().coopAuto);
+ }
+ // Either device may host; identities remain frozen across all three tiers.
+ for(unsigned initiator=0;initiator<2;++initiator){
+  Pair side;side.open(strongHost,strongGuest,0,0);auto& host=initiator?side.b:side.a;auto& guest=initiator?side.a:side.b;
+  CHECK(host.challenge(0,Mode::Coop,1100+initiator,raidSeed(68,1,0),side.now,true));side.pump();CHECK(guest.accept(side.now));side.pump();
+  const auto offeredHost=host.view().offered[0],offeredGuest=host.view().offered[1];
+  while(host.view().stage==Stage::Playing&&host.view().raid.sequence<72){
+   const auto sequence=host.view().raid.sequence;side.tick(kAutoPaceMs,0,true);
+   CHECK(host.view().raid.sequence==sequence+1&&sameRaid(host.view().raid,guest.view().raid));
+   CHECK(sameFighter(host.view().raid.players[0],offeredHost)&&sameFighter(host.view().raid.players[1],offeredGuest));
+  }
+  CHECK(host.view().raid.status==RaidStatus::Cleared&&host.view().raid.tier==3);
+ }
+ Pair p;startRaid(p,0,true);p.tick(kAutoPaceMs,0,true);const auto first=p.a.view().raid;
+ p.tick(kReconnectMs+1,0xffffffffu);CHECK(p.a.view().stage==Stage::Reconnecting&&p.b.view().stage==Stage::Reconnecting&&sameRaid(first,p.a.view().raid));
+ p.tick(500,0,true);CHECK(p.a.view().stage==Stage::Playing&&p.b.view().stage==Stage::Playing&&p.a.view().coopAuto&&p.b.view().coopAuto);
+ // As in existing friendly Auto, a frame already acknowledged before the
+ // outage has already completed its visible hold and may advance once.
+ CHECK(p.a.view().raid.sequence<=first.sequence+1&&sameRaid(p.a.view().raid,p.b.view().raid));
+ const auto resumed=p.a.view().raid;
+ p.tick(kAutoPaceMs-1);CHECK(sameRaid(resumed,p.a.view().raid));p.tick(1);CHECK(p.a.view().raid.sequence==resumed.sequence+1);
+ const auto second=p.a.view().raid;p.a.cancel(p.now);p.pump(0,true);
+ CHECK(p.a.view().stage==Stage::Cancelled&&p.b.view().stage==Stage::Cancelled&&!claimableRaid(p.a.view(),0)&&sameRaid(second,p.a.view().raid));
+ Pair reboot;startRaid(reboot,0,true);reboot.tick(kAutoPaceMs);const auto committed=reboot.a.view().raid;
+ reboot.b.close();CHECK(reboot.b.open(mb,strongGuest,reboot.now+1,201,0));++reboot.now;reboot.pump();reboot.tick(500);
+ CHECK(reboot.b.view().stage==Stage::Discovering&&!reboot.b.view().coopAuto&&!claimableRaid(reboot.b.view(),0));
+ reboot.tick(kSessionTimeoutMs);CHECK(reboot.a.view().stage==Stage::TimedOut&&sameRaid(committed,reboot.a.view().raid));
+ // An unacknowledged result needs its full hold after it actually arrives.
+ Pair unacked;startRaid(unacked,0,true);unacked.now+=kAutoPaceMs;unacked.a.tick(unacked.now);
+ Datagram held;CHECK(unacked.a.pop(held)&&held.bytes[5]==9);const auto pending=unacked.a.view().raid;
+ unacked.tick(kReconnectMs+1,0xffffffffu);CHECK(unacked.a.view().stage==Stage::Reconnecting);
+ unacked.tick(500,0,true);CHECK(sameRaid(pending,unacked.a.view().raid)&&sameRaid(pending,unacked.b.view().raid));
+ unacked.tick(kAutoPaceMs-1);CHECK(sameRaid(pending,unacked.a.view().raid));unacked.tick(1);CHECK(unacked.a.view().raid.sequence==pending.sequence+1);
+ const auto newer=unacked.b.view().raid;CHECK(unacked.b.receive(ma,held.bytes,held.length,unacked.now));unacked.pump(0,true);
+ CHECK(sameRaid(newer,unacked.b.view().raid));
+ // The same complete lost-final-ACK, checkpoint failure, duplicate award and
+ // reboot rejection test runs against Auto as well as Manual.
+ raidFinalClaims(true);
+}
+
+
+void survivorProtocol() {
+ for(bool automatic:{false,true})for(unsigned dead:{0u,1u}) {
+  Pair p;
+  const Fighter host{17,18,automatic?10u:dead?40u:10u,2,2},guest{23,automatic?18u:11u,automatic?10u:dead?10u:40u,2,2};
+  const auto seed=automatic?(dead?raidSeed(18,8,0):raidSeed(11,10,0)):
+      raidSeed(25,dead?26:17,0);
+  p.open(host,guest,0,0);CHECK(p.a.challenge(0,Mode::Coop,8000+dead,seed,p.now,automatic));p.pump();
+  CHECK(p.b.accept(p.now));p.pump();
+  for(unsigned n=0;n<72&&p.a.view().raid.hp[dead]&&p.a.view().stage==Stage::Playing;++n)raidTurn(p,0,true);
+  const bool naturalKo=p.a.view().stage==Stage::Playing&&!p.a.view().raid.hp[dead]&&p.a.view().raid.hp[1u-dead];
+  CHECK(naturalKo);if(!naturalKo)continue; // Never parse later packets after fixture failure.
+  CHECK(sameRaid(p.a.view().raid,p.b.view().raid));
+  const auto before=p.a.view().raid;const unsigned survivor=1u-dead;
+  CHECK(raidAttacker(before)==survivor&&raidDefender(before)==kNoRaidActor);
+  auto& knockedOut=dead?p.b:p.a;auto& living=dead?p.a:p.b;
+  for(auto input:{Choice::None,Choice::Physical,Choice::Heavy,Choice::Magic,Choice::Brace,Choice::Ward,Choice::Counter})
+   CHECK(!knockedOut.choose(input,p.now));
+  if(!automatic){
+   p.tick(kAutoPaceMs,0,true);CHECK(sameRaid(before,p.a.view().raid)); // No fabricated turn for the dead actor.
+   CHECK(living.choose(Choice::Physical,p.now));p.pump(1u<<9,true);
+  }else p.tick(kAutoPaceMs,1u<<9,true);
+  const auto committed=p.a.view().raid;
+  CHECK(committed.sequence==before.sequence+1&&committed.lastDefense==Choice::None);
+  CHECK(raidLastAttacker(committed)==survivor&&committed.energy[dead]==before.energy[dead]);
+  CHECK(!p.a.view().peerAcknowledged&&sameRaid(before,p.b.view().raid));
+  // Retrieve a retry, reject a structurally valid but divergent result, then
+  // acknowledge the exact result twice. KO guests have no pending choice.
+  p.now+=kRetryMs;p.a.tick(p.now);Datagram frame{};const bool hasFrame=p.a.pop(frame)&&frame.bytes[5]==9;
+  CHECK(hasFrame);if(!hasFrame)continue;
+  auto forged=frame;auto divergent=committed;divergent.rng^=0x100u;
+  CHECK(encodeRaid(divergent,forged.bytes+34,kRaidBytes));reseal(forged);
+  CHECK(!p.b.receive(ma,forged.bytes,forged.length,p.now)&&sameRaid(before,p.b.view().raid));
+  CHECK(p.b.receive(ma,frame.bytes,frame.length,p.now));CHECK(p.b.receive(ma,frame.bytes,frame.length,p.now));p.pump(1u<<6,true);
+  CHECK(sameRaid(committed,p.b.view().raid)&&!p.a.view().peerAcknowledged);
+  p.tick(kAutoPaceMs,1u<<6,true);CHECK(sameRaid(committed,p.a.view().raid));
+  p.tick(kRetryMs,0,true);CHECK(sameRaid(committed,p.a.view().raid)&&sameRaid(committed,p.b.view().raid));
+  CHECK(p.a.view().peerAcknowledged);
+  unsigned survivorTurns=1;
+  while(p.a.view().stage==Stage::Playing&&p.a.view().raid.sequence<72){
+   const auto prior=p.a.view().raid;raidTurn(p,0,true);++survivorTurns;
+   CHECK(sameRaid(p.a.view().raid,p.b.view().raid)&&p.a.view().raid.lastDefense==Choice::None);
+   CHECK(raidLastAttacker(p.a.view().raid)==survivor&&p.a.view().raid.energy[dead]==prior.energy[dead]);
+  }
+  CHECK(p.a.view().stage==Stage::Finished&&p.b.view().stage==Stage::Finished);
+  if(!automatic)CHECK(survivorTurns>=10&&p.a.view().raid.status==RaidStatus::Cleared);
+  CHECK(!knockedOut.choose(Choice::None,p.now));
+  std::printf("%s survivor%u: natural KO at%u, %u continuing exchanges, terminal%u\n",automatic?"Auto":"Manual",survivor,before.sequence,survivorTurns,static_cast<unsigned>(p.a.view().raid.status));
+ }
+}
+}
+int main(){core();consentAndLoss();recoverAndTimeout();simultaneous();wireGuards();boundedQueuesAndReordering();reviewedRegressions();autoPacing();autoModeConsent();autoRandomAlternation();autoReconnectAndReboot();careBonusHandshake();previousRulesHandshake();raidJoin();raidTiersAndEncoding();raidLossReorderAndReconnect();raidFinalClaims();raidEnergyBudget();raidWireCompatibility();autoRaidCore();autoRaidConsent();autoRaidPacingAndVerification();autoRaidReconnectAndRewards();survivorProtocol();std::printf("%u nearby checks, %u failures; Fighter%zuB / Match%zuB / Protocol%zuB / max packet%zuB\n",checks,failures,sizeof(Fighter),sizeof(Match),sizeof(Protocol),34+kMatchBytes+4);return failures?1:0;}

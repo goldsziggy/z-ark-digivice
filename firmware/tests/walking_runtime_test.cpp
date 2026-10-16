@@ -213,7 +213,20 @@ void queuedRecovery() {
         CHECK(h.runtime.uiSequence_==observed && h.state.message==Message::Fed && h.state.sequence>observed);
     }
 }
+void committedCriticalAudio() {
+    Harness h;CHECK(apply(h.state,Action::Walk,100)==Error::None);
+    CHECK(apply(h.state,Action::DigiModify,0xD101)==Error::None);
+    const auto before=h.state;CHECK(apply(h.state,Action::Magic)==Error::None);
+    CHECK(h.saves.checkpoint(h.state));
+    CHECK(h.runtime.battle_.startTactical(before,h.state,Action::Magic,0,0));
+    h.runtime.pollBattlePresentation(0);CHECK(h.runtime.audio_.last==device::AudioCue::Magic);
+    h.runtime.pollBattlePresentation(350);CHECK(h.runtime.audio_.last==device::AudioCue::DigiCriticalHit);
+    const auto cues=h.runtime.audio_.cues;h.runtime.pollBattlePresentation(351);CHECK(h.runtime.audio_.cues==cues);
+    CHECK(h.runtime.interfaceDirty_);h.runtime.battle_.cancel();
+    h.runtime.pollBattlePresentation(400);CHECK(h.runtime.audio_.cues==cues);
+}
 int main() {
+    committedCriticalAudio();
     unseededWorldIsLifetimeOnly();
     homePanels();queuedRecovery();
     {
@@ -463,7 +476,7 @@ int main() {
         };
         for(unsigned i=0;i<3;++i)CHECK(tap(355,190).kind==deviceui::IntentKind::Navigation);
         CHECK(tap(206,323).kind==deviceui::IntentKind::OpenNearby);
-        CHECK(tap(120,312).kind==deviceui::IntentKind::Navigation);
+        CHECK(tap(120,278).kind==deviceui::IntentKind::Navigation); // Current BATTLE button y252..303.
         CHECK(tap(280,240).kind==deviceui::IntentKind::Navigation);
         const auto invite=tap(206,302);CHECK(invite.kind==deviceui::IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Auto);fake::now=1;
         for(unsigned changed=0;changed<6;++changed) {

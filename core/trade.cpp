@@ -39,9 +39,11 @@ bool boundOffer(const State& state,const Transcript& t,unsigned side) {
     if(side>1||!valid(t)||state.sequence<t.sourceSequences[side]||state.receivedTrades!=t.receivedTrades[side]||!canOffer(state,t.offers[side].id))return false;
     return sameMember(*findMember(state,t.offers[side].id),t.offers[side]);
 }
-bool exchange(const State& state,const Transcript& t,unsigned side,State& out) {
-    if(!boundOffer(state,t,side)||state.sequence==kMax||state.nextMemberId==kMax||state.receivedTrades==kMax)return false;
-    auto next=state;
+// Only mutate caller-owned private scratch. Public operations publish it after
+// all validation succeeds, keeping transactional outputs without another State
+// on the deeply nested recovery stack.
+bool exchange(State& next,const Transcript& t,unsigned side) {
+    if(!boundOffer(next,t,side)||next.sequence==kMax||next.nextMemberId==kMax||next.receivedTrades==kMax)return false;
     const auto outgoing=t.offers[side].id;
     std::size_t index=0;while(index<next.collectionCount&&next.collection[index].id!=outgoing)++index;
     if(index==next.collectionCount)return false;
@@ -66,8 +68,7 @@ bool exchange(const State& state,const Transcript& t,unsigned side,State& out) {
     const auto* active=activeMember(next);
     next.hp=active->hp;next.energy=active->energy;next.fullness=active->fullness;
     next.mood=active->mood;next.bond=active->bond;next.level=active->level;
-    if(!isValid(next))return false;
-    out=next;return true;
+    return isValid(next);
 }
 bool validBase(const Record& record) {
     return record.serial&&record.localSide<2&&static_cast<unsigned>(record.phase)<=static_cast<unsigned>(Phase::Applied)&&
@@ -91,7 +92,7 @@ bool canOffer(const State& s,std::uint32_t id){
     return false;
 }
 bool valid(const Transcript& t){
-    return (t.rules==13||t.rules==14||t.rules==15||t.rules==16||t.rules==17||t.rules==18||t.rules==kRulesVersion)&&validIdentity(t.peers[0])&&validIdentity(t.peers[1])&&std::memcmp(t.peers[0].bytes,t.peers[1].bytes,6)<0&&t.session&&t.nonces[0]&&t.nonces[1]&&t.revision&&
+    return (t.rules==13||t.rules==14||t.rules==15||t.rules==16||t.rules==17||t.rules==18||t.rules==19||t.rules==20||t.rules==21||t.rules==kRulesVersion)&&validIdentity(t.peers[0])&&validIdentity(t.peers[1])&&std::memcmp(t.peers[0].bytes,t.peers[1].bytes,6)<0&&t.session&&t.nonces[0]&&t.nonces[1]&&t.revision&&
         t.sourceSequences[0]!=kMax&&t.sourceSequences[1]!=kMax&&t.receivedTrades[0]<=t.sourceSequences[0]&&t.receivedTrades[1]<=t.sourceSequences[1]&&validMember(t.offers[0],t.sourceSequences[0])&&validMember(t.offers[1],t.sourceSequences[1]);
 }
 bool encodeTranscript(const Transcript& t,std::uint8_t* bytes,std::size_t capacity){
@@ -133,11 +134,19 @@ bool prepare(const State& s,const Transcript& t,unsigned side,std::uint32_t seri
     Record record;record.serial=serial;record.localSide=static_cast<std::uint8_t>(side);record.transcript=t;record.before=s;record.after=s;
     out=record;return true;
 }
+namespace {
+// Keep the transactional candidate out of commit's validation call chain. GCC
+// reserves locals at entry even on branches, otherwise live UI/trade callers
+// can retain an unnecessary full State under valid/backgroundOnly/sameState.
+__attribute__((noinline)) bool commitValidated(const Record& prepared,const State& current,Record& out){
+    auto after=current;
+    if(!exchange(after,prepared.transcript,prepared.localSide))return false;
+    out=prepared;out.after=after;out.phase=Phase::Committed;return true;
+}
+}
 bool commit(const Record& prepared,const State& current,Record& out){
     if(!valid(prepared)||prepared.phase!=Phase::Prepared||!backgroundOnly(prepared.before,current))return false;
-    State after;
-    if(!exchange(current,prepared.transcript,prepared.localSide,after))return false;
-    out=prepared;out.after=after;out.phase=Phase::Committed;return true;
+    return commitValidated(prepared,current,out);
 }
 bool abort(const Record& prepared,Record& out){if(!valid(prepared)||prepared.phase!=Phase::Prepared)return false;out=prepared;out.phase=Phase::Aborted;return true;}
 bool abortUnprepared(const State& current,const Transcript& t,unsigned side,std::uint32_t serial,Record& out){
@@ -157,8 +166,7 @@ bool valid(const Record& record){
     if(!record.after.sequence)return false;
     auto current=record.before;copyBackground(record.after,current);--current.sequence;
     if(!backgroundOnly(record.before,current))return false;
-    State expected;
-    return exchange(current,record.transcript,record.localSide,expected)&&sameState(expected,record.after);
+    return exchange(current,record.transcript,record.localSide)&&sameState(current,record.after);
 }
 namespace {
 // Validation itself needs temporary care states. Do not keep these two encoded
@@ -176,14 +184,28 @@ __attribute__((noinline)) bool encodeValidatedRecord(const Record& record,std::u
 bool encodeRecord(const Record& record,std::uint8_t* bytes,std::size_t capacity){
     return bytes&&capacity>=kRecordBytes&&valid(record)&&encodeValidatedRecord(record,bytes);
 }
-bool decodeRecord(const std::uint8_t* bytes,std::size_t length,Record& out){
-    if(!bytes||(length!=kRecordBytes&&length!=kV19RecordBytes&&length!=kV20RecordBytes&&length!=kV21RecordBytes&&length!=kV22RecordBytes&&length!=kV26RecordBytes)||std::memcmp(bytes,"DGTR",4)||get32(bytes+4)!=kVersion||bytes[12]>static_cast<unsigned>(Phase::Applied)||bytes[13]>1||bytes[14]||bytes[15]||get32(bytes+length-4)!=crc(bytes,length-4))return false;
-    const bool legacy=length!=kRecordBytes;
-    const auto snapshotBytes=length==kV19RecordBytes?kV19SnapshotSize:length==kV20RecordBytes?kV20SnapshotSize:length==kV21RecordBytes?kV21SnapshotSize:length==kV22RecordBytes?kV22SnapshotSize:length==kV26RecordBytes?kSchema26SnapshotSize:kSnapshotSize;
-    const auto expectedStatus=legacy?SnapshotStatus::Migrated:SnapshotStatus::Ok;
-    Record result;result.serial=get32(bytes+8);result.phase=static_cast<Phase>(bytes[12]);result.localSide=bytes[13];
+bool decodeRecord(const std::uint8_t* bytes,std::size_t length,Record& out,Record& scratch){
+    if(&out==&scratch||!bytes||(length!=kRecordBytes&&length!=kV28RecordBytes&&length!=kV19RecordBytes&&length!=kV20RecordBytes&&length!=kV21RecordBytes&&length!=kV22RecordBytes&&length!=kV26RecordBytes)||std::memcmp(bytes,"DGTR",4)||get32(bytes+4)!=kVersion||bytes[12]>static_cast<unsigned>(Phase::Applied)||bytes[13]>1||bytes[14]||bytes[15]||get32(bytes+length-4)!=crc(bytes,length-4))return false;
+    const auto overlaps = [](const void* a, std::size_t an, const void* b, std::size_t bn) {
+        const auto x=reinterpret_cast<std::uintptr_t>(a), y=reinterpret_cast<std::uintptr_t>(b);
+        return x <= y ? y-x < an : x-y < bn;
+    };
+    if(overlaps(bytes,length,&out,sizeof(out)) || overlaps(bytes,length,&scratch,sizeof(scratch)))return false;
+    const auto snapshotBytes=length==kV19RecordBytes?kV19SnapshotSize:length==kV20RecordBytes?kV20SnapshotSize:length==kV21RecordBytes?kV21SnapshotSize:length==kV22RecordBytes?kV22SnapshotSize:length==kV26RecordBytes?kSchema26SnapshotSize:length==kV28RecordBytes?kSchema28SnapshotSize:kSnapshotSize;
+    // Schemas27/28 have the same byte length; inspect their actual schema,
+    // never infer the migration status from envelope length alone.
+    const auto* beforeBytes=bytes+16+kTranscriptBytes;
+    const auto* afterBytes=beforeBytes+snapshotBytes;
+    const auto snapshotSchema=static_cast<unsigned>(beforeBytes[4])|(static_cast<unsigned>(beforeBytes[5])<<8);
+    if(beforeBytes[4]!=afterBytes[4]||beforeBytes[5]!=afterBytes[5])return false;
+    const auto expectedStatus=snapshotSchema==kSchemaVersion?SnapshotStatus::Ok:SnapshotStatus::Migrated;
+    auto& result=scratch;result.serial=get32(bytes+8);result.phase=static_cast<Phase>(bytes[12]);result.localSide=bytes[13];
     if(!decodeTranscript(bytes+16,kTranscriptBytes,result.transcript)||decodeSnapshot(bytes+16+kTranscriptBytes,snapshotBytes,result.before)!=expectedStatus||
        decodeSnapshot(bytes+16+kTranscriptBytes+snapshotBytes,snapshotBytes,result.after)!=expectedStatus||!valid(result))return false;
     out=result;return true;
+}
+bool decodeRecord(const std::uint8_t* bytes,std::size_t length,Record& out){
+    Record scratch;
+    return decodeRecord(bytes,length,out,scratch);
 }
 } // namespace digivice::trade

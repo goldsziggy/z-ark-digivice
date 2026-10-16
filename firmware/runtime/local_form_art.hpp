@@ -4,7 +4,8 @@
 
 namespace digivice::sprite {
 // User-selected private SD files, not signed downloads. One exact numeric path,
-// one descriptor and the existing32px decoder. No index scan or asset heap.
+// one descriptor and the existing32px decoder. The explicit same-species
+// GrapLeomon alias is tried only if the exact file is absent. No index scan.
 // Main-task owner; the mount must outlive this object. Close before unmount.
 class LocalFormArt {
 public:
@@ -16,6 +17,7 @@ public:
     void close();
     bool isOpen() const { return sprite_.isOpen(); }
     std::uint32_t formId() const { return formId_; }
+    std::uint32_t sourceFormId() const { return sourceFormId_; }
     const Info& info() const { return sprite_.info(); }
     const char* diagnostic() const { return diagnostic_; }
     Result decode(Animation animation, std::size_t frame,
@@ -27,7 +29,7 @@ private:
     char directory_[96]{};
     int descriptor_ = -1;
     std::size_t bytes_ = 0;
-    std::uint32_t formId_ = 0;
+    std::uint32_t formId_ = 0, sourceFormId_ = 0;
     const char* diagnostic_ = "private exact-form art not opened";
 };
 } // namespace digivice::sprite

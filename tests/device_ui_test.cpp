@@ -69,6 +69,7 @@ struct Harness {
             starter.input(onboarding::Input::Previous); break;
         case IntentKind::StarterBack: starter.input(onboarding::Input::HoldBack); break;
         case IntentKind::SleepTimeout: if(commit) model.sleepTimeoutSeconds=static_cast<std::uint16_t>(intent.value); break;
+        case IntentKind::RotateScreen: if(commit) model.rotationDegrees=static_cast<std::uint16_t>(intent.value); break;
         case IntentKind::ToggleMute: model.muted=!model.muted; break;
         case IntentKind::ToggleMusic: model.musicEnabled=!model.musicEnabled; break;
         case IntentKind::Volume: model.volumePercent=static_cast<std::uint8_t>(intent.value); break;
@@ -113,6 +114,15 @@ struct Harness {
         dispatch(tap(206,274)); CHECK(ui.screen()==Screen::Battle);
     }
 };
+
+Intent tapButton(Harness& h,const char* label) {
+    Controller::Button buttons[Controller::kMaxButtons];
+    const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+    const auto* button=findLabel(buttons,n,label);
+    CHECK(button);
+    return h.tap(button->x+button->w/2,button->y+button->h/2);
+}
+void tapLabel(Harness& h,const char* label) { h.dispatch(tapButton(h,label)); }
 
 void nextCapturePhase(Harness& h,bool hit) {
     const auto target=capturering::sample(0,h.state.wildFormId).targetRadius;
@@ -255,7 +265,7 @@ void homeCarousel() {
         h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Home && h.ui.homePanel()==panels[i]);
     }
     CHECK(h.gameWrites==writes && std::memcmp(&saved,&h.state,sizeof(State))==0);
-    // The hero is bounded to a176px square, even for16px frames and max tilt.
+    // The hero fits between the XP bar and main action, including max tilt.
     // Unique synthetic pixels give a direct raster bound, not an implementation mirror.
     std::array<std::uint16_t,32*32> pixels; pixels.fill(0xF81F);
     std::array<std::uint8_t,128> mask; mask.fill(0xFF);
@@ -267,13 +277,13 @@ void homeCarousel() {
         h.model.gyroEnabled=true; h.model.tiltX=h.model.tiltY=static_cast<std::int16_t>(tilt);
         output.fill(0xBEEF); CHECK(h.ui.render(h.state,h.model,output.data()+1,kPixels,1000));
         CHECK(output.front()==0xBEEF && output.back()==0xBEEF);
-        const int size=side==16 ? 176 : 160;
-        const int x0=206+tilt/2-size/2, y0=196+tilt/2-size/2;
+        const int size=side==16 ? 144 : 128;
+        const int x0=206+tilt/2-size/2, y0=220+tilt/2-size/2;
         unsigned colored=0;
         for(int y=0;y<kSize;++y) for(int x=0;x<kSize;++x) {
             if(output[1+y*kSize+x]!=0xF81F) continue;
             ++colored; CHECK(x>=x0 && x<x0+size && y>=y0 && y<y0+size);
-            CHECK(Controller::inside(x,y) && y<300 && y>102);
+            CHECK(Controller::inside(x,y) && y<300 && y>=144);
         }
         CHECK(colored==static_cast<unsigned>(size*size));
     }
@@ -318,7 +328,7 @@ void walkingCheckpoints() {
     CHECK(!h.ui.interactionIdle() && h.state.pendingEncounter.formId);
     h.dispatch(h.event(TouchKind::Up,206,323,60)); CHECK(h.ui.screen()==Screen::Care);
     // A pending care proposal uses the newest state, with one eventual write.
-    const auto feed=h.tap(120,252); CHECK(feed.kind==IntentKind::GameAction && h.ui.pending());
+    const auto feed=tapButton(h,"FEED"); CHECK(feed.kind==IntentKind::GameAction && h.ui.pending());
     checkpoint(h,Action::AccrueSteps,1); CHECK(h.ui.pending() && !h.ui.interactionIdle());
     h.dispatch(feed); const auto careAt=h.now;
     CHECK(h.ui.artRequest(h.state,h.model,careAt+100).animation==sprite::Animation::Care);
@@ -500,13 +510,13 @@ void nearbyModeConsent() {
     view.peers[0].mac={{2,1,2,3,4,5}};view.peers[0].fighter={21,18,2};view.peers[0].openNonce=77;view.peers[0].available=true;
     const auto* member=activeMember(h.state);const auto care=memberCare(*member);
     h.model.nearbyLocalFighter={member->id,member->formId,member->level,care.offense,care.protection};
-    h.model.nearby=&view;h.sync();h.openHome(HomePanel::Nearby);h.dispatch(h.tap(120,312));
+    h.model.nearby=&view;h.sync();h.openHome(HomePanel::Nearby);h.dispatch(tapButton(h,"BATTLE"));
     CHECK(h.ui.screen()==Screen::NearbyReview);
     auto invite=h.tap(206,302);CHECK(invite.kind==IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Tactical);
     CHECK(invite.nearbyOpenNonce==77 && !std::memcmp(invite.peer.bytes,view.peers[0].mac.bytes,6));
     CHECK(nearby::sameFighter(invite.nearbyFighters[0],h.model.nearbyLocalFighter));
     CHECK(nearby::sameFighter(invite.nearbyFighters[1],view.peers[0].fighter));h.dispatch(invite);
-    h.dispatch(h.tap(120,312));
+    h.dispatch(tapButton(h,"BATTLE"));
     // Independent CCW90 raw point selects Auto; release does not also invite.
     std::array<std::uint16_t,kPixels> tacticalPixels,autoPixels;
     CHECK(h.ui.render(h.state,h.model,tacticalPixels.data(),kPixels,90000));
@@ -517,9 +527,9 @@ void nearbyModeConsent() {
     CHECK(tacticalPixels[218*kSize+62]==autoPixels[218*kSize+210]);
     CHECK(tacticalPixels[218*kSize+210]==autoPixels[218*kSize+62]);
     CHECK(!h.event(TouchKind::Up,206,302));
-    h.dispatch(h.tap(206,365));h.dispatch(h.tap(120,312)); // Retain mode within this live session.
+    h.dispatch(h.tap(206,365));h.dispatch(tapButton(h,"BATTLE")); // Retain mode within this live session.
     invite=h.tap(206,302);CHECK(invite.kind==IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Auto);h.dispatch(invite);
-    h.dispatch(h.tap(120,312));CHECK(!h.event(TouchKind::Down,206,302));
+    h.dispatch(tapButton(h,"BATTLE"));CHECK(!h.event(TouchKind::Down,206,302));
     ++view.peers[0].openNonce;h.sync();CHECK(h.ui.screen()==Screen::Nearby && !h.event(TouchKind::Up,206,302));
     // A replacement invitation cannot inherit a held acceptance, even if its
     // stage and session are unchanged while the mode or either fighter changes.
@@ -779,7 +789,7 @@ void fullRosterCaptureControls() {
         CHECK(isValid(automatic.state)); automatic.sync();
     }
     const auto saved=automatic.state;
-    const auto runAway=automatic.tap(206,275);
+    const auto runAway=automatic.tap(206,304);
     CHECK(runAway.kind==IntentKind::GameAction && runAway.action==Action::Retreat);
     automatic.ui.resolve(); automatic.sync();
     CHECK(autoFightReady(automatic.state,automatic.model));
@@ -1193,7 +1203,7 @@ void xpCompanionControls() {
     for(int tilt:{-8,8}){
         h.model.tiltX=h.model.tiltY=tilt;CHECK(h.ui.render(h.state,h.model,frame.data(),frame.size(),h.now+10000));
         unsigned count=0;
-        for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x)if(frame[y*kSize+x]==0xf81f){++count;CHECK(y>=128&&y<208&&x>=166&&x<246);}
+        for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x)if(frame[y*kSize+x]==0xf81f){++count;CHECK(y>=136&&y<216&&x>=166&&x<246);}
         CHECK(count>4000);
     }
 }
@@ -1250,6 +1260,33 @@ void soundSettings() {
     h.dispatch(h.tap(206,365));CHECK(h.ui.screen()==Screen::Settings);
 }
 
+void buzzerSoundSettings() {
+    Harness h;h.choose();h.model.buzzerOnly=true;h.model.audioAvailable=true;h.model.volumePercent=100;
+    h.openHome(HomePanel::Settings);h.dispatch(h.tap(120,252));
+    CHECK(h.ui.screen()==Screen::Sound);
+    const auto saved=h.state;const auto writes=h.gameWrites;
+    auto rhythm=h.tap(280,252);CHECK(rhythm.kind==IntentKind::ToggleMusic);h.dispatch(rhythm);
+    CHECK(h.model.musicEnabled);
+    auto beep=h.tap(206,304);CHECK(beep.kind==IntentKind::TestBeep && h.ui.pending());
+    CHECK(!h.event(TouchKind::Up,206,304));h.dispatch(beep);
+    h.dispatch(h.tap(280,252));CHECK(!h.model.musicEnabled);
+    auto volume=h.tap(55,180);CHECK(volume.kind==IntentKind::Volume&&volume.value==0);h.dispatch(volume);
+    CHECK(!h.tap(55,180));volume=h.tap(355,180);CHECK(volume.kind==IntentKind::Volume&&volume.value==100);h.dispatch(volume);
+    CHECK(!h.tap(355,180));
+    auto mute=h.tap(120,252);CHECK(mute.kind==IntentKind::ToggleMute);h.dispatch(mute);CHECK(h.model.muted);
+    h.dispatch(h.tap(120,252));CHECK(!h.model.muted);
+    std::array<std::uint16_t,kPixels+2> pixels;pixels.fill(0xbeef);
+    CHECK(h.ui.render(h.state,h.model,pixels.data()+1,kPixels,90000));CHECK(pixels.front()==0xbeef&&pixels.back()==0xbeef);
+    CHECK(h.gameWrites==writes&&std::memcmp(&saved,&h.state,sizeof(State))==0);
+    if(const char* path=std::getenv("DIGIVICE_BUZZER_UI_PPM")) {
+        auto* file=std::fopen(path,"wb");CHECK(file);std::fprintf(file,"P6\n412 412\n255\n");
+        for(std::size_t i=1;i<=kPixels;++i){const auto c=pixels[i];const unsigned char rgb[]{
+            static_cast<unsigned char>(((c>>11)&31)*255/31),static_cast<unsigned char>(((c>>5)&63)*255/63),static_cast<unsigned char>((c&31)*255/31)};
+            CHECK(std::fwrite(rgb,1,3,file)==3);}
+        CHECK(std::fclose(file)==0);
+    }
+}
+
 // Synthetic two-production-partner history; stable local IDs never equal slots.
 State tradeUiState() {
     auto state=stableMemberFixture(18);auto& first=state.collection[0];
@@ -1265,7 +1302,7 @@ void tradingScreens() {
     // Radio protocol arrays intentionally differ in order: join by exact MAC.
     for(unsigned i=0;i<2;++i){std::memcpy(wire.peers[1-i].identity.bytes,net.peers[i].mac.bytes,6);wire.peers[1-i].compatible=true;wire.peers[1-i].advertisement.available=true;wire.peers[1-i].advertisement.nonce=101+i;}
     h.model.nearby=&net;h.model.trade=&wire;h.model.tradeWritable=true;h.sync();h.openHome(HomePanel::Nearby);
-    h.dispatch(h.tap(280,310));CHECK(h.ui.screen()==Screen::TradeChoose);
+    h.dispatch(tapButton(h,"TRADE"));CHECK(h.ui.screen()==Screen::TradeChoose);
     CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==11);
     h.dispatch(h.tap(355,180));CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==18);
     CHECK(!h.event(TouchKind::Up,355,180));h.dispatch(h.swipe(160,180,250,180));CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==11);
@@ -1273,8 +1310,8 @@ void tradingScreens() {
     auto invite=h.tap(206,312);CHECK(invite.kind==IntentKind::TradeInvite && invite.value==19 && trade::sameIdentity(invite.peer,wire.peers[1].identity));
     CHECK(h.ui.pending() && !h.tap(206,312));h.dispatch(invite);
     CHECK(!h.event(TouchKind::Down,206,312));++wire.peers[1].advertisement.nonce;h.sync();CHECK(h.ui.screen()==Screen::Nearby && !h.event(TouchKind::Up,206,312));
-    h.dispatch(h.tap(280,310));wire.peerCount=0;h.sync();CHECK(h.ui.screen()==Screen::Nearby);
-    wire.peerCount=2;h.sync();h.dispatch(h.tap(280,310));h.dispatch(h.tap(206,365));
+    h.dispatch(tapButton(h,"TRADE"));wire.peerCount=0;h.sync();CHECK(h.ui.screen()==Screen::Nearby);
+    wire.peerCount=2;h.sync();h.dispatch(tapButton(h,"TRADE"));h.dispatch(h.tap(206,365));
     // Both immutable offers are visible, with the local/remote side independent
     // of the coordinator's lexicographic identity order.
     auto& t=wire.transcript;t.peers[0].bytes[0]=2;t.peers[0].bytes[5]=1;t.peers[1]=wire.peers[1].identity;
@@ -1308,7 +1345,7 @@ void tradingScreens() {
     // A prepared boot can open Nearby even while foreground game writes lock.
     Harness locked;locked.choose();locked.model.writable=false;locked.sync();locked.selectHome(HomePanel::Nearby);auto reconnect=locked.tap(206,323);CHECK(reconnect.kind==IntentKind::OpenNearby);
     // A lone playable partner (even with an old test fixture) cannot be offered.
-    for(bool legacy:{false,true}){Harness one;one.choose();if(legacy)one.state=stableMemberFixture(18);one.sync();wire={};wire.stage=tradewire::Stage::Discovering;wire.peerCount=1;std::memcpy(wire.peers[0].identity.bytes,net.peers[0].mac.bytes,6);wire.peers[0].advertisement.available=true;wire.peers[0].advertisement.nonce=1;wire.peers[0].compatible=true;one.model.trade=&wire;one.model.tradeWritable=true;one.model.nearby=&net;one.sync();one.openHome(HomePanel::Nearby);one.dispatch(one.tap(280,310));CHECK(one.ui.screen()==Screen::TradeChoose&&!one.tap(206,312));CHECK(one.ui.render(one.state,one.model,pixels.data()+1,kPixels,one.now));one.dispatch(one.tap(206,365));CHECK(one.ui.screen()==Screen::Nearby);}
+    for(bool legacy:{false,true}){Harness one;one.choose();if(legacy)one.state=stableMemberFixture(18);one.sync();wire={};wire.stage=tradewire::Stage::Discovering;wire.peerCount=1;std::memcpy(wire.peers[0].identity.bytes,net.peers[0].mac.bytes,6);wire.peers[0].advertisement.available=true;wire.peers[0].advertisement.nonce=1;wire.peers[0].compatible=true;one.model.trade=&wire;one.model.tradeWritable=true;one.model.nearby=&net;one.sync();one.openHome(HomePanel::Nearby);one.dispatch(tapButton(one,"TRADE"));CHECK(one.ui.screen()==Screen::TradeChoose&&!one.tap(206,312));CHECK(one.ui.render(one.state,one.model,pixels.data()+1,kPixels,one.now));one.dispatch(one.tap(206,365));CHECK(one.ui.screen()==Screen::Nearby);}
 }
 
 void autoCaptureChoice() {
@@ -1323,7 +1360,7 @@ void autoCaptureChoice() {
     }
     CHECK(found && trace.outcome==autobattle::Outcome::None && paused.captures==before.captures && !paused.captureAttempts);
     Harness h;h.state=before;h.sync();CHECK(h.ui.screen()==Screen::Encounter);h.dispatch(h.tap(206,274));
-    auto away=h.tap(206,275);CHECK(away.kind==IntentKind::GameAction && away.action==Action::Retreat);
+    auto away=h.tap(206,304);CHECK(away.kind==IntentKind::GameAction && away.action==Action::Retreat);
     h.ui.resolve(); h.sync();
     CHECK(autoFightReady(h.state,h.model));
     h.dispatch(Intent{IntentKind::GameAction,Action::AutoFight,0});CHECK(trade::sameState(h.state,paused));
@@ -1399,6 +1436,20 @@ void battleArtworkSequence() {
     };
     CHECK(h.ui.partnerArtRequest(h.state,h.model,h.now).animation==sprite::Animation::Idle);
     render(h.now);
+    // Full occupied32x32 artwork scales4x. No carousel edge arrow, HUD plate
+    // or action label may erase any of the two128px portraits.
+    CHECK(std::count(pixels.begin()+1,pixels.end()-1,0xF81F)+
+          std::count(pixels.begin()+1,pixels.end()-1,0x07FF)+
+          std::count(pixels.begin()+1,pixels.end()-1,0x1357)==2*128*128);
+    constexpr std::uint16_t textInk=((236>>3)<<11)|((246>>2)<<5)|(217>>3);
+    constexpr std::uint16_t textMint=((144>>3)<<11)|((231>>2)<<5)|(174>>3);
+    // The complete leading P and final L survive the RUN AWAY/CATCH buttons.
+    for(int x=190;x<194;++x) CHECK(pixels[1+292*kSize+x]==textInk);
+    for(int x=232;x<237;++x) CHECK(pixels[1+298*kSize+x]==textInk);
+    // The skill replaces the old mode caption, rather than drawing over it.
+    unsigned staleModePixels=0;
+    for(int y=65;y<72;++y)for(int x=130;x<282;++x)staleModePixels+=pixels[1+y*kSize+x]==textMint;
+    CHECK(staleModePixels==0);
     render(h.now,SpriteFacing::Right,SpriteFacing::Right);
     render(h.now,SpriteFacing::Front,SpriteFacing::Front);
     render(h.now,SpriteFacing::Unknown,SpriteFacing::Unknown);
@@ -1438,10 +1489,11 @@ void battleArtworkSequence() {
         h.model.partnerArtwork.contentWidth=12;h.model.partnerArtwork.contentHeight=20;
         CHECK(h.ui.render(h.state,h.model,pixels.data()+1,kPixels,h.now));
         const auto low=facing==SpriteFacing::Left ? 0x07FF : 0xF81F;
-        CHECK(pixels[1+150*kSize+88]==low && pixels[1+150*kSize+117]==low);
-        CHECK(pixels[1+150*kSize+118]!=low && pixels[1+150*kSize+147]!=low);
-        CHECK(pixels[1+150*kSize+87]!=0xF81F && pixels[1+150*kSize+87]!=0x07FF);
-        CHECK(pixels[1+150*kSize+148]!=0xF81F && pixels[1+150*kSize+148]!=0x07FF);
+        // 12x20 occupied pixels now scale6x inside128px:72px wide at x82..153.
+        CHECK(pixels[1+150*kSize+82]==low && pixels[1+150*kSize+117]==low);
+        CHECK(pixels[1+150*kSize+118]!=low && pixels[1+150*kSize+153]!=low);
+        CHECK(pixels[1+150*kSize+81]!=0xF81F && pixels[1+150*kSize+81]!=0x07FF);
+        CHECK(pixels[1+150*kSize+154]!=0xF81F && pixels[1+150*kSize+154]!=0x07FF);
     }
     // Wrong-form/animation buffers never display; absent art is a neutral tile.
     h.model.partnerArtwork={}; h.model.artwork.sprite={};
@@ -1555,14 +1607,17 @@ void tapAudit() {
     audit("Stats",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(kDetailTapX,kDetailTapY)); CHECK(h.ui.screen()==Screen::Stats); });
     audit("Evolution",[](Harness& h){ h.choose(); h.openPartners(); h.dispatch(h.tap(kDetailTapX,kDetailTapY)); h.dispatch(h.tap(206,306)); CHECK(h.ui.screen()==Screen::Evolution); });
     audit("Settings",[](Harness& h){ h.choose(); h.model.motionAvailable=true; h.sync(); h.openHome(HomePanel::Settings); CHECK(h.ui.screen()==Screen::Settings); });
+    audit("NFC Test",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); tapLabel(h,"NFC TEST"); h.model.nfcTest.available=true; h.sync(); CHECK(h.ui.screen()==Screen::NfcTest); });
     audit("Sound",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,252)); CHECK(h.ui.screen()==Screen::Sound); });
-    audit("Encounter settings",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(206,194)); CHECK(h.ui.screen()==Screen::EncounterSettings); });
+    audit("Buzzer Sound",[](Harness& h){ h.choose(); h.model.buzzerOnly=true; h.model.audioAvailable=true;
+        h.model.volumePercent=100; h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,252)); CHECK(h.ui.screen()==Screen::Sound); });
+    audit("Encounter settings",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,194)); CHECK(h.ui.screen()==Screen::EncounterSettings); });
     audit("Mode review",[](Harness& h){ h.choose(); h.openHome(HomePanel::Settings); h.dispatch(h.tap(131,304)); CHECK(h.ui.screen()==Screen::ModeReview); });
     audit("Nearby",[](Harness& h){ h.choose(); h.openHome(HomePanel::Nearby); CHECK(h.ui.screen()==Screen::Nearby); });
     audit("Dungeons",[](Harness& h){ h.choose(); h.openHome(HomePanel::Dungeons); CHECK(h.ui.screen()==Screen::Expeditions); });
     audit("Dungeon lobby",[](Harness& h){
         h.choose(); h.state.dungeonKeys=1; CHECK(isValid(h.state)); h.sync();
-        h.openHome(HomePanel::Dungeons); h.dispatch(h.tap(206,292)); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+        h.openHome(HomePanel::Dungeons); tapLabel(h,"OPEN LOBBY"); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
     });
     audit("Encounter",[](Harness& h){ h.choose(); CHECK(apply(h.state,Action::Walk,100)==Error::None); h.sync(); CHECK(h.ui.screen()==Screen::Encounter); });
     audit("Battle (tactical)",[](Harness& h){ h.choose(); h.encounter(); });
@@ -1604,13 +1659,6 @@ void mergedCaptureShowsCaughtForm() {
         }
     }
     CHECK(found);
-}
-void tapLabel(Harness& h,const char* label) {
-    Controller::Button buttons[Controller::kMaxButtons];
-    const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
-    const auto* button=findLabel(buttons,n,label);
-    CHECK(button && button->enabled);
-    h.dispatch(h.tap(button->x+button->w/2,button->y+button->h/2));
 }
 void benchEvolutionArt() {
     Harness h; partnerRoster(h,2,0);
@@ -1661,7 +1709,7 @@ void expeditionMenu() {
         h.dispatch(h.swipe(260,180,160,180));
     }
     CHECK(h.ui.screen()==Screen::Expeditions);
-    tapLabel(h,"ENTER"); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    tapLabel(h,"OPEN LOBBY"); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
     CHECK(h.ui.artRequest(h.state,h.model,0).formId==activeMember(h.state)->formId);
     nearby::View lobby; lobby.stage=nearby::Stage::Discovering; lobby.activity=0; lobby.peerCount=1;
     lobby.peers[0].available=true; lobby.peers[0].compatible=true; lobby.peers[0].activity=0; lobby.peers[0].fighter={17,18,1};
@@ -1685,7 +1733,10 @@ void expeditionMenu() {
     boss.state.dungeonKeys=0; boss.state.bossSigils=0; CHECK(isValid(boss.state)); boss.sync();
     boss.openHome(HomePanel::Dungeons);
     for(unsigned i=0;i<3;++i) boss.dispatch(boss.swipe(260,180,160,180));
-    tapLabel(boss,"ENTER"); CHECK(boss.ui.screen()==Screen::ExpeditionLobby);
+    CHECK(!tapButton(boss,"OPEN LOBBY") && boss.ui.screen()==Screen::Expeditions);
+    boss.state.bossSigils=1; CHECK(isValid(boss.state)); boss.sync();
+    tapLabel(boss,"OPEN LOBBY"); CHECK(boss.ui.screen()==Screen::ExpeditionLobby);
+    boss.state.bossSigils=0; CHECK(isValid(boss.state)); boss.sync();
     Controller::Button buttons[Controller::kMaxButtons];
     const auto n=boss.ui.layout(boss.state,boss.model,buttons,Controller::kMaxButtons);
     const auto* solo=findLabel(buttons,n,"START SOLO");
@@ -1701,7 +1752,614 @@ void expeditionMenu() {
     CHECK(forms::combatTier(boss.state.wildFormId)>tier || boss.state.wildLevel>level);
     CHECK(boss.state.wildMaxHp==combat::formProfile(boss.state.wildFormId,boss.state.wildLevel).stats.maxHp);
 }
+
+// Approved simplified screens keep their large controls, actual core actions,
+// currency gates and asynchronous save ownership.
+void simplifiedCareControls() {
+    Harness base; base.choose();
+    auto* cared=const_cast<CreatureMember*>(activeMember(base.state));
+    cared->careState=(cared->careState & ~(0x7fu<<7)) | (25u<<7);
+    CHECK(isValid(base.state)); base.sync(); base.openHome(HomePanel::Care);
+    const char* names[]{"FEED","PLAY","REST","TOILET"};
+    const Action actions[]{Action::Feed,Action::Play,Action::Rest,Action::Toilet};
+    Controller::Button buttons[Controller::kMaxButtons];
+    const auto n=base.ui.layout(base.state,base.model,buttons,Controller::kMaxButtons);
+    CHECK(n==5 && !findLabel(buttons,n,"REST +25"));
+    for(unsigned i=0;i<4;++i) {
+        const auto* b=findLabel(buttons,n,names[i]); CHECK(b && b->enabled);
+        CHECK(b->x==(i%2 ? 211 : 62) && b->y==(i<2 ? 208 : 260));
+        CHECK(b->w==139 && b->h==44); // Preserve the physical target size.
+        for(int x:{b->x,b->x+b->w-1}) for(int y:{b->y,b->y+b->h-1}) {
+            Harness h=base; const State saved=h.state;
+            const auto intent=h.tap(x,y);
+            CHECK(intent.kind==IntentKind::GameAction && intent.action==actions[i]);
+            CHECK(!h.event(TouchKind::Up,x,y) && !h.tap(x,y));
+            CHECK(h.ui.pending() && std::memcmp(&saved,&h.state,sizeof(State))==0);
+            h.dispatch(intent,false);
+            CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0);
+        }
+    }
+    for(auto point:{display::Point{131,207},{205,230},{131,252},{131,259},{131,304}}) {
+        Harness h=base; CHECK(!h.tap(point.x,point.y));
+    }
+    // Full-scene creature pixels remain behind the controls: every button's
+    // complete visible rectangle stays identical, including its centered label.
+    std::array<std::uint16_t,kPixels> plain;
+    std::array<std::uint16_t,kPixels+2> decorated; decorated.fill(0xBEEF);
+    std::array<std::uint16_t,32*32> spritePixels; spritePixels.fill(0xF800);
+    std::array<std::uint8_t,128> spriteMask; spriteMask.fill(0xFF);
+    CHECK(base.ui.render(base.state,base.model,plain.data(),kPixels,90000));
+    auto& sprite=base.model.artwork.sprite;
+    sprite.formId=activeMember(base.state)->formId; sprite.width=sprite.height=32;
+    sprite.pixels=spritePixels.data(); sprite.pixelCount=spritePixels.size();
+    sprite.mask=spriteMask.data(); sprite.maskBytes=spriteMask.size();
+    CHECK(base.ui.render(base.state,base.model,decorated.data()+1,kPixels,90000));
+    CHECK(decorated.front()==0xBEEF && decorated.back()==0xBEEF);
+    CHECK(plain[230*kSize+206]!=decorated[1+230*kSize+206]);
+    CHECK(plain[290*kSize+206]!=decorated[1+290*kSize+206]);
+    for(std::size_t i=0;i<n;++i) for(int y=buttons[i].y;y<buttons[i].y+buttons[i].h;++y)
+        for(int x=buttons[i].x;x<buttons[i].x+buttons[i].w;++x) CHECK(plain[y*kSize+x]==decorated[1+y*kSize+x]);
+    base.model.writable=false; base.sync();
+    for(const auto* name:names) CHECK(!tapButton(base,name));
+    for(unsigned severity=1;severity<=3;++severity) {
+        Harness h; h.choose(); setInjury(h.state,h.state.activeCreatureId,severity);
+        h.state.hp=const_cast<CreatureMember*>(activeMember(h.state))->hp=5;
+        CHECK(isValid(h.state)); h.sync(); h.openHome(HomePanel::Care);
+        const auto count=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        const auto* treat=findLabel(buttons,count,"TREAT");
+        CHECK(treat && treat->enabled && !findLabel(buttons,count,"REST"));
+        CHECK(treat->x==62 && treat->y==260 && treat->w==139 && treat->h==44);
+        const auto hp=h.state.hp;
+        tapLabel(h,"TREAT"); CHECK(!isInjured(*activeMember(h.state)) && h.state.hp==hp);
+        tapLabel(h,"REST"); CHECK(h.state.hp==std::min(hp+25,forms::stats(activeMember(h.state)->formId,h.state.level).maxHp));
+    }
+}
+
+void simplifiedExpeditionEligibility() {
+    for(unsigned scenario=0;scenario<6;++scenario) {
+        Harness h; h.choose(); h.state.dungeonKeys=0; h.state.bossSigils=0;
+        CHECK(isValid(h.state)); h.sync(); h.openHome(HomePanel::Dungeons);
+        for(unsigned i=0;i<scenario;++i) h.dispatch(h.swipe(260,180,160,180));
+        Controller::Button buttons[Controller::kMaxButtons];
+        auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        const auto* entry=findLabel(buttons,n,"OPEN LOBBY");
+        CHECK(entry && !entry->enabled && entry->x==108 && entry->y==254 && entry->w==196 && entry->h==48);
+        CHECK(entry->x+entry->w/2==206);
+        const auto saved=h.state;
+        for(int x:{108,206,303}) for(int y:{254,278,301}) CHECK(!h.tap(x,y));
+        CHECK(h.ui.screen()==Screen::Expeditions && !h.ui.pending() && std::memcmp(&saved,&h.state,sizeof(State))==0);
+        // Owning the other currency does not unlock this scenario.
+        if(scenario<3) h.state.bossSigils=1; else h.state.dungeonKeys=1;
+        CHECK(isValid(h.state)); h.sync(); CHECK(!tapButton(h,"OPEN LOBBY"));
+        std::array<std::uint16_t,kPixels> disabled,enabled;
+        CHECK(h.ui.render(h.state,h.model,disabled.data(),kPixels,90000));
+        if(scenario<3) h.state.dungeonKeys=1; else h.state.bossSigils=1;
+        CHECK(isValid(h.state)); h.sync();
+        CHECK(h.ui.render(h.state,h.model,enabled.data(),kPixels,90000));
+        CHECK(disabled[254*kSize+108]!=enabled[254*kSize+108]); // Disabled frame differs visibly.
+        CHECK(!h.event(TouchKind::Down,206,278));
+        // Eligibility is rechecked on release, even without a sequence change.
+        if(scenario<3) h.state.dungeonKeys=0; else h.state.bossSigils=0;
+        h.sync(); CHECK(!h.event(TouchKind::Up,206,278)); CHECK(h.ui.screen()==Screen::Expeditions);
+        if(scenario<3) h.state.dungeonKeys=1; else h.state.bossSigils=1;
+        h.sync();
+        const auto opening=tapButton(h,"OPEN LOBBY");
+        CHECK(opening.kind==IntentKind::OpenNearby && opening.expeditionActivity==scenario);
+        h.dispatch(opening); CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+        CHECK(!h.event(TouchKind::Up,206,278)); // Cannot also start solo from one contact.
+        nearby::View lobby; lobby.stage=nearby::Stage::Discovering; lobby.activity=scenario; lobby.peerCount=1;
+        lobby.peers[0].available=true; lobby.peers[0].compatible=true; lobby.peers[0].activity=scenario;
+        lobby.peers[0].fighter={17,18,1}; lobby.peers[0].openNonce=1; h.model.nearby=&lobby; h.sync();
+        n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        CHECK(findLabel(buttons,n,"JOIN") && findLabel(buttons,n,"JOIN")->enabled);
+        CHECK(findLabel(buttons,n,"START SOLO") && findLabel(buttons,n,"START SOLO")->enabled);
+        if(scenario<3) h.state.dungeonKeys=0; else h.state.bossSigils=0;
+        h.sync(); CHECK(!tapButton(h,"JOIN") && !tapButton(h,"START SOLO"));
+        CHECK(h.ui.screen()==Screen::ExpeditionLobby);
+    }
+}
+
+void simplifiedNearbyControls() {
+    Harness h; h.choose(); h.openHome(HomePanel::Nearby);
+    Controller::Button buttons[Controller::kMaxButtons];
+    auto verify=[&](bool battleEnabled,bool tradeEnabled) {
+        const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        const auto* battle=findLabel(buttons,n,"BATTLE"); const auto* trade=findLabel(buttons,n,"TRADE");
+        CHECK(battle && trade && battle->enabled==battleEnabled && trade->enabled==tradeEnabled);
+        CHECK(battle->x==62 && battle->y==252 && battle->w==139 && battle->h==52);
+        CHECK(trade->x==211 && trade->y==252 && trade->w==139 && trade->h==52);
+        const auto* leave=findLabel(buttons,n,"LEAVE"); CHECK(leave && leave->y==332);
+        CHECK(trade->x-(battle->x+battle->w)==10);
+        CHECK(leave->y-(battle->y+battle->h)==28);
+        for(const auto* button:{battle,trade,leave})
+            for(int x:{button->x,button->x+button->w-1}) for(int y:{button->y,button->y+button->h-1})
+                CHECK(Controller::inside(x,y));
+        // The visual gap does not activate an action or catch a rolled-off tap.
+        for(int x:{131,206,280}) CHECK(!h.tap(x,318));
+        if(!battleEnabled) CHECK(!tapButton(h,"BATTLE"));
+        if(!tradeEnabled) CHECK(!tapButton(h,"TRADE"));
+    };
+    verify(false,false); // Missing radio still presents clear disabled actions.
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==activeMember(h.state)->formId);
+    nearby::View net; net.stage=nearby::Stage::Discovering; h.model.nearby=&net; h.sync(); verify(false,false);
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==activeMember(h.state)->formId);
+    for(const auto stage:{nearby::Stage::Closed,nearby::Stage::TimedOut,nearby::Stage::Incompatible,nearby::Stage::Cancelled}) {
+        net.stage=stage; h.sync(); verify(false,false);
+        CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==activeMember(h.state)->formId);
+    }
+    net.stage=nearby::Stage::Discovering; h.sync();
+    net.peerCount=1; net.peers[0].mac.bytes[0]=2; net.peers[0].mac.bytes[5]=2;
+    net.peers[0].fighter={19,18,1}; net.peers[0].available=true; net.peers[0].activity=255;
+    h.sync(); verify(true,false);
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==net.peers[0].fighter.formId);
+    // One full-size, dimmed room actor. Button faces remain opaque and the
+    // previous small opaque peer sprite is absent from the central room.
+    std::array<std::uint16_t,kPixels> plain;
+    std::array<std::uint16_t,kPixels+2> decorated; decorated.fill(0xBEEF);
+    std::array<std::uint16_t,32*32> pixels; pixels.fill(0xF800);
+    std::array<std::uint8_t,128> mask; mask.fill(0xFF);
+    CHECK(h.ui.render(h.state,h.model,plain.data(),kPixels,h.now));
+    auto& sprite=h.model.artwork.sprite; sprite.formId=net.peers[0].fighter.formId;
+    sprite.width=sprite.height=32; sprite.pixels=pixels.data(); sprite.pixelCount=pixels.size();
+    sprite.mask=mask.data(); sprite.maskBytes=mask.size();
+    CHECK(h.ui.render(h.state,h.model,decorated.data()+1,kPixels,h.now));
+    CHECK(decorated.front()==0xBEEF && decorated.back()==0xBEEF);
+    CHECK(plain[220*kSize+90]!=decorated[1+220*kSize+90]);
+    CHECK(plain[318*kSize+206]!=decorated[1+318*kSize+206]);
+    CHECK(std::find(decorated.begin()+1,decorated.end()-1,0xF800)==decorated.end()-1);
+    const auto roomCount=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+    for(std::size_t i=0;i<roomCount;++i) for(int y=buttons[i].y;y<buttons[i].y+buttons[i].h;++y)
+        for(int x=buttons[i].x;x<buttons[i].x+buttons[i].w;++x) CHECK(plain[y*kSize+x]==decorated[1+y*kSize+x]);
+    h.model.artwork.sprite={};
+    tradewire::View wire; wire.stage=tradewire::Stage::Discovering; wire.peerCount=1;
+    std::memcpy(wire.peers[0].identity.bytes,net.peers[0].mac.bytes,6);
+    wire.peers[0].compatible=true; wire.peers[0].advertisement.available=true; wire.peers[0].advertisement.nonce=42;
+    h.model.trade=&wire; h.model.tradeWritable=true; h.sync(); verify(true,true);
+    h.model.tradeWritable=false; h.sync(); verify(true,false);
+    h.model.tradeWritable=true; net.peers[0].available=false; h.sync(); verify(false,false);
+    net.peers[0].available=true; h.sync();
+    const auto saved=h.state; const auto battle=tapButton(h,"BATTLE");
+    CHECK(battle.kind==IntentKind::Navigation); h.dispatch(battle); CHECK(h.ui.screen()==Screen::NearbyReview);
+    CHECK(!h.event(TouchKind::Up,206,252));
+    tapLabel(h,"BACK"); CHECK(h.ui.screen()==Screen::Nearby);
+    tapLabel(h,"TRADE"); CHECK(h.ui.screen()==Screen::TradeChoose);
+    CHECK(!h.event(TouchKind::Up,206,304) && std::memcmp(&saved,&h.state,sizeof(State))==0);
+}
+
+void homeProgressAndImmediateNavigation() {
+    Harness h; h.choose();
+    std::array<std::uint16_t,kPixels> empty,frame;
+    auto progress=[&](unsigned level,unsigned xp) {
+        auto* member=const_cast<CreatureMember*>(activeMember(h.state));
+        member->xp=xp; member->level=h.state.level=level;
+        member->hp=h.state.hp=forms::stats(member->formId,level).maxHp;
+        CHECK(isValid(h.state)); h.sync();
+        CHECK(h.ui.render(h.state,h.model,frame.data(),kPixels,90000));
+    };
+    progress(2,40); empty=frame;
+    for(auto sample:{std::pair<unsigned,unsigned>{60,52},{119,207}}) {
+        progress(2,sample.first);
+        for(unsigned x=0;x<210;++x) CHECK((frame[107*kSize+116+x]!=empty[107*kSize+116+x])==(x<sample.second));
+    }
+    progress(99,194040);
+    for(unsigned x=0;x<210;++x) CHECK(frame[107*kSize+116+x]!=empty[107*kSize+116+x]);
+    // Home removes the global wordmark without changing other screen headers.
+    for(int y=29;y<36;++y)for(int x=120;x<292;++x) CHECK(frame[y*kSize+x]!=static_cast<std::uint16_t>(((144>>3)<<11)|((231>>2)<<5)|(174>>3)));
+    const auto saved=h.state; const auto writes=h.gameWrites;
+    static std::array<std::uint16_t,kPixels> meadow;
+    meadow.fill(0xF800);
+    h.model.artwork.background=meadow.data(); h.model.artwork.backgroundPixels=kPixels;
+    h.model.artwork.backgroundId="scene-meadow-412-v1";
+    const auto first=h.ui.artRequest(h.state,h.model,h.now);
+    // Repeated fast pages/reversals require no art reload or intermediate green frame.
+    for(unsigned i=0;i<21;++i) {
+        h.dispatch(h.swipe(260,190,160,190));
+        CHECK(h.ui.screen()==Screen::Home && static_cast<unsigned>(h.ui.homePanel())==(i+1)%5);
+        const auto next=h.ui.artRequest(h.state,h.model,h.now);
+        CHECK(!std::strcmp(next.sceneId,first.sceneId) && next.formId==first.formId && next.animation==first.animation);
+        CHECK(h.ui.render(h.state,h.model,frame.data(),kPixels,h.now));
+        CHECK(frame[180*kSize+100]==0xF800); // First frame already has the final backdrop.
+        CHECK(h.ui.render(h.state,h.model,empty.data(),kPixels,h.now+120));
+        for(unsigned y=140;y<220;++y) CHECK(frame[y*kSize+100]==empty[y*kSize+100]); // Backdrop never wipes.
+        CHECK(!h.event(TouchKind::Up,160,190));
+    }
+    // A fast reversal uses fresh touch state and can immediately open its panel.
+    h.dispatch(h.swipe(160,190,260,190)); CHECK(h.ui.homePanel()==HomePanel::Care);
+    CHECK(h.ui.render(h.state,h.model,frame.data(),kPixels,h.now));
+    h.dispatch(h.tap(206,323)); CHECK(h.ui.screen()==Screen::Care);
+    CHECK(!h.event(TouchKind::Up,206,323));
+    CHECK(h.gameWrites==writes && std::memcmp(&saved,&h.state,sizeof(State))==0);
+}
+
+
+
+void homeMeterBoundsAndArt() {
+    Harness h; h.choose();
+    auto* member=const_cast<CreatureMember*>(activeMember(h.state));
+    member->level=h.state.level=20; member->xp=xpForLevel(20)+400;
+    const unsigned maximum=forms::stats(member->formId,member->level).maxHp;
+    CHECK(maximum>100);
+    constexpr auto blue=static_cast<std::uint16_t>(((105>>3)<<11)|((185>>2)<<5)|(255>>3));
+    constexpr auto green=static_cast<std::uint16_t>(((144>>3)<<11)|((231>>2)<<5)|(174>>3));
+    std::array<std::uint16_t,kPixels> output;
+    for(unsigned hp:{0u,1u,maximum/2,maximum,maximum+50}) {
+        member->hp=h.state.hp=hp; h.sync(); const State saved=h.state;
+        CHECK(h.ui.render(h.state,h.model,output.data(),kPixels,90000));
+        CHECK(std::memcmp(&saved,&h.state,sizeof(State))==0);
+        const auto filled=std::min(hp,maximum)*210/maximum;
+        for(unsigned x=0;x<210;++x) {
+            CHECK((output[127*kSize+116+x]==green)==(x<filled));
+            CHECK((output[107*kSize+116+x]==blue)==(x<105));
+        }
+    }
+    // Fully opaque art at every gyro extreme must leave both meters and the
+    // primary control unobscured, including fallback frames without bounds.
+    std::array<std::uint16_t,16*16> pixels; pixels.fill(0xf81f);
+    std::array<std::uint8_t,32> mask; mask.fill(255);
+    member->hp=h.state.hp=maximum; h.model.gyroEnabled=true;
+    for(int tilt:{-8,0,8}) {
+        h.model.tiltX=h.model.tiltY=tilt;
+        auto request=h.ui.artRequest(h.state,h.model,90000);
+        h.model.artwork.sprite={request.formId,request.animation,pixels.data(),pixels.size(),mask.data(),mask.size(),16,16};
+        CHECK(h.ui.render(h.state,h.model,output.data(),kPixels,90000));
+        CHECK(std::count(output.begin(),output.end(),0xf81f)==144*144);
+        for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x)if(output[y*kSize+x]==0xf81f) CHECK(y>=144 && y<296);
+        CHECK(output[107*kSize+116]==blue && output[127*kSize+325]==green);
+    }
+}
+
+
+void evolutionProfilePortraitBounds() {
+    for(unsigned source:{18u,29u}) for(unsigned index=0;index<(source==29 ? 2u : 1u);++index) {
+        Harness h; h.state=stableMemberFixture(source);
+        const auto* route=forms::outgoing(source,index); CHECK(route);
+        meetRoute(h.state,19,route); h.sync(); h.openPartners();
+        tapLabel(h,"DETAILS"); tapLabel(h,"DIGIVOLVE");
+        if(index) h.dispatch(h.swipe(260,180,150,180));
+        CHECK(h.ui.artRequest(h.state,h.model,0).formId==route->to);
+        const bool profile=route->to==30 || route->to==357;
+        std::array<std::uint16_t,256> pixels; pixels.fill(0xf81f);
+        std::array<std::uint8_t,32> mask; mask.fill(0xff);
+        std::array<std::uint16_t,kPixels> output;
+        for(bool review:{false,true}) {
+            if(review) {tapLabel(h,"SELECT");CHECK(h.ui.screen()==Screen::EvolutionReview);}
+            const auto request=h.ui.artRequest(h.state,h.model,10000);
+            h.model.artwork.sprite={request.formId,request.animation,pixels.data(),pixels.size(),mask.data(),mask.size(),16,16};
+            CHECK(h.ui.render(h.state,h.model,output.data(),output.size(),10000));
+            const int side=review ? (profile ? 96 : 112) : (profile ? 128 : 144);
+            const int center=review ? (profile ? 207 : 195) : (profile ? 190 : 184);
+            unsigned count=0;
+            for(int y=0;y<kSize;++y)for(int x=0;x<kSize;++x)if(output[y*kSize+x]==0xf81f) {
+                ++count; CHECK(x>=206-side/2 && x<206+side/2 && y>=center-side/2 && y<center+side/2);
+            }
+            CHECK(count==static_cast<unsigned>(side*side)); // No name, profile or target obscures any artwork.
+            if(profile) {
+                const auto amber=static_cast<std::uint16_t>(((255>>3)<<11)|((193>>2)<<5)|(96>>3));
+                unsigned letters=0;const int line=review ? 144 : 113;
+                for(int y=line;y<line+7;++y)for(int x=130;x<282;++x)letters+=output[y*kSize+x]==amber;
+                CHECK(letters>50); // Both authored profile labels are visible.
+            }
+        }
+    }
+}
+
+void compactCareHealth() {
+    Harness h; h.choose();
+    auto* member=const_cast<CreatureMember*>(activeMember(h.state));
+    member->level=h.state.level=20; member->xp=xpForLevel(20);
+    const auto maximum=forms::stats(member->formId,member->level).maxHp;
+    CHECK(maximum>100); member->hp=h.state.hp=maximum;
+    member->fullness=h.state.fullness=43; member->mood=h.state.mood=67; member->energy=h.state.energy=72;
+    h.sync(); h.openHome(HomePanel::Care);
+    std::array<std::uint16_t,kPixels> full,half,low;
+    CHECK(h.ui.render(h.state,h.model,full.data(),kPixels,90000));
+    member->hp=h.state.hp=maximum/2; CHECK(isValid(h.state));
+    const State before=h.state;
+    CHECK(h.ui.render(h.state,h.model,half.data(),kPixels,90000));
+    CHECK(std::memcmp(&before,&h.state,sizeof(State))==0);
+    unsigned filled=0;
+    for(int x=78;x<334;++x) filled+=half[136*kSize+x]==full[136*kSize+x];
+    CHECK(filled>=126 && filled<=128); // Real HP maximum, including values above 100.
+    member->hp=h.state.hp=1;
+    CHECK(h.ui.render(h.state,h.model,low.data(),kPixels,90000));
+    // Health loss cannot change the three independent needs or their compact row.
+    for(int y=146;y<176;++y) for(int x=68;x<344;++x) {
+        CHECK(full[y*kSize+x]==half[y*kSize+x]);
+        CHECK(full[y*kSize+x]==low[y*kSize+x]);
+    }
+    CHECK(full[164*kSize+78]!=full[164*kSize+254]); // Food and energy retain distinct colors.
+}
+
+// Three actors are independently keyed to the frozen co-op fighters. Host and
+// guest map their own portrait to the same leftmost position without changing
+// the shared raid. Missing/wrong-peer art must never borrow the local portrait.
+void coopTierArtwork() {
+    Harness h;h.choose();h.state.dungeonKeys=3;h.sync();
+    h.openHome(HomePanel::Dungeons);tapLabel(h,"OPEN LOBBY");
+    nearby::View net;net.offeredMode=nearby::Mode::Coop;net.stage=nearby::Stage::Playing;
+    net.host=true;net.session=123;net.activity=0;
+    CHECK(nearby::beginRaid({71,18,80},{92,11,80},nearby::raidSeed(25,1,0),net.raid));
+    h.model.nearby=&net;h.model.nearbyTurnElapsedMs=kNoNearbyTurn;h.sync();
+    std::array<std::uint16_t,32*32> localPixels,peerPixels,foePixels;
+    localPixels.fill(0xf81f);peerPixels.fill(0x07ff);foePixels.fill(0x001f);
+    std::array<std::uint8_t,128> mask;mask.fill(255);
+    std::array<std::uint16_t,kPixels> frame;
+    auto load=[&](const ArtRequest& request,SpriteFrame& dest,const auto& pixels) {
+        dest={request.formId,request.animation,pixels.data(),pixels.size(),mask.data(),mask.size(),32,32};
+    };
+    auto render=[&]() {
+        h.sync();const auto own=h.ui.partnerArtRequest(h.state,h.model,5000);
+        const auto peer=h.ui.tileArtRequest(h.state,h.model,0,5000);
+        const auto foe=h.ui.artRequest(h.state,h.model,5000);
+        CHECK(own.formId==net.raid.players[net.host?0:1].formId);
+        CHECK(peer.formId==net.raid.players[net.host?1:0].formId);
+        CHECK(foe.formId==net.raid.foeForm);
+        CHECK(!h.ui.tileArtRequest(h.state,h.model,1,5000).formId);
+        load(own,h.model.partnerArtwork,localPixels);load(peer,h.model.tileArtwork[0],peerPixels);load(foe,h.model.artwork.sprite,foePixels);
+        const auto saved=net.raid;
+        CHECK(h.ui.render(h.state,h.model,frame.data(),kPixels,5000));
+        CHECK(nearby::sameRaid(saved,net.raid));
+        CHECK(frame[201*kSize+94]==0xf81f && frame[201*kSize+186]==0x07ff && frame[184*kSize+304]==0x001f);
+        CHECK(std::count(frame.begin(),frame.end(),0xf81f)==64*64);
+        CHECK(std::count(frame.begin(),frame.end(),0x07ff)==64*64);
+        CHECK(std::count(frame.begin(),frame.end(),0x001f)==128*128);
+    };
+    for(bool automatic:{false,true})for(bool host:{true,false})for(auto stage:{nearby::Stage::Playing,nearby::Stage::Reconnecting})for(bool pending:{false,true}) {
+        net.coopAuto=automatic;net.host=host;net.stage=stage;net.localChoicePending=pending;render();
+    }
+    h.model.tileArtwork[0].formId=29;
+    CHECK(h.ui.render(h.state,h.model,frame.data(),kPixels,5000));
+    CHECK(!std::count(frame.begin(),frame.end(),0x07ff));
+    CHECK(frame[201*kSize+94]==0xf81f && frame[184*kSize+304]==0x001f);
+    net.host=true;net.stage=nearby::Stage::Playing;net.localChoicePending=false;
+    // Resolve actual raid turns: tier2's final strike must display the old foe
+    // without the final-tier aura until the existing feedback period expires.
+    while(net.raid.tier<3) {
+        const auto seq=net.raid.sequence;
+        CHECK(nearby::resolveRaid(net.raid,seq,seq%2?nearby::Choice::Brace:nearby::Choice::Physical,
+            seq%2?nearby::Choice::Physical:nearby::Choice::Brace));
+    }
+    CHECK(net.raid.lastTier==2 && net.raid.tier==3);
+    h.model.nearbyTurnElapsedMs=1200;render();
+    constexpr auto violet=static_cast<std::uint16_t>(((168>>3)<<11)|((132>>2)<<5)|(224>>3));
+    CHECK(!std::count(frame.begin(),frame.end(),violet));
+    h.model.nearbyTurnElapsedMs=kNearbyFeedbackMs;render();
+    CHECK(std::count(frame.begin(),frame.end(),violet)>20);
+    while(net.raid.status==nearby::RaidStatus::Active) {
+        const auto seq=net.raid.sequence;
+        CHECK(nearby::resolveRaid(net.raid,seq,seq%2?nearby::Choice::Brace:nearby::Choice::Physical,
+            seq%2?nearby::Choice::Physical:nearby::Choice::Brace));
+    }
+    CHECK(net.raid.status==nearby::RaidStatus::Cleared);net.stage=nearby::Stage::Finished;render();
+}
+
+void expeditionIntermissionControls() {
+    Harness h;h.choose();h.state.dungeonKeys=1;h.sync();
+    h.openHome(HomePanel::Dungeons);tapLabel(h,"OPEN LOBBY");tapLabel(h,"START SOLO");
+    for(unsigned tier=1;tier<=3;++tier) {
+        CHECK(h.state.phase==Phase::Encounter && h.state.expeditionTier==tier);
+        h.state.wildHp=1;CHECK(isValid(h.state));h.sync();
+        h.dispatch({IntentKind::GameAction,Action::Attack});
+        CHECK(h.ui.screen()==Screen::Result);
+        Controller::Button buttons[Controller::kMaxButtons];
+        auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        if(tier<3) {
+            CHECK(findLabel(buttons,n,"NEXT FIGHT") && findLabel(buttons,n,"LEAVE DUNGEON") && !findLabel(buttons,n,"HOME"));
+            CHECK(!autoFightReady(h.state,h.model));
+            Harness restored;restored.state=h.state;restored.sync();CHECK(restored.ui.screen()==Screen::Result);
+            const auto hp=h.state.hp,energy=h.state.energy,keys=h.state.dungeonKeys;
+            auto next=tapButton(h,"NEXT FIGHT");CHECK(next.kind==IntentKind::GameAction && next.action==Action::NextExpedition);
+            CHECK(!h.event(TouchKind::Up,206,294));h.dispatch(next);
+            CHECK(h.state.hp==hp && h.state.energy==energy && h.state.dungeonKeys==keys);
+            CHECK(!h.event(TouchKind::Up,206,294));
+        } else CHECK(findLabel(buttons,n,"HOME") && !findLabel(buttons,n,"NEXT FIGHT") && h.state.dungeonClears==1);
+    }
+}
+
+void captureOpponentIdentity() {
+    constexpr auto amber=static_cast<std::uint16_t>(((255>>3)<<11)|((193>>2)<<5)|(96>>3));
+    Harness h;h.choose();h.encounter();h.state.wildHp=h.state.wildMaxHp/2;h.sync();h.dispatch(h.tap(280,306));
+    CHECK(h.ui.screen()==Screen::Capture);
+    const auto check=[&](Harness& scene) {
+        std::array<std::uint16_t,kPixels> first,current,partial;
+        scene.sync();CHECK(scene.ui.render(scene.state,scene.model,first.data(),kPixels,scene.now));partial=first;
+        unsigned letterPixels=0;
+        for(int y=288;y<302;++y)for(int x=60;x<352;++x)letterPixels+=first[y*kSize+x]==amber;
+        CHECK(letterPixels>30);
+        const auto saved=scene.state;
+        for(unsigned phase:{0u,600u,1200u,1800u,2399u}) {
+            CHECK(scene.ui.render(scene.state,scene.model,current.data(),kPixels,scene.now+phase));
+            CHECK(scene.ui.renderCaptureRegion(scene.state,scene.model,partial.data(),kPixels,scene.now+phase));
+            CHECK(current==partial);
+            for(int y=284;y<306;++y)for(int x=60;x<352;++x)CHECK(first[y*kSize+x]==current[y*kSize+x]);
+        }
+        CHECK(trade::sameState(saved,scene.state));
+    };
+    check(h);
+    for(bool strike:{false,true}) {
+        Harness focus;focus.choose();focus.encounter();
+        while(focusIsStrike(focus.state)!=strike) ++focus.state.seed;
+        focus.state.wildRules=kRulesVersion;focus.state.battleMode=BattleMode::Auto;
+        focus.state.wildTurn=focusTurn(focus.state);
+        focus.state.autoCapture=strike?AutoCapture::FocusStrike:AutoCapture::FocusBlock;
+        CHECK(isValid(focus.state));focus.sync();CHECK(focus.ui.screen()==Screen::Capture);check(focus);
+    }
+}
+
+void coopAutoConsent() {
+    Harness h;h.choose();CHECK(apply(h.state,Action::Mode,1)==Error::None);h.state.dungeonKeys=1;h.sync();
+    nearby::View view;view.stage=nearby::Stage::Discovering;view.peerCount=1;
+    view.peers[0].mac={{2,1,2,3,4,5}};view.peers[0].fighter={21,18,2};view.peers[0].openNonce=77;
+    view.peers[0].available=true;view.peers[0].activity=0;
+    const auto* member=activeMember(h.state);const auto care=memberCare(*member);
+    h.model.nearbyLocalFighter={member->id,member->formId,member->level,care.offense,care.protection};h.model.nearby=&view;h.sync();
+    h.openHome(HomePanel::Dungeons);tapLabel(h,"OPEN LOBBY");
+    const auto saved=h.state;const auto writes=h.gameWrites;
+    Controller::Button buttons[Controller::kMaxButtons];
+    auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+    CHECK(findLabel(buttons,n,"> MANUAL") && findLabel(buttons,n,"AUTO"));
+    auto invite=tapButton(h,"JOIN");CHECK(invite.kind==IntentKind::NearbyChallenge && invite.nearbyMode==nearby::Mode::Coop && !invite.nearbyCoopAuto);
+    CHECK(invite.nearbyOpenNonce==77 && nearby::sameFighter(invite.nearbyFighters[1],view.peers[0].fighter));h.dispatch(invite);
+    std::array<std::uint16_t,kPixels> manualPixels,autoPixels;
+    CHECK(h.ui.render(h.state,h.model,manualPixels.data(),kPixels,90000));
+    tapLabel(h,"AUTO");CHECK(!h.event(TouchKind::Up,206,224));
+    CHECK(h.ui.render(h.state,h.model,autoPixels.data(),kPixels,90000));
+    CHECK(manualPixels[150*kSize+62]==autoPixels[150*kSize+210] && manualPixels[150*kSize+210]==autoPixels[150*kSize+62]);
+    invite=tapButton(h,"JOIN");CHECK(invite.nearbyCoopAuto && invite.nearbyMode==nearby::Mode::Coop);h.dispatch(invite);
+    CHECK(h.gameWrites==writes && trade::sameState(saved,h.state)); // Global solo Auto is untouched.
+    view.offeredMode=nearby::Mode::Coop;view.coopAuto=true;view.stage=nearby::Stage::Incoming;
+    view.session=42;view.opponent=view.peers[0].mac;view.offered[0]=view.peers[0].fighter;view.offered[1]=h.model.nearbyLocalFighter;h.sync();
+    CHECK(!h.event(TouchKind::Down,120,252));view.coopAuto=false;h.sync();CHECK(!h.event(TouchKind::Up,120,252));
+    auto accept=tapButton(h,"ACCEPT");CHECK(accept.kind==IntentKind::NearbyAccept && !accept.nearbyCoopAuto);h.dispatch(accept);
+    view.coopAuto=true;h.sync();accept=tapButton(h,"ACCEPT");CHECK(accept.nearbyCoopAuto && accept.nearbySession==42);h.dispatch(accept);
+    CHECK(nearby::sameFighter(accept.nearbyFighters[0],view.offered[0]) && nearby::sameFighter(accept.nearbyFighters[1],view.offered[1]));
+    CHECK(nearby::beginRaid(view.offered[0],view.offered[1],nearby::raidSeed(25,1,0),view.raid));view.stage=nearby::Stage::Playing;view.host=true;
+    h.model.nearbyTurnElapsedMs=kNoNearbyTurn;h.sync();
+    n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+    CHECK(n==1 && buttons[0].padded && !findLabel(buttons,n,"HIT") && !findLabel(buttons,n,"BRACE"));
+    CHECK(!h.tap(98,292) && !h.tap(206,292) && !h.tap(314,292) && !h.swipe(206,300,206,180));
+    CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==view.raid.foeForm);
+    CHECK(h.ui.partnerArtRequest(h.state,h.model,h.now).formId==view.raid.players[0].formId);
+    CHECK(h.ui.tileArtRequest(h.state,h.model,0,h.now).formId==view.raid.players[1].formId);
+    view.coopAuto=false;h.sync();n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);CHECK(findLabel(buttons,n,"HIT"));
+    CHECK(!h.event(TouchKind::Down,98,292));view.coopAuto=true;h.sync();CHECK(!h.event(TouchKind::Up,98,292));
+    CHECK(tapButton(h,"BACK").kind==IntentKind::CloseNearby);
+    view.stage=nearby::Stage::Closed;h.sync();view.stage=nearby::Stage::Discovering;h.sync();tapLabel(h,"OPEN LOBBY");
+    n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);CHECK(findLabel(buttons,n,"> MANUAL"));
+    CHECK(h.gameWrites==writes && trade::sameState(saved,h.state));
+}
+
+// Reach both knockout directions through actual manual resolver transitions.
+nearby::Raid koUiFixture(unsigned dead,nearby::Raid* preceding=nullptr) {
+    nearby::Raid raid;CHECK(nearby::beginRaid({17,18,dead?40u:10u,2,2},{23,11,dead?10u:40u,2,2},nearby::raidSeed(25,dead?26:17,0),raid));
+    for(unsigned n=0;n<72 && raid.hp[dead] && raid.status==nearby::RaidStatus::Active;++n) {
+        if(preceding)*preceding=raid;
+        nearby::Choice inputs[]{nearby::Choice::None,nearby::Choice::None};
+        inputs[nearby::raidAttacker(raid)]=nearby::Choice::Physical;
+        const auto defender=nearby::raidDefender(raid);if(defender<2)inputs[defender]=nearby::Choice::Brace;
+        CHECK(nearby::resolveRaid(raid,raid.sequence,inputs[0],inputs[1]));
+    }
+    CHECK(raid.status==nearby::RaidStatus::Active&&!raid.hp[dead]&&raid.hp[1u-dead]);return raid;
+}
+void coopSurvivorControls() {
+    for(unsigned dead:{0u,1u})for(bool host:{false,true})for(bool automatic:{false,true}) {
+        Harness h;h.choose();h.state.dungeonKeys=1;h.sync();h.openHome(HomePanel::Dungeons);tapLabel(h,"OPEN LOBBY");
+        nearby::View view;view.offeredMode=nearby::Mode::Coop;view.stage=nearby::Stage::Playing;view.host=host;view.coopAuto=automatic;view.session=81;
+        view.raid=koUiFixture(dead);h.model.nearby=&view;h.model.nearbyTurnElapsedMs=kNoNearbyTurn;h.sync();
+        const auto saved=h.state;const auto local=host?0u:1u;
+        Controller::Button buttons[Controller::kMaxButtons];const auto n=h.ui.layout(h.state,h.model,buttons,Controller::kMaxButtons);
+        CHECK(!findLabel(buttons,n,"BRACE")&&!findLabel(buttons,n,"WARD")&&!findLabel(buttons,n,"COUNTER"));
+        CHECK((findLabel(buttons,n,"HIT")!=nullptr)==(!automatic&&local!=dead));
+        if(automatic||local==dead)CHECK(!h.tap(98,292)&&!h.tap(206,292)&&!h.tap(314,292));
+        else {const auto strike=tapButton(h,"HIT");CHECK(strike.kind==IntentKind::NearbyChoose&&strike.value==static_cast<std::uint32_t>(nearby::Choice::Physical));h.dispatch(strike);}
+        CHECK(h.ui.partnerArtRequest(h.state,h.model,h.now).formId==view.raid.players[local].formId);
+        CHECK(h.ui.tileArtRequest(h.state,h.model,0,h.now).formId==view.raid.players[1u-local].formId);
+        CHECK(h.ui.artRequest(h.state,h.model,h.now).formId==view.raid.foeForm);
+        CHECK(tapButton(h,"BACK").kind==IntentKind::CloseNearby&&trade::sameState(saved,h.state));
+    }
+    // A held guard from the KO exchange cannot become a strike or another guard.
+    for(unsigned dead:{0u,1u}) {
+        Harness h;h.choose();h.state.dungeonKeys=1;h.sync();h.openHome(HomePanel::Dungeons);tapLabel(h,"OPEN LOBBY");
+        nearby::View view;view.offeredMode=nearby::Mode::Coop;view.stage=nearby::Stage::Playing;view.host=dead==0;view.session=82;
+        nearby::Raid before;const auto after=koUiFixture(dead,&before);view.raid=before;
+        h.model.nearby=&view;h.model.nearbyTurnElapsedMs=kNoNearbyTurn;h.sync();
+        CHECK(!h.event(TouchKind::Down,98,292));view.raid=after;h.sync();CHECK(!h.event(TouchKind::Up,98,292));
+    }
+}
+
+void soloAutoTierControls() {
+    Harness h;h.choose();CHECK(h.state.battleMode==BattleMode::Tactical);
+    h.openHome(HomePanel::Settings);tapLabel(h,"MODE: TACTICAL");CHECK(h.ui.screen()==Screen::ModeReview);
+    tapLabel(h,"CONFIRM");CHECK(h.state.battleMode==BattleMode::Auto);tapLabel(h,"BACK");
+    h.state.dungeonKeys=1;h.sync();h.openHome(HomePanel::Dungeons);tapLabel(h,"OPEN LOBBY");tapLabel(h,"START SOLO");
+    for(unsigned tier=1;tier<=3;++tier) {
+        CHECK(h.state.phase==Phase::Encounter && h.state.expeditionTier==tier && h.state.battleMode==BattleMode::Auto);
+        CHECK(autoFightReady(h.state,h.model));
+        // A legal low-HP/used-throws fixture keeps this UI test deterministic.
+        h.state.wildHp=1;h.state.captureAttempts=3;h.state.captureDeferred=1;CHECK(isValid(h.state));h.sync();
+        Snapshot snapshot;CHECK(encodeSnapshot(h.state,snapshot));State decoded;CHECK(decodeSnapshot(snapshot.bytes,sizeof(snapshot.bytes),decoded)==SnapshotStatus::Ok);
+        Harness restored;restored.state=decoded;restored.sync();CHECK(autoFightReady(restored.state,restored.model));
+        restored.dispatch(tapButton(restored,"AUTO BATTLE"));
+        CHECK(!restored.swipe(206,300,206,180)); // Auto never exposes tactical commit.
+        Controller::Button buttons[Controller::kMaxButtons];
+        const auto count=restored.ui.layout(restored.state,restored.model,buttons,Controller::kMaxButtons);
+        const auto* away=findLabel(buttons,count,"RUN AWAY");const auto* back=findLabel(buttons,count,"BACK");
+        CHECK(away && back && away->y==282 && away->h==44 && away->y+away->h<back->y);
+        for(int side:{412,480})for(auto rotation:{display::Orientation::Native,display::Orientation::Cw90,display::Orientation::HalfTurn,display::Orientation::Ccw90}) {
+            const auto a=display::logicalRectToPhysical(rotation,{away->x,away->y,away->w,away->h},side);
+            const auto b=display::logicalRectToPhysical(rotation,{back->x,back->y,back->w,back->h},side);
+            CHECK(a.x+a.width<=b.x || b.x+b.width<=a.x || a.y+a.height<=b.y || b.y+b.height<=a.y);
+        }
+        std::array<std::uint16_t,1024> ownPixels,foePixels;ownPixels.fill(0xf81f);foePixels.fill(0x07ff);
+        std::array<std::uint8_t,128> mask;mask.fill(255);std::array<std::uint16_t,kPixels> frame;
+        const auto own=restored.ui.partnerArtRequest(restored.state,restored.model,restored.now);
+        const auto foe=restored.ui.artRequest(restored.state,restored.model,restored.now);
+        restored.model.partnerArtwork={own.formId,own.animation,ownPixels.data(),1024,mask.data(),128,32,32};
+        restored.model.artwork.sprite={foe.formId,foe.animation,foePixels.data(),1024,mask.data(),128,32,32};
+        CHECK(restored.ui.render(restored.state,restored.model,frame.data(),kPixels,restored.now));
+        CHECK(std::count(frame.begin(),frame.end(),0xf81f)==128*128 && std::count(frame.begin(),frame.end(),0x07ff)==128*128);
+        battlepresentation::View locked;locked.locked=true;restored.model.battle=&locked;CHECK(!autoFightReady(restored.state,restored.model));
+        restored.model.battle=nullptr;restored.model.writable=false;CHECK(!autoFightReady(restored.state,restored.model));
+        restored.model.writable=true;restored.model.inputEnabled=false;CHECK(!autoFightReady(restored.state,restored.model));
+        restored.model.inputEnabled=true;
+        h.dispatch({IntentKind::GameAction,Action::AutoFight});CHECK(h.ui.screen()==Screen::Result && !autoFightReady(h.state,h.model));
+        CHECK(h.state.battleMode==BattleMode::Auto);
+        if(tier<3) {
+            Harness between;between.state=h.state;between.sync();CHECK(between.ui.screen()==Screen::Result && !autoFightReady(between.state,between.model));
+            const auto hp=h.state.hp,energy=h.state.energy;tapLabel(h,"NEXT FIGHT");
+            CHECK(h.state.hp==hp && h.state.energy==energy && autoFightReady(h.state,h.model));
+            CHECK(!h.event(TouchKind::Up,206,294));
+        } else CHECK(h.state.phase==Phase::Home && h.state.dungeonClears==1);
+    }
+}
+
+void nfcTestUi() {
+    Harness h;h.choose();h.openHome(HomePanel::Settings);
+    const auto saved=h.state;const auto writes=h.gameWrites;
+    auto render=[&](const char* name) {
+        std::array<std::uint16_t,kPixels+2> pixels{};pixels.front()=pixels.back()=0xBEEF;
+        CHECK(h.ui.render(h.state,h.model,pixels.data()+1,kPixels,h.now));
+        CHECK(pixels.front()==0xBEEF&&pixels.back()==0xBEEF);
+        const auto* out=std::getenv("NFC_UI_RENDER_DIR");if(!out)return;
+        const auto path=std::string(out)+"/"+name+".ppm";auto* file=std::fopen(path.c_str(),"wb");CHECK(file);
+        std::fprintf(file,"P6\n412 412\n255\n");
+        for(std::size_t i=1;i<=kPixels;++i){const auto p=pixels[i];const unsigned char rgb[]={static_cast<unsigned char>(((p>>11)&31)*255/31),static_cast<unsigned char>(((p>>5)&63)*255/63),static_cast<unsigned char>((p&31)*255/31)};CHECK(std::fwrite(rgb,1,3,file)==3);}
+        CHECK(!std::fclose(file));
+    };
+    render("settings");tapLabel(h,"NFC TEST");CHECK(h.ui.screen()==Screen::NfcTest);
+    render("unsupported");CHECK(!tapButton(h,"RETRY"));
+    h.model.nfcTest.available=true;h.model.nfcTest.state="CONNECTING";h.model.nfcTest.scanning=true;h.sync();
+    render("connecting");CHECK(!tapButton(h,"RETRY"));
+    tapLabel(h,"RESET");CHECK(h.ui.screen()==Screen::NfcTest);
+    h.model.nfcTest.scanning=false;h.model.nfcTest.state="READER ERROR";h.model.nfcTest.error="ack_timeout";h.sync();
+    render("reader-error");auto retry=tapButton(h,"RETRY");CHECK(retry.kind==IntentKind::NfcRetry);h.dispatch(retry);
+    nfctest::Tracker tracker;tracker.begin(true);nfcdiag::Result r;r.error="none";r.samReady=r.firmwareValid=r.rfOff=true;r.noCard=true;r.firmware[1]=1;r.firmware[2]=6;
+    tracker.observe(r,h.now);h.model.nfcTest=tracker.view();render("no-card");
+    r.noCard=false;r.uidValid=true;r.uidSize=10;for(unsigned i=0;i<10;++i)r.uid[i]=i+1;
+    tracker.observe(r,h.now);h.model.nfcTest=tracker.view();render("SIMULATED-uid");
+    h.model.nfcTest.swipes=UINT32_MAX;render("SIMULATED-count-limit");
+    auto reset=tapButton(h,"RESET");CHECK(reset.kind==IntentKind::NfcReset);h.dispatch(reset);
+    tapLabel(h,"BACK");CHECK(h.ui.screen()==Screen::Settings);
+    CHECK(std::memcmp(&saved,&h.state,sizeof(saved))==0&&writes==h.gameWrites);
+    // Even a reader timeout leaves navigation active; UI touches never depend on serial responses.
+    tapLabel(h,"NFC TEST");h.model.nfcTest.scanning=true;h.sync();tapLabel(h,"BACK");CHECK(h.ui.screen()==Screen::Settings);
+}
+
 int main(int argc,char** argv) {
+    nfcTestUi();
+    coopAutoConsent();
+    soloAutoTierControls();
+    coopTierArtwork();
+    coopSurvivorControls();
+    expeditionIntermissionControls();
+    captureOpponentIdentity();
+    compactCareHealth();
+    evolutionProfilePortraitBounds();
+    simplifiedCareControls();
+    simplifiedExpeditionEligibility();
+    simplifiedNearbyControls();
+    homeProgressAndImmediateNavigation();
+    homeMeterBoundsAndArt();
     backTargets();
     tapAudit();
     orientationGestures();
@@ -1716,6 +2374,7 @@ int main(int argc,char** argv) {
     memberCard();
     xpCompanionControls();
     soundSettings();
+    buzzerSoundSettings();
     tradingScreens();
     autoCaptureChoice();
     battleArtworkSequence();
@@ -1750,11 +2409,11 @@ int main(int argc,char** argv) {
     // Care emits proposals only. An unsuccessful save cannot alter this state.
     h.openHome(HomePanel::Care); CHECK(h.ui.screen()==Screen::Care);
     const auto beforeCare=h.state;
-    auto feed=h.tap(120,252); CHECK(feed.kind==IntentKind::GameAction && feed.action==Action::Feed);
+    auto feed=tapButton(h,"FEED"); CHECK(feed.kind==IntentKind::GameAction && feed.action==Action::Feed);
     CHECK(std::memcmp(&beforeCare,&h.state,sizeof(State))==0);
     h.dispatch(feed,false); CHECK(std::memcmp(&beforeCare,&h.state,sizeof(State))==0);
-    h.model.writable=false; h.sync(); CHECK(!h.tap(120,252));
-    h.model.writable=true; h.sync(); h.dispatch(h.tap(120,252)); CHECK(h.gameWrites==2);
+    h.model.writable=false; h.sync(); CHECK(!tapButton(h,"FEED"));
+    h.model.writable=true; h.sync(); h.dispatch(tapButton(h,"FEED")); CHECK(h.gameWrites==2);
     h.dispatch(h.tap(206,365)); CHECK(h.ui.screen()==Screen::Home);
 
     const auto beforeWalk=h.state.steps;
@@ -1916,7 +2575,7 @@ int main(int argc,char** argv) {
     CHECK(steps.ui.render(steps.state,steps.model,framebuffer.data()+1,kPixels,1000));
     CHECK(std::memcmp(stepScreen.data(),framebuffer.data()+1,kPixels*sizeof(std::uint16_t))!=0);
     const auto beforeSteps=steps.state;
-    steps.openHome(HomePanel::Settings); steps.dispatch(steps.tap(206,194)); CHECK(steps.ui.screen()==Screen::EncounterSettings);
+    steps.openHome(HomePanel::Settings); steps.dispatch(steps.tap(131,194)); CHECK(steps.ui.screen()==Screen::EncounterSettings);
     CHECK(std::memcmp(&beforeSteps,&steps.state,sizeof(State))==0);
     auto rate=steps.tap(120,252); CHECK(rate.kind==IntentKind::GameAction && rate.action==Action::EncounterRate && rate.value==0);
     steps.dispatch(rate); CHECK(steps.state.encounterRate==EncounterRate::Off);
@@ -1946,7 +2605,7 @@ int main(int argc,char** argv) {
     frame.pixels=spritePixels.data(); frame.pixelCount=spritePixels.size();
     frame.mask=spriteMask.data(); frame.maskBytes=spriteMask.size(); frame.width=frame.height=32;
     CHECK(art.ui.render(art.state,art.model,framebuffer.data()+1,kPixels,800));
-    CHECK(framebuffer[1+196*kSize+206]==0 && framebuffer[1+196*kSize+204]==0x1234);
+    CHECK(framebuffer[1+220*kSize+206]==0 && framebuffer[1+212*kSize+204]==0x1234);
     CHECK(framebuffer.front()==0xBEEF && framebuffer.back()==0xBEEF);
     const auto goodFrame=frame;
     std::array<std::uint8_t,32> smallMask{};
@@ -1955,7 +2614,7 @@ int main(int argc,char** argv) {
     frame.width=frame.height=16; frame.pixelCount=256;
     frame.mask=smallMask.data(); frame.maskBytes=smallMask.size();
     CHECK(art.ui.render(art.state,art.model,framebuffer.data()+1,kPixels,800));
-    CHECK(framebuffer[1+196*kSize+206]==0xF800); //16px resident frames scale11x on Home.
+    CHECK(framebuffer[1+220*kSize+206]==0xF800); // 16px resident frames scale9x on Home.
     frame=goodFrame;
     // Invalid or stale frame metadata must reproduce the existing fallback.
     frame.formId=homeArt.formId+1;
@@ -1988,11 +2647,11 @@ int main(int argc,char** argv) {
     CHECK(std::memcmp(stepScreen.data(),framebuffer.data()+1,kPixels*sizeof(std::uint16_t))==0);
 
     art.model.artwork={};
-    art.openHome(HomePanel::Care); art.dispatch(art.tap(120,252));
+    art.openHome(HomePanel::Care); art.dispatch(tapButton(art,"FEED"));
     auto animated=art.ui.artRequest(art.state,art.model,art.now);
     CHECK(animated.animation==sprite::Animation::Care && animated.elapsedMs==0);
     CHECK(art.ui.artRequest(art.state,art.model,art.now+600).animation==sprite::Animation::Idle);
-    art.dispatch(art.tap(120,309)); // Left-column Rest, beside Toilet.
+    art.dispatch(tapButton(art,"REST")); // Left-column Rest, beside Toilet.
     CHECK(art.ui.artRequest(art.state,art.model,art.now).animation==sprite::Animation::Sleep);
     art.dispatch(art.tap(206,365)); art.encounter(); art.strike();
     CHECK(art.ui.artRequest(art.state,art.model,art.now).animation==sprite::Animation::Hurt);
@@ -2179,7 +2838,7 @@ int main(int argc,char** argv) {
     auto opened=nearbyUi.tap(206,323); CHECK(opened.kind==IntentKind::OpenNearby);
     nearbyUi.dispatch(opened); CHECK(nearbyUi.ui.screen()==Screen::Nearby && !nearbyUi.ui.walkingEligible());
     CHECK(nearbyUi.ui.render(nearbyUi.state,nearbyUi.model,framebuffer.data()+1,kPixels,1000));
-    CHECK(!nearbyUi.tap(206,312)); // No invented peer or network success.
+    CHECK(!tapButton(nearbyUi,"BATTLE")); // No invented peer or network success.
     nearby::View network; network.stage=nearby::Stage::Discovering; network.host=true;
     network.peerCount=4;
     for (unsigned i=0;i<4;++i) {
@@ -2188,15 +2847,15 @@ int main(int argc,char** argv) {
     }
     nearbyUi.model.nearby=&network; nearbyUi.sync();
     CHECK(nearbyUi.ui.artRequest(nearbyUi.state,nearbyUi.model,0).formId==18);
-    nearbyUi.dispatch(nearbyUi.swipe(250,180,160,180)); nearbyUi.dispatch(nearbyUi.tap(206,312));
+    nearbyUi.dispatch(nearbyUi.swipe(250,180,160,180)); nearbyUi.dispatch(tapButton(nearbyUi,"BATTLE"));
     CHECK(nearbyUi.ui.screen()==Screen::NearbyReview);
     CHECK(!nearbyUi.event(TouchKind::Up,206,302));
     CHECK(!nearbyUi.event(TouchKind::Down,206,302));
     network.peers[1].fighter.level=2; nearbyUi.sync(); // Same MAC, different frozen profile.
     CHECK(nearbyUi.ui.screen()==Screen::Nearby && !nearbyUi.event(TouchKind::Up,206,302));
-    nearbyUi.dispatch(nearbyUi.tap(206,312)); nearbyUi.dispatch(nearbyUi.tap(206,365));
+    nearbyUi.dispatch(tapButton(nearbyUi,"BATTLE")); nearbyUi.dispatch(nearbyUi.tap(206,365));
     CHECK(nearbyUi.ui.screen()==Screen::Nearby);
-    nearbyUi.dispatch(nearbyUi.tap(206,312));
+    nearbyUi.dispatch(tapButton(nearbyUi,"BATTLE"));
     auto challenge=nearbyUi.tap(206,302); CHECK(challenge.kind==IntentKind::NearbyChallenge && challenge.value==1);
     nearbyUi.dispatch(challenge); CHECK(nearbyUi.ui.screen()==Screen::Nearby);
     network.stage=nearby::Stage::Incoming; network.host=false; network.session=42;
@@ -2358,14 +3017,41 @@ int main(int argc,char** argv) {
     // keeps the old model value and repeated releases cannot cycle it twice.
     Harness sleep; sleep.choose(); sleep.openHome(HomePanel::Settings);
     const auto sleepState=sleep.state;
-    auto idle=sleep.tap(206,138); CHECK(idle.kind==IntentKind::SleepTimeout && idle.value==120);
+    auto idle=tapButton(sleep,"SCREEN TIMEOUT"); CHECK(idle.kind==IntentKind::SleepTimeout && idle.value==120);
     CHECK(sleep.model.sleepTimeoutSeconds==60 && sleep.ui.pending());
-    CHECK(!sleep.tap(206,138)); sleep.dispatch(idle,false); CHECK(sleep.model.sleepTimeoutSeconds==60);
+    CHECK(!tapButton(sleep,"SCREEN TIMEOUT")); sleep.dispatch(idle,false); CHECK(sleep.model.sleepTimeoutSeconds==60);
     for(const auto seconds:{120u,300u,0u,30u,60u}) {
-        idle=sleep.tap(206,138); CHECK(idle.kind==IntentKind::SleepTimeout && idle.value==seconds);
+        idle=tapButton(sleep,"SCREEN TIMEOUT"); CHECK(idle.kind==IntentKind::SleepTimeout && idle.value==seconds);
         sleep.dispatch(idle); CHECK(sleep.model.sleepTimeoutSeconds==seconds);
     }
     CHECK(std::memcmp(&sleepState,&sleep.state,sizeof(State))==0 && sleep.gameWrites==1);
+
+    // Rotation is a bounded, separately persisted preference. Failed writes
+    // keep the actual display angle and a held/replayed contact cannot recyle it.
+    Harness rotation; rotation.choose(); rotation.model.rotationWritable=true;
+    rotation.model.rotationDegrees=270; rotation.sync(); rotation.openHome(HomePanel::Settings);
+    const auto rotationState=rotation.state;
+    Controller::Button rotationButtons[Controller::kMaxButtons];
+    const auto rotationCount=rotation.ui.layout(rotation.state,rotation.model,rotationButtons,Controller::kMaxButtons);
+    const auto* rotateButton=findLabel(rotationButtons,rotationCount,"ROTATE SCREEN");
+    CHECK(rotateButton && rotateButton->enabled && rotationCount==9);
+    const int rotateX=rotateButton->x+rotateButton->w/2,rotateY=rotateButton->y+rotateButton->h/2;
+    auto rotate=tapButton(rotation,"ROTATE SCREEN"); CHECK(rotate.kind==IntentKind::RotateScreen && rotate.value==0);
+    CHECK(rotation.ui.pending() && rotation.model.rotationDegrees==270);
+    CHECK(!tapButton(rotation,"ROTATE SCREEN")); rotation.dispatch(rotate,false);
+    CHECK(rotation.model.rotationDegrees==270);
+    for(const auto degrees:{0u,90u,180u,270u}) {
+        rotate=tapButton(rotation,"ROTATE SCREEN"); CHECK(rotate.kind==IntentKind::RotateScreen && rotate.value==degrees);
+        rotation.dispatch(rotate); CHECK(rotation.model.rotationDegrees==degrees);
+        CHECK(!rotation.event(TouchKind::Up,rotateX,rotateY));
+    }
+    CHECK(!rotation.event(TouchKind::Down,rotateX,rotateY));
+    rotation.model.rotationDegrees=90; rotation.sync();
+    CHECK(!rotation.event(TouchKind::Up,rotateX,rotateY)); // External orientation update invalidates a held point.
+    rotation.model.rotationWritable=false; rotation.sync(); CHECK(!tapButton(rotation,"ROTATE SCREEN"));
+    rotation.model.rotationWritable=true; rotation.model.rotationDegrees=45; rotation.sync();
+    CHECK(!tapButton(rotation,"ROTATE SCREEN"));
+    CHECK(std::memcmp(&rotationState,&rotation.state,sizeof(State))==0 && rotation.gameWrites==1);
 
     // Appending three saved offers preserves a live fixed choice; swipes and
     // Back retain the actual form identity for slots9..11 without hatch writes.

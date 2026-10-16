@@ -10,6 +10,10 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#ifdef TEST_NFC_GAMEPLAY
+#include "nfc_uart_mock.hpp"
+#include "driver/uart.h"
+#endif
 
 namespace fake {
 std::uint64_t now=0;
@@ -41,6 +45,9 @@ bool practicePresent[2]{};
 std::function<void()> delayHook;
 struct Restart {};
 void reset() {
+#ifdef TEST_NFC_GAMEPLAY
+    nfcmock::reset();
+#endif
     now=0;pressed=false;held=true;powerEnabled=true;networkPaused=false;
     assetBusy=networkBusy=networkFailure=syncFailure=motionEnabled=practiceFailure=false;
     senseFailure=cutFailure=assertFailure=recheckPressed=false;readAt=~std::uint64_t{0};readsAtTime=0;
@@ -66,6 +73,13 @@ void* heap_caps_malloc(std::size_t bytes,std::uint32_t capabilities) {
     if(fake::diagnosticAllocationFailure||bytes>digivice::kJsonCapacity)return nullptr;
     auto* memory=std::malloc(bytes);if(memory)++fake::diagnosticOutstanding;return memory;
 }
+void* heap_caps_aligned_alloc(std::size_t alignment,std::size_t bytes,std::uint32_t capabilities) {
+    ++fake::diagnosticAllocations;fake::diagnosticBytes=bytes;fake::diagnosticCaps=capabilities;
+    if(fake::diagnosticAllocationFailure)return nullptr;
+    void* memory=nullptr;
+    if(posix_memalign(&memory,std::max(alignment,sizeof(void*)),bytes)!=0)return nullptr;
+    ++fake::diagnosticOutstanding;return memory;
+}
 void heap_caps_free(void* allocation) {
     if(allocation){++fake::diagnosticFrees;--fake::diagnosticOutstanding;std::free(allocation);}
 }
@@ -73,7 +87,13 @@ void heap_caps_free(void* allocation) {
 namespace digivice::board {
 Capabilities initialize(){return {};}
 const char* boardName(){return "mock Waveshare146";}
-const BoardProfile& selectedProfile(){return kWaveshare146;}
+const BoardProfile& selectedProfile(){
+#ifdef TEST_NFC_GAMEPLAY
+return kWaveshare21;
+#else
+return kWaveshare146;
+#endif
+}
 bool powerHoldReady(){return fake::powerEnabled;}
 esp_err_t powerHoldStatus(){return fake::powerEnabled?ESP_OK:ESP_FAIL;}
 bool powerControlAvailable(){return fake::powerEnabled;}
@@ -727,8 +747,71 @@ void usbTransferHandshakeClearsPartialGameplay(){
     f.dispatch(line);
     require(sameSavedState(saved,f.state)&&f.backend.writes==writes,"post-handshake status does not execute the stale walk");
 }
+void digiModifyRuntime() {
+    using namespace digivice;
+    using namespace digivice::digimodify;
+    for(bool fail:{false,true}) {
+        fake::reset();Fixture f;f.wait(100);
+        // A held nonbattle scan is latched and cannot activate after entering battle.
+        require(f.send("digi-sim remove"),"simulation remove command handled");f.wait(320);
+        require(f.send("digi-sim critical"),"simulation present handled");f.wait(100);
+        require(!f.state.digiModifyReady,"nonbattle scan gives no reward");
+        f.dispatch("walk 100");require(f.state.phase==Phase::Encounter,"battle opened");
+        f.wait(200);require(!f.state.digiModifyReady,"held card cannot follow into new battle");
+        f.send("digi-sim remove");f.wait(320);f.send("digi-sim unknown");f.wait(100);
+        require(!f.state.cardUsed,"unknown card does not spend limit");
+        f.send("digi-sim critical");f.wait(100);require(!f.state.digiModifyReady,"identity change without removal cannot rearm");
+        f.send("digi-sim remove");f.wait(320);
+        const auto before=f.state;const auto writes=f.backend.writes;
+        f.backend.failAfter=fail;f.send("digi-sim critical");f.wait(100);
+        require(f.backend.writes==writes+1,"exactly one checkpoint attempt per presentation");
+        require(fail ? sameSavedState(before,f.state) : f.state.digiModifyReady,"publish charge only after verified checkpoint");
+        f.wait(500);require(f.backend.writes==writes+1,"held card never repeats or retries uncertain write");
+        require(!f.runtime.capabilities({}).nfc,"simulation never enables physical NFC capability");
+        if(fail) require(!f.saves.writable(),"uncertain card checkpoint enters save recovery");
+        else {
+            State recovered;storage::SaveStore reboot(f.backend);
+            require(reboot.restore(recovered)==storage::BootStatus::Loaded && recovered.digiModifyReady,"reboot restores durable charge");
+            f.dispatch("attack");require(!f.state.digiModifyReady,"successful outgoing hit consumes saved charge");
+            f.send("digi-sim remove");f.wait(320);f.send("digi-sim critical");f.wait(100);
+            require(!f.state.digiModifyReady,"remove/re-present cannot bypass one-card battle limit");
+            require(f.state.phase==Phase::Encounter && f.state.cardUsed,"used allowance still belongs to the same battle");
+            f.dispatch("retreat");f.dispatch("walk 100");f.wait(100);
+            require(f.state.phase==Phase::Encounter && !f.state.cardUsed && !f.state.digiModifyReady,"held accepted card cannot activate again in a later battle");
+        }
+    }
+    for(unsigned effect=2;effect<=5;++effect) for(bool fail:{false,true}) {
+        fake::reset();Fixture f;f.wait(100);f.dispatch("walk 100");
+        if(effect==5){
+            // Choose an existing same-type foe: Element Shift must improve it.
+            f.state.wildFormId=f.state.collection[0].formId;
+            f.state.wildSpecies=f.state.collection[0].species;
+            f.state.wildLevel=f.state.level;
+            f.state.wildMaxHp=f.state.wildHp=combat::formProfile(f.state.wildFormId,f.state.wildLevel).stats.maxHp;
+            require(isValid(f.state)&&f.saves.checkpoint(f.state),"element fixture saved");
+        }
+        if(effect==4){--f.state.hp;f.state.collection[0].hp=f.state.hp;require(f.saves.checkpoint(f.state),"hurt fixture saved");}
+        f.send("digi-sim remove");f.wait(320);
+        const auto before=f.state;const auto writes=f.backend.writes;f.backend.failAfter=fail;
+        f.send(effect==2?"digi-sim power":effect==3?"digi-sim guard":effect==4?"digi-sim recovery":"digi-sim element");f.wait(100);
+        require(f.backend.writes==writes+1,"each effect attempts one checkpoint");
+        const auto pending=effect==5?4+unsigned(combat::counterElement(before.wildFormId)):effect==4?0:effect;
+        require(fail?sameSavedState(before,f.state):(f.state.cardUsed&&f.state.digiModifyReady==pending),"effect success published after durability only");
+        f.wait(500);require(f.backend.writes==writes+1,"held effects cannot duplicate even after a save failure");
+        if(!fail){State restored;storage::SaveStore reboot(f.backend);require(reboot.restore(restored)==storage::BootStatus::Loaded&&sameSavedState(restored,f.state),"all effects survive save/reload exactly");}
+    }
+
+}
+
+#ifdef TEST_NFC_GAMEPLAY
+#include "nfc_gameplay_cases.inc"
+#endif
 }
 int main(){try{
+#ifdef TEST_NFC_GAMEPLAY
+    nfcGameplayRuntime();return 0;
+#endif
+    digiModifyRuntime();
     boundedDiagnosticMemory();
     consoleAutoWaitsForFlick();
     startupOffersAreDurable();

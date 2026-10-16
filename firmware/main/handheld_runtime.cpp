@@ -1,4 +1,5 @@
 #include "handheld_runtime.hpp"
+#include "digi_audio.hpp"
 #include "sd_inspect.hpp"
 #include "../runtime/sprite.hpp"
 #include "../runtime/release_confirmation.hpp"
@@ -23,6 +24,60 @@ std::uint64_t nowMs() { return static_cast<std::uint64_t>(esp_timer_get_time() /
     auto* bytes = static_cast<volatile unsigned char*>(memory);
     while (length--) *bytes++ = 0;
 }
+}
+bool HandheldRuntime::cardRuntimeAllowed() const {
+    bool enabled=!powerFrozen() && !encounterRecoveryRequired_ && !usbTransferLease_ &&
+        !tradeSession_.blocksForeground() && saves_.writable() && state_.worldSeed;
+#if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
+    enabled=enabled && !interfacePaused_ && !idle_.blanked() && !setup_.active() && (ui_.screen()==deviceui::Screen::Battle || ui_.screen()==deviceui::Screen::Encounter) &&
+        !(battle_.view().capturePresentation);
+#endif
+    return enabled && tradeSession_.healthy() && !nearbyBusy() && !practice_.blocksPartner();
+}
+digimodify::Result HandheldRuntime::observeCard(digimodify::Sample sample,std::uint64_t now,std::uint64_t maximumGapMs) {
+    using namespace digimodify;
+    const auto event=cardLatch_.observe(sample,now,maximumGapMs);
+    if(state_.phase!=Phase::Encounter && !battlePlaybackLocked()) digiOverlay_.cancel();
+    if(!event.present) return Result::None;
+    auto authority=nearbyBusy()?Authority::NearbyGuest:Authority::LocalWild;
+    if(practice_.blocksPartner()) authority=Authority::Practice;
+    const bool enabled=cardRuntimeAllowed();
+    State candidate;
+    const auto result=prepare(state_,authority,enabled,event.cardId,candidate);
+    if(result!=Result::Ready) return result;
+    // A failed/uncertain write consumes this PRESENT event. No automatic retry.
+    if(!saves_.checkpoint(candidate)) return Result::SaveFailed;
+    state_=candidate;
+    digiOverlay_.start(now,state_.encounters,find(event.cardId)->effect,state_.digiModifyReady);
+#if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
+    audio_.play(device::cardCue(find(event.cardId)->effect)); // Once, only after verified persistence.
+    uiSequence_=state_.sequence; interfaceDirty_=true;
+#endif
+    interfaceActivity(now);
+    return Result::Ready;
+}
+bool HandheldRuntime::digiModifyCommand(const char* line) {
+    if(std::strncmp(line,"digi-sim",8) || (line[8] && line[8]!=' ')) return false;
+#if !defined(CONFIG_DIGIVICE_DIGI_SIMULATION) || !CONFIG_DIGIVICE_DIGI_SIMULATION
+    std::puts("Digi-Modify simulation disabled in this build. Use the host simulator.");
+    return true;
+#else
+    // Explicit test input; this never promotes Capabilities::nfc.
+    const char* arg=line+8;
+    while(*arg==' ') ++arg;
+    if(!std::strcmp(arg,"off")) {cardSimulation_=false;cardLatch_.reset();simulatedCard_={};}
+    else if(!std::strcmp(arg,"remove")) {cardSimulation_=true;simulatedCard_={digimodify::Presence::Absent,0};}
+    else if(!std::strcmp(arg,"critical")) {cardSimulation_=true;simulatedCard_={digimodify::Presence::Present,digimodify::kCards[0].id};}
+    else if(!std::strcmp(arg,"power")) {cardSimulation_=true;simulatedCard_={digimodify::Presence::Present,0xD102};}
+    else if(!std::strcmp(arg,"guard")) {cardSimulation_=true;simulatedCard_={digimodify::Presence::Present,0xD103};}
+    else if(!std::strcmp(arg,"recovery")) {cardSimulation_=true;simulatedCard_={digimodify::Presence::Present,0xD104};}
+    else if(!std::strcmp(arg,"element")) {cardSimulation_=true;simulatedCard_={digimodify::Presence::Present,0xD106};}
+    else if(!std::strcmp(arg,"unknown")) {cardSimulation_=true;simulatedCard_={digimodify::Presence::Present,0};}
+    else {std::puts("SIMULATION only: digi-sim remove (hold300ms), critical, power, guard, recovery, element, unknown, off. No physical NFC reader.");return true;}
+    (void)observeCard(simulatedCard_,nowMs());
+    std::puts("Digi-Modify simulation input set; poll applies debounce. Physical NFC unverified.");
+    return true;
+#endif
 }
 void HandheldRuntime::resolveTestEncounterAtBoot() {
     if (encounterRecoveryRequired_) return;
@@ -86,6 +141,9 @@ void HandheldRuntime::begin() {
         board::unlockSharedI2c();
     } else sensor_.begin(nullptr);
     std::printf("Motion adapter: %s\n", motion::adapterStatusText(sensor_.status().status));
+    // 2.1 LCD commands temporarily own GPIO1/2. Its backend must release that
+    // bus and deassert CS before any SD access. The 1.46 order is unchanged.
+    if (board::selectedProfile().lcdCommandPinsSharedWithSd) beginInterface();
     if (assets::SdAssetStorage::buildEnabled()) {
         const auto storageResult = sd_.begin();
         if (storageResult == ESP_OK) {
@@ -100,7 +158,7 @@ void HandheldRuntime::begin() {
     stepDelivery_ = motion::StepDelivery(nowMs());
     powerEnabled_ = board::powerControlAvailable();
     printPower();
-    beginInterface();
+    if (!board::selectedProfile().lcdCommandPinsSharedWithSd) beginInterface();
 }
 board::Capabilities HandheldRuntime::capabilities(board::Capabilities base) const {
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
@@ -135,6 +193,15 @@ void HandheldRuntime::warm(bool force) {
     }
     planSequence_ = state_.sequence; planGeneration_ = network_.status().generation;
 }
+bool HandheldRuntime::nfcAllowed() const {
+    bool interfaceReady = true;
+#if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
+    interfaceReady = !interfacePaused_ && !setup_.active() && !idle_.blanked();
+#endif
+    return interfaceReady && !powerFrozen() && !usbTransferLease_ && !encounterRecoveryRequired_ &&
+        saves_.writable() && tradeSession_.healthy() && !tradeSession_.blocksForeground() &&
+        !nearbyBusy() && !battlePlaybackLocked() && practice_.allowsCareAction(Action::Explore);
+}
 void HandheldRuntime::poll() {
     if (state_.onboardingComplete && starter_.stage() != onboarding::Stage::Complete)
         starter_.reset(true); // Also observes a successful direct serial hatch.
@@ -154,6 +221,21 @@ void HandheldRuntime::poll() {
     const auto now = nowMs();
     pollNearby(now); // Teardown progresses even while power freezes UI/gameplay.
     pollPower(now);
+#if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
+    nfc_.setTestEnabled(ui_.screen()==deviceui::Screen::NfcTest && !setup_.active(),now);
+#endif
+    nfc_.poll(now, nfcAllowed(), !cardSimulation_ && state_.phase==Phase::Encounter && cardRuntimeAllowed(),state_.encounters);
+    digimodify::Sample uartSample;
+    if(nfc_.takeCardSample(uartSample)) {
+        const auto result=observeCard(uartSample,now,nfcdiag::Device::kObservationGapMs);
+        if(result!=digimodify::Result::None)
+            std::printf("Digi-Modify UART event result=%u; physical RF verification remains separate\n",static_cast<unsigned>(result));
+    }
+    if(cardSimulation_) {
+        const auto result=observeCard(simulatedCard_,now);
+        if(result!=digimodify::Result::None)
+            std::printf("Digi-Modify SIMULATION event result=%u (1=saved,2=unknown,3=unavailable,4=not-battle,5=used,6=rejected,7=save-failed)\n",static_cast<unsigned>(result));
+    }
     if (usbTransferLease_ && !powerFrozen() && now - lastUsbTransferMs_ >= 60000) {
         if (stopUsbTransfer(true)) std::puts("SDPUT TIMEOUT partial=retained");
     }
@@ -228,6 +310,7 @@ void HandheldRuntime::printPower() const {
         std::puts("Power held on. After I/O settles, release then short-press/release PWR to resume; reboot/recovery is required for uncertain saves.");
 }
 void HandheldRuntime::beginPowerShutdown(std::uint64_t now) {
+    digiOverlay_.cancel(); cardLatch_.reset();
     powerFrozen_ = true; ++inputEpoch_;
     previousAssetsPaused_ = usbTransferLease_ ? usbTransferPreviousAssetsPaused_ : assets_.paused();
     previousNetworkPaused_ = network_.requestedPaused();
@@ -249,6 +332,7 @@ void HandheldRuntime::beginPowerShutdown(std::uint64_t now) {
     powerReason_ = "stopping new work; draining confirmed steps and waiting for I/O";
 }
 power::Work HandheldRuntime::drainPower(std::uint64_t now) {
+    if(!nfc_.quiescent()){powerReason_="waiting for NFC RF-off/UART cleanup";return power::Work::Pending;}
     if (!nearbyQuiescent()) {
         powerReason_ = "waiting for nearby radio teardown"; return power::Work::Pending;
     }
@@ -323,7 +407,7 @@ void HandheldRuntime::pollPower(std::uint64_t now) {
     const auto network = powerFrozen_ ? network_.quiescence() : ESP_ERR_NOT_FINISHED;
     // Quiescence reports pending before any terminal failure, so even a failed
     // radio teardown cannot permit resume while its HTTP worker still owns work.
-    const bool idle = nearbyQuiescent() && assets_.quiescent() && network != ESP_ERR_NOT_FINISHED && interfaceQuiescent() &&
+    const bool idle = nfc_.quiescent() && nearbyQuiescent() && assets_.quiescent() && network != ESP_ERR_NOT_FINISHED && interfaceQuiescent() &&
         usbTransfer_.quiescent() && !usbTransfer_.active() && !usbTransferLease_;
     const auto actions = power_.tick({now, pressed, powerWork_, latchDropped_, idle, hardwareFault});
     if (actions.beginShutdown) beginPowerShutdown(now);
@@ -336,7 +420,7 @@ void HandheldRuntime::pollPower(std::uint64_t now) {
     }
     if (actions.cutLatch) {
         // Revalidate the barrier even if the user held PWR long after the save.
-        if (!nearbyQuiescent() || !assets_.quiescent() || !interfaceQuiescent() || !usbTransfer_.quiescent() || usbTransfer_.active() || usbTransferLease_ ||
+        if (!nfc_.quiescent() || !nearbyQuiescent() || !assets_.quiescent() || !interfaceQuiescent() || !usbTransfer_.quiescent() || usbTransfer_.active() || usbTransferLease_ ||
             network_.quiescence() != ESP_OK || !sdPowerPrepared_ ||
             tradeSession_.freezesGameWrites() || !saves_.writable() || !practice_.writable() || steps_.poll(now).pendingSteps) {
             powerWork_ = power::Work::Failed;
@@ -593,9 +677,9 @@ void HandheldRuntime::printEvolution() const {
         const auto need = forms::evolutionNeed(*edge);
         const auto previewLevel = member.level > need.level ? member.level : need.level;
         const auto stats = combat::formProfile(child, previewLevel).stats;
-        std::printf("%u %s [%s]: requires level %u, bond %u, care %u, Home, and no active/uncertain practice; %s.\n",
+        std::printf("%u %s [%s]: requires level %u, bond %u, no injury, Home, and no active/uncertain practice; %s.\n",
             static_cast<unsigned>(child), form->name, forms::stageName(form->stage), static_cast<unsigned>(need.level),
-            static_cast<unsigned>(need.bond), static_cast<unsigned>(need.care), available ? "available" : "locked");
+            static_cast<unsigned>(need.bond), available ? "available" : "locked");
         std::printf("  Preview at level %lu: HP %lu ATK %lu DEF %lu MAG %lu RES %lu; art %s.\n",
             static_cast<unsigned long>(previewLevel), static_cast<unsigned long>(stats.maxHp), static_cast<unsigned long>(stats.attack),
             static_cast<unsigned long>(stats.defense), static_cast<unsigned long>(stats.magic), static_cast<unsigned long>(stats.resistance),
@@ -681,9 +765,9 @@ void HandheldRuntime::printArt() const {
     const auto* member = activeMember(state_);
     std::printf("Art inspection: selected form %lu; last inspected %lu (%s). Physical renderer diagnostics: device status.\n",
         static_cast<unsigned long>(member ? member->formId : 0), static_cast<unsigned long>(lastArtForm_),
-        lastArtWasPrivate_ ? "exact-form private SD frame" : "unavailable or not yet inspected");
+        lastArtWasPrivate_ ? "verified private SD frame" : "unavailable or not yet inspected");
 #if defined(CONFIG_DIGIVICE_PRIVATE_SD_ART) && CONFIG_DIGIVICE_PRIVATE_SD_ART
-    std::puts("Private SD art enabled: art preview reads only DSFnnnnn.DVA for the selected form; unsigned local files, CRC checked.");
+    std::puts("Private SD art enabled: art preview prefers DSFnnnnn.DVA for the selected form; missing GrapLeomon30/357 may use the verified same-species file. CRC checked.");
 #else
     std::puts("Private SD art disabled in this build; no named test artwork is substituted.");
 #endif
@@ -701,13 +785,13 @@ void HandheldRuntime::previewArt() {
         if (result == sprite::Result::Ok) result = art.decode(sprite::Animation::Idle, 0, pixels, sprite::kMaximumPixels, mask, sizeof(mask));
         if (result == sprite::Result::Ok) {
             lastArtWasPrivate_ = true;
-            std::printf("Private exact-form %lu: %ux%u, %u mapped frames; idle frame decoded. File closed after inspection.\n",
-                static_cast<unsigned long>(member->formId), static_cast<unsigned>(art.info().width),
+            std::printf("Private form %lu, artwork source %lu: %ux%u, %u mapped frames; idle frame decoded. File closed after inspection.\n",
+                static_cast<unsigned long>(member->formId), static_cast<unsigned long>(art.sourceFormId()), static_cast<unsigned>(art.info().width),
                 static_cast<unsigned>(art.info().height), static_cast<unsigned>(art.info().frameCount));
         } else std::printf("Private art unavailable: %s (%s); no substitute creature.\n", sprite::resultName(result), art.diagnostic());
     }
 #endif
-    if (!lastArtWasPrivate_) std::puts("Exact-form artwork unavailable; renderer uses a neutral missing-art indicator.");
+    if (!lastArtWasPrivate_) std::puts("Artwork unavailable; renderer uses a neutral missing-art indicator.");
     std::puts("Inspection only: no display transfer, no gameplay mutation, no private asset download.");
 }
 bool HandheldRuntime::usbTransferCooperate(void* context) {
@@ -722,7 +806,8 @@ void HandheldRuntime::printIdentity() const {
         std::puts("device identity unavailable"); return;
     }
     const char* profile = board::selectedProfile().id == board::ProfileId::Waveshare146
-        ? "waveshare-esp32-s3-touch-lcd-1.46" : "unsupported";
+        ? "waveshare-esp32-s3-touch-lcd-1.46" : board::selectedProfile().id == board::ProfileId::Waveshare21
+        ? "waveshare-esp32-s3-touch-lcd-2.1" : "unsupported";
     std::printf("device identity mac=%02x:%02x:%02x:%02x:%02x:%02x board=%s firmware=%s sdput=1\n",
         mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], profile, esp_app_get_description()->version);
 #else
@@ -791,6 +876,12 @@ bool HandheldRuntime::usbTransferCommand(const char* line) {
 }
 bool HandheldRuntime::command(char* line) {
     while (*line == ' ' || *line == '\t') ++line;
+    if (nfc_.command(line, nowMs(), nfcAllowed())) return true;
+    if (nfc_.diagnosticBusy() && std::strcmp(line, "status") && std::strcmp(line, "snapshot") &&
+        std::strcmp(line, "capabilities") && std::strcmp(line, "device identity") &&
+        std::strcmp(line, "device status") && std::strcmp(line, "power status")) {
+        std::puts("NFC diagnostic active; wait for completion or use nfc stop before other commands."); return true;
+    }
     if (std::strcmp(line, "device identity") == 0) { printIdentity(); return true; }
     if (std::strcmp(line, "power status") == 0) { printPower(); return true; }
     if (powerFrozen()) {
@@ -829,6 +920,10 @@ bool HandheldRuntime::command(char* line) {
         if (!std::strcmp(line, "device status")) { (void)interfaceCommand(line); return true; }
         std::puts("SAVE RECOVERY: gameplay and transfers paused. Use status, snapshot, device identity or reboot.");
         return true;
+    }
+    if (digiModifyCommand(line)) return true;
+    if(!std::strncmp(line,"digi-modify",11) && (line[11]==0 || line[11]==' ')) {
+        std::puts("Use digi-sim for explicit debounced simulated card input; physical NFC gameplay is unverified."); return true;
     }
     if (nearbyBusy()) {
         if (!std::strcmp(line, "nearby close")) { closeNearby(); return true; }

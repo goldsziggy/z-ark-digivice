@@ -1,6 +1,7 @@
 #include "battle_presentation.hpp"
 #include "combat.hpp"
 #include "forms.hpp"
+#include "expeditions.hpp"
 #include "legacy_combat_v7.hpp"
 #include "legacy_combat_v8.hpp"
 #include "legacy_combat_v9.hpp"
@@ -15,6 +16,13 @@ combat::Profile profile(std::uint32_t form, std::uint32_t level, std::uint32_t r
     if(rules==8) { const auto p=legacy_v8::combat::formProfile(form,level); return {p.name,p.type,p.physicalSkill,p.heavySkill,p.magicSkill,{p.stats.maxHp,p.stats.attack,p.stats.defense,p.stats.magic,p.stats.resistance}}; }
     if(rules==9) { const auto p=legacy_v9::combat::formProfile(form,level); return {p.name,p.type,p.physicalSkill,p.heavySkill,p.magicSkill,{p.stats.maxHp,p.stats.attack,p.stats.defense,p.stats.magic,p.stats.resistance}}; }
     return combat::formProfile(form,level);
+}
+void expeditionContext(View& view, const State& before) {
+    if(before.expeditionScenario<1 || before.expeditionScenario>6) return;
+    const auto scenario=before.expeditionScenario-1;
+    view.expeditionTier=static_cast<std::uint8_t>(before.expeditionTier);
+    view.expeditionTiers=static_cast<std::uint8_t>(expeditions::tierCount(scenario));
+    view.boss=view.expeditionTier==view.expeditionTiers;
 }
 bool attack(Move move) { return move==Move::Physical || move==Move::Magic || move==Move::Heavy; }
 const char* skill(const combat::Profile& p, Move move) {
@@ -33,6 +41,7 @@ bool valid(const autobattle::Trace& t,bool tactical) {
        t.startSequence==UINT32_MAX || t.endSequence!=t.startSequence+1 ||
        (t.combatRulesVersion!=4 && t.combatRulesVersion!=7 && t.combatRulesVersion!=8 && t.combatRulesVersion!=9 && t.combatRulesVersion!=12) ||
        (t.outcome!=Outcome::None && t.outcome!=Outcome::Won && t.outcome!=Outcome::Captured && t.outcome!=Outcome::Retreated)) return false;
+    if(t.partial && (t.count!=1 || t.combatRulesVersion!=12)) return false;
     if(!combat::validCareBonus({t.playerOffenseBonus,t.playerProtectionBonus}) ||
        !combat::validCareBonus({t.enemyOffenseBonus,t.enemyProtectionBonus}) ||
        (t.combatRulesVersion!=12 && (t.playerOffenseBonus || t.playerProtectionBonus || t.enemyOffenseBonus || t.enemyProtectionBonus))) return false;
@@ -41,6 +50,7 @@ bool valid(const autobattle::Trace& t,bool tactical) {
     if(!p.stats.maxHp || !e.stats.maxHp || p.stats.maxHp>2048 || e.stats.maxHp>2048) return false;
     for(std::size_t i=0;i<t.count;++i) {
         const auto& s=t.steps[i];
+        if(s.element>3 || (s.element && (!attack(s.action) || s.reflected))) return false;
         if(!tactical && t.outcome==Outcome::None && !attack(s.action)) return false;
         if(s.action==Move::Capture && (t.combatRulesVersion==12 || s.captureAttempt)) {
             const auto result=static_cast<CaptureResult>(s.captureResult);
@@ -66,7 +76,7 @@ bool valid(const autobattle::Trace& t,bool tactical) {
            (i && (t.steps[i-1].captured || s.playerHpBefore!=t.steps[i-1].playerHpAfter || s.enemyHpBefore!=t.steps[i-1].enemyHpAfter))) return false;
     }
     const auto& last=t.steps[t.count-1];
-    if(!tactical && t.outcome==Outcome::None && last.enemyHpAfter>e.stats.maxHp/2) return false;
+    if(!tactical && !t.partial && t.outcome==Outcome::None && last.enemyHpAfter>e.stats.maxHp/2) return false;
     // A calm third miss ends the fight only when that throw is the trace's outcome.
     // Rules 16 keeps the same battle going, so later attacks may follow the throw.
     const bool captureEnded=last.action==Move::Capture && last.captureAttempt==3 && !last.captured &&
@@ -77,7 +87,13 @@ bool valid(const autobattle::Trace& t,bool tactical) {
            (t.outcome!=Outcome::None || (last.playerHpAfter && last.enemyHpAfter && !last.captured));
 }
 }
-bool Sequencer::startAuto(const autobattle::Trace& t,std::uint64_t now) { return begin(t,now,false,false); }
+bool Sequencer::startAuto(const autobattle::Trace& t,std::uint64_t now,const State* before) {
+    if(before && (!isValid(*before) || before->phase!=digivice::Phase::Encounter ||
+       before->sequence!=t.startSequence || before->wildFormId!=t.enemyFormId)) return false;
+    if(!begin(t,now,false,false)) return false;
+    if(before) expeditionContext(view_,*before);
+    return true;
+}
 bool Sequencer::begin(const autobattle::Trace& t,std::uint64_t now,bool tactical,bool aimMiss) {
     if(locked() || !valid(t,tactical)) return false;
     trace_=t; view_={}; cue_=Cue::None; index_=0; aimMiss_=aimMiss;
@@ -115,7 +131,9 @@ bool Sequencer::startTactical(const State& before,const State& after,Action acti
         after.lastCapture.targetLevel==before.wildLevel;
     s.captured=after.collectionCount>before.collectionCount || duplicateCaught;
     s.reflected=action==Action::Heavy && guard==combat::Defense::Counter;
-    const bool terminal=after.phase==digivice::Phase::Home;
+    s.critical=attack(s.action) && previewWildAttack(before,action==Action::Heavy?combat::Move::Heavy:action==Action::Magic?combat::Move::Magic:combat::Move::Physical).critical;
+    s.element=attack(s.action) && !s.reflected && before.digiModifyReady>=5 ? before.digiModifyReady-4 : 0;
+    const bool terminal=after.phase==digivice::Phase::Home || after.phase==digivice::Phase::Expedition;
     if(!terminal && (after.phase!=digivice::Phase::Encounter || after.wildFormId!=before.wildFormId || after.encounters!=before.encounters)) return false;
     const bool calmCapture=action==Action::RingCapture || t.combatRulesVersion==12 || before.autoCapture==AutoCapture::Awaiting;
     const bool captureEnded=calmCapture && s.action==Move::Capture && after.message==Message::CaptureEnded;
@@ -127,11 +145,7 @@ bool Sequencer::startTactical(const State& before,const State& after,Action acti
     // here reconstruct outgoing HP with the existing immutable combat resolver.
     if(t.outcome==Outcome::Retreated && attack(s.action) && !s.reflected) {
         const auto move=action==Action::Magic?combat::Move::Magic:action==Action::Heavy?combat::Move::Heavy:combat::Move::Physical;
-        std::uint32_t damage=0;
-        if(before.wildRules<8) damage=legacy_v7::combat::resolveForms(member->formId,member->level,before.wildFormId,before.wildLevel,static_cast<legacy_v7::combat::Move>(move),static_cast<legacy_v7::combat::Defense>(guard)).damage;
-        else if(before.wildRules==8) damage=legacy_v8::combat::resolveForms(member->formId,member->level,before.wildFormId,before.wildLevel,static_cast<legacy_v8::combat::Move>(move),static_cast<legacy_v8::combat::Defense>(guard)).damage;
-        else if(before.wildRules>=12) damage=combat::resolveCareForms(member->formId,member->level,before.wildFormId,before.wildLevel,move,guard,memberCare(*member),{}).damage;
-        else damage=combat::resolveForms(member->formId,member->level,before.wildFormId,before.wildLevel,move,guard).damage;
+        auto damage=previewWildAttack(before,move).damage;
         damage+=before.attackBoost;
         s.enemyHpAfter=damage>=before.wildHp?0:before.wildHp-damage;
     }
@@ -147,7 +161,9 @@ bool Sequencer::startTactical(const State& before,const State& after,Action acti
         s.captureChance=record.chance; s.captureAttempt=record.attempt; s.captureResult=static_cast<std::uint8_t>(record.result);
         s.opponentAction=Move::None;
     }
-    return begin(t,now,true,aimMiss);
+    if(!begin(t,now,true,aimMiss)) return false;
+    expeditionContext(view_,before);
+    return true;
 }
 bool Sequencer::startSavedCapture(const State& state,std::uint64_t now) {
     if(locked() || !isValid(state)) return false;
@@ -159,7 +175,7 @@ bool Sequencer::startSavedCapture(const State& state,std::uint64_t now) {
     const bool ended=!caught && record.attempt==3 && state.phase==digivice::Phase::Home &&
         state.message==Message::CaptureEnded;
     if(caught) {
-        if(state.phase!=digivice::Phase::Home || (state.message!=Message::Captured && state.message!=Message::Trained)) return false;
+        if((state.phase!=digivice::Phase::Home && state.phase!=digivice::Phase::Expedition) || (state.message!=Message::Captured && state.message!=Message::Trained)) return false;
         bool present=false;
         for(std::size_t i=0;i<state.collectionCount;++i) {
             const auto& captured=state.collection[i];
@@ -185,13 +201,16 @@ bool Sequencer::startSavedCapture(const State& state,std::uint64_t now) {
     s.captureChance=record.chance; s.captureAttempt=record.attempt; s.captureResult=static_cast<std::uint8_t>(record.result);
     if(!begin(t,now,true,record.result==CaptureResult::Miss)) return false;
     if(state.phase!=digivice::Phase::Encounter) view_.enemyHp=0;
+    expeditionContext(view_,state);
     return true;
 }
 void Sequencer::emit(Cue cue) { if(cue_==Cue::None) cue_=cue; }
 Cue Sequencer::consumeCue() { const auto result=cue_; cue_=Cue::None; return result; }
 void Sequencer::enter(Phase phase,std::uint64_t now) {
     enteredAt_=now; impacted_=false;
-    view_.phase=phase; view_.flash=false; view_.progressPermille=0;
+    view_.phase=phase; view_.flash=false;
+    view_.element=phase==Phase::Player ? trace_.steps[index_].element : 0;
+    view_.critical=phase==Phase::Player && trace_.steps[index_].critical; view_.progressPermille=0;
     view_.turn=index_+1; view_.damage=0; view_.captured=false; view_.aimMiss=false;
     view_.capturePresentation=false; view_.captureMiss=false; view_.captureCaught=false;
     view_.captureAttempt=0; view_.captureRemaining=0; view_.captureChance=0; view_.captureElapsedMs=0;
@@ -271,6 +290,7 @@ const View& Sequencer::poll(std::uint64_t now) {
         const auto& s=trace_.steps[index_];
         if(view_.phase==Phase::Player && s.opponentAction!=Move::None) enter(Phase::Opponent,now);
         else if(static_cast<std::size_t>(index_)+1<trace_.count) { ++index_; enter(Phase::Player,now); }
+        else if(trace_.partial && trace_.outcome==Outcome::None) { view_.locked=false; view_.flash=false; cue_=Cue::None; }
         else enter(Phase::Summary,now);
         return view_;
     }

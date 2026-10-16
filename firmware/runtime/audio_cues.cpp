@@ -29,10 +29,19 @@ constexpr Cue cues[]{
     {Sine, 3, {{67,.2F,0}, {64,.25F,.2F}, {60,.35F,.43F}}},
     {Triangle, 6, {{60,.12F,0}, {64,.12F,.12F}, {67,.12F,.24F}, {72,.14F,.36F}, {79,.2F,.5F}, {84,.5F,.68F}}},
     {Sine, 2, {{55,.07F,0}, {48,.13F,.09F}}},
+    // Original Digi-Modify motifs: 140ms rising swipe, then a distinct activation.
+    // No samples or external assets; six fixed voices at most.
+    {Triangle, 4, {{46,.14F,0,86},{84,.07F,.14F,96},{79,.14F,.22F},{91,.17F,.24F}}},
+    {Triangle, 4, {{46,.14F,0,86},{43,.13F,.14F,55},{50,.14F,.25F,62},{55,.17F,.36F}}},
+    {Sine, 4, {{46,.14F,0,86},{67,.25F,.14F},{74,.23F,.18F},{79,.19F,.22F}}},
+    {Sine, 5, {{46,.14F,0,86},{72,.13F,.14F},{76,.14F,.22F},{79,.16F,.30F},{84,.20F,.38F}}},
+    {Triangle, 4, {{46,.14F,0,86},{60,.18F,.14F,72},{67,.18F,.22F,79},{74,.23F,.30F,86}}},
+    {Triangle, 3, {{88,.10F,0,40},{43,.14F,.02F,31},{79,.09F,.04F,60}}},
 };
 constexpr const char* names[]{"boot", "hatch", "navigate", "back", "feed", "play", "rest", "encounter",
     "attack", "magic", "hit", "capture-arm", "capture-throw", "capture-success", "capture-fail",
-    "win", "retreat", "evolution", "error"};
+    "win", "retreat", "evolution", "error",
+    "digi-critical", "digi-power", "digi-guard", "digi-recovery", "digi-element", "digi-critical-hit"};
 static_assert(sizeof(cues)/sizeof(cues[0]) == static_cast<unsigned>(AudioCue::Count));
 static_assert(sizeof(names)/sizeof(names[0]) == static_cast<unsigned>(AudioCue::Count));
 float frequency(float midi) { return 440.0F * std::exp2((midi-69.0F)/12.0F); }
@@ -41,7 +50,9 @@ unsigned cuePriority(AudioCue cue) {
     switch (cue) {
     case AudioCue::CaptureSuccess: case AudioCue::CaptureFail: case AudioCue::Win:
     case AudioCue::Retreat: case AudioCue::Hatch: case AudioCue::Evolution: return 4;
-    case AudioCue::CaptureArm: case AudioCue::CaptureThrow: case AudioCue::Error: return 3;
+    case AudioCue::CaptureArm: case AudioCue::CaptureThrow: case AudioCue::Error:
+    case AudioCue::DigiCritical: case AudioCue::DigiPower: case AudioCue::DigiGuard:
+    case AudioCue::DigiRecovery: case AudioCue::DigiElement: case AudioCue::DigiCriticalHit: return 3;
     case AudioCue::Encounter: case AudioCue::Attack: case AudioCue::Magic: case AudioCue::Hit: return 2;
     default: return 1;
     }

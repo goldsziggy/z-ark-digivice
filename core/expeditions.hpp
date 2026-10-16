@@ -35,6 +35,15 @@ inline constexpr Scenario kScenarios[] = {
     {"Ember Boss", Kind::Boss, Theme::Ember, 1, 1, 2},
 };
 
+// A run freezes its selected species/base level; later dungeon tiers rise one
+// level each without re-running the theme pool selector or changing its RNG.
+inline constexpr std::uint32_t tierCount(std::uint32_t scenario) {
+    return scenario < 6 ? kScenarios[scenario].floors : 0;
+}
+inline constexpr std::uint32_t tierLevel(std::uint32_t baseLevel, std::uint32_t tier) {
+    return baseLevel >= 99 || tier > 99 - baseLevel ? 99 : baseLevel + (tier ? tier - 1 : 0);
+}
+
 constexpr std::uint32_t kMaxDungeonKeys = 3;
 constexpr std::uint32_t kMaxBossSigils = 1;
 constexpr std::uint32_t kDungeonWinsPerKey = 8;

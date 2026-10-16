@@ -18,7 +18,7 @@ unsigned checks = 0, failures = 0;
 #define CHECK(x) do{++checks;if(!(x)){++failures;std::fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,#x);}}while(false)
 
 void versions() {
-    CHECK(kSchemaVersion == 27 && kRulesVersion == 19 && kSnapshotSize == 6860 && kCollectionCapacity == 250);
+    CHECK(kSchemaVersion == 30 && kRulesVersion == 22 && kSnapshotSize == 6876 && kCollectionCapacity == 250);
     CHECK(std::size(expeditions::kScenarios) == 6);
     for (const auto& scenario : expeditions::kScenarios) {
         const auto count = expeditions::variantCount(scenario);
@@ -157,7 +157,7 @@ void migrationMidEncounter() {
         if (now.phase != Phase::Home || !m.hp) continue;
         m.hp = now.hp = combat::formProfile(m.formId, now.level).stats.maxHp; m.careState &= (1u << 27) - 1u;
         if (!isValid(now) || apply(now, Action::Explore, 1000) != Error::None || now.phase != Phase::Encounter) continue;
-        CHECK(now.wildRules == 19 && forms::productionForm(now.wildFormId) && forms::hasInstalledArt(now.wildFormId));
+        CHECK(now.wildRules == kRulesVersion && forms::productionForm(now.wildFormId) && forms::hasInstalledArt(now.wildFormId));
         newWild += now.wildFormId > forms::kRules18FormCount;
     }
     CHECK(migrated >= 100 && finished == migrated && newWild == 0);
@@ -209,6 +209,7 @@ void historicalFullBox() {
     snapshot_test::schema26Image(current.bytes, schema26);
     schema26[4] = 26;
     schema26[5] = 0;
+    snapshot_test::put32(schema26 + 8, 19);
     schema26[6] = static_cast<std::uint8_t>(3204);
     schema26[7] = static_cast<std::uint8_t>(3204 >> 8);
     snapshot_test::put32(schema26 + kSchema26SnapshotSize - 4, crc32(schema26, kSchema26SnapshotSize - 4));
@@ -275,7 +276,7 @@ bool beatExpedition(State& s, unsigned& hits) {
         ++hits;
     }
     const auto* form = forms::find(foe);
-    const bool victory = s.phase == Phase::Home && (s.message == Message::Won || s.message == Message::Trained);
+    const bool victory = (s.phase == Phase::Home || s.phase == Phase::Expedition) && (s.message == Message::Won || s.message == Message::Trained);
     if (!victory || hits < 4 || hits > 28) {
         std::fprintf(stderr, "fight ended after %u hits vs %s lv %u hp %u message %u\n",
             hits, form ? form->name : "?", foeLevel, foeHp, static_cast<unsigned>(s.message));
@@ -333,7 +334,11 @@ void expeditionRewards() {
             CHECK(isValid(s));
             const auto partnerTier = forms::combatTier(activeMember(s)->formId);
             const auto partnerLevel = s.level;
+            unsigned previewForm = 0, previewLevel = 0;
+            CHECK(previewExpeditionFoe(s, scenario, previewForm, previewLevel));
             CHECK(apply(s, Action::StartExpedition, scenario) == Error::None);
+            CHECK(s.wildFormId == previewForm && s.wildLevel == previewLevel);
+            CHECK(s.expeditionForm == previewForm && s.expeditionLevel == previewLevel);
             CHECK(s.phase == Phase::Encounter && isValid(s));
             CHECK(dungeon ? s.dungeonKeys == 0 : s.bossSigils == 0);
             const auto* foe = forms::find(s.wildFormId);
@@ -342,10 +347,31 @@ void expeditionRewards() {
             const auto* theme = expeditions::themeName(expeditions::kScenarios[scenario].theme);
             const bool partnerMatchesTheme = partnerForm && partnerForm->type && std::strcmp(partnerForm->type, theme) == 0;
             CHECK(std::strcmp(foe->type, theme) == 0 || partnerMatchesTheme);
-            CHECK(forms::combatTier(s.wildFormId) > partnerTier || s.wildLevel >= partnerLevel);
+            if (!dungeon) {
+                CHECK(forms::combatTier(s.wildFormId) > partnerTier || s.wildLevel >= partnerLevel);
+            } else {
+                // Current dungeon selection budgets all three fights; its base
+                // may be below the partner's level. The preview freezes one
+                // installed foe and a valid rising level for the whole run.
+                CHECK(expeditions::tierCount(scenario) == 3);
+                for (unsigned tier = 1; tier <= 3; ++tier)
+                    CHECK(combat::validFormProfile(previewForm, expeditions::tierLevel(previewLevel, tier)));
+            }
             CHECK(s.wildMaxHp == combat::formProfile(s.wildFormId, s.wildLevel).stats.maxHp && s.wildHp == s.wildMaxHp);
             unsigned hits = 0;
             CHECK(beatExpedition(s, hits));
+            if (dungeon) {
+                CHECK(s.phase == Phase::Expedition && s.expeditionTier == 1 && s.dungeonClears == 0 && s.dungeonWins == 0);
+                // The original combat-selection check remains on the natural first fight.
+                // Resolve later foes at1 HP to isolate durable progression/reward accounting.
+                for (unsigned tier=2;tier<=3;++tier) {
+                    CHECK(apply(s,Action::NextExpedition)==Error::None && s.expeditionTier==tier && s.phase==Phase::Encounter);
+                    CHECK(s.wildFormId == previewForm && s.wildLevel == expeditions::tierLevel(previewLevel, tier));
+                    s.wildHp=1;CHECK(isValid(s));CHECK(apply(s,Action::Attack)==Error::None);
+                    CHECK(s.dungeonKeys==0 && s.dungeonClears==(tier==3?1u:0u) && s.dungeonWins==(tier==3?1u:0u));
+                }
+            }
+            CHECK(s.phase==Phase::Home && (dungeon?s.dungeonClears:s.bossClears)==1);
         }
     }
     CHECK(forms::hasInstalledArt(11) && forms::hasInstalledArt(18) && !forms::hasInstalledArt(13) && !forms::hasInstalledArt(277));

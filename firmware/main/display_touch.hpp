@@ -35,17 +35,21 @@ struct TouchPoint {
 // Success proves bus transactions completed; visual/touch acceptance is separate.
 Status initialize();
 const Status& status();
-// One compile-time orientation controls both pixels and the inverse touch map.
-// Native is the default until the physical case direction has been confirmed.
+// Runtime orientation controls both pixels and the inverse touch map.
+// The build default is retained until a stored installation setting is loaded.
 Orientation configuredOrientation();
+// Single UI-task owner; cancel held input and redraw fully after success.
+// Invalid values or an outstanding DMA transfer leave the orientation unchanged.
+esp_err_t setOrientation(Orientation orientation);
 bool displayReady();
 bool touchReady();
 // True only when no color DMA is pending/uncertain. Part of the power barrier.
 bool quiescent();
 
 // Host-endian RGB565; exclusive rectangle, packed rows or supplied pixel stride.
-// Rotates into one internal DMA stripe, converting to wire big endian. Returns
-// only after each stripe's completion callback. Caller may reuse pixels after
+// 1.46 rotates into one internal big-endian DMA stripe; 2.1 scales/rotates
+// into host-endian RGB double buffers. Returns
+// after transfer completion (two VSYNC fences on RGB). Caller may reuse pixels after
 // return. On DMA timeout the stripe stays allocated and display is disabled.
 // betweenStripes, when set, runs after each completed stripe (no DMA in flight);
 // the handheld uses it to keep touch sampling at its 20 ms cadence during long

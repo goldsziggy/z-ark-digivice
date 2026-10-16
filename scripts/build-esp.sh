@@ -9,10 +9,11 @@ set -euo pipefail
 
 usage() {
     cat <<'HELP'
-Usage: scripts/build-esp.sh [generic|waveshare|waveshare-dev]
+Usage: scripts/build-esp.sh [generic|waveshare|waveshare-dev|waveshare21]
 
 Default: generic (no board GPIOs, development assets/private HTTP disabled).
 Waveshare: SKU29565 board + microSD primary asset storage, network opt-ins off.
+Waveshare21: flat SKU28169, RGB480/CST820, CH343 UART console, no PCM/power-hold.
 Waveshare-dev: same board/storage + public test asset key/private HTTP build flags.
 No credentials are included; private HTTP still requires runtime opt-in.
 
@@ -30,7 +31,7 @@ if [[ $# -gt 1 ]]; then usage >&2; exit 2; fi
 profile=${1:-generic}
 case "$profile" in
     -h|--help) usage; exit 0 ;;
-    generic|waveshare|waveshare-dev) ;;
+    generic|waveshare|waveshare-dev|waveshare21) ;;
     *) usage >&2; exit 2 ;;
 esac
 

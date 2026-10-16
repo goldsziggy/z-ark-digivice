@@ -160,6 +160,17 @@ int main() {
         CHECK(audio.lastError()==(fault==2?ESP_ERR_INVALID_SIZE:ESP_FAIL));
         CHECK(preloaded<=3&&enables<=1); // No retry loop after a failed startup.
     }
+    for(auto cue:{AudioCue::DigiCritical,AudioCue::DigiPower,AudioCue::DigiGuard,AudioCue::DigiRecovery,AudioCue::DigiElement,AudioCue::DigiCriticalHit}) {
+        fresh();Audio audio;CHECK(audio.begin()==ESP_OK);CHECK(audio.play(cue));CHECK(!audio.play(cue));
+        run(800);CHECK(audio.quiescent()&&nonzeroWrites&&peak<4000);
+        CHECK(audio.setMuted(true)==ESP_OK);CHECK(!audio.play(cue));
+    }
+    { // Reject PCM initialization on the buzzer-only 2.1 profile, even if misconfigured.
+        fresh();fakeBoard.id=digivice::board::ProfileId::Waveshare21;Audio audio;
+        CHECK(audio.begin()==ESP_ERR_INVALID_STATE&&!audio.ready()&&!queue&&!worker);
+        CHECK(!audio.play(AudioCue::DigiCritical));
+        fakeBoard.id=digivice::board::ProfileId::Waveshare146;
+    }
     for(unsigned volume:{0,5,15,30,50,75,100}) {
         fresh();Audio audio;CHECK(audio.begin()==ESP_OK);CHECK(audio.setVolume(volume)==ESP_OK);
         CHECK(!audio.musicEnabled());CHECK(audio.play(AudioCue::Navigate)==(volume!=0));

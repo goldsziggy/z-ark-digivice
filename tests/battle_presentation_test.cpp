@@ -346,7 +346,43 @@ void mergedCapturePresentation() {
     }
     CHECK(found);
 }
+void expeditionPlaybackContext() {
+    for(unsigned scenario:{0u,3u})for(bool automatic:{false,true}) {
+        auto state=newDevice(161);CHECK(apply(state,Action::Hatch,1)==Error::None);
+        auto& m=state.collection[0];m.level=state.level=20;m.xp=xpForLevel(20);
+        m.hp=state.hp=combat::formProfile(m.formId,20).stats.maxHp;
+        state.dungeonKeys=1;state.bossSigils=1;CHECK(isValid(state));
+        if(automatic)CHECK(apply(state,Action::Mode,1)==Error::None);
+        CHECK(apply(state,Action::StartExpedition,scenario)==Error::None);
+        const unsigned total=scenario?1:3;
+        for(unsigned tier=1;tier<=total;++tier) {
+            state.wildHp=1;CHECK(isValid(state));const auto before=state;
+            bp::Sequencer player;
+            if(automatic) {
+                autobattle::Trace trace;CHECK(applyAutoFight(state,&trace)==Error::None);
+                auto mismatch=before;++mismatch.sequence;
+                CHECK(!player.startAuto(trace,0,&mismatch));
+                CHECK(player.startAuto(trace,0,&before));
+            } else {
+                CHECK(apply(state,Action::Attack)==Error::None);
+                CHECK(player.startTactical(before,state,Action::Attack,0,0));
+            }
+            CHECK(state.phase==(tier<total?Phase::Expedition:Phase::Home));
+            CHECK(!state.wildFormId && !state.wildHp);
+            CHECK(player.view().enemyFormId==before.wildFormId && player.view().enemyMaxHp==before.wildMaxHp);
+            CHECK(player.view().expeditionTier==tier && player.view().expeditionTiers==total && player.view().boss==(tier==total));
+            const auto saved=state;
+            player.poll(350);CHECK(player.view().enemyHp==0);
+            drain(player,350);
+            CHECK(player.view().boss==(tier==total) && player.view().enemyFormId==before.wildFormId);
+            CHECK(!std::memcmp(&saved,&state,sizeof(State)));
+            if(tier<total)CHECK(apply(state,Action::NextExpedition)==Error::None);
+        }
+    }
+}
+
 int main() {
+    expeditionPlaybackContext();
     CHECK(sizeof(bp::Sequencer)<=2048);
     auto t=fixture();const auto original=t;
     bp::Sequencer player;

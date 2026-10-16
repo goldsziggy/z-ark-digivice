@@ -44,6 +44,8 @@ class Controller {
 public:
     Actions tick(const Input& input);
     const Status& status() const { return status_; }
+    // Last actual button sample, independent of release-to-arm after a gap.
+    bool pressed() const { return rawPressed_; }
     bool frozen() const;
 private:
     Status status_{};

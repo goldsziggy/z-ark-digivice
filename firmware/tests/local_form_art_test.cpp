@@ -1,4 +1,5 @@
 #include "local_form_art.hpp"
+#include "form_presentation.hpp"
 #include "fallback_asset.hpp"
 #include <cstdio>
 #include <cstdlib>
@@ -53,7 +54,47 @@ int main(int argc, char** argv) {
     CHECK(::truncate(first.c_str(), 0) == 0);
     std::uint16_t pixels[kMaximumPixels]{};
     CHECK(art.decode(Animation::Idle, 0, pixels, kMaximumPixels) == Result::Io && !art.isOpen() && art.formId() == 0);
-    CHECK(::unlink(first.c_str()) == 0 && ::rmdir(directory) == 0);
+    CHECK(art.sourceFormId() == 0);
+    CHECK(::unlink(first.c_str()) == 0);
+    const auto guardian = std::string(directory) + "/DSF00030.DVA";
+    const auto mystic = std::string(directory) + "/DSF00357.DVA";
+    for (unsigned id = 0; id <= 513; ++id) {
+        const auto alias = digivice::presentation::sameSpeciesArtFallback(id);
+        CHECK(alias == (id == 30 ? 357u : id == 357 ? 30u : 0u));
+        CHECK(bool(digivice::presentation::evolutionProfileLabel(id)) == (id == 30 || id == 357));
+    }
+    CHECK(std::strcmp(digivice::presentation::evolutionProfileLabel(30), "GUARDIAN FORM") == 0);
+    CHECK(std::strcmp(digivice::presentation::evolutionProfileLabel(357), "MYSTIC FORM") == 0);
+    // These fixture bytes test the loader, not the actual species artwork.
+    writeFile(mystic, fallback::mote, fallback::mote_bytes);
+    CHECK(art.open(30) == Result::Ok && art.formId() == 30 && art.sourceFormId() == 357);
+    CHECK(std::strstr(art.diagnostic(), "same-species")); decodeAll(art);
+    CHECK(art.open(357) == Result::Ok && art.formId() == 357 && art.sourceFormId() == 357);
+    writeFile(guardian, fallback::mote, fallback::mote_bytes);
+    CHECK(art.open(30) == Result::Ok && art.formId() == 30 && art.sourceFormId() == 30);
+    CHECK(std::strstr(art.diagnostic(), "exact-form"));
+    CHECK(::unlink(mystic.c_str()) == 0);
+    CHECK(art.open(357) == Result::Ok && art.formId() == 357 && art.sourceFormId() == 30); decodeAll(art);
+    // A corrupt exact file must fail closed even with a valid alias available.
+    writeFile(mystic, fallback::mote, fallback::mote_bytes);
+    changed = std::fopen(guardian.c_str(), "r+b"); CHECK(changed);
+    CHECK(std::fseek(changed, 100, SEEK_SET) == 0 && std::fputc(corrupt, changed) != EOF && std::fclose(changed) == 0);
+    CHECK(art.open(30) != Result::Ok && !art.isOpen() && art.formId() == 0 && art.sourceFormId() == 0);
+    CHECK(::unlink(mystic.c_str()) == 0);
+    CHECK(art.open(357) != Result::Ok && !art.isOpen() && art.sourceFormId() == 0);
+    CHECK(::unlink(guardian.c_str()) == 0);
+    writeFile(mystic, fallback::mote, fallback::mote_bytes);
+    CHECK(::symlink(mystic.c_str(), guardian.c_str()) == 0);
+    CHECK(art.open(30) == Result::Io && !art.isOpen()); // Not ENOENT: never follow a symlink.
+    CHECK(::unlink(guardian.c_str()) == 0);
+    CHECK(::mkdir(guardian.c_str(), 0700) == 0);
+    CHECK(art.open(30) == Result::InvalidLength && !art.isOpen());
+    CHECK(::rmdir(guardian.c_str()) == 0);
+    CHECK(art.open(30) == Result::Ok && art.sourceFormId() == 357);
+    CHECK(art.open(31) == Result::Io && !art.isOpen() && art.formId() == 0 && art.sourceFormId() == 0);
+    CHECK(::unlink(mystic.c_str()) == 0);
+    CHECK(art.open(30) == Result::Io && !art.isOpen());
+    CHECK(::rmdir(directory) == 0);
     if (argc == 2) {
         LocalFormArt prepared(argv[1]);
         for (unsigned id = 18; id <= 20; ++id) {

@@ -1,11 +1,12 @@
 #include "nearby_protocol.hpp"
+#include "expeditions.hpp"
 #include <cstring>
 
 namespace digivice::nearby {
 namespace {
 enum Kind : std::uint8_t { Hello=1, Challenge, Accept, State, ChoicePacket, Ack, Cancel, Sync, RaidState };
 constexpr std::size_t header=34,footer=4;
-constexpr std::size_t fighterBytes=20,helloBytes=fighterBytes+1,offerBytes=2*fighterBytes+9;
+constexpr std::size_t fighterBytes=20,helloBytes=fighterBytes+1,offerBytes=2*fighterBytes+10;
 static_assert(header+kMatchBytes+footer<=kMaxPacket&&header+offerBytes+footer<=kMaxPacket);
 static_assert(header+kRaidBytes+footer<=kMaxPacket);
 std::uint8_t helloTag(std::uint8_t activity, bool discovering) {
@@ -36,6 +37,11 @@ Fighter fighter(const std::uint8_t* p){return {static_cast<std::uint32_t>(get(p,
 bool sameMatch(const Match& a,const Match& b){std::uint8_t x[kMatchBytes],y[kMatchBytes];return encode(a,x,sizeof(x))&&encode(b,y,sizeof(y))&&!std::memcmp(x,y,sizeof(x));}
 bool sessionStage(Stage s){return s==Stage::Outgoing||s==Stage::Incoming||s==Stage::Accepting||s==Stage::Playing||s==Stage::Reconnecting||s==Stage::Finished;}
 }
+bool claimableRaid(const View& view, std::uint64_t claimedSession) {
+    return view.offeredMode == Mode::Coop && view.stage == Stage::Finished && view.peerAcknowledged &&
+        view.session && view.session != claimedSession && validRaid(view.raid) &&
+        view.raid.status == RaidStatus::Cleared && view.raid.tier == expeditions::tierCount(view.raid.scenario);
+}
 bool sameMac(const Mac& a,const Mac& b){return !compare(a,b);}
 bool Protocol::open(const Mac& local,const Fighter& selected,std::uint64_t now,std::uint32_t nonce,std::uint8_t activity){
     if(!nonce||!validMac(local)||!validFighter(selected)||(activity!=255&&activity>5))return false;
@@ -47,12 +53,12 @@ void Protocol::announce(std::uint64_t now){send(Hello,0,now);lastHello_=now;}
 void Protocol::send(std::uint8_t kind,std::uint32_t sequence,std::uint64_t now){
     if(queueCount_>=kTxCapacity)return; // tick/repeated peer traffic retries the same state.
     Datagram packet;packet.destination=kind==Hello?broadcast:view_.opponent;
-    auto* p=packet.bytes;std::memcpy(p,"DGN1",4);p[4]=1;p[5]=kind;
+    auto* p=packet.bytes;std::memcpy(p,"DGN1",4);p[4]=kProtocolVersion;p[5]=kind;
     std::memcpy(p+8,local_.bytes,6);put(p+14,kRules,2);put(p+16,kCatalog,2);
     put(p+18,kind==Hello?0:view_.session,8);put(p+26,sequence,4);put(p+30,localNonce_,4);
     auto* payload=p+header;std::size_t size=0;
     if(kind==Hello){fighter(payload,localFighter_);payload[fighterBytes]=helloTag(view_.activity,view_.stage==Stage::Discovering);size=helloBytes;}
-    else if(kind==Challenge||kind==Accept){fighter(payload,view_.offered[0]);fighter(payload+fighterBytes,view_.offered[1]);payload[2*fighterBytes]=static_cast<std::uint8_t>(view_.offeredMode);put(payload+2*fighterBytes+1,seed_,4);put(payload+2*fighterBytes+5,view_.host?peerNonce_:localNonce_,4);size=offerBytes;}
+    else if(kind==Challenge||kind==Accept){fighter(payload,view_.offered[0]);fighter(payload+fighterBytes,view_.offered[1]);payload[2*fighterBytes]=static_cast<std::uint8_t>(view_.offeredMode);put(payload+2*fighterBytes+1,seed_,4);put(payload+2*fighterBytes+5,view_.host?peerNonce_:localNonce_,4);payload[2*fighterBytes+9]=view_.coopAuto?1:0;size=offerBytes;}
     else if(kind==State){if(!encode(view_.match,payload,kMaxPacket-header-footer))return;size=kMatchBytes;}
     else if(kind==RaidState){if(!encodeRaid(view_.raid,payload,kMaxPacket-header-footer))return;size=kRaidBytes;}
     else if(kind==ChoicePacket){payload[0]=static_cast<std::uint8_t>(chosen_[1]);size=1;}
@@ -62,14 +68,14 @@ void Protocol::send(std::uint8_t kind,std::uint32_t sequence,std::uint64_t now){
 }
 void Protocol::acknowledge(std::uint8_t kind,std::uint32_t sequence,std::uint64_t now){ackKind_=kind;ackSequence_=sequence;send(Ack,ackSequence_,now);}
 bool Protocol::pop(Datagram& packet){if(!queueCount_)return false;packet=queue_[queueRead_];queueRead_=(queueRead_+1)%kTxCapacity;--queueCount_;return true;}
-bool Protocol::challenge(std::size_t index,Mode mode,std::uint64_t session,std::uint32_t seed,std::uint64_t now){
-    if(view_.stage!=Stage::Discovering||index>=view_.peerCount||!session||!seed||static_cast<unsigned>(mode)>2)return false;
+bool Protocol::challenge(std::size_t index,Mode mode,std::uint64_t session,std::uint32_t seed,std::uint64_t now,bool coopAuto){
+    if(view_.stage!=Stage::Discovering||index>=view_.peerCount||!session||!seed||static_cast<unsigned>(mode)>2||(coopAuto&&mode!=Mode::Coop))return false;
     const auto& peer=view_.peers[index];if(!peer.available||!peer.compatible||now<peer.seenMs||now-peer.seenMs>kPeerLifetimeMs)return false;
     if(mode==Mode::Coop){if(!coopSeed(seed,view_.activity)||peer.activity!=view_.activity)return false;}
     else if(view_.activity<=5||peer.activity<=5)return false;
     std::uint32_t form=0,level=0;
     if(mode==Mode::Coop&&!decodeRaidSeed(seed,view_.activity,form,level))return false;
-    view_.opponent=peer.mac;peerNonce_=peer.openNonce;view_.offered[0]=localFighter_;view_.offered[1]=peer.fighter;view_.offeredMode=mode;
+    view_.opponent=peer.mac;peerNonce_=peer.openNonce;view_.offered[0]=localFighter_;view_.offered[1]=peer.fighter;view_.offeredMode=mode;view_.coopAuto=coopAuto;
     view_.session=session;view_.host=true;view_.stage=Stage::Outgoing;seed_=seed;
     if(mode==Mode::Coop){view_.foeForm=static_cast<std::uint16_t>(form);view_.foeLevel=static_cast<std::uint8_t>(level);}
     lastReceive_=lastAdvance_=now;
@@ -91,7 +97,7 @@ void Protocol::beginHost(std::uint64_t now){
 }
 bool Protocol::choose(Choice choice,std::uint64_t now){
     if(view_.offeredMode==Mode::Coop){
-        if(view_.stage!=Stage::Playing||view_.localChoicePending||view_.raid.status!=RaidStatus::Active)return false;
+        if(view_.stage!=Stage::Playing||view_.coopAuto||view_.localChoicePending||view_.raid.status!=RaidStatus::Active)return false;
         const auto actor=view_.host?0u:1u;if(!legalRaidChoice(view_.raid,actor,choice))return false;
         chosen_[actor]=choice;view_.localChoicePending=true;choiceAcknowledged_=false;
         if(view_.host)advance(now);else send(ChoicePacket,view_.raid.sequence,now);return true;
@@ -105,10 +111,18 @@ void Protocol::advance(std::uint64_t now){
     if(view_.offeredMode==Mode::Coop){
         if(!view_.host||view_.stage!=Stage::Playing||!view_.peerAcknowledged||view_.raid.status!=RaidStatus::Active)return;
         if(view_.raid.sequence&&now>=lastAdvance_&&now-lastAdvance_<kAutoPaceMs)return;
-        if(chosen_[0]==Choice::None||chosen_[1]==Choice::None)return;
         Raid next=view_.raid;
-        if(!resolveRaid(next,next.sequence,chosen_[0],chosen_[1]))return;
-        view_.raid=next;chosen_[0]=chosen_[1]=Choice::None;view_.localChoicePending=false;view_.peerAcknowledged=false;lastAdvance_=now;
+        if(view_.coopAuto){
+            if(now<lastAdvance_||now-lastAdvance_<kAutoPaceMs||!resolveAutoRaid(next,next.sequence))return;
+        } else {
+            // A knocked-out peer still acknowledges state, but supplies no turn
+            // input. Only living actors can block manual resolution on a choice.
+            if((next.hp[0]&&chosen_[0]==Choice::None)||(next.hp[1]&&chosen_[1]==Choice::None))return;
+            const auto hostChoice=next.hp[0]?chosen_[0]:Choice::None;
+            const auto guestChoice=next.hp[1]?chosen_[1]:Choice::None;
+            if(!resolveRaid(next,next.sequence,hostChoice,guestChoice))return;
+        }
+        view_.raid=next;view_.foeForm=static_cast<std::uint16_t>(next.foeForm);view_.foeLevel=static_cast<std::uint8_t>(next.foeLevel);chosen_[0]=chosen_[1]=Choice::None;view_.localChoicePending=false;view_.peerAcknowledged=false;lastAdvance_=now;
         if(next.status!=RaidStatus::Active)view_.stage=Stage::Finished;
         send(RaidState,next.sequence,now);return;
     }
@@ -123,7 +137,7 @@ void Protocol::advance(std::uint64_t now){
 }
 void Protocol::cancel(std::uint64_t now){
     if(view_.stage==Stage::Closed)return;
-    queueRead_=queueCount_=0;if(view_.session)send(Cancel,view_.match.sequence,now);
+    queueRead_=queueCount_=0;if(view_.session)send(Cancel,sessionSequence(view_),now);
     clearSession(Stage::Cancelled);lastAdvance_=now;
 }
 void Protocol::tick(std::uint64_t now){
@@ -132,12 +146,12 @@ void Protocol::tick(std::uint64_t now){
     for(std::size_t i=0;i<view_.peerCount;++i)if(now-view_.peers[i].seenMs>kPeerLifetimeMs)view_.peers[i].available=false;
     if((view_.stage==Stage::Outgoing||view_.stage==Stage::Incoming||view_.stage==Stage::Accepting)&&now-lastHello_>=2000)announce(now);
     if(view_.stage==Stage::Discovering){if(now-lastHello_>=2000)announce(now);return;}
-    if(view_.stage==Stage::Cancelled){if(view_.session&&now-lastAdvance_<2000&&now-lastSend_>=kRetryMs)send(Cancel,view_.match.sequence,now);return;}
+    if(view_.stage==Stage::Cancelled){if(view_.session&&now-lastAdvance_<2000&&now-lastSend_>=kRetryMs)send(Cancel,sessionSequence(view_),now);return;}
     if(!sessionStage(view_.stage))return;
     if(view_.stage==Stage::Finished&&now-lastReceive_>=kSessionTimeoutMs)return;
     if(now-lastReceive_>=kSessionTimeoutMs){clearSession(Stage::TimedOut);queueRead_=queueCount_=0;return;}
     if(view_.stage==Stage::Playing&&now-lastReceive_>=kReconnectMs)view_.stage=Stage::Reconnecting;
-    if((view_.stage==Stage::Playing||view_.stage==Stage::Reconnecting)&&view_.match.status==Status::Active&&now-lastAdvance_>=kTurnTimeoutMs){clearSession(Stage::TimedOut);queueRead_=queueCount_=0;return;}
+    if((view_.stage==Stage::Playing||view_.stage==Stage::Reconnecting)&&(view_.offeredMode==Mode::Coop?view_.raid.status==RaidStatus::Active:view_.match.status==Status::Active)&&now-lastAdvance_>=kTurnTimeoutMs){clearSession(Stage::TimedOut);queueRead_=queueCount_=0;return;}
     if(view_.stage==Stage::Playing)advance(now);
     if(now-lastSend_<kRetryMs)return;
     switch(view_.stage){
@@ -157,12 +171,12 @@ void Protocol::tick(std::uint64_t now){
 }
 bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t length,std::uint64_t now){
     if(view_.stage==Stage::Closed||!validMac(source)||sameMac(source,local_)||!p||length<header+footer||length>kMaxPacket||
-       std::memcmp(p,"DGN1",4)||p[4]!=1||p[5]<Hello||p[5]>RaidState||get(p+6,2)!=length||
+       std::memcmp(p,"DGN1",4)||(p[4]<1||p[4]>kProtocolVersion)||p[5]<Hello||p[5]>RaidState||get(p+6,2)!=length||
        std::memcmp(p+8,source.bytes,6)||get(p+length-footer,4)!=crc(p,length-footer)||now<opened_)return false;
     const auto nonce=static_cast<std::uint32_t>(get(p+30,4));if(!nonce)return false;
     const auto kind=p[5];const auto session=get(p+18,8);const auto sequence=static_cast<std::uint32_t>(get(p+26,4));
     const auto* payload=p+header;const auto size=length-header-footer;
-    const bool compatible=get(p+14,2)==kRules&&get(p+16,2)==kCatalog;
+    const bool compatible=p[4]==kProtocolVersion&&get(p+14,2)==kRules&&get(p+16,2)==kCatalog;
     if(kind==Hello){
         bool available=false;std::uint8_t activity=255;
         if(size!=helloBytes||session||sequence||!helloActivity(payload[fighterBytes],available,activity))return false;
@@ -173,7 +187,9 @@ bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t lengt
     }
     if(!compatible){if(sameMac(source,view_.opponent)&&nonce==peerNonce_&&session==view_.session&&sessionStage(view_.stage))clearSession(Stage::Incompatible);return false;}
     if(kind==Challenge){
-        if(size!=offerBytes||!session||sequence||payload[2*fighterBytes]>2||!get(payload+2*fighterBytes+1,4)||get(payload+2*fighterBytes+5,4)!=localNonce_)return false;
+        if(size!=offerBytes||!session||sequence||payload[2*fighterBytes]>2||!get(payload+2*fighterBytes+1,4)||get(payload+2*fighterBytes+5,4)!=localNonce_||payload[2*fighterBytes+9]>1)return false;
+        const bool coopAuto=payload[2*fighterBytes+9]!=0;
+        if(coopAuto&&payload[2*fighterBytes]!=static_cast<unsigned>(Mode::Coop))return false;
         const auto host=fighter(payload),guest=fighter(payload+fighterBytes);if(!validFighter(host)||!sameFighter(guest,localFighter_))return false;
         // Bind both fighters, including care bonuses, to the observed open
         // session. A valid-range replacement is not the agreed frozen offer.
@@ -181,7 +197,7 @@ bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t lengt
         if(!discovered)return false;
         const auto mode=static_cast<Mode>(payload[2*fighterBytes]);const auto seed=static_cast<std::uint32_t>(get(payload+2*fighterBytes+1,4));
         if(sameMac(source,view_.opponent)&&view_.session==session&&view_.stage!=Stage::Discovering){
-            if(view_.host||nonce!=peerNonce_||!sameFighter(host,view_.offered[0])||!sameFighter(guest,view_.offered[1])||mode!=view_.offeredMode||seed!=seed_)return false;
+            if(view_.host||nonce!=peerNonce_||!sameFighter(host,view_.offered[0])||!sameFighter(guest,view_.offered[1])||mode!=view_.offeredMode||coopAuto!=view_.coopAuto||seed!=seed_)return false;
             if(view_.stage==Stage::Accepting)send(Accept,0,now);
             return true;
         }
@@ -189,7 +205,7 @@ bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t lengt
         else if(view_.stage!=Stage::Discovering)return false;
         if(mode==Mode::Coop){if(!coopSeed(seed,view_.activity))return false;}
         else if(view_.activity<=5)return false;
-        queueRead_=queueCount_=0;view_.opponent=source;peerNonce_=nonce;view_.offered[0]=host;view_.offered[1]=guest;view_.offeredMode=mode;
+        queueRead_=queueCount_=0;view_.opponent=source;peerNonce_=nonce;view_.offered[0]=host;view_.offered[1]=guest;view_.offeredMode=mode;view_.coopAuto=coopAuto;
         view_.session=session;view_.host=false;seed_=seed;view_.stage=Stage::Incoming;
         if(mode==Mode::Coop){std::uint32_t form=0,level=0;if(decodeRaidSeed(seed,view_.activity,form,level)){view_.foeForm=static_cast<std::uint16_t>(form);view_.foeLevel=static_cast<std::uint8_t>(level);}}
         lastReceive_=lastAdvance_=now;return true;
@@ -197,7 +213,7 @@ bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t lengt
     if(!session||session!=view_.session||nonce!=peerNonce_||!sameMac(source,view_.opponent)||!sessionStage(view_.stage))return false;
     if(kind==Cancel){if(size)return false;queueRead_=queueCount_=0;clearSession(Stage::Cancelled);lastAdvance_=now;return true;}
     if(kind==Accept){
-        if(!view_.host||size!=offerBytes||sequence||get(payload+2*fighterBytes+5,4)!=peerNonce_||!sameFighter(fighter(payload),view_.offered[0])||!sameFighter(fighter(payload+fighterBytes),view_.offered[1])||payload[2*fighterBytes]!=static_cast<unsigned>(view_.offeredMode)||get(payload+2*fighterBytes+1,4)!=seed_)return false;
+        if(!view_.host||size!=offerBytes||sequence||get(payload+2*fighterBytes+5,4)!=peerNonce_||!sameFighter(fighter(payload),view_.offered[0])||!sameFighter(fighter(payload+fighterBytes),view_.offered[1])||payload[2*fighterBytes]!=static_cast<unsigned>(view_.offeredMode)||get(payload+2*fighterBytes+1,4)!=seed_||payload[2*fighterBytes+9]!=(view_.coopAuto?1u:0u))return false;
         if(view_.stage==Stage::Outgoing){lastReceive_=now;beginHost(now);return true;}
         if(view_.stage==Stage::Playing||view_.stage==Stage::Finished||view_.stage==Stage::Reconnecting){lastReceive_=now;send(view_.offeredMode==Mode::Coop?RaidState:State,sessionSequence(view_),now);return true;}return false;
     }
@@ -234,10 +250,16 @@ bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t lengt
         else if(sequence>view_.raid.sequence){
             if(view_.raid.status!=RaidStatus::Active||sequence!=view_.raid.sequence+1)return false;
             Raid expected=view_.raid;
-            const auto attacker=expected.sequence%2u;
-            const auto hostChoice=attacker?next.lastDefense:next.lastAttack;
-            const auto guestChoice=attacker?next.lastAttack:next.lastDefense;
-            if(!view_.localChoicePending||chosen_[1]!=guestChoice||!resolveRaid(expected,expected.sequence,hostChoice,guestChoice))return false;
+            if(view_.coopAuto){if(!resolveAutoRaid(expected,expected.sequence))return false;}
+            else {
+                // Derive roles before the exchange: reflection or retaliation
+                // can knock an actor out in the received result.
+                const auto attacker=raidAttacker(expected),defender=raidDefender(expected);
+                const auto hostChoice=attacker==0?next.lastAttack:defender==0?next.lastDefense:Choice::None;
+                const auto guestChoice=attacker==1?next.lastAttack:defender==1?next.lastDefense:Choice::None;
+                if(expected.hp[1]&&(!view_.localChoicePending||chosen_[1]!=guestChoice))return false;
+                if(!resolveRaid(expected,expected.sequence,hostChoice,guestChoice))return false;
+            }
             if(!sameRaid(expected,next))return false;
         }
         const bool changed=view_.stage==Stage::Accepting||sequence>view_.raid.sequence;
@@ -247,7 +269,7 @@ bool Protocol::receive(const Mac& source,const std::uint8_t* p,std::size_t lengt
         acknowledge(RaidState,sequence,now);return true;
     }
     if(kind==ChoicePacket&&view_.offeredMode==Mode::Coop){
-        if(!view_.host||size!=1||payload[0]>6||!(view_.stage==Stage::Playing||view_.stage==Stage::Reconnecting))return false;
+        if(!view_.host||view_.coopAuto||size!=1||payload[0]>6||!(view_.stage==Stage::Playing||view_.stage==Stage::Reconnecting))return false;
         if(sequence!=view_.raid.sequence){send(RaidState,view_.raid.sequence,now);return false;}
         const auto choice=static_cast<Choice>(payload[0]);if(!legalRaidChoice(view_.raid,1,choice)||(chosen_[1]!=Choice::None&&chosen_[1]!=choice))return false;
         chosen_[1]=choice;if(!view_.peerAcknowledged)lastAdvance_=now;view_.peerAcknowledged=true;view_.stage=Stage::Playing;lastReceive_=now;acknowledge(ChoicePacket,sequence,now);advance(now);return true;

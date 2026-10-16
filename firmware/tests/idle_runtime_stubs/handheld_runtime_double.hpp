@@ -28,6 +28,7 @@ struct IdleUiDouble {
     bool interactionIdle()const{return !pending_;}void cancelTouch(){++cancellations;}
     void acknowledgeContactReleased(){}
     void update(const State&,const deviceui::Model&){}
+    void notice(const char*){}
     deviceui::Intent touch(const State&,const deviceui::Model&,deviceui::Touch t){
         if(t.kind==deviceui::TouchKind::Down)++downs;
         if(t.kind==deviceui::TouchKind::Up){++ups;return {deviceui::IntentKind::GameAction,Action::Feed,0};}
@@ -44,12 +45,13 @@ struct IdleImuDouble {
     const motion::ImuReading& reading()const{return reading_;}
     esp_err_t pause(bool value){paused=value;++pauses;return ESP_OK;}
 };
-struct IdleAudioDouble {bool quiet=true,paused=false,musicActive=false;unsigned cues=0;device::MusicScene scene=device::MusicScene::Home;bool quiescent()const{return quiet&&!musicActive;}bool effectsQuiescent()const{return quiet;}void setMusicScene(device::MusicScene value){scene=value;}void play(device::AudioCue){++cues;}void pause(bool v){paused=v;}};
+struct IdleAudioDouble {bool buzzer=false;bool buzzerOnly()const{return buzzer;}bool screenBlanked=false;void setScreenBlanked(bool v){screenBlanked=v;}bool quiet=true,paused=false,musicActive=false;unsigned cues=0;device::MusicScene scene=device::MusicScene::Home;bool quiescent()const{return quiet&&!musicActive;}bool effectsQuiescent()const{return quiet;}void setMusicScene(device::MusicScene value){scene=value;}void play(device::AudioCue){++cues;}void pause(bool v){paused=v;}};
 struct IdleArtDouble {bool quiet=true,paused=false;bool quiescent()const{return quiet;}void pause(bool v){paused=v;}};
 struct IdleAssetsDouble {struct Status{bool busy=false;}s;const Status& status()const{return s;}};
 struct IdleNetworkDouble {net::Status s;struct Scan{bool busy=false;}scan;bool leased=false;const net::Status& status()const{return s;}bool radioLeased()const{return leased;}const Scan& scanStatus()const{return scan;}};
 struct IdleUsbDouble {bool active_=false,quiet=true;bool active()const{return active_;}bool quiescent()const{return quiet;}};
-struct IdlePowerDouble {power::Status s{power::Phase::Ready,power::Failure::None,0};const power::Status& status()const{return s;}};
+struct IdleNearbyDouble {nearby::View v;const nearby::View& view()const{return v;}};
+struct IdleTradeWireDouble {tradewire::View v;const tradewire::View& view()const{return v;}};
 struct IdleBattleDouble {bool locked_=false;bool locked()const{return locked_;}void cancel(){locked_=false;}};
 struct IdlePracticeDouble {bool allowed=true;bool allowsCareAction(Action)const{return allowed;}};
 struct IdleSettingsDouble {bool writable_=true;bool writable()const{return writable_;}};
@@ -61,16 +63,28 @@ inline device::AudioCue cueFor(Message){return device::AudioCue::Navigate;}
 class HandheldRuntime {
 public:
     HandheldRuntime(State& s,storage::SaveStore& saves,usage::Backend& backend):usage_(backend),state_(s),saves_(saves){}
+    bool nfcAllowed()const;
+    bool battlePlaybackLocked()const{return battle_.locked();}
+    struct NfcDouble {bool active=false;bool busy()const{return active;}} nfc_;
     bool idleBlocked()const;void interfaceActivity(std::uint64_t);void pollIdle(std::uint64_t);
+    bool idleForegroundActive()const;bool idleDiscovery()const;
     void pollInterface(std::uint64_t);void pauseInterface(bool);
     void updateMusicScene();
     bool pollUsage(std::uint64_t,bool force=false);
-    bool powerFrozen()const{return frozen;}bool nearbyBusy()const{return nearby;}
+    bool powerFrozen()const{return frozen || (powerEnabled_ && power_.frozen());}
+    bool nearbyBusy()const{return nearby || nearbyPhase_!=NearbyPhase::Idle;}
+    bool tradeNegotiating()const{return negotiating;}
+    bool allowsCareAction(Action a)const{return !powerFrozen() && !nearbyBusy() && practice_.allowsCareAction(a);}
     bool interfaceQuiescent()const{return imu_.quiescent() && display::quiescent();}
-    deviceui::Model interfaceModel()const{return {};}
+    deviceui::Model testModel{};
+    deviceui::Model interfaceModel()const{return testModel;}
     void pollBattlePresentation(std::uint64_t){}
     void interfaceIntent(deviceui::Intent i){if(i)++intents;}
-    void pollCareAndAuto(std::uint64_t){}
+    void pollCareAndAuto(std::uint64_t);
+    [[gnu::noinline]] void pollCareMinute(std::uint64_t);
+    std::uint64_t focusSinceMs_=0;
+    std::uint32_t focusSequence_=UINT32_MAX,autoStartSequence_=UINT32_MAX;
+    static constexpr std::uint64_t kFocusTimeoutMs=3200;
     // Extracted byte-for-byte from production handheld_ui.cpp by the runner.
     void handleTouchSample(const touchstream::Sample&,const deviceui::Model&);
     static void sampleTouchDuringFlush(void*);
@@ -83,7 +97,10 @@ public:
     std::size_t flushTouchCount_=0;
     IdleUiDouble ui_;IdleSetupDouble setup_;IdleImuDouble imu_;IdleAudioDouble audio_;
     IdleArtDouble art_,partnerArt_,tileArt_[deviceui::kTiles];IdleAssetsDouble assets_;IdleNetworkDouble network_;
-    IdleUsbDouble usbTransfer_;IdlePowerDouble power_;IdleBattleDouble battle_;
+    IdleUsbDouble usbTransfer_;power::Controller power_;IdleBattleDouble battle_;
+    enum class NearbyPhase : std::uint8_t { Idle, Starting, Active, Stopping, Fault };
+    NearbyPhase nearbyPhase_=NearbyPhase::Idle;
+    IdleNearbyDouble nearby_;IdleTradeWireDouble tradeWire_;bool negotiating=false;
     IdlePracticeDouble practice_;IdleSettingsDouble idleSettings_;
     IdleTradeSessionDouble tradeSession_;
     idle::Controller idle_;usage::Store usage_;

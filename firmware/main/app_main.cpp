@@ -97,7 +97,8 @@ void help() {
     std::puts("Starters: 1 Impmon, 2 Agumon, 3 Gabumon, 4 Patamon, 5 Tentomon, 6 Palmon, 7 Gomamon, 8 Renamon.");
     std::puts("Walk/card are SIMULATED inputs. card 1=attack boost; card 2=shield.");
     std::puts("Network: net status/set/set-lan/retry/pause/resume/forget; see docs/FIRMWARE.md for private setup.");
-    std::puts("Assets: assets status/warm/fetch <id>; motion status/recover (explicit reanchor after confirmed queue drains). NFC/GPS/battery telemetry remain disabled.");
+    std::puts("Assets: assets status/warm/fetch <id>; motion status/recover (explicit reanchor after confirmed queue drains). NFC gameplay/GPS/battery telemetry remain disabled.");
+    std::puts("NFC diagnostics: nfc status/probe/scan/stop; UART43/44, explicit only, one bounded UID scan, no rewards.");
     std::puts("Exact-form private SD artwork: art status | art preview (inspection only; optional build gate, resident fallback).");
     std::puts("USB asset installer: device identity | sdput status/begin/chunk/finish/verify/abort. Installer pauses play; abort resumes it.");
     std::puts("Practice: practice help | practice status. Separate Tactical/Auto serial session, independent NVS records.");

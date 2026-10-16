@@ -67,7 +67,8 @@ Request Controller::tick(std::uint64_t now, bool blocked) {
         activity(now); retryWakeMs_ = 0; wakePending_ = false;
     }
     lastTickMs_ = now;
-    if (blocked) activity(now);
+    // Work may defer entry, but only explicit activity can restart inactivity
+    // or wake an already blank display.
     if (blanked_) {
         if ((wakeDue_ || !timeoutSeconds_) && !wakePending_ && now >= retryWakeMs_) {
             wakePending_ = true; return Request::Wake;

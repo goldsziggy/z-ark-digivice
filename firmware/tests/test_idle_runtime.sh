@@ -14,11 +14,16 @@ def record(path,content,scope):
 path='firmware/main/handheld_idle.cpp';s=Path(path).read_text()
 assert s.startswith('#include "handheld_runtime.hpp"\n')
 (out/'handheld_idle.cpp').write_text(record(path,s.replace('"handheld_runtime.hpp"','"handheld_runtime_double.hpp"',1),'first include substituted; all method bytes unchanged'))
+path='firmware/main/handheld_runtime.cpp';s=Path(path).read_text()
+start=s.index('bool HandheldRuntime::nfcAllowed() const {');end=s.index('void HandheldRuntime::poll()',start)
+(out/'nfc_policy.cpp').write_text('#include "handheld_runtime_double.hpp"\nnamespace digivice {\n'+record(path,s[start:end],'exact NFC admission policy; runtime resource states doubled')+'\n}\n')
 path='firmware/main/handheld_walking.cpp';s=Path(path).read_text()
 start=s.index('bool HandheldRuntime::pollUsage(');end=s.index('\nbool HandheldRuntime::prepareUsageRestart',start)
 body=s[start:end]
 (out/'usage.cpp').write_text('#include "handheld_runtime_double.hpp"\n#include "esp_random.h"\n#include <algorithm>\nnamespace digivice {\n'+record(path,body,'exact pollUsage body; SDK/UI owner declaration doubled')+'\n}\n')
 path='firmware/main/handheld_ui.cpp';s=Path(path).read_text()
+care=s[s.index('void HandheldRuntime::pollCareAndAuto('):s.index('// Touch pipeline')]
+(out/'care.cpp').write_text('#include "handheld_runtime_double.hpp"\nnamespace digivice {\n'+record(path,care,'exact care/auto dispatcher; real core apply/checkpoint for care; foreground intent, UI and hardware doubled')+'\n}\n')
 start=s.index('void HandheldRuntime::handleTouchSample(');end=s.index('    // Full frames',start)
 prefix=s[start:end]
 assert 'pollIdle(now);' in prefix and 'idle_.blanked()}, model);' in prefix and 'touch_.feed(sample)' in prefix
@@ -29,8 +34,8 @@ pause=s[start:end]
 (out/'interface.cpp').write_text('#include "handheld_runtime_double.hpp"\n#include "esp_timer.h"\n#include <cstdio>\nnamespace digivice {\n'+record(path,prefix,'exact touch pipeline methods and input/policy prefix through pollIdle; rendering excluded and its guard asserted')+'}\n'+pause+'\n}\n')
 (out/'source-scope.json').write_text(json.dumps(entries,indent=2)+'\n')
 PY
-sources=(firmware/tests/idle_runtime_test.cpp "$idle_test_out/handheld_idle.cpp" "$idle_test_out/usage.cpp" "$idle_test_out/interface.cpp"
-  firmware/runtime/idle.cpp firmware/runtime/touch_stream.cpp firmware/runtime/usage_store.cpp firmware/main/save_store.cpp
+sources=(firmware/tests/idle_runtime_test.cpp "$idle_test_out/nfc_policy.cpp" "$idle_test_out/handheld_idle.cpp" "$idle_test_out/usage.cpp" "$idle_test_out/interface.cpp" "$idle_test_out/care.cpp"
+  firmware/runtime/idle.cpp firmware/runtime/power.cpp firmware/runtime/touch_stream.cpp firmware/runtime/usage_store.cpp firmware/main/save_store.cpp
   core/game.cpp core/combat.cpp core/encounters.cpp core/forms.cpp core/battle_trace.cpp
   core/legacy_combat_v3.cpp core/legacy_forms_v5.cpp core/legacy_combat_v5.cpp
   core/legacy_forms_v6.cpp core/legacy_combat_v6.cpp core/legacy_forms_v7.cpp core/legacy_combat_v7.cpp

@@ -3,6 +3,7 @@
 #include "board_hal.hpp"
 #include "esp_timer.h"
 #include "sdkconfig.h"
+#include "buzzer_patterns.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -10,10 +11,33 @@
 namespace digivice::device {
 namespace {
 std::uint64_t nowMs() { return static_cast<std::uint64_t>(esp_timer_get_time()/1000); }
-constexpr unsigned frames = 256, descriptors = 3;
+[[maybe_unused]] constexpr unsigned frames = 256, descriptors = 3;
 }
 esp_err_t Audio::begin() {
-#if !defined(CONFIG_DIGIVICE_AUDIO_MOTION) || !CONFIG_DIGIVICE_AUDIO_MOTION
+#if defined(CONFIG_DIGIVICE_BUZZER_21) && CONFIG_DIGIVICE_BUZZER_21
+    if (ready_) return ESP_OK;
+    if (queue_ || board::selectedProfile().id != board::ProfileId::Waveshare21) {
+        error_ = ESP_ERR_INVALID_STATE; return error_;
+    }
+    buzzer_ = true;
+    preferencesError_ = settings_.begin();
+    const auto& preferences = settings_.preferences();
+    volume_ = preferences.volume ? 100 : 0;
+    muted_ = preferences.muted;
+    rhythmPreferencesError_ = rhythmSettings_.begin("digi_buzz");
+    musicEnabled_ = rhythmPreferencesError_ == ESP_OK && rhythmSettings_.preferences().music;
+    queue_ = xQueueCreate(4, sizeof(Request));
+    if (!queue_) { error_ = ESP_ERR_NO_MEM; return error_; }
+    // No I2C on the UI owner. The worker must verify OFF before accepting cues.
+    active_ = effectsActive_ = true;
+    ready_ = true; error_ = ESP_OK;
+    if (xTaskCreate(taskEntry, "digivice-buzzer", 3072, this, 1, &task_) != pdPASS) {
+        ready_ = active_ = effectsActive_ = false;
+        vQueueDelete(queue_); queue_ = nullptr;
+        error_ = ESP_ERR_NO_MEM;
+    }
+    return error_;
+#elif !defined(CONFIG_DIGIVICE_AUDIO_MOTION) || !CONFIG_DIGIVICE_AUDIO_MOTION
     error_ = ESP_ERR_NOT_SUPPORTED; return error_;
 #else
     if (ready_) return ESP_OK;
@@ -59,19 +83,41 @@ esp_err_t Audio::begin() {
 }
 bool Audio::play(AudioCue cue) {
     const auto index = static_cast<unsigned>(cue);
-    if (!ready_ || stopRequested() || index >= static_cast<unsigned>(AudioCue::Count)) return false;
+    auto reject = [this](PlayResult result) { lastPlayResult_=result; return false; };
+    if (!ready_) return reject(PlayResult::NotReady);
+    if (muted_) return reject(PlayResult::Muted);
+    if (!volume_) return reject(PlayResult::Off);
+    if (stopRequested()) return reject(PlayResult::Paused);
+    if (index >= static_cast<unsigned>(AudioCue::Count)) return reject(PlayResult::InvalidCue);
     const auto now = nowMs();
     const unsigned cooldown = cuePriority(cue) >= 4 ? 400 : 80;
-    if (lastCueMs_[index] && now-lastCueMs_[index] < cooldown) return false;
+    if (lastCueMs_[index] && now-lastCueMs_[index] < cooldown) return reject(PlayResult::Cooldown);
     const Request request{cue, now, epoch_.load()};
     // Outcomes flush queued navigation. Never wait on the gameplay task.
     if (cuePriority(cue) >= 4) xQueueReset(queue_);
-    if (xQueueSend(queue_, &request, 0) != pdTRUE) return false;
+    if (xQueueSend(queue_, &request, 0) != pdTRUE) return reject(PlayResult::QueueFull);
     lastCueMs_[index] = now;
+    lastPlayResult_ = PlayResult::Queued;
+    if (buzzer_) ++buzzerQueued_;
     return true;
 }
+const char* Audio::playResultText() const {
+    switch(lastPlayResult_) {
+    case PlayResult::Queued: return "BEEP QUEUED";
+    case PlayResult::Muted: return "SOUND MUTED - UNMUTE FIRST";
+    case PlayResult::Off: return "BUZZER OFF - TURN ON FIRST";
+    case PlayResult::Paused: return "AUDIO PAUSED";
+    case PlayResult::Cooldown: case PlayResult::QueueFull: return "WAIT THEN RETRY";
+    default: return "AUDIO NOT READY";
+    }
+}
+BuzzerDiagnostics Audio::buzzerDiagnostics() const {
+    return {buzzerQueued_,buzzerStarted_,backgroundStarted_,buzzerExpired_,buzzerBusyRetries_,
+        buzzerOnWrites_,buzzerOffWrites_,buzzerOutputKnown_,buzzerOutputOn_};
+}
 esp_err_t Audio::persistPreferences() {
-    preferencesError_ = settings_.save({static_cast<std::uint8_t>(volume_.load()),muted_.load(),musicEnabled_.load()});
+    preferencesError_ = settings_.save({static_cast<std::uint8_t>(volume_.load()),muted_.load(),
+        buzzer_ ? settings_.preferences().music : musicEnabled_.load()});
     return preferencesError_;
 }
 esp_err_t Audio::setMuted(bool muted) {
@@ -80,11 +126,17 @@ esp_err_t Audio::setMuted(bool muted) {
     return persistPreferences();
 }
 esp_err_t Audio::setVolume(std::uint8_t percent) {
-    volume_ = std::min(static_cast<unsigned>(percent), sound::kMaxVolume);
+    volume_ = buzzer_ ? (percent ? 100 : 0) : std::min(static_cast<unsigned>(percent), sound::kMaxVolume);
     if (!volume_) { ++epoch_; if (queue_) xQueueReset(queue_); }
     return persistPreferences();
 }
 esp_err_t Audio::setMusicEnabled(bool enabled) {
+    if (buzzer_) {
+        musicEnabled_ = enabled; // OFF always takes effect, including save failure.
+        auto preferences = rhythmSettings_.preferences(); preferences.music=enabled;
+        rhythmPreferencesError_ = rhythmSettings_.save(preferences);
+        return rhythmPreferencesError_;
+    }
     musicEnabled_ = enabled;
     return persistPreferences();
 }
@@ -94,6 +146,9 @@ void Audio::pause(bool paused) {
 }
 void Audio::taskEntry(void* context) { static_cast<Audio*>(context)->run(); }
 void Audio::run() {
+#if defined(CONFIG_DIGIVICE_BUZZER_21) && CONFIG_DIGIVICE_BUZZER_21
+    runBuzzer();
+#else
     AudioMixer synth;
     std::int16_t pcm[frames*2]{};
     bool enabled = false;
@@ -163,5 +218,6 @@ void Audio::run() {
             ready_ = false; synth = {}; tail = effectTail = 0; xQueueReset(queue_);
         }
     }
+#endif
 }
 } // namespace digivice::device

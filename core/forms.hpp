@@ -46,7 +46,9 @@ struct Form {
 // No allocation, mutable cache, hardware or filesystem dependencies.
 const Form* find(std::uint32_t formId);
 struct EvolutionEdge { std::uint16_t from, to; std::uint8_t minLevel, minBond; };
-// Rules 16 display and eligibility. Stored edge gates remain the historical floor.
+// Historical rules16-19 requirement metadata; frozen replay still needs care.
+// Rules20 uses the same level/bond thresholds, ignores care, and projects requiredCare:0.
+// Stored edge gates remain the historical floor.
 struct EvolutionNeed { std::uint8_t level, bond, care; };
 // Each Ultimate, including the three original ultimate-tier forms, opens at its own
 // level from 20 through 35. Each Mega opens at its own level from 50 through 70.

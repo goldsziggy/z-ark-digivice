@@ -1,4 +1,5 @@
 #include "handheld_runtime.hpp"
+#include "digi_audio.hpp"
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
 #include "esp_timer.h"
 #include "freertos/task.h"
@@ -104,18 +105,8 @@ bool HandheldRuntime::prepareUsageRestart() {
 void HandheldRuntime::pollBattlePresentation(std::uint64_t now) {
     const bool wasLocked = battle_.locked();
     battle_.poll(now);
-    using C = battlepresentation::Cue;
-    switch (battle_.consumeCue()) {
-    case C::Attack: audio_.play(device::AudioCue::Attack); break;
-    case C::Magic: audio_.play(device::AudioCue::Magic); break;
-    case C::Hit: audio_.play(device::AudioCue::Hit); break;
-    case C::CaptureThrow: audio_.play(device::AudioCue::CaptureThrow); break;
-    case C::CaptureSuccess: audio_.play(device::AudioCue::CaptureSuccess); break;
-    case C::CaptureFail: audio_.play(device::AudioCue::CaptureFail); break;
-    case C::Win: audio_.play(device::AudioCue::Win); break;
-    case C::Retreat: audio_.play(device::AudioCue::Retreat); break;
-    case C::None: break;
-    }
+    const auto cue=device::battleCue(battle_.consumeCue(),battle_.view());
+    if(cue!=device::AudioCue::Count) audio_.play(cue);
     if (wasLocked || battle_.locked()) interfaceDirty_ = true;
 }
 }

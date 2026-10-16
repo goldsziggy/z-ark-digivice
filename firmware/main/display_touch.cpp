@@ -1,3 +1,5 @@
+#include "sdkconfig.h"
+#if !defined(CONFIG_DIGIVICE_BOARD_WAVESHARE_21) || !CONFIG_DIGIVICE_BOARD_WAVESHARE_21 || !defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) || !CONFIG_DIGIVICE_DISPLAY_TOUCH
 #include "display_touch.hpp"
 #include "board_hal.hpp"
 #include "sdkconfig.h"
@@ -30,11 +32,11 @@ namespace {
 Status current{};
 bool initialized = false;
 #if defined(CONFIG_DIGIVICE_DISPLAY_ORIENTATION_CW90) && CONFIG_DIGIVICE_DISPLAY_ORIENTATION_CW90
-constexpr Orientation kOrientation = Orientation::Cw90;
+Orientation kOrientation = Orientation::Cw90;
 #elif defined(CONFIG_DIGIVICE_DISPLAY_ORIENTATION_CCW90) && CONFIG_DIGIVICE_DISPLAY_ORIENTATION_CCW90
-constexpr Orientation kOrientation = Orientation::Ccw90;
+Orientation kOrientation = Orientation::Ccw90;
 #else
-constexpr Orientation kOrientation = Orientation::Native;
+Orientation kOrientation = Orientation::Native;
 #endif
 
 #if DIGIVICE_PANEL_ENABLED
@@ -332,6 +334,15 @@ Status initialize() {
 
 const Status& status() { return current; }
 Orientation configuredOrientation() { return kOrientation; }
+esp_err_t setOrientation(Orientation orientation) {
+    if (!validOrientation(orientation)) return ESP_ERR_INVALID_ARG;
+    if (!quiescent()) return ESP_ERR_INVALID_STATE;
+    kOrientation = orientation;
+#if DIGIVICE_PANEL_ENABLED
+    previousTouch = {};
+#endif
+    return ESP_OK;
+}
 bool displayReady() { return current.display == ESP_OK && !current.suspended; }
 bool touchReady() { return current.touch == ESP_OK && !current.suspended; }
 bool quiescent() {
@@ -443,3 +454,5 @@ esp_err_t setSuspended(bool suspended) {
 }
 
 } // namespace digivice::display
+
+#endif // 1.46 / serial backend

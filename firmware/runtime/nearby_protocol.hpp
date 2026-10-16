@@ -5,6 +5,10 @@
 #include <cstdint>
 
 namespace digivice::nearby {
+// Wire compatibility is independent of save/game rules and versus mechanics.
+// V4 changes co-op turn semantics so a living partner continues after a KO.
+// V1/V2/V3 peers can be discovered but cannot consent to V4 sessions.
+constexpr std::uint8_t kProtocolVersion = 4;
 constexpr std::size_t kMaxPacket=240,kMaxPeers=4,kTxCapacity=8;
 constexpr std::uint64_t kPeerLifetimeMs=10000,kRetryMs=500,kReconnectMs=5000,kSessionTimeoutMs=30000,kAutoPaceMs=2400,kTurnTimeoutMs=120000;
 struct Mac { std::uint8_t bytes[6]{}; };
@@ -17,6 +21,7 @@ struct View {
     Peer peers[kMaxPeers]{};std::size_t peerCount=0;
     Mac opponent{};Fighter offered[2]{};Mode offeredMode=Mode::Tactical;
     bool host=false,localChoicePending=false,peerAcknowledged=false;
+    bool coopAuto=false; // Frozen in Challenge/Accept; manual remains the default.
     std::uint64_t session=0;
     Match match{};
     std::uint8_t activity=255; // 255 is a versus lobby. 0-5 is that dungeon or boss.
@@ -24,6 +29,9 @@ struct View {
     std::uint8_t foeLevel=0;
     Raid raid{};
 };
+// True only for the mutually delivered final result of an unclaimed session.
+// The caller checkpoints its single reward before remembering claimedSession.
+bool claimableRaid(const View&, std::uint64_t claimedSession);
 // Single main-task owner. Hardware only drains pop() to ESP-NOW and supplies
 // real radio source MAC to receive(). No heap, blocking, game save, or credentials.
 // Open only after native UI enters Nearby with an actual selected owned member.
@@ -32,7 +40,7 @@ struct View {
 class Protocol {
 public:
     bool open(const Mac& local,const Fighter&,std::uint64_t nowMs,std::uint32_t nonzeroOpenNonce,std::uint8_t activity=255);
-    bool challenge(std::size_t peerIndex,Mode,std::uint64_t session,std::uint32_t seed,std::uint64_t nowMs);
+    bool challenge(std::size_t peerIndex,Mode,std::uint64_t session,std::uint32_t seed,std::uint64_t nowMs,bool coopAuto=false);
     bool accept(std::uint64_t nowMs); // Explicit recipient consent to frozen offer.
     bool choose(Choice,std::uint64_t nowMs);
     void cancel(std::uint64_t nowMs);

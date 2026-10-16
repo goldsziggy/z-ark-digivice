@@ -2,8 +2,10 @@
 #include "sdkconfig.h"
 #include "sd_asset_storage.hpp"
 #include "board_hal.hpp"
+#include "device_nfc_diag.hpp"
 #include "device_assets_client.hpp"
 #include "game.hpp"
+#include "../runtime/digi_modify.hpp"
 #include "../runtime/entropy_seed.hpp"
 #include "motion_adapter.hpp"
 #include "network_adapter.hpp"
@@ -30,6 +32,7 @@
 #include "device_setup.hpp"
 #include "usage_nvs.hpp"
 #include "idle_settings.hpp"
+#include "screen_settings.hpp"
 #include "../runtime/idle.hpp"
 #include "nearby_radio.hpp"
 #include "../runtime/nearby_protocol.hpp"
@@ -56,6 +59,9 @@ public:
 #endif
     }
     bool command(char* line);
+    // UART bridge and test input call this on the main owner for fresh observations.
+    // ISR/worker callers must use a bounded mailbox; unavailable never rearms.
+    digimodify::Result observeCard(digimodify::Sample sample,std::uint64_t now,std::uint64_t maximumGapMs=digimodify::ReaderLatch::kMaxGapMs);
     // Console discards partial input when this epoch changes (shutdown/resume).
     std::uint32_t inputEpoch() const { return inputEpoch_; }
     bool powerFrozen() const { return powerFrozen_ || power_.frozen(); }
@@ -65,6 +71,14 @@ public:
             practice_.allowsCareAction(action) && !battlePlaybackLocked() && !nearbyBusy();
     }
 private:
+    bool nfcAllowed() const;
+    bool cardRuntimeAllowed() const;
+    nfcdiag::Device nfc_;
+    digimodify::ReaderLatch cardLatch_;
+    digimodify::Overlay digiOverlay_;
+    digimodify::Sample simulatedCard_{};
+    bool cardSimulation_=false;
+    bool digiModifyCommand(const char* line);
     void beginTradeStorage();
     void resolveTestEncounterAtBoot();
     bool ensureWorldSeed();
@@ -73,6 +87,7 @@ private:
     void beginInterface();
     void pollInterface(std::uint64_t now);
     void pollCareAndAuto(std::uint64_t now);
+    [[gnu::noinline]] void pollCareMinute(std::uint64_t now);
     void pauseInterface(bool paused);
     bool interfaceQuiescent() const;
     bool interfaceCommand(const char* line);
@@ -94,6 +109,8 @@ private:
     void updateMusicScene();
     void interfaceActivity(std::uint64_t now);
     bool idleBlocked() const;
+    bool idleForegroundActive() const;
+    bool idleDiscovery() const;
     void beginNearby();
     bool openTradeRadio(std::uint64_t now);
     void pollTradePersistence(std::uint64_t now);
@@ -130,6 +147,7 @@ private:
     usage::Store usage_{usageBackend_};
     idle::Controller idle_;
     idle::NvsSettings idleSettings_;
+    screen::NvsSettings screenSettings_;
     battlepresentation::Sequencer battle_;
     autobattle::Trace battleTrace_{}; // Static owner storage, never main-task stack.
     std::uint32_t walkingPending_ = 0;

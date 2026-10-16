@@ -9,7 +9,7 @@ namespace digivice::sound {
 class NvsSettings {
 public:
     ~NvsSettings();
-    esp_err_t begin();
+    esp_err_t begin(const char* name = "digi_audio");
     esp_err_t save(const Preferences&);
     const Preferences& preferences() const { return preferences_; }
     bool writable() const { return opened_ && writable_; }

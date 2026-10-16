@@ -77,11 +77,11 @@ void Imu::beginRecovery(std::uint64_t now) {
     (void)pedometer_.invalidate(motion::StepStatus::Recovering);
 }
 esp_err_t Imu::begin() {
-#if !defined(CONFIG_DIGIVICE_AUDIO_MOTION) || !CONFIG_DIGIVICE_AUDIO_MOTION
+#if !(defined(CONFIG_DIGIVICE_AUDIO_MOTION) && CONFIG_DIGIVICE_AUDIO_MOTION) && !(defined(CONFIG_DIGIVICE_MOTION) && CONFIG_DIGIVICE_MOTION)
     return error_ = ESP_ERR_NOT_SUPPORTED;
 #else
     if (configured_) return error_;
-    if (board::selectedProfile().id != board::ProfileId::Waveshare146 || !board::sharedI2cBus())
+    if ((board::selectedProfile().id != board::ProfileId::Waveshare146 && board::selectedProfile().id != board::ProfileId::Waveshare21) || !board::sharedI2cBus())
         return error_ = ESP_ERR_NOT_SUPPORTED;
     if (!device_) {
         SharedLock lock(20);

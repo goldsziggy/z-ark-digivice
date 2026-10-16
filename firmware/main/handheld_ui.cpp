@@ -1,4 +1,5 @@
 #include "handheld_runtime.hpp"
+#include "../runtime/live_battle.hpp"
 
 #if defined(CONFIG_DIGIVICE_DISPLAY_TOUCH) && CONFIG_DIGIVICE_DISPLAY_TOUCH
 #include "esp_heap_caps.h"
@@ -10,6 +11,14 @@
 
 namespace digivice {
 namespace {
+std::uint16_t orientationDegrees(display::Orientation value) {
+    using O=display::Orientation;
+    return value==O::Cw90 ? 90 : value==O::HalfTurn ? 180 : value==O::Ccw90 ? 270 : 0;
+}
+display::Orientation orientationForDegrees(std::uint16_t value) {
+    using O=display::Orientation;
+    return value==90 ? O::Cw90 : value==180 ? O::HalfTurn : value==270 ? O::Ccw90 : O::Native;
+}
 device::AudioCue cueFor(Message message) {
     using C = device::AudioCue;
     switch (message) {
@@ -35,6 +44,8 @@ deviceui::Model HandheldRuntime::interfaceModel() const {
     model.starterCount = starter_.choiceCount();
     model.starterFormId = starterForm(state_, starter_.selectedId());
     model.sleepTimeoutSeconds = static_cast<std::uint16_t>(idle_.timeoutSeconds());
+    model.rotationDegrees = orientationDegrees(display::configuredOrientation());
+    model.rotationWritable = screenSettings_.writable() && display::displayReady();
     model.writable = !tradeSession_.blocksForeground() && saves_.writable() && (state_.onboardingComplete || state_.starterOfferSeed);
     model.partyEditable = allowsCareAction(Action::PartyAdd) && allowsCareAction(Action::PartyRemove);
     model.encounterRecoveryRequired = encounterRecoveryRequired_ || !tradeSession_.healthy();
@@ -48,6 +59,8 @@ deviceui::Model HandheldRuntime::interfaceModel() const {
     model.encounterReady = model.stepsAvailable && state_.phase == Phase::Home &&
         state_.encounterRate != EncounterRate::Off && !battle_.locked() && !setup_.active() && !nearbyBusy();
     model.battle = battle_.locked() ? &battle_.view() : nullptr;
+    model.digiModify=digiOverlay_.view(now,state_,battle_.locked());
+    model.nfcTest=nfc_.testView(); model.nfcTest.available=nfc_.testAvailable();
     model.trade = &tradeWire_.view();
     model.tradeWritable = tradeSession_.healthy() && saves_.writable();
     model.tradeStatus = tradeSession_.blocksForeground() ? tradeSession_.diagnostic() : tradeStatus_;
@@ -59,6 +72,7 @@ deviceui::Model HandheldRuntime::interfaceModel() const {
     model.muted = audio_.muted();
     model.volumePercent = static_cast<std::uint8_t>(audio_.volume());
     model.musicEnabled = audio_.musicEnabled();
+    model.buzzerOnly = audio_.buzzerOnly();
     model.audioPreferencesWritable = audio_.preferencesWritable();
     model.audioAvailable = audio_.ready();
     const auto& sample = imu_.reading();
@@ -74,6 +88,14 @@ void HandheldRuntime::beginInterface() {
     frame_ = static_cast<std::uint16_t*>(heap_caps_malloc(deviceui::kPixels * sizeof(*frame_),
                                                         MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
     const auto panel = frame_ ? display::initialize() : display::Status{};
+    // Display preferences are separate from the game journal. A missing key
+    // preserves the profile's compile-time orientation, without an NVS write.
+    const auto rotationSettings = screenSettings_.begin(orientationDegrees(display::configuredOrientation()));
+    const auto rotationApplied = rotationSettings==ESP_OK && display::displayReady() ?
+        display::setOrientation(orientationForDegrees(screenSettings_.degrees())) : rotationSettings;
+    std::printf("Screen rotation: %u degrees (%s); preference=%s.\n",
+        static_cast<unsigned>(orientationDegrees(display::configuredOrientation())),
+        esp_err_to_name(rotationApplied),esp_err_to_name(rotationSettings));
     audio_.setMusicScene(device::MusicScene::Quiet);
     const auto sound = audio_.begin();
     const auto usageNvs = usageBackend_.initialize();
@@ -125,15 +147,12 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
             notice = "STEP SAVE RECOVERY"; break;
         }
         State candidate = state_;
-        const bool automatic = intent.action == Action::Auto || intent.action == Action::AutoFight || intent.action == Action::AutoResume || intent.action == Action::Focus;
-        const auto error = intent.action == Action::Auto ? applyAuto(candidate, &battleTrace_) :
-            intent.action == Action::AutoFight ? applyAutoFight(candidate, &battleTrace_) :
-            intent.action == Action::AutoResume ? applyAutoResume(candidate, &battleTrace_) :
-            intent.action == Action::Focus ? applyFocus(candidate, intent.value, &battleTrace_) : apply(candidate, intent.action, intent.value);
+        const bool automatic = livebattle::automatic(intent.action);
+        const auto error = livebattle::applyAction(candidate,intent.action,intent.value,&battleTrace_);
         if (error != Error::None) { notice = errorText(error); audio_.play(device::AudioCue::Error); break; }
         if (!saves_.checkpoint(candidate)) { notice = "SAVE UNCERTAIN - REBOOT TO RECOVER"; audio_.play(device::AudioCue::Error); break; }
         const auto now = static_cast<std::uint64_t>(esp_timer_get_time() / 1000);
-        const bool playback = automatic ? battle_.startAuto(battleTrace_, now) :
+        const bool playback = automatic ? battle_.startAuto(battleTrace_, now, &state_) :
             battle_.startTactical(state_, candidate, intent.action, intent.value, now);
         state_ = candidate;
         if (playback) uiSequence_ = state_.sequence; // Sequencer owns readable, ordered cues.
@@ -159,10 +178,18 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
     case K::ToggleMusic:
         if (audio_.setMusicEnabled(!audio_.musicEnabled()) != ESP_OK) notice = "SETTINGS NOT SAVED";
         break;
+    case K::TestBeep:
+        if(audio_.buzzerOnly()) {
+            audio_.play(device::AudioCue::Boot);
+            notice=audio_.playResultText();
+        }
+        break;
     case K::ToggleGyro:
         gyroEnabled_ = !gyroEnabled_ && imu_.ready();
         if (gyroEnabled_) { imu_.recenter(); notice = "HOLD STILL TO CENTER TILT"; }
         audio_.play(device::AudioCue::Navigate); break;
+    case K::NfcRetry: nfc_.retryTest(static_cast<std::uint64_t>(esp_timer_get_time()/1000)); break;
+    case K::NfcReset: nfc_.resetTest(); break;
     case K::Navigation:
         audio_.play(previousScreen == deviceui::Screen::Capture ? device::AudioCue::CaptureArm : device::AudioCue::Navigate); break;
     case K::SleepTimeout:
@@ -171,6 +198,24 @@ void HandheldRuntime::interfaceIntent(deviceui::Intent intent) {
             audio_.play(device::AudioCue::Navigate);
         } else notice = "SLEEP SETTING SAVE FAILED";
         break;
+    case K::RotateScreen: {
+        // Validate before narrowing the intent's uint32 value. No preference or
+        // orientation changes while a transfer is still pending/uncertain.
+        if((intent.value!=0 && intent.value!=90 && intent.value!=180 && intent.value!=270) ||
+           !screenSettings_.writable() || !display::displayReady()) { notice="ROTATION UNAVAILABLE"; break; }
+        if(!display::quiescent()) { notice="WAIT FOR DISPLAY"; break; }
+        requireTouchRelease(); ui_.cancelTouch(); setup_.cancelTouch();
+        const auto degrees=static_cast<std::uint16_t>(intent.value);
+        if(screenSettings_.setDegrees(degrees)!=ESP_OK) { notice="ROTATION SAVE FAILED"; break; }
+        if(display::setOrientation(orientationForDegrees(degrees))!=ESP_OK) {
+            notice="ROTATION SAVED - RESTART"; break;
+        }
+        // Every screen, setup view and partial capture region uses the HAL's
+        // same transform. Force a complete frame after changing its mapping.
+        captureFrameActive_=captureFrameValid_=false;
+        audio_.play(device::AudioCue::Navigate);
+        break;
+    }
     case K::OpenSetup:
         if (nearbyBusy()) { notice = "CLOSE NEARBY FIRST"; break; }
         setup_.open(); requireTouchRelease(); ui_.cancelTouch();
@@ -220,6 +265,12 @@ void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
         interfaceIntent(intent);
         model = interfaceModel();
     }
+    pollCareMinute(now);
+}
+
+// Keep the 12 KiB care candidate out of the Auto call stack. Xtensa reserves
+// a function frame at entry even when the later CareMinute branch is skipped.
+void HandheldRuntime::pollCareMinute(std::uint64_t now) {
     if (touchPressed() || ui_.pending() || state_.phase != Phase::Home || !state_.onboardingComplete ||
         !saves_.writable() || battle_.locked() || nearbyBusy() || !allowsCareAction(Action::CareMinute)) {
         if (state_.phase != Phase::Home || interfacePaused_) careAwakeMs_ = now;
@@ -227,13 +278,21 @@ void HandheldRuntime::pollCareAndAuto(std::uint64_t now) {
     }
     if (!careAwakeMs_ || now < careAwakeMs_) { careAwakeMs_ = now; return; }
     if (now - careAwakeMs_ < 60000) return;
-    careAwakeMs_ = now; // One awake minute, even if the clock jumped.
+    careAwakeMs_ = now; // One running minute (including screen idle), even after a clock jump.
     if (state_.careMinute == UINT32_MAX) return;
-    deviceui::Intent intent;
-    intent.kind = deviceui::IntentKind::GameAction;
-    intent.action = Action::CareMinute;
-    intent.value = state_.careMinute + 1;
-    interfaceIntent(intent);
+    // Care is durable background bookkeeping, not a touch intent. Keep running
+    // while blanked, without replaying the last foreground message/audio cue.
+    State candidate = state_;
+    if (apply(candidate, Action::CareMinute, state_.careMinute + 1) != Error::None) return;
+    if (!saves_.checkpoint(candidate)) {
+        ui_.notice("SAVE UNCERTAIN - REBOOT TO RECOVER");
+        interfaceDirty_ = true;
+        return;
+    }
+    // Do not swallow an unrelated foreground publication awaiting pollInterface.
+    if (uiSequence_ == state_.sequence) uiSequence_ = candidate.sequence;
+    state_ = candidate;
+    interfaceDirty_ = true;
 }
 
 // Touch pipeline (docs/TOUCH_SPRINT.md): touchstream::Stream turns SPD2010 polls
@@ -317,9 +376,10 @@ void HandheldRuntime::pollInterface(std::uint64_t now) {
                                 lastArtStorageReady_ != artReady || interfaceDirty_;
     const bool captureDue = captureFrameActive_ && (captureInvalid || now < captureFrameStartedMs_ ||
                                                    now - captureFrameStartedMs_ >= 33);
-    const bool ordinaryDue = !captureFrameActive_ && (captureFrameValid_ ||
-        (now >= lastFrameMs_ && now - lastFrameMs_ >= 80 &&
-         (interfaceDirty_ || now - lastFrameMs_ >= 160)));
+    // Navigation feedback takes priority over the idle animation cadence.
+    // Home changes have no tween and reuse the already decoded backdrop.
+    const bool ordinaryDue = !captureFrameActive_ && (captureFrameValid_ || interfaceDirty_ ||
+        (now >= lastFrameMs_ && now - lastFrameMs_ >= 160));
     if (canDraw && (captureDue || ordinaryDue)) {
         const auto started = esp_timer_get_time();
         bool partial = captureFrameActive_ && !captureInvalid;
@@ -423,6 +483,13 @@ void HandheldRuntime::printInterface() const {
     std::printf("device capture partialFrames=%lu region=%ux%u cadenceMs=33 maxRenderUs=%lu maxFlushUs=%lu; cadence is requested, not measured FPS\n",
         static_cast<unsigned long>(captureFrames_), static_cast<unsigned>(deviceui::Controller::kCaptureWidth), static_cast<unsigned>(deviceui::Controller::kCaptureHeight),
         static_cast<unsigned long>(maxCaptureRenderUs_), static_cast<unsigned long>(maxCaptureFlushUs_));
+    std::printf("device rotation=%u preferenceWritable=%d physical=%ux%u mainStackFree=%u internalFree=%u internalLargest=%u psramFree=%u\n",
+        static_cast<unsigned>(orientationDegrees(display::configuredOrientation())), screenSettings_.writable(),
+        board::selectedProfile().displayWidth, board::selectedProfile().displayHeight,
+        static_cast<unsigned>(uxTaskGetStackHighWaterMark(nullptr)),
+        static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_INTERNAL)),
+        static_cast<unsigned>(heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL)),
+        static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_SPIRAM)));
     std::printf("device idle blanked=%d backlightOff=%d timeoutSeconds=%lu settingWritable=%d; mode=screen-only\n",
         idle_.blanked(), panel.idleBlanked, static_cast<unsigned long>(idle_.timeoutSeconds()), idleSettings_.writable());
     std::printf("device artwork allocated=%u sprite=%s scene=%s\n",
@@ -440,8 +507,16 @@ void HandheldRuntime::printInterface() const {
     std::printf("device audio ready=%d muted=%d volume=%u error=%s; imu ready=%d revision=0x%02x valid=%d calibrated=%d tilt=%d error=%s\n",
         audio_.ready(), audio_.muted(), audio_.volume(), esp_err_to_name(audio_.lastError()),
         imu_.ready(), imu_.revision(), sample.valid, sample.calibrated, gyroEnabled_, esp_err_to_name(imu_.lastError()));
-    std::printf("device sound music=%d settingsWritable=%d settingsError=%s\n", audio_.musicEnabled(),
+    std::printf("device sound backend=%s loudness=%s\n", audio_.buzzerOnly()?"buzzer":"PCM", audio_.buzzerOnly()?"fixed/on-off":"variable");
+    std::printf("device sound %s=%d settingsWritable=%d settingsError=%s\n", audio_.buzzerOnly()?"rhythms":"music", audio_.musicEnabled(),
         audio_.preferencesWritable(), esp_err_to_name(audio_.preferencesError()));
+    if(audio_.buzzerOnly()) {
+        const auto d=audio_.buzzerDiagnostics();
+        std::printf("device buzzer queued=%lu started=%lu background=%lu expired=%lu busyRetries=%lu onWrites=%lu offWrites=%lu outputKnown=%d outputOn=%d; register verification, not audible confirmation\n",
+            static_cast<unsigned long>(d.queued),static_cast<unsigned long>(d.started),static_cast<unsigned long>(d.backgroundStarted),
+            static_cast<unsigned long>(d.expired),static_cast<unsigned long>(d.busyRetries),static_cast<unsigned long>(d.onWrites),
+            static_cast<unsigned long>(d.offWrites),d.outputKnown,d.outputOn);
+    }
     std::printf("device accelG=%.3f,%.3f,%.3f gyroDps=%.2f,%.2f,%.2f sampleMs=%llu\n",
         static_cast<double>(sample.accelerationG.x), static_cast<double>(sample.accelerationG.y), static_cast<double>(sample.accelerationG.z),
         static_cast<double>(sample.gyroDps.x), static_cast<double>(sample.gyroDps.y), static_cast<double>(sample.gyroDps.z),
@@ -452,7 +527,7 @@ void HandheldRuntime::printInterface() const {
         static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT)),
         static_cast<unsigned>(heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT)));
     std::printf("device mainStackMinimumFreeBytes=%u\n",
-        static_cast<unsigned>(uxTaskGetStackHighWaterMark(nullptr) * sizeof(StackType_t)));
+        static_cast<unsigned>(uxTaskGetStackHighWaterMark(nullptr)));
 }
 
 bool HandheldRuntime::interfaceCommand(const char* line) {
@@ -460,13 +535,23 @@ bool HandheldRuntime::interfaceCommand(const char* line) {
     if (std::strncmp(line, "device ", 7)) return false;
     if (powerFrozen() || interfacePaused_) { std::puts("Device controls paused for power transition."); return true; }
     if (!std::strcmp(line, "device wake")) { interfaceActivity(static_cast<std::uint64_t>(esp_timer_get_time() / 1000)); pollIdle(static_cast<std::uint64_t>(esp_timer_get_time() / 1000)); }
-    else if (!std::strcmp(line, "device sound")) audio_.play(device::AudioCue::Boot);
+    else if (!std::strcmp(line,"device rotate 0") || !std::strcmp(line,"device rotate 90") ||
+             !std::strcmp(line,"device rotate 180") || !std::strcmp(line,"device rotate 270")) {
+        const auto degrees = !std::strcmp(line,"device rotate 90") ? 90u :
+            !std::strcmp(line,"device rotate 180") ? 180u : !std::strcmp(line,"device rotate 270") ? 270u : 0u;
+        interfaceIntent({deviceui::IntentKind::RotateScreen,Action::Feed,degrees});
+        printInterface();
+    }
+    else if (!std::strcmp(line, "device sound")) {
+        audio_.play(device::AudioCue::Boot);
+        if(audio_.buzzerOnly()) std::puts(audio_.playResultText());
+    }
     else if (!std::strcmp(line, "device setup")) { setup_.open(); ui_.cancelTouch(); requireTouchRelease(); }
     else if (!std::strcmp(line, "device mute")) { if (audio_.setMuted(true) != ESP_OK) std::puts("Sound changed; SETTINGS NOT SAVED."); }
     else if (!std::strcmp(line, "device unmute")) { if (audio_.setMuted(false) != ESP_OK) std::puts("Sound changed; SETTINGS NOT SAVED."); }
     else if (!std::strcmp(line, "device recenter")) { imu_.recenter(); ui_.notice("HOLD STILL TO CENTER TILT"); }
     else if (!std::strcmp(line, "device art-retry")) art_.retry();
-    else std::puts("device status | wake | sound | mute | unmute | recenter | art-retry | setup");
+    else std::puts("device status | wake | rotate 0/90/180/270 | sound | mute | unmute | recenter | art-retry | setup");
     interfaceDirty_ = true;
     return true;
 }

@@ -23,7 +23,7 @@ void target(State& s,unsigned id,unsigned level=1){s.wildFormId=id;s.wildSpecies
 unsigned formWith(encounters::Rarity rarity){for(unsigned id=forms::kFirstProductionFormId;id<=forms::kFormCount;++id)if(encounters::rarityForForm(id)==rarity&&combat::validFormProfile(id,1))return id;return 0;}
 unsigned phaseFor(const State& s,capturering::Grade grade){for(unsigned phase=0;phase<capturering::kCycleMs;++phase)if(capturering::sample(phase,s.wildFormId).grade==grade)return phase;CHECK(false);return 0;}
 void contract(){
-    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kSnapshotSize==6860);
+    CHECK(kSchemaVersion == 30&&kRulesVersion == 22&&kSnapshotSize==6876);
     CHECK(static_cast<unsigned>(Action::RingCapture)==static_cast<unsigned>(Action::WorldSeed)+1);
     Action parsed;CHECK(parseAction("ring-capture",parsed)&&parsed==Action::RingCapture);
     auto s=fight();reject(s,2400,Error::InvalidValue);reject(s,UINT32_MAX,Error::InvalidValue);
@@ -171,7 +171,7 @@ void fullRosterPartnerEvolutionAndBudget(){
     const auto& active=s.collection[0];s.hp=active.hp;s.energy=active.energy;s.fullness=active.fullness;s.mood=active.mood;s.bond=active.bond;s.level=active.level;
     for(unsigned i=0;i<kPartyCapacity;++i)s.partyMemberIds[i]=s.collection[i+1].id;
     CHECK(isValid(s));static char json[kJsonCapacity];const auto n=writeJson(s,json,sizeof(json));
-    CHECK(n>38000&&n<kJsonCapacity&&sizeof(State)==12332&&sizeof(Snapshot)==6860&&kCollectionCapacity==250);
+    CHECK(n>38000&&n<kJsonCapacity&&sizeof(State)==12348&&sizeof(Snapshot)==6876&&kCollectionCapacity==250);
     CHECK(std::strstr(json,"\"collectionCapacity\":250"));
     char shortJson[32];CHECK(!writeJson(s,shortJson,sizeof(shortJson))&&!shortJson[0]);restore(s);
     std::printf("full-roster JSON fixture: %zu/%zu bytes; State%zu Snapshot%zu\n",n,kJsonCapacity,sizeof(State),sizeof(Snapshot));

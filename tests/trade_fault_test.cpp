@@ -28,7 +28,8 @@ void projectSchema22(const std::uint8_t* current,std::uint8_t* old){
  old[4]=22;old[5]=0;old[6]=(size-12)&255;old[7]=(size-12)>>8;put32(old+8,15);put32(old+size-4,crc(old,size-4));
 }
 void oldSnapshot(const std::uint8_t* current,std::uint8_t* old,unsigned version=19){
- CHECK(version==19||version==20||version==21||version==22);
+ CHECK(version==19||version==20||version==21||version==22||version==27||version==28);
+ if(version==27||version==28){std::memcpy(old,current,kSchema28SnapshotSize-4);old[4]=version;old[6]=(kSchema28SnapshotSize-12)&255;old[7]=(kSchema28SnapshotSize-12)>>8;put32(old+8,version==28?20:19);put32(old+kSchema28SnapshotSize-4,crc(old,kSchema28SnapshotSize-4));return;}
  if(version==22){projectSchema22(current,old);return;}
  if(version==21){
   std::uint8_t schema26[kSchema26SnapshotSize];snapshot_test::schema26Image(current,schema26);
@@ -42,11 +43,11 @@ void oldSnapshot(const std::uint8_t* current,std::uint8_t* old,unsigned version=
 }
 dt::Slot journalSlot(const t::Record& record,unsigned revision,unsigned version){
  std::array<std::uint8_t,t::kRecordBytes> bytes{};CHECK(t::encodeRecord(record,bytes.data(),bytes.size()));
- const bool legacy=version!=23;const unsigned snapshotSize=version==19?660:version==20?664:version==21?2952:2964;
+ const bool legacy=version!=23;const unsigned snapshotSize=version==19?660:version==20?664:version==21?2952:(version==27||version==28)?kSchema28SnapshotSize:2964;
  dt::Slot slot;slot.length=legacy?20+168+2*snapshotSize+4:dt::kJournalBytes;auto* out=slot.bytes.data;
  std::memcpy(out,"DVTJ",4);put32(out+4,1);put32(out+8,revision);
  if(legacy){
-  CHECK(record.transcript.rules==(version==22?15:version==21?14:13));
+  CHECK(record.transcript.rules==(version==28?20:version==27?19:version==22?15:version==21?14:13));
   if(version==19)CHECK(record.before.worldSeed==0&&record.after.worldSeed==0);
   std::memcpy(out+16,bytes.data(),168);
   oldSnapshot(bytes.data()+168,out+16+168,version);oldSnapshot(bytes.data()+168+kSnapshotSize,out+16+168+snapshotSize,version);
@@ -92,13 +93,44 @@ struct Care final:digivice::storage::Backend {
  digivice::storage::ReadStatus readSlot(unsigned i,digivice::storage::Slot& out)override{if(!present[i])return digivice::storage::ReadStatus::Missing;out=slots[i];return digivice::storage::ReadStatus::Present;}
  bool writeSlot(unsigned i,const Snapshot& s)override{++writes;if(writes==fail&&!landed)return false;std::memcpy(slots[i].bytes,s.bytes,kSnapshotSize);slots[i].length=kSnapshotSize;present[i]=true;return writes!=fail;}
 };
+void maximumCollectionRecovery(){
+ auto a=fixture(),b=fixture(2);
+ for(auto* state:{&a,&b}){
+  const auto member=state->collection[1];
+  state->sequence=state->foregroundSequence=1000;
+  state->collectionCount=kCollectionCapacity;state->nextMemberId=kCollectionCapacity+1;
+  state->captures=state->encounters=kCollectionCapacity-1;state->steps=100*(kCollectionCapacity-1);
+  for(unsigned i=1;i<kCollectionCapacity;++i){state->collection[i]=member;state->collection[i].id=i+1;state->collection[i].capturedAtSequence=i+1;}
+  CHECK(isValid(*state));
+ }
+ const auto consent=transcript(a,b);
+ t::Record prepared,committed,applied;
+ CHECK(t::prepare(a,consent,0,1,prepared));
+ auto walked=a;step(walked,Action::EncounterSeed,7878);step(walked,Action::AccrueSteps,500);
+ CHECK(t::commit(prepared,walked,committed));CHECK(t::applied(committed,committed.after,applied));
+ for(const auto* phase:{&prepared,&committed,&applied}){
+  Journal journal; journal.present[0]=journal.present[1]=true;
+  journal.slots[0]=journal.slots[1]=journalSlot(*phase,7,23);
+  Care care;storage::SaveStore saves(care);State restored;
+  CHECK(saves.restore(restored)==storage::BootStatus::Empty);
+  const auto baseline=phase->phase==t::Phase::Applied?phase->after:walked;
+  CHECK(saves.checkpointMirrored(baseline));restored=baseline;
+  dt::Session session(restored,saves,journal);
+  CHECK(session.restore()&&session.healthy());
+  CHECK(restored.collectionCount==kCollectionCapacity);
+  CHECK(t::sameState(restored,phase->phase==t::Phase::Prepared?walked:applied.after));
+  CHECK(session.record()&&session.record()->phase==(phase->phase==t::Phase::Prepared?t::Phase::Prepared:t::Phase::Applied));
+  CHECK(session.restore()); // A second recovery never exchanges again.
+  CHECK(restored.receivedTrades==(phase->phase==t::Phase::Prepared?0u:1u));
+ }
+}
 void installedJournalRecovery(){
- CHECK(dt::kJournalBytes==13912&&dt::kV26JournalBytes==6624&&dt::kV22JournalBytes==6120&&dt::kV21JournalBytes==6096&&dt::kV20JournalBytes==1520&&dt::kV19JournalBytes==1512);
- CHECK(dt::supportedJournalSize(1512)&&dt::supportedJournalSize(1520)&&dt::supportedJournalSize(6096)&&dt::supportedJournalSize(6120)&&dt::supportedJournalSize(6624)&&dt::supportedJournalSize(13912));
+ CHECK(dt::kJournalBytes==13944&&dt::kV28JournalBytes==13912&&dt::kV26JournalBytes==6624&&dt::kV22JournalBytes==6120&&dt::kV21JournalBytes==6096&&dt::kV20JournalBytes==1520&&dt::kV19JournalBytes==1512);
+ CHECK(dt::supportedJournalSize(1512)&&dt::supportedJournalSize(1520)&&dt::supportedJournalSize(6096)&&dt::supportedJournalSize(6120)&&dt::supportedJournalSize(6624)&&dt::supportedJournalSize(13912)&&dt::supportedJournalSize(13944));
  for(const auto size:{0u,1u,1511u,1513u,1519u,1521u,6095u,6097u,6119u,6121u,6623u,6625u,UINT32_MAX})CHECK(!dt::supportedJournalSize(size));
  auto a=fixture(),b=fixture(2);auto x=transcript(a,b);x.rules=13;
- for(unsigned version:{19u,20u,21u,22u})for(unsigned side=0;side<2;++side){
-  x.rules=version==22?15:version==21?14:13;
+ for(unsigned version:{19u,20u,21u,22u,27u,28u})for(unsigned side=0;side<2;++side){
+  x.rules=version==28?20:version==27?19:version==22?15:version==21?14:13;
   const auto& before=side?b:a;auto walked=before;step(walked,Action::EncounterSeed,777+side);step(walked,Action::AccrueSteps,1000);walked.pendingEncounter.rules=x.rules;
   walked.bossSteps=0;walked.bossSigils=0;
   t::Record prepared,committed,applied,aborted;CHECK(t::prepare(before,x,side,7,prepared));CHECK(t::commit(prepared,walked,committed));
@@ -138,7 +170,7 @@ void installedJournalRecovery(){
     const bool terminalOwnership=phase.phase==t::Phase::Committed||phase.phase==t::Phase::Applied;
     const auto& saved=(alreadyApplied||phase.phase==t::Phase::Applied)?committed.after:walked;
     Care care;Snapshot encoded;CHECK(encodeSnapshot(saved,encoded));
-    for(unsigned slot=0;slot<2;++slot){care.present[slot]=true;care.slots[slot].length=version==19?660:version==20?664:version==21?2952:2964;oldSnapshot(encoded.bytes,care.slots[slot].bytes,version);}
+    for(unsigned slot=0;slot<2;++slot){care.present[slot]=true;care.slots[slot].length=version==19?660:version==20?664:version==21?2952:(version==27||version==28)?kSchema28SnapshotSize:2964;oldSnapshot(encoded.bytes,care.slots[slot].bytes,version);}
     State state;storage::SaveStore saves(care);CHECK(saves.restore(state)==storage::BootStatus::Migrated&&care.writes==0);
     Journal journal=untouched;dt::Session session(state,saves,journal);CHECK(session.restore());
     CHECK(t::sameState(state,terminalOwnership?committed.after:walked));CHECK(state.worldSeed==0);
@@ -163,6 +195,7 @@ void installedJournalRecovery(){
 } // namespace
 
 int main(){
+ maximumCollectionRecovery();
  installedJournalRecovery();
  auto a=fixture(1,60),b=fixture(2,60);t::Record ancient[2];const auto captures=a.captures;const auto oldsteps=a.steps;
  for(unsigned turn=1;turn<=64;++turn){

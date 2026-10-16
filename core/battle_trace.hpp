@@ -14,15 +14,17 @@ struct Step {
     Move action = Move::None, opponentAction = Move::None;
     std::uint32_t playerHpBefore = 0, playerHpAfter = 0;
     std::uint32_t enemyHpBefore = 0, enemyHpAfter = 0;
-    bool reflected = false, captured = false;
+    bool reflected = false, captured = false, critical = false;
     Move guard = Move::None;
     std::uint32_t captureChance = 0;
+    std::uint8_t element = 0; // Committed outgoing shift:0 none,1 Grove,2 Tide,3 Ember.
     std::uint8_t captureAttempt = 0, captureResult = 0; // CaptureResult numeric values; no RNG.
 };
 struct Trace {
     std::uint32_t combatRulesVersion = 4;
     std::uint32_t playerFormId = 0, enemyFormId = 0;
     bool includeFormIds = false;
+    bool partial = false; // Device single-exchange trace; no terminal result implied.
     std::uint32_t playerOffenseBonus = 0, playerProtectionBonus = 0;
     std::uint32_t enemyOffenseBonus = 0, enemyProtectionBonus = 0;
     Kind kind = Kind::Wild;

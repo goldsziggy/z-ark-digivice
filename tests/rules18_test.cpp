@@ -36,7 +36,7 @@ bool focusEncounter(bool strike, State& out) {
 }
 
 void versions() {
-    CHECK(kSchemaVersion==27&&kRulesVersion==19 && kSnapshotSize == 6860);
+    CHECK(kSchemaVersion == 30&&kRulesVersion == 22 && kSnapshotSize == 6876);
     CHECK(legacy_v17::kSchemaVersion == 24 && legacy_v17::kRulesVersion == 17);
     Action a; CHECK(parseAction("focus", a) && a == Action::Focus);
     legacy_v17::Action b; CHECK(!legacy_v17::parseAction("focus", b));
@@ -56,7 +56,7 @@ void guardAwareAuto() {
     unsigned heavy = 0, reflected = 0, frames = 0;
     for (unsigned seed = 1; seed <= 256; ++seed) {
         auto s = encounter(seed);
-        CHECK(s.wildRules == 19); // rules 19 keeps the rules-18 Auto mechanics (wildRules >= 18)
+        CHECK(s.wildRules == kRulesVersion); // rules 19 keeps the rules-18 Auto mechanics (wildRules >= 18)
         autobattle::Trace t;
         if (applyAutoFight(s, &t) != Error::None) { CHECK(false); continue; }
         for (unsigned i = 0; i < t.count; ++i) { ++frames; heavy += t.steps[i].action == autobattle::Move::Heavy; reflected += t.steps[i].reflected; }

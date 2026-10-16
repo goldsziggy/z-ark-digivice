@@ -11,11 +11,15 @@ enum class Cue : std::uint8_t { None, Attack, Magic, Hit, CaptureThrow, CaptureS
 struct View {
     Phase phase = Phase::Idle;
     Actor actor = Actor::None;
+    bool critical = false;
     bool locked = false, paused = false, flash = false, reflected = false, captured = false, aimMiss = false;
     // Saved capture playback. Chance is revealed only after the throw; timing
     // throws retain their committed 1..90% chance, even after reboot. A legacy
     // missed aim reports zero. These fields never decide an outcome.
     bool capturePresentation = false, captureMiss = false, captureCaught = false;
+    bool boss = false; // Frozen before the committed fight can advance/clear its expedition.
+    std::uint8_t expeditionTier = 0, expeditionTiers = 0;
+    std::uint8_t element = 0; // Committed outgoing shift; never inferred after charge consumption.
     std::uint8_t captureAttempt = 0, captureRemaining = 0, captureChance = 0;
     std::uint32_t captureElapsedMs = 0;
     std::uint32_t playerFormId = 0, enemyFormId = 0;
@@ -32,7 +36,7 @@ public:
     static constexpr std::uint64_t kCaptureThrowMs = 500, kCaptureWiggleMs = 1800,
         kCaptureResultMs = 1600;
     // Invalid input or an existing locked playback returns false unchanged.
-    bool startAuto(const autobattle::Trace& committedTrace, std::uint64_t nowMs);
+    bool startAuto(const autobattle::Trace& committedTrace, std::uint64_t nowMs, const State* before = nullptr);
     bool startTactical(const State& before, const State& committedAfter, Action action,
                        std::uint32_t value, std::uint64_t nowMs);
     // Replay only a valid latest foreground capture (background steps are silent).

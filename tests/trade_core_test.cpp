@@ -65,7 +65,7 @@ void installedJournalMigration(){
         CHECK(t::commit(prepared,walked,committed));CHECK(t::applied(committed,committed.after,done));CHECK(t::abort(prepared,aborted));
         for(const auto& record:{prepared,committed,done,aborted}){
             const auto old=installedRecord(record,version);const auto original=old;
-            t::Record decoded;CHECK(t::decodeRecord(old.data(),old.size(),decoded));
+            t::Record decoded,scratch;CHECK(t::decodeRecord(old.data(),old.size(),decoded,scratch));
             CHECK(decoded.serial==record.serial&&decoded.localSide==side&&decoded.phase==record.phase);
             CHECK(t::sameTranscript(decoded.transcript,record.transcript));
             CHECK(t::sameState(decoded.before,record.before)&&t::sameState(decoded.after,record.after));
@@ -221,8 +221,31 @@ void encodingAndMigration(){
     State migrated;CHECK(decodeSnapshot(prior.data(),prior.size(),migrated)==SnapshotStatus::Migrated&&migrated.receivedTrades==0&&t::sameState(a,migrated));
     CHECK(encodeSnapshot(migrated,current)&&snapshot_test::sameOldPayload(prior.data(),current.bytes,prior.size()));
     put32(current.bytes+snapshot_test::currentOffset(648),1);put32(current.bytes+kSnapshotSize-4,crc(current.bytes,kSnapshotSize-4));CHECK(decodeSnapshot(current.bytes,sizeof(current.bytes),migrated)==SnapshotStatus::InvalidState);
-    CHECK(kSchemaVersion==27&&kRulesVersion==19&&kSnapshotSize==6860&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==13892&&t::kV26RecordBytes==6604&&t::kV19RecordBytes==1492);
+    CHECK(kSchemaVersion == 30&&kRulesVersion == 22&&kSnapshotSize==6876&&kV19SnapshotSize==660&&t::kTranscriptBytes==152&&t::kRecordBytes==13924&&t::kV26RecordBytes==6604&&t::kV19RecordBytes==1492);
 }
 }
-int main(){exchangeProgression();fullCollectionsExchange();restrictionsAndConsent();walkingAndInterruptedDecisions();encodingAndMigration();installedJournalMigration();
+void ownedDecodeScratch(){
+    auto a=fixture(),b=fixture(2);auto x=transcript(a,b);
+    t::Record prepared,committed,decoded,scratch;
+    CHECK(t::prepare(a,x,0,1,prepared));CHECK(t::commit(prepared,a,committed));
+    std::array<std::uint8_t,t::kRecordBytes> bytes{};
+    for(const auto* record:{&prepared,&committed}){
+        CHECK(t::encodeRecord(*record,bytes.data(),bytes.size()));
+        decoded=prepared;const auto original=decoded;
+        CHECK(!t::decodeRecord(bytes.data(),bytes.size(),decoded,decoded));
+        CHECK(std::memcmp(&decoded,&original,sizeof(decoded))==0);
+        CHECK(t::decodeRecord(bytes.data(),bytes.size(),decoded,scratch));
+        CHECK(t::sameState(decoded.after,record->after)&&decoded.phase==record->phase);
+        const auto accepted=decoded;
+        // Valid outer checksum but invalid semantic serial: validation must not
+        // publish any partial header, transcript or snapshot to destination.
+        put32(bytes.data()+8,0);put32(bytes.data()+bytes.size()-4,crc(bytes.data(),bytes.size()-4));
+        CHECK(!t::decodeRecord(bytes.data(),bytes.size(),decoded,scratch));
+        CHECK(std::memcmp(&decoded,&accepted,sizeof(decoded))==0);
+        CHECK(t::encodeRecord(*record,bytes.data(),bytes.size()));
+        CHECK(t::decodeRecord(bytes.data(),bytes.size(),decoded,scratch));
+        CHECK(t::sameState(decoded.before,record->before)&&t::sameState(decoded.after,record->after));
+    }
+}
+int main(){ownedDecodeScratch();exchangeProgression();fullCollectionsExchange();restrictionsAndConsent();walkingAndInterruptedDecisions();encodingAndMigration();installedJournalMigration();
     std::printf("%u trade core checks, %u failures; State=%zu Transcript=%zu Record=%zu serialized=%zu/%zu bytes\n",checks,failures,sizeof(State),sizeof(t::Transcript),sizeof(t::Record),t::kTranscriptBytes,t::kRecordBytes);return failures?1:0;}

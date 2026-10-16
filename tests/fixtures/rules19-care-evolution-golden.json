@@ -1,0 +1,1585 @@
+[
+  {
+    "seed": 1,
+    "events": "hatch 2\nmode 1\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\ntreat\nrest\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\ntreat\nrest\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nrest\n",
+    "expected": {
+      "state": {
+        "schemaVersion": 27,
+        "rulesVersion": 19,
+        "sequence": 132,
+        "seed": 1,
+        "rngState": 2976303523,
+        "steps": 0,
+        "stepCredit": 0,
+        "hp": 124,
+        "energy": 100,
+        "fullness": 70,
+        "mood": 90,
+        "bond": 197,
+        "level": 6,
+        "maxLevel": 99,
+        "captures": 0,
+        "encounters": 19,
+        "phase": "home",
+        "wildHp": 0,
+        "wildMaxHp": 0,
+        "wildLevel": 0,
+        "wildTurn": 0,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Agumon",
+        "species": "agumon",
+        "formId": 18,
+        "xp": 738,
+        "xpToNext": 102,
+        "stage": "Rookie",
+        "artId": null,
+        "combat": {
+          "maxHp": 124,
+          "attack": 31,
+          "defense": 20,
+          "magic": 22,
+          "resistance": 18,
+          "type": "ember",
+          "skills": {
+            "physical": "Claw Jab",
+            "heavy": "Dino Charge",
+            "magic": "Pepper Breath"
+          }
+        },
+        "care": {
+          "bondRank": 3,
+          "offenseBonus": 4,
+          "protectionBonus": 3,
+          "effective": {
+            "maxHp": 124,
+            "attack": 35,
+            "defense": 23,
+            "magic": 26,
+            "resistance": 21
+          }
+        },
+        "carePoints": 4,
+        "toilet": 0,
+        "careMissed": false,
+        "message": "Rested and ready.",
+        "activeCreatureId": 1,
+        "collectionCapacity": 250,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": 2,
+          "offerSeed": 0,
+          "offers": [
+            0,
+            0,
+            0
+          ]
+        },
+        "lastCapture": {
+          "sequence": 0,
+          "targetFormId": 0,
+          "targetLevel": 0,
+          "chance": 0,
+          "attempt": 0,
+          "result": "none"
+        },
+        "battleMode": "auto",
+        "lastAutoBattle": {
+          "sequence": 129,
+          "turns": 2,
+          "outcome": "won"
+        },
+        "wildSpecies": null,
+        "wildName": null,
+        "wildCombat": null,
+        "wildFormId": 0,
+        "wildRules": 0,
+        "wildCaptureChance": 0,
+        "wildGuard": null,
+        "wildRarity": null,
+        "recoveryRestCount": 0,
+        "queuedEncounters": 0,
+        "stepsToNextEncounter": 100,
+        "walking": {
+          "rate": 2,
+          "name": "Normal",
+          "eligibleSteps": 19000,
+          "encounters": 19,
+          "rngState": 3493661276,
+          "target": 242,
+          "progress": 0,
+          "remainingSteps": 121,
+          "pendingEncounter": null
+        },
+        "partyCapacity": 3,
+        "partyMemberIds": [],
+        "careMinute": 0,
+        "critical": false,
+        "captureDeferred": 0,
+        "focus": null,
+        "foregroundSequence": 132,
+        "autoCapture": 0,
+        "worldSeed": 0,
+        "receivedTrades": 0,
+        "nextMemberId": 2,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            18
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "agumon",
+            "name": "Agumon",
+            "hp": 124,
+            "energy": 100,
+            "fullness": 70,
+            "mood": 90,
+            "bond": 197,
+            "level": 6,
+            "capturedAtSequence": 0,
+            "formId": 18,
+            "xp": 738,
+            "xpToNext": 102,
+            "stage": "Rookie",
+            "artId": null,
+            "combat": {
+              "maxHp": 124,
+              "attack": 31,
+              "defense": 20,
+              "magic": 22,
+              "resistance": 18,
+              "type": "ember",
+              "skills": {
+                "physical": "Claw Jab",
+                "heavy": "Dino Charge",
+                "magic": "Pepper Breath"
+              }
+            },
+            "care": {
+              "bondRank": 3,
+              "offenseBonus": 4,
+              "protectionBonus": 3,
+              "effective": {
+                "maxHp": 124,
+                "attack": 35,
+                "defense": 23,
+                "magic": 26,
+                "resistance": 21
+              }
+            },
+            "carePoints": 4,
+            "toilet": 0,
+            "careMissed": false,
+            "careMistakes": 2,
+            "injury": 0
+          }
+        ],
+        "evolution": {
+          "options": [
+            {
+              "formId": 19,
+              "name": "Greymon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": 3,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 184,
+                "attack": 62,
+                "defense": 36,
+                "magic": 38,
+                "resistance": 34,
+                "type": "ember",
+                "skills": {
+                  "physical": "Horn Sweep",
+                  "heavy": "Tyrant Charge",
+                  "magic": "Mega Flame"
+                }
+              }
+            },
+            {
+              "formId": 22,
+              "name": "Tyrannomon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": null,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 201,
+                "attack": 47,
+                "defense": 51,
+                "magic": 38,
+                "resistance": 49,
+                "type": "ember",
+                "skills": {
+                  "physical": "Tail Swipe",
+                  "heavy": "Dino Stomp",
+                  "magic": "Fire Breath"
+                }
+              }
+            }
+          ]
+        },
+        "expeditions": {
+          "dungeonKeys": 2,
+          "bossSigils": 1,
+          "dungeonWins": 1,
+          "bossSteps": 4999,
+          "dungeonClears": 0,
+          "bossClears": 0,
+          "maxDungeonKeys": 3,
+          "scenarios": [
+            {
+              "name": "Grove Dungeon",
+              "kind": "dungeon",
+              "theme": "grove",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Dungeon",
+              "kind": "dungeon",
+              "theme": "tide",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Dungeon",
+              "kind": "dungeon",
+              "theme": "ember",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Grove Boss",
+              "kind": "boss",
+              "theme": "grove",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Boss",
+              "kind": "boss",
+              "theme": "tide",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Boss",
+              "kind": "boss",
+              "theme": "ember",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            }
+          ]
+        }
+      },
+      "trace": {
+        "formatVersion": 1,
+        "mode": "auto",
+        "kind": "wild",
+        "startSequence": 128,
+        "endSequence": 129,
+        "outcome": "won",
+        "combatRulesVersion": 12,
+        "playerCare": {
+          "offenseBonus": 4,
+          "protectionBonus": 3
+        },
+        "enemyCare": {
+          "offenseBonus": 0,
+          "protectionBonus": 0
+        },
+        "player": {
+          "species": "agumon",
+          "name": "Agumon",
+          "level": 6,
+          "combat": {
+            "maxHp": 124,
+            "attack": 31,
+            "defense": 20,
+            "magic": 22,
+            "resistance": 18,
+            "type": "ember",
+            "skills": {
+              "physical": "Claw Jab",
+              "heavy": "Dino Charge",
+              "magic": "Pepper Breath"
+            }
+          },
+          "formId": 18
+        },
+        "enemy": {
+          "species": "shadowtoyagumon",
+          "name": "ToyAgumon (Black)",
+          "level": 7,
+          "combat": {
+            "maxHp": 128,
+            "attack": 21,
+            "defense": 19,
+            "magic": 40,
+            "resistance": 19,
+            "type": "neutral",
+            "skills": {
+              "physical": "Shadow Toy Peg Jab",
+              "heavy": "Shadow Toy Block Ram",
+              "magic": "Shadow Toy Prism Hex"
+            }
+          },
+          "formId": 111
+        },
+        "steps": [
+          {
+            "turn": 1,
+            "phase": "attack",
+            "action": "physical",
+            "opponentAction": "physical",
+            "playerHpBefore": 77,
+            "playerHpAfter": 67,
+            "enemyHpBefore": 56,
+            "enemyHpAfter": 30,
+            "reflected": false,
+            "captured": false,
+            "guard": "counter"
+          },
+          {
+            "turn": 2,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": null,
+            "playerHpBefore": 67,
+            "playerHpAfter": 67,
+            "enemyHpBefore": 30,
+            "enemyHpAfter": 0,
+            "reflected": false,
+            "captured": false,
+            "guard": "brace"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seed": 19,
+    "events": "hatch 4\nmode 1\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\ntreat\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\ntreat\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\ntreat\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\n",
+    "expected": {
+      "state": {
+        "schemaVersion": 27,
+        "rulesVersion": 19,
+        "sequence": 132,
+        "seed": 19,
+        "rngState": 3092761183,
+        "steps": 0,
+        "stepCredit": 0,
+        "hp": 42,
+        "energy": 86,
+        "fullness": 70,
+        "mood": 95,
+        "bond": 174,
+        "level": 5,
+        "maxLevel": 99,
+        "captures": 0,
+        "encounters": 18,
+        "phase": "encounter",
+        "wildHp": 57,
+        "wildMaxHp": 124,
+        "wildLevel": 6,
+        "wildTurn": 3,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Patamon",
+        "species": "patamon",
+        "formId": 32,
+        "xp": 570,
+        "xpToNext": 30,
+        "stage": "Rookie",
+        "artId": null,
+        "combat": {
+          "maxHp": 112,
+          "attack": 20,
+          "defense": 18,
+          "magic": 25,
+          "resistance": 26,
+          "type": "neutral",
+          "skills": {
+            "physical": "Wing Slap",
+            "heavy": "Air Tackle",
+            "magic": "Air Shot"
+          }
+        },
+        "care": {
+          "bondRank": 3,
+          "offenseBonus": 4,
+          "protectionBonus": 3,
+          "effective": {
+            "maxHp": 112,
+            "attack": 24,
+            "defense": 21,
+            "magic": 29,
+            "resistance": 29
+          }
+        },
+        "carePoints": 4,
+        "toilet": 0,
+        "careMissed": false,
+        "message": "Your creature used a skill.",
+        "activeCreatureId": 1,
+        "collectionCapacity": 250,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": 4,
+          "offerSeed": 0,
+          "offers": [
+            0,
+            0,
+            0
+          ]
+        },
+        "lastCapture": {
+          "sequence": 0,
+          "targetFormId": 0,
+          "targetLevel": 0,
+          "chance": 0,
+          "attempt": 0,
+          "result": "none"
+        },
+        "battleMode": "auto",
+        "lastAutoBattle": null,
+        "wildSpecies": "veemon",
+        "wildName": "Veemon",
+        "wildCombat": {
+          "maxHp": 124,
+          "attack": 37,
+          "defense": 19,
+          "magic": 20,
+          "resistance": 17,
+          "type": "tide",
+          "skills": {
+            "physical": "Vee Claw Dash",
+            "heavy": "Vee Crest Smash",
+            "magic": "Vee Sapphire Arc"
+          }
+        },
+        "wildFormId": 117,
+        "wildRules": 19,
+        "wildCaptureChance": 38,
+        "wildGuard": "counter",
+        "wildRarity": "uncommon",
+        "recoveryRestCount": 0,
+        "queuedEncounters": 0,
+        "stepsToNextEncounter": 100,
+        "walking": {
+          "rate": 2,
+          "name": "Normal",
+          "eligibleSteps": 18000,
+          "encounters": 18,
+          "rngState": 1973923457,
+          "target": 274,
+          "progress": 0,
+          "remainingSteps": 137,
+          "pendingEncounter": null
+        },
+        "partyCapacity": 3,
+        "partyMemberIds": [],
+        "careMinute": 0,
+        "critical": false,
+        "captureDeferred": 0,
+        "focus": null,
+        "foregroundSequence": 132,
+        "autoCapture": 1,
+        "worldSeed": 0,
+        "receivedTrades": 0,
+        "nextMemberId": 2,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            32
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "patamon",
+            "name": "Patamon",
+            "hp": 42,
+            "energy": 86,
+            "fullness": 70,
+            "mood": 95,
+            "bond": 174,
+            "level": 5,
+            "capturedAtSequence": 0,
+            "formId": 32,
+            "xp": 570,
+            "xpToNext": 30,
+            "stage": "Rookie",
+            "artId": null,
+            "combat": {
+              "maxHp": 112,
+              "attack": 20,
+              "defense": 18,
+              "magic": 25,
+              "resistance": 26,
+              "type": "neutral",
+              "skills": {
+                "physical": "Wing Slap",
+                "heavy": "Air Tackle",
+                "magic": "Air Shot"
+              }
+            },
+            "care": {
+              "bondRank": 3,
+              "offenseBonus": 4,
+              "protectionBonus": 3,
+              "effective": {
+                "maxHp": 112,
+                "attack": 24,
+                "defense": 21,
+                "magic": 29,
+                "resistance": 29
+              }
+            },
+            "carePoints": 4,
+            "toilet": 0,
+            "careMissed": false,
+            "careMistakes": 3,
+            "injury": 0
+          }
+        ],
+        "evolution": {
+          "options": [
+            {
+              "formId": 33,
+              "name": "Angemon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": 3,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 163,
+                "attack": 37,
+                "defense": 35,
+                "magic": 57,
+                "resistance": 58,
+                "type": "neutral",
+                "skills": {
+                  "physical": "Heaven's Knuckle",
+                  "heavy": "Halo Dive",
+                  "magic": "Radiant Fist"
+                }
+              }
+            },
+            {
+              "formId": 36,
+              "name": "Unimon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": null,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 178,
+                "attack": 38,
+                "defense": 36,
+                "magic": 43,
+                "resistance": 44,
+                "type": "neutral",
+                "skills": {
+                  "physical": "Horn Strike",
+                  "heavy": "Cloud Charge",
+                  "magic": "Holy Shot"
+                }
+              }
+            }
+          ]
+        },
+        "expeditions": {
+          "dungeonKeys": 1,
+          "bossSigils": 1,
+          "dungeonWins": 6,
+          "bossSteps": 4999,
+          "dungeonClears": 0,
+          "bossClears": 0,
+          "maxDungeonKeys": 3,
+          "scenarios": [
+            {
+              "name": "Grove Dungeon",
+              "kind": "dungeon",
+              "theme": "grove",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Dungeon",
+              "kind": "dungeon",
+              "theme": "tide",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Dungeon",
+              "kind": "dungeon",
+              "theme": "ember",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Grove Boss",
+              "kind": "boss",
+              "theme": "grove",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Boss",
+              "kind": "boss",
+              "theme": "tide",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Boss",
+              "kind": "boss",
+              "theme": "ember",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            }
+          ]
+        }
+      },
+      "trace": {
+        "formatVersion": 1,
+        "mode": "auto",
+        "kind": "wild",
+        "startSequence": 131,
+        "endSequence": 132,
+        "outcome": "none",
+        "combatRulesVersion": 12,
+        "playerCare": {
+          "offenseBonus": 4,
+          "protectionBonus": 3
+        },
+        "enemyCare": {
+          "offenseBonus": 0,
+          "protectionBonus": 0
+        },
+        "player": {
+          "species": "patamon",
+          "name": "Patamon",
+          "level": 5,
+          "combat": {
+            "maxHp": 112,
+            "attack": 20,
+            "defense": 18,
+            "magic": 25,
+            "resistance": 26,
+            "type": "neutral",
+            "skills": {
+              "physical": "Wing Slap",
+              "heavy": "Air Tackle",
+              "magic": "Air Shot"
+            }
+          },
+          "formId": 32
+        },
+        "enemy": {
+          "species": "veemon",
+          "name": "Veemon",
+          "level": 6,
+          "combat": {
+            "maxHp": 124,
+            "attack": 37,
+            "defense": 19,
+            "magic": 20,
+            "resistance": 17,
+            "type": "tide",
+            "skills": {
+              "physical": "Vee Claw Dash",
+              "heavy": "Vee Crest Smash",
+              "magic": "Vee Sapphire Arc"
+            }
+          },
+          "formId": 117
+        },
+        "steps": [
+          {
+            "turn": 1,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "magic",
+            "playerHpBefore": 80,
+            "playerHpAfter": 74,
+            "enemyHpBefore": 103,
+            "enemyHpAfter": 80,
+            "reflected": false,
+            "captured": false,
+            "guard": "brace"
+          },
+          {
+            "turn": 2,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "physical",
+            "playerHpBefore": 74,
+            "playerHpAfter": 42,
+            "enemyHpBefore": 80,
+            "enemyHpAfter": 57,
+            "reflected": false,
+            "captured": false,
+            "guard": "ward"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seed": 732,
+    "events": "hatch 5\nmode 1\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\n",
+    "expected": {
+      "state": {
+        "schemaVersion": 27,
+        "rulesVersion": 19,
+        "sequence": 132,
+        "seed": 732,
+        "rngState": 975467052,
+        "steps": 0,
+        "stepCredit": 0,
+        "hp": 132,
+        "energy": 100,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 200,
+        "level": 7,
+        "maxLevel": 99,
+        "captures": 0,
+        "encounters": 22,
+        "phase": "home",
+        "wildHp": 0,
+        "wildMaxHp": 0,
+        "wildLevel": 0,
+        "wildTurn": 0,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Tentomon",
+        "species": "tentomon",
+        "formId": 39,
+        "xp": 970,
+        "xpToNext": 150,
+        "stage": "Rookie",
+        "artId": null,
+        "combat": {
+          "maxHp": 132,
+          "attack": 25,
+          "defense": 30,
+          "magic": 22,
+          "resistance": 20,
+          "type": "grove",
+          "skills": {
+            "physical": "Shell Tap",
+            "heavy": "Beetle Bash",
+            "magic": "Super Shocker"
+          }
+        },
+        "care": {
+          "bondRank": 4,
+          "offenseBonus": 5,
+          "protectionBonus": 4,
+          "effective": {
+            "maxHp": 132,
+            "attack": 30,
+            "defense": 34,
+            "magic": 27,
+            "resistance": 24
+          }
+        },
+        "carePoints": 4,
+        "toilet": 0,
+        "careMissed": false,
+        "message": "Rested and ready.",
+        "activeCreatureId": 1,
+        "collectionCapacity": 250,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": 5,
+          "offerSeed": 0,
+          "offers": [
+            0,
+            0,
+            0
+          ]
+        },
+        "lastCapture": {
+          "sequence": 0,
+          "targetFormId": 0,
+          "targetLevel": 0,
+          "chance": 0,
+          "attempt": 0,
+          "result": "none"
+        },
+        "battleMode": "auto",
+        "lastAutoBattle": {
+          "sequence": 129,
+          "turns": 4,
+          "outcome": "won"
+        },
+        "wildSpecies": null,
+        "wildName": null,
+        "wildCombat": null,
+        "wildFormId": 0,
+        "wildRules": 0,
+        "wildCaptureChance": 0,
+        "wildGuard": null,
+        "wildRarity": null,
+        "recoveryRestCount": 0,
+        "queuedEncounters": 0,
+        "stepsToNextEncounter": 100,
+        "walking": {
+          "rate": 2,
+          "name": "Normal",
+          "eligibleSteps": 22000,
+          "encounters": 22,
+          "rngState": 1442544852,
+          "target": 192,
+          "progress": 0,
+          "remainingSteps": 96,
+          "pendingEncounter": null
+        },
+        "partyCapacity": 3,
+        "partyMemberIds": [],
+        "careMinute": 0,
+        "critical": false,
+        "captureDeferred": 0,
+        "focus": null,
+        "foregroundSequence": 132,
+        "autoCapture": 0,
+        "worldSeed": 0,
+        "receivedTrades": 0,
+        "nextMemberId": 2,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            39
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "tentomon",
+            "name": "Tentomon",
+            "hp": 132,
+            "energy": 100,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 200,
+            "level": 7,
+            "capturedAtSequence": 0,
+            "formId": 39,
+            "xp": 970,
+            "xpToNext": 150,
+            "stage": "Rookie",
+            "artId": null,
+            "combat": {
+              "maxHp": 132,
+              "attack": 25,
+              "defense": 30,
+              "magic": 22,
+              "resistance": 20,
+              "type": "grove",
+              "skills": {
+                "physical": "Shell Tap",
+                "heavy": "Beetle Bash",
+                "magic": "Super Shocker"
+              }
+            },
+            "care": {
+              "bondRank": 4,
+              "offenseBonus": 5,
+              "protectionBonus": 4,
+              "effective": {
+                "maxHp": 132,
+                "attack": 30,
+                "defense": 34,
+                "magic": 27,
+                "resistance": 24
+              }
+            },
+            "carePoints": 4,
+            "toilet": 0,
+            "careMissed": false,
+            "careMistakes": 0,
+            "injury": 0
+          }
+        ],
+        "evolution": {
+          "options": [
+            {
+              "formId": 40,
+              "name": "Kabuterimon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": 3,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 205,
+                "attack": 39,
+                "defense": 60,
+                "magic": 36,
+                "resistance": 49,
+                "type": "grove",
+                "skills": {
+                  "physical": "Horn Thrust",
+                  "heavy": "Shell Break",
+                  "magic": "Thunder Orb"
+                }
+              }
+            },
+            {
+              "formId": 43,
+              "name": "Kuwagamon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": null,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 188,
+                "attack": 54,
+                "defense": 45,
+                "magic": 36,
+                "resistance": 34,
+                "type": "grove",
+                "skills": {
+                  "physical": "Pincer Cut",
+                  "heavy": "Scissor Claw",
+                  "magic": "Sonic Edge"
+                }
+              }
+            }
+          ]
+        },
+        "expeditions": {
+          "dungeonKeys": 2,
+          "bossSigils": 1,
+          "dungeonWins": 6,
+          "bossSteps": 4999,
+          "dungeonClears": 0,
+          "bossClears": 0,
+          "maxDungeonKeys": 3,
+          "scenarios": [
+            {
+              "name": "Grove Dungeon",
+              "kind": "dungeon",
+              "theme": "grove",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Dungeon",
+              "kind": "dungeon",
+              "theme": "tide",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Dungeon",
+              "kind": "dungeon",
+              "theme": "ember",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Grove Boss",
+              "kind": "boss",
+              "theme": "grove",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Boss",
+              "kind": "boss",
+              "theme": "tide",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Boss",
+              "kind": "boss",
+              "theme": "ember",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            }
+          ]
+        }
+      },
+      "trace": {
+        "formatVersion": 1,
+        "mode": "auto",
+        "kind": "wild",
+        "startSequence": 128,
+        "endSequence": 129,
+        "outcome": "won",
+        "combatRulesVersion": 12,
+        "playerCare": {
+          "offenseBonus": 5,
+          "protectionBonus": 4
+        },
+        "enemyCare": {
+          "offenseBonus": 0,
+          "protectionBonus": 0
+        },
+        "player": {
+          "species": "tentomon",
+          "name": "Tentomon",
+          "level": 7,
+          "combat": {
+            "maxHp": 132,
+            "attack": 25,
+            "defense": 30,
+            "magic": 22,
+            "resistance": 20,
+            "type": "grove",
+            "skills": {
+              "physical": "Shell Tap",
+              "heavy": "Beetle Bash",
+              "magic": "Super Shocker"
+            }
+          },
+          "formId": 39
+        },
+        "enemy": {
+          "species": "hagurumon",
+          "name": "Hagurumon",
+          "level": 8,
+          "combat": {
+            "maxHp": 168,
+            "attack": 23,
+            "defense": 31,
+            "magic": 23,
+            "resistance": 19,
+            "type": "neutral",
+            "skills": {
+              "physical": "Haguru Cog Tap",
+              "heavy": "Haguru Gear Press",
+              "magic": "Haguru Copper Arc"
+            }
+          },
+          "formId": 96
+        },
+        "steps": [
+          {
+            "turn": 1,
+            "phase": "attack",
+            "action": "magic",
+            "opponentAction": "magic",
+            "playerHpBefore": 89,
+            "playerHpAfter": 78,
+            "enemyHpBefore": 74,
+            "enemyHpAfter": 56,
+            "reflected": false,
+            "captured": false,
+            "guard": "counter"
+          },
+          {
+            "turn": 2,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "physical",
+            "playerHpBefore": 78,
+            "playerHpAfter": 71,
+            "enemyHpBefore": 56,
+            "enemyHpAfter": 37,
+            "reflected": false,
+            "captured": false,
+            "guard": "brace"
+          },
+          {
+            "turn": 3,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "magic",
+            "playerHpBefore": 71,
+            "playerHpAfter": 60,
+            "enemyHpBefore": 37,
+            "enemyHpAfter": 9,
+            "reflected": false,
+            "captured": false,
+            "guard": "ward"
+          },
+          {
+            "turn": 4,
+            "phase": "attack",
+            "action": "magic",
+            "opponentAction": null,
+            "playerHpBefore": 60,
+            "playerHpAfter": 60,
+            "enemyHpBefore": 9,
+            "enemyHpAfter": 0,
+            "reflected": false,
+            "captured": false,
+            "guard": "counter"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seed": 4294967295,
+    "events": "hatch 8\nmode 1\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\nauto-resume\nrest\nrest\nexplore 1000\nauto-fight\nfocus 0\n",
+    "expected": {
+      "state": {
+        "schemaVersion": 27,
+        "rulesVersion": 19,
+        "sequence": 132,
+        "seed": 4294967295,
+        "rngState": 766595099,
+        "steps": 0,
+        "stepCredit": 0,
+        "hp": 72,
+        "energy": 84,
+        "fullness": 70,
+        "mood": 80,
+        "bond": 200,
+        "level": 7,
+        "maxLevel": 99,
+        "captures": 0,
+        "encounters": 21,
+        "phase": "encounter",
+        "wildHp": 68,
+        "wildMaxHp": 168,
+        "wildLevel": 8,
+        "wildTurn": 4,
+        "captureAttempts": 0,
+        "cardUsed": false,
+        "attackBoost": 0,
+        "shield": 0,
+        "creature": "Renamon",
+        "species": "renamon",
+        "formId": 60,
+        "xp": 864,
+        "xpToNext": 256,
+        "stage": "Rookie",
+        "artId": null,
+        "combat": {
+          "maxHp": 116,
+          "attack": 32,
+          "defense": 19,
+          "magic": 28,
+          "resistance": 22,
+          "type": "neutral",
+          "skills": {
+            "physical": "Palm Strike",
+            "heavy": "Fox Rush",
+            "magic": "Diamond Storm"
+          }
+        },
+        "care": {
+          "bondRank": 4,
+          "offenseBonus": 5,
+          "protectionBonus": 4,
+          "effective": {
+            "maxHp": 116,
+            "attack": 37,
+            "defense": 23,
+            "magic": 33,
+            "resistance": 26
+          }
+        },
+        "carePoints": 4,
+        "toilet": 0,
+        "careMissed": false,
+        "message": "Your creature used a skill.",
+        "activeCreatureId": 1,
+        "collectionCapacity": 250,
+        "legacyCaptures": 0,
+        "onboarding": {
+          "completed": true,
+          "starterId": 8,
+          "offerSeed": 0,
+          "offers": [
+            0,
+            0,
+            0
+          ]
+        },
+        "lastCapture": {
+          "sequence": 0,
+          "targetFormId": 0,
+          "targetLevel": 0,
+          "chance": 0,
+          "attempt": 0,
+          "result": "none"
+        },
+        "battleMode": "auto",
+        "lastAutoBattle": null,
+        "wildSpecies": "armadillomon",
+        "wildName": "Armadillomon",
+        "wildCombat": {
+          "maxHp": 168,
+          "attack": 23,
+          "defense": 31,
+          "magic": 23,
+          "resistance": 19,
+          "type": "grove",
+          "skills": {
+            "physical": "Armadillo Paw",
+            "heavy": "Armadillo Drum Roll",
+            "magic": "Armadillo Dust Halo"
+          }
+        },
+        "wildFormId": 78,
+        "wildRules": 19,
+        "wildCaptureChance": 52,
+        "wildGuard": "brace",
+        "wildRarity": "common",
+        "recoveryRestCount": 0,
+        "queuedEncounters": 0,
+        "stepsToNextEncounter": 100,
+        "walking": {
+          "rate": 2,
+          "name": "Normal",
+          "eligibleSteps": 21000,
+          "encounters": 21,
+          "rngState": 2140827768,
+          "target": 182,
+          "progress": 0,
+          "remainingSteps": 91,
+          "pendingEncounter": null
+        },
+        "partyCapacity": 3,
+        "partyMemberIds": [],
+        "careMinute": 0,
+        "critical": false,
+        "captureDeferred": 0,
+        "focus": null,
+        "foregroundSequence": 132,
+        "autoCapture": 1,
+        "worldSeed": 0,
+        "receivedTrades": 0,
+        "nextMemberId": 2,
+        "journal": {
+          "capacity": 512,
+          "obtainedFormIds": [
+            60
+          ]
+        },
+        "collection": [
+          {
+            "id": 1,
+            "species": "renamon",
+            "name": "Renamon",
+            "hp": 72,
+            "energy": 84,
+            "fullness": 70,
+            "mood": 80,
+            "bond": 200,
+            "level": 7,
+            "capturedAtSequence": 0,
+            "formId": 60,
+            "xp": 864,
+            "xpToNext": 256,
+            "stage": "Rookie",
+            "artId": null,
+            "combat": {
+              "maxHp": 116,
+              "attack": 32,
+              "defense": 19,
+              "magic": 28,
+              "resistance": 22,
+              "type": "neutral",
+              "skills": {
+                "physical": "Palm Strike",
+                "heavy": "Fox Rush",
+                "magic": "Diamond Storm"
+              }
+            },
+            "care": {
+              "bondRank": 4,
+              "offenseBonus": 5,
+              "protectionBonus": 4,
+              "effective": {
+                "maxHp": 116,
+                "attack": 37,
+                "defense": 23,
+                "magic": 33,
+                "resistance": 26
+              }
+            },
+            "carePoints": 4,
+            "toilet": 0,
+            "careMissed": false,
+            "careMistakes": 0,
+            "injury": 0
+          }
+        ],
+        "evolution": {
+          "options": [
+            {
+              "formId": 61,
+              "name": "Kyubimon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": 3,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 159,
+                "attack": 46,
+                "defense": 34,
+                "magic": 57,
+                "resistance": 51,
+                "type": "neutral",
+                "skills": {
+                  "physical": "Fox Claw",
+                  "heavy": "Spiral Rush",
+                  "magic": "Dragon Wheel"
+                }
+              }
+            },
+            {
+              "formId": 64,
+              "name": "Youkomon",
+              "stage": "Champion",
+              "artId": null,
+              "requiredLevel": 18,
+              "requiredBond": 64,
+              "requiredCare": 40,
+              "previewLevel": 18,
+              "eligible": false,
+              "maxCareMistakes": null,
+              "careRouteOpen": true,
+              "combat": {
+                "maxHp": 172,
+                "attack": 60,
+                "defense": 34,
+                "magic": 56,
+                "resistance": 36,
+                "type": "neutral",
+                "skills": {
+                  "physical": "Ghost Claw",
+                  "heavy": "Phantom Rush",
+                  "magic": "Foxfire Ring"
+                }
+              }
+            }
+          ]
+        },
+        "expeditions": {
+          "dungeonKeys": 2,
+          "bossSigils": 1,
+          "dungeonWins": 4,
+          "bossSteps": 4999,
+          "dungeonClears": 0,
+          "bossClears": 0,
+          "maxDungeonKeys": 3,
+          "scenarios": [
+            {
+              "name": "Grove Dungeon",
+              "kind": "dungeon",
+              "theme": "grove",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Dungeon",
+              "kind": "dungeon",
+              "theme": "tide",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Dungeon",
+              "kind": "dungeon",
+              "theme": "ember",
+              "floors": 3,
+              "minPlayers": 2,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Grove Boss",
+              "kind": "boss",
+              "theme": "grove",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Tide Boss",
+              "kind": "boss",
+              "theme": "tide",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            },
+            {
+              "name": "Ember Boss",
+              "kind": "boss",
+              "theme": "ember",
+              "floors": 1,
+              "minPlayers": 1,
+              "maxPlayers": 2
+            }
+          ]
+        }
+      },
+      "trace": {
+        "formatVersion": 1,
+        "mode": "auto",
+        "kind": "wild",
+        "startSequence": 131,
+        "endSequence": 132,
+        "outcome": "none",
+        "combatRulesVersion": 12,
+        "playerCare": {
+          "offenseBonus": 5,
+          "protectionBonus": 4
+        },
+        "enemyCare": {
+          "offenseBonus": 0,
+          "protectionBonus": 0
+        },
+        "player": {
+          "species": "renamon",
+          "name": "Renamon",
+          "level": 7,
+          "combat": {
+            "maxHp": 116,
+            "attack": 32,
+            "defense": 19,
+            "magic": 28,
+            "resistance": 22,
+            "type": "neutral",
+            "skills": {
+              "physical": "Palm Strike",
+              "heavy": "Fox Rush",
+              "magic": "Diamond Storm"
+            }
+          },
+          "formId": 60
+        },
+        "enemy": {
+          "species": "armadillomon",
+          "name": "Armadillomon",
+          "level": 8,
+          "combat": {
+            "maxHp": 168,
+            "attack": 23,
+            "defense": 31,
+            "magic": 23,
+            "resistance": 19,
+            "type": "grove",
+            "skills": {
+              "physical": "Armadillo Paw",
+              "heavy": "Armadillo Drum Roll",
+              "magic": "Armadillo Dust Halo"
+            }
+          },
+          "formId": 78
+        },
+        "steps": [
+          {
+            "turn": 1,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "magic",
+            "playerHpBefore": 103,
+            "playerHpAfter": 94,
+            "enemyHpBefore": 144,
+            "enemyHpAfter": 118,
+            "reflected": false,
+            "captured": false,
+            "guard": "brace"
+          },
+          {
+            "turn": 2,
+            "phase": "attack",
+            "action": "heavy",
+            "opponentAction": "physical",
+            "playerHpBefore": 94,
+            "playerHpAfter": 81,
+            "enemyHpBefore": 118,
+            "enemyHpAfter": 92,
+            "reflected": false,
+            "captured": false,
+            "guard": "ward"
+          },
+          {
+            "turn": 3,
+            "phase": "attack",
+            "action": "magic",
+            "opponentAction": "magic",
+            "playerHpBefore": 81,
+            "playerHpAfter": 72,
+            "enemyHpBefore": 92,
+            "enemyHpAfter": 68,
+            "reflected": false,
+            "captured": false,
+            "guard": "counter"
+          }
+        ]
+      }
+    }
+  }
+]

@@ -28,6 +28,7 @@ struct Record {
     State before{}, after{};
 };
 constexpr std::size_t kRecordBytes = 16 + kTranscriptBytes + 2 * kSnapshotSize + 4;
+constexpr std::size_t kV28RecordBytes = 16 + kTranscriptBytes + 2 * kSchema28SnapshotSize + 4;
 constexpr std::size_t kV26RecordBytes = 16 + kTranscriptBytes + 2 * kSchema26SnapshotSize + 4;
 // Installed schema19/20 journals embed 660/664-byte snapshots. Their envelope
 // and transcript stay v1; decoding migrates snapshots, never consent/decision.
@@ -67,6 +68,11 @@ bool abortUnprepared(const State& current, const Transcript&, unsigned localSide
 bool applied(const Record& committed, const State& current, Record& out);
 bool valid(const Record&);
 bool encodeRecord(const Record&, std::uint8_t*, std::size_t capacity);
+// Embedded callers supply lifetime-owned scratch to avoid a full Record on
+// the recovery stack. Scratch may change on failure and must differ from out;
+// out remains unchanged on every failure. Neither record may overlap input.
+bool decodeRecord(const std::uint8_t*, std::size_t length, Record& out, Record& scratch);
+// Convenience overload for hosts with sufficient stack for a Record.
 bool decodeRecord(const std::uint8_t*, std::size_t length, Record&);
 bool sameState(const State&, const State&);
 bool backgroundOnly(const State& before, const State& current);

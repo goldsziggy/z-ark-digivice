@@ -1,0 +1,21 @@
+{
+  "description": "Frozen rules19/schema27 baseline before rules20 evolution care-gate removal. Includes current uncommitted release state at capture time; commit alone does not identify these bytes.",
+  "sourceCommit": "9e6a74538326b82abf7bda0a7764b47e8094de09",
+  "sourceSha256": {
+    "core/game.cpp": "d064b5d6234f7b9be1884f1aacde0e527d18e3ed7e426b58744f5597e212be62",
+    "core/game.hpp": "5d065357ab8c280fd3252a9915c8547c9721fe71c96549d8e13235a656d9b800",
+    "core/forms.cpp": "95f17ef70684dc7f906323fa367cdc6d8b8dd7da43b31258b51e9868d7e39aa7",
+    "core/forms.hpp": "3d7ac0557afe5718e4b36e36be8e75ed0dad6151c1969bc97aff5661f92b3287",
+    "core/combat.cpp": "aa2f25e2e7e8fd281001d91a411c8668fe06c9eacbf94b23f6353ff094aa9804",
+    "core/combat.hpp": "fd1fcd36e8a87cdd7e7a53309ca803d1695584fe3671084fa39e13f5015588a3",
+    "core/encounters.cpp": "77f8515cb8b2f47e49ab83b39e9bc293fe3a3e130c50f6cf3e7d7dc643ea6fde",
+    "core/encounters.hpp": "6fdf1c15e2a5baf07953335a837e0570dacce164b68c9cc97e02ab4d29a02f95",
+    "core/expeditions.hpp": "098a14997f86d4224488a6263a46993760e82586359087a7d66cd52c58f6f304",
+    "core/world_ds_forms_generated.inc": "b014c5c01590476165dc6e2684d2dcd8c92141923ff17e5c34365ea825f49c65",
+    "core/world_ds_catalog_generated.inc": "81bf5d44a94a7db543934f402bc53dd46cdd1fc096273bcaea0e0d8dd1a76b8c",
+    "core/world_ds_evolutions_generated.inc": "7729b8dbce366dbc5c7cfce8e25ed1cc5b6e401d3abf5f5155e4b0f29fad1ec7",
+    "core/forms_rules18_frozen.inc": "34070e51288fec103d302ed6c29ea64b80c0772ea6e9f6742196d50288566707",
+    "core/encounter_rarity_generated.inc": "b55643b3ea59c562915dcde3f61e571fe10cf090985a553479843a92df57c2be",
+    "core/battle_skill_bindings_generated.inc": "cc150e7b90c0b6d5e5044450a20d3322fc245e4f9f10867b0d8d177c16d9634a"
+  }
+}

@@ -1,5 +1,7 @@
 #pragma once
 #include "game.hpp"
+#include "digi_modify.hpp"
+#include "nfc_test.hpp"
 #include "starter.hpp"
 #include "evolution_choice.hpp"
 #include "battle_presentation.hpp"
@@ -23,7 +25,7 @@ enum class Screen : std::uint8_t {
     Encounter, Battle, Capture, Result, Collection, Stats, ReleaseReview, Evolution, EvolutionReview, EvolutionResult,
     Settings, EncounterSettings, ModeReview, Nearby, NearbyReview, Sound, TradeChoose, TradeReview,
     Squad, Box, // Partners: 2x2 squad landing and 2x2 pages of every member; Collection is one member.
-    Expeditions, ExpeditionLobby // Dungeon and boss list, then a wait-or-solo lobby. No save write.
+    Expeditions, ExpeditionLobby, NfcTest // Dungeon and boss list, then a wait-or-solo lobby. No save write.
 };
 enum class TouchKind : std::uint8_t { Down, Move, Up, Cancel };
 enum class HomePanel : std::uint8_t { Care, Partners, Settings, Nearby, Dungeons };
@@ -59,12 +61,15 @@ struct Model {
     onboarding::Stage starterStage = onboarding::Stage::Egg;
     std::uint8_t selectedId = 1, starterCount = 8;
     std::uint16_t sleepTimeoutSeconds = 60;
+    std::uint16_t rotationDegrees = 0; // Actual HAL orientation: clockwise 0/90/180/270.
+    bool rotationWritable = false; // Separate display preference, never a core game action.
     std::uint32_t starterFormId = 0; // Exact persisted offer; zero retains fixed starter lookup.
     bool writable = false, inputEnabled = true;
     bool partyEditable = true; // Runtime practice/Nearby locks supplement core Home legality.
     bool encounterRecoveryRequired = false; // A boot repair could not be verified durable; no gameplay.
     bool motionAvailable = false, gyroEnabled = false, muted = false;
     std::uint8_t volumePercent = 15;
+    bool buzzerOnly = false;
     bool musicEnabled = false, audioAvailable = false, audioPreferencesWritable = true;
     // Raw IMU availability does not imply a verified step counter.
     bool stepsAvailable = false, stepsRecovering = false, encounterReady = false;
@@ -75,6 +80,8 @@ struct Model {
     Artwork artwork{};
     SpriteFrame partnerArtwork{}; // Exact second actor; unavailable art uses a neutral indicator.
     SpriteFrame tileArtwork[4]{}; // Squad/Box tiles, matched to tileArtRequest(); missing art shows a neutral mark.
+    digimodify::OverlayView digiModify{};
+    nfctest::View nfcTest{};
     const battlepresentation::View* battle = nullptr; // Immutable runtime-owned presentation snapshot.
     const nearby::View* nearby = nullptr;
     nearby::Fighter nearbyLocalFighter{}; // Frozen when this live Nearby session opens.
@@ -91,7 +98,7 @@ enum class IntentKind : std::uint8_t {
     None, GameAction, StarterNext, StarterPrevious, StarterConfirm,
     StarterBack, ToggleMute, ToggleGyro, Navigation, OpenSetup,
     OpenNearby, NearbyChallenge, NearbyAccept, NearbyChoose, NearbyCancel, CloseNearby, SleepTimeout,
-    Volume, ToggleMusic, TradeInvite, TradeOffer, TradeConfirm, TradeCancel, TradeClose
+    Volume, ToggleMusic, TradeInvite, TradeOffer, TradeConfirm, TradeCancel, TradeClose, RotateScreen, NfcRetry, NfcReset, TestBeep
 };
 struct Intent {
     IntentKind kind = IntentKind::None;
@@ -102,6 +109,7 @@ struct Intent {
     std::uint32_t tradeRevision = 0, tradeFingerprint = 0;
     // Explicit, ephemeral friendly-duel consent. Never inherited from wild mode.
     nearby::Mode nearbyMode = nearby::Mode::Tactical;
+    bool nearbyCoopAuto = false; // Exact ephemeral co-op offer consent; independent of wild mode.
     nearby::Fighter nearbyFighters[2]{};
     std::uint64_t nearbySession = 0;
     std::uint32_t nearbyOpenNonce = 0;
@@ -119,7 +127,7 @@ inline bool autoFightReady(const State& state, const Model& model) {
         model.trade->stage != tradewire::Stage::Discovering) return false;
     if (model.nearby && model.nearby->stage != nearby::Stage::Closed) return false;
     State copy = state;
-    return apply(copy, Action::AutoFight) == Error::None;
+    return (state.wildRules>=20 ? applyAutoStep(copy,0) : apply(copy,Action::AutoFight)) == Error::None;
 }
 // One bottom spot for BACK/LEAVE/DONE/skip, fully inside the 204 px touch circle.
 inline constexpr int kNavX=116, kNavY=332, kNavW=180, kNavH=48, kNavPad=12;
@@ -176,7 +184,7 @@ public:
         std::size_t i=0; for(;i<n && i<capacity;++i) out[i]=all[i];
         return i;
     }
-    static constexpr std::size_t kMaxButtons=8;
+    static constexpr std::size_t kMaxButtons=9;
 private:
     static bool hits(const Button& b, int x, int y, int pad=0) {
         return x>=b.x-pad && x<b.x+b.w+pad && y>=b.y-pad && y<b.y+b.h+pad;
@@ -202,6 +210,8 @@ private:
     onboarding::Stage starterStage_ = onboarding::Stage::Egg;
     std::uint32_t sequence_ = UINT32_MAX, starterForm_ = 0, memberId_ = 0;
     std::uint8_t starterCount_ = 8;
+    std::uint16_t rotationDegrees_ = 0;
+    bool rotationWritable_ = false;
     std::uint8_t selectedId_ = 0, memberIndex_ = 0, proposedMode_ = 255;
     std::uint8_t statsPage_ = 0, evolutionIndex_ = 0, evolutionPage_ = 0, nearbyIndex_ = 0, boxPage_ = 0, boxOrder_ = 0, expeditionIndex_ = 0, expeditionVariant_ = 0;
     Screen memberReturn_ = Screen::Squad; // Where BACK from one member goes: Squad or Box.
@@ -218,6 +228,7 @@ private:
     std::uint64_t nearbySession_ = 0;
     std::uint32_t nearbySequence_ = 0;
     bool nearbyPending_ = false, nearbyFeedback_ = false;
+    bool coopAuto_ = false, nearbyCoopAuto_ = false;
     std::uint8_t nearbyRole_ = 255;
     controls::EvolutionChoice evolution_{};
     std::uint32_t evolutionMember_ = 0, evolutionForm_ = 0, evolutionTarget_ = 0, releaseMember_ = 0;

@@ -18,6 +18,7 @@ public:
     // Two distinct fresh meaningful-motion samples qualify, never raw gravity.
     // Returns true and records activity when qualified. No sample is mutated.
     bool observeMotion(const motion::ImuReading&, std::uint64_t nowMs);
+    // blocked defers entry only; foreground interaction must call activity().
     Request tick(std::uint64_t nowMs, bool blocked);
     // Caller acknowledges only after its synchronous checkpoint + HAL operation.
     // Failed preparation leaves the display on and restarts the timeout window.

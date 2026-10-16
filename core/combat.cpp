@@ -5,6 +5,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <initializer_list>
 
 namespace digivice::combat {
 namespace {
@@ -17,6 +18,19 @@ std::uint32_t percentFor(const char* attacker, const char* defender) {
     const auto a=type(attacker), d=type(defender);
     return !a || !d || a==d ? 100u : a%3+1==d ? 125u : 80u;
 }
+}
+const char* elementName(AttackElement element) {
+    return element==AttackElement::Grove?"grove":element==AttackElement::Tide?"tide":element==AttackElement::Ember?"ember":"neutral";
+}
+AttackElement counterElement(std::uint32_t defenderForm) {
+    const auto* defender=forms::find(defenderForm);if(!defender)return AttackElement::FromForm;
+    for(auto element:{AttackElement::Grove,AttackElement::Tide,AttackElement::Ember})
+        if(percentFor(elementName(element),defender->type)==125)return element;
+    return AttackElement::FromForm;
+}
+std::uint32_t formTypePercent(std::uint32_t attackerForm,std::uint32_t defenderForm) {
+    const auto* a=forms::find(attackerForm);const auto* d=forms::find(defenderForm);
+    return a&&d?percentFor(a->type,d->type):100;
 }
 bool validCareBonus(CareBonus bonus){return bonus.offense<=5&&bonus.protection<=5;}
 CareBonus careBonus(std::uint32_t bond,std::uint32_t fullness,std::uint32_t mood){
@@ -68,8 +82,8 @@ Hit resolveForms(std::uint32_t attackerForm, std::uint32_t attackerLevel,
 }
 Hit resolveCareForms(std::uint32_t attackerForm,std::uint32_t attackerLevel,
                     std::uint32_t defenderForm,std::uint32_t defenderLevel,Move move,Defense defense,
-                    CareBonus attackerCare,CareBonus defenderCare,std::uint32_t minimumRawDamage,std::uint32_t powerBonus){
-    if(!validCareBonus(attackerCare)||!validCareBonus(defenderCare))return {0,false,100};
+                    CareBonus attackerCare,CareBonus defenderCare,std::uint32_t minimumRawDamage,std::uint32_t powerBonus,AttackElement attackElement){
+    if(static_cast<unsigned>(attackElement)>3 || !validCareBonus(attackerCare)||!validCareBonus(defenderCare))return {0,false,100};
     if (!validFormProfile(attackerForm,attackerLevel) || !validFormProfile(defenderForm,defenderLevel) ||
         static_cast<unsigned>(move)>2 || static_cast<unsigned>(defense)>3 || minimumRawDamage<4 || minimumRawDamage>32 || powerBonus>16) return {0,false,100};
     const auto a=careProfile(attackerForm,attackerLevel,attackerCare),d=careProfile(defenderForm,defenderLevel,defenderCare);
@@ -78,9 +92,11 @@ Hit resolveCareForms(std::uint32_t attackerForm,std::uint32_t attackerLevel,
     const auto power=move==Move::Heavy ? 16+2*powerBonus : 8+powerBonus;
     const auto difference=static_cast<int>(offense)+static_cast<int>(power)-static_cast<int>(protection);
     const auto raw=difference<static_cast<int>(minimumRawDamage) ? minimumRawDamage : static_cast<std::uint32_t>(difference);
-    const auto percent=percentFor(a.type,d.type);
-    auto damage=raw*percent/100;
     const bool reflected=move==Move::Heavy && defense==Defense::Counter;
+    // A reflected strike is incoming damage. Preserve the original attack type;
+    // the card owner keeps the pending outgoing shift for a later hit.
+    const auto percent=percentFor(attackElement==AttackElement::FromForm || reflected ? a.type : elementName(attackElement),d.type);
+    auto damage=raw*percent/100;
     if (reflected || (move==Move::Physical && defense==Defense::Brace) || (move==Move::Magic && defense==Defense::Ward)) damage/=2;
     return {damage ? damage : 1,reflected,percent};
 }
@@ -112,7 +128,7 @@ std::size_t writeCatalogJson(char* output, std::size_t capacity) {
         if (length >= capacity - used) return false;
         std::memcpy(output + used, text, length + 1); used += length; return true;
     };
-    if (!append("{\"rulesVersion\":19,\"types\":[\"grove\",\"tide\",\"ember\",\"neutral\"],\"typeChart\":["
+    if (!append("{\"rulesVersion\":22,\"types\":[\"grove\",\"tide\",\"ember\",\"neutral\"],\"typeChart\":["
         "{\"attacker\":\"grove\",\"strongAgainst\":\"tide\",\"weakAgainst\":\"ember\"},"
         "{\"attacker\":\"tide\",\"strongAgainst\":\"ember\",\"weakAgainst\":\"grove\"},"
         "{\"attacker\":\"ember\",\"strongAgainst\":\"grove\",\"weakAgainst\":\"tide\"},"
@@ -136,7 +152,7 @@ std::size_t writeStarterJson(char* output, std::size_t capacity) {
         if (length >= capacity - used) { output[0] = '\0'; return false; }
         std::memcpy(output + used, text, length + 1); used += length; return true;
     };
-    if (!append("{\"formatVersion\":1,\"rulesVersion\":19,\"starters\":[")) return 0;
+    if (!append("{\"formatVersion\":1,\"rulesVersion\":22,\"starters\":[")) return 0;
     for (std::uint32_t id = 1; id <= kStarterCount; ++id) {
         char entry[640], stats[kProfileJsonCapacity];
         const auto s = starterSpecies(id);
@@ -160,7 +176,7 @@ std::size_t writeEvolutionJson(std::uint32_t species,char* output,std::size_t ca
         if(n<0 || static_cast<std::size_t>(n)>=capacity-used) {ok=false;return;}
         used+=static_cast<std::size_t>(n);
     };
-    append("{\"formatVersion\":1,\"rulesVersion\":19,\"species\":\"%s\",\"forms\":[",speciesName(species));
+    append("{\"formatVersion\":1,\"rulesVersion\":22,\"species\":\"%s\",\"forms\":[",speciesName(species));
     bool comma=false;
     for(std::uint32_t id=1;id<=forms::kFormCount;++id) {
         const auto* f=forms::find(id); if (!forms::productionForm(id) || f->lineage!=species) continue;
@@ -227,7 +243,7 @@ void writeGraphLinks(CatalogWriter& json, std::uint32_t formId) {
     for (unsigned i = 0; const auto* edge = forms::outgoing(formId, i); ++i) {
         const auto need = forms::evolutionNeed(*edge);
         json.append("%s{\"toFormId\":%u,\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u}", i ? "," : "",
-                    static_cast<unsigned>(edge->to), static_cast<unsigned>(need.level), static_cast<unsigned>(need.bond), static_cast<unsigned>(need.care));
+                    static_cast<unsigned>(edge->to), static_cast<unsigned>(need.level), static_cast<unsigned>(need.bond), 0u);
     }
     json.append("]");
 }
@@ -256,7 +272,7 @@ std::size_t writeEvolutionGraphJson(std::uint32_t formId, std::uint32_t offset,
     if (offset > total) return 0;
     const auto count = limit < total - offset ? limit : total - offset;
     CatalogWriter json(output, capacity);
-    json.append("{\"formatVersion\":2,\"rulesVersion\":19,\"catalogVersion\":%u,\"focusFormId\":%u,"
+    json.append("{\"formatVersion\":2,\"rulesVersion\":22,\"catalogVersion\":%u,\"focusFormId\":%u,"
                 "\"offset\":%u,\"limit\":%u,\"total\":%u,\"nextOffset\":", static_cast<unsigned>(forms::kCatalogVersion),
                 static_cast<unsigned>(formId), static_cast<unsigned>(offset), static_cast<unsigned>(limit), total);
     if (offset + count < total) json.append("%u", static_cast<unsigned>(offset + count)); else json.append("null");
@@ -282,7 +298,7 @@ std::size_t writeCatalogPageJson(std::uint32_t offset, std::uint32_t limit, char
     if (!output || !capacity || !limit || limit > 16 || offset > forms::kProductionFormCount) return 0;
     CatalogWriter json(output, capacity);
     const auto count = limit < forms::kProductionFormCount - offset ? limit : forms::kProductionFormCount - offset;
-    json.append("{\"formatVersion\":1,\"rulesVersion\":19,\"catalogVersion\":%" PRIu32
+    json.append("{\"formatVersion\":1,\"rulesVersion\":22,\"catalogVersion\":%" PRIu32
                 ",\"total\":%" PRIu32 ",\"offset\":%" PRIu32 ",\"nextOffset\":", forms::kCatalogVersion, forms::kProductionFormCount, offset);
     if (offset + count < forms::kProductionFormCount) json.append("%" PRIu32, offset + count); else json.append("%s", "null");
     json.append(",\"forms\":[");

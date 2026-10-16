@@ -19,6 +19,9 @@
 #include "legacy_v16.hpp"
 #include "legacy_v17.hpp"
 #include "legacy_v18.hpp"
+#include "legacy_v19.hpp"
+#include "legacy_v20.hpp"
+#include "legacy_v21.hpp"
 #include "forms.hpp"
 
 #include <charconv>
@@ -231,19 +234,34 @@ int main(int argc, char** argv) {
     const bool migrateSnapshotV16=argc==3 && (std::strcmp(argv[1],"--migrate-v16-snapshot")==0 || std::strcmp(argv[1],"--replay-v16-snapshot-trace")==0);
     const bool migrateSnapshotV17=argc==3 && (std::strcmp(argv[1],"--migrate-v17-snapshot")==0 || std::strcmp(argv[1],"--replay-v17-snapshot-trace")==0);
     const bool migrateSnapshotV18=argc==3 && (std::strcmp(argv[1],"--migrate-v18-snapshot")==0 || std::strcmp(argv[1],"--replay-v18-snapshot-trace")==0);
+    const bool frozen20Trace = argc==3 && (std::strcmp(argv[1],"--replay-v20-trace")==0 || std::strcmp(argv[1],"--replay-v20-onboarding-trace")==0 || std::strcmp(argv[1],"--replay-v20-snapshot-trace")==0);
+    const bool migrateV20 = argc==3 && (std::strcmp(argv[1],"--migrate-v20")==0 || std::strcmp(argv[1],"--replay-v20-trace")==0);
+    const bool migrateOnboardingV20 = argc==3 && (std::strcmp(argv[1],"--migrate-v20-onboarding")==0 || std::strcmp(argv[1],"--replay-v20-onboarding-trace")==0);
+    const bool migrateSnapshotV20 = argc==3 && (std::strcmp(argv[1],"--migrate-v20-snapshot")==0 || std::strcmp(argv[1],"--replay-v20-snapshot-trace")==0);
+    const bool frozen21Trace = argc==3 && (std::strcmp(argv[1],"--replay-v21-trace")==0 || std::strcmp(argv[1],"--replay-v21-onboarding-trace")==0 || std::strcmp(argv[1],"--replay-v21-snapshot-trace")==0);
+    const bool migrateV21 = argc==3 && (std::strcmp(argv[1],"--migrate-v21")==0 || std::strcmp(argv[1],"--replay-v21-trace")==0);
+    const bool migrateOnboardingV21 = argc==3 && (std::strcmp(argv[1],"--migrate-v21-onboarding")==0 || std::strcmp(argv[1],"--replay-v21-onboarding-trace")==0);
+    const bool migrateSnapshotV21 = argc==3 && (std::strcmp(argv[1],"--migrate-v21-snapshot")==0 || std::strcmp(argv[1],"--replay-v21-snapshot-trace")==0);
     const bool foldSnapshot = argc == 3 && std::strcmp(argv[1], "--fold-v19-snapshot") == 0;
     const bool foldOnboarding = argc == 3 && std::strcmp(argv[1], "--fold-v19-onboarding") == 0;
     const bool foldLegacy = argc == 3 && std::strcmp(argv[1], "--fold-v19") == 0;
-    const bool migrate = migrateV18 || migrateOnboardingV18 || migrateSnapshotV18 || migrateV17 || migrateOnboardingV17 || migrateSnapshotV17 || migrateV16 || migrateOnboardingV16 || migrateSnapshotV16 || migrateV15 || migrateOnboardingV15 || migrateSnapshotV15 || migrateV14 || migrateOnboardingV14 || migrateSnapshotV14 || migrateV13 || migrateOnboardingV13 || migrateSnapshotV13 || migrateV12 || migrateOnboardingV12 || migrateSnapshotV12 || migrateV11 || migrateOnboardingV11 || migrateSnapshotV11 || migrateV10 || migrateOnboardingV10 || migrateSnapshotV10 || migrateV9 || migrateOnboardingV9 || migrateSnapshotV9 || migrateV8 || migrateOnboardingV8 || migrateSnapshotV8 || migrateV7 || migrateOnboardingV7 || migrateSnapshotV7 || migrateV6 || migrateOnboardingV6 || migrateSnapshotV6 || migrateV5 || migrateOnboardingV5 || migrateSnapshotV5 || migrateV4 || migrateOnboardingV4 || migrateSnapshotV4 || migrateV1 || migrateV2 || migrateSnapshotV2 || migrateV3 || migrateOnboardingV3 || migrateSnapshotV3 || foldSnapshot || foldOnboarding || foldLegacy;
+    const bool frozen19Trace = argc==3 && (std::strcmp(argv[1],"--replay-v19-trace")==0 ||
+        std::strcmp(argv[1],"--replay-v19-onboarding-trace")==0 || std::strcmp(argv[1],"--replay-v19-snapshot-trace")==0 ||
+        std::strcmp(argv[1],"--replay-fold-v19-trace")==0 || std::strcmp(argv[1],"--replay-fold-v19-onboarding-trace")==0 || std::strcmp(argv[1],"--replay-fold-v19-snapshot-trace")==0);
+    const bool frozen19Cap60 = foldSnapshot || foldOnboarding || foldLegacy || (frozen19Trace && std::strncmp(argv[1],"--replay-fold-v19",17)==0);
+    const bool migrateV19 = foldLegacy || (argc==3 && (std::strcmp(argv[1],"--migrate-v19")==0 || std::strcmp(argv[1],"--replay-v19-trace")==0 || std::strcmp(argv[1],"--replay-fold-v19-trace")==0));
+    const bool migrateOnboardingV19 = foldOnboarding || (argc==3 && (std::strcmp(argv[1],"--migrate-v19-onboarding")==0 || std::strcmp(argv[1],"--replay-v19-onboarding-trace")==0 || std::strcmp(argv[1],"--replay-fold-v19-onboarding-trace")==0));
+    const bool migrateSnapshotV19 = foldSnapshot || (argc==3 && (std::strcmp(argv[1],"--migrate-v19-snapshot")==0 || std::strcmp(argv[1],"--replay-v19-snapshot-trace")==0 || std::strcmp(argv[1],"--replay-fold-v19-snapshot-trace")==0));
+    const bool migrate = migrateV21 || migrateOnboardingV21 || migrateSnapshotV21 || migrateV20 || migrateOnboardingV20 || migrateSnapshotV20 || migrateV19 || migrateOnboardingV19 || migrateSnapshotV19 || migrateV18 || migrateOnboardingV18 || migrateSnapshotV18 || migrateV17 || migrateOnboardingV17 || migrateSnapshotV17 || migrateV16 || migrateOnboardingV16 || migrateSnapshotV16 || migrateV15 || migrateOnboardingV15 || migrateSnapshotV15 || migrateV14 || migrateOnboardingV14 || migrateSnapshotV14 || migrateV13 || migrateOnboardingV13 || migrateSnapshotV13 || migrateV12 || migrateOnboardingV12 || migrateSnapshotV12 || migrateV11 || migrateOnboardingV11 || migrateSnapshotV11 || migrateV10 || migrateOnboardingV10 || migrateSnapshotV10 || migrateV9 || migrateOnboardingV9 || migrateSnapshotV9 || migrateV8 || migrateOnboardingV8 || migrateSnapshotV8 || migrateV7 || migrateOnboardingV7 || migrateSnapshotV7 || migrateV6 || migrateOnboardingV6 || migrateSnapshotV6 || migrateV5 || migrateOnboardingV5 || migrateSnapshotV5 || migrateV4 || migrateOnboardingV4 || migrateSnapshotV4 || migrateV1 || migrateV2 || migrateSnapshotV2 || migrateV3 || migrateOnboardingV3 || migrateSnapshotV3 || foldSnapshot || foldOnboarding || foldLegacy;
     const bool traceRequested = argc == 3 && (std::strcmp(argv[1], "--replay-trace") == 0 ||
         std::strcmp(argv[1], "--replay-onboarding-trace") == 0 || std::strcmp(argv[1], "--replay-snapshot-trace") == 0);
-    const bool snapshotReplay = argc == 3 && (std::strcmp(argv[1], "--replay-snapshot") == 0 || std::strcmp(argv[1], "--replay-snapshot-trace") == 0 || foldSnapshot);
+    const bool snapshotReplay = argc == 3 && (std::strcmp(argv[1], "--replay-snapshot") == 0 || std::strcmp(argv[1], "--replay-snapshot-trace") == 0);
     const bool replay = argc == 3 && (std::strcmp(argv[1], "--replay") == 0 || std::strcmp(argv[1], "--replay-trace") == 0);
-    const bool onboarding = argc == 3 && (std::strcmp(argv[1], "--replay-onboarding") == 0 || std::strcmp(argv[1], "--replay-onboarding-trace") == 0 || foldOnboarding);
+    const bool onboarding = argc == 3 && (std::strcmp(argv[1], "--replay-onboarding") == 0 || std::strcmp(argv[1], "--replay-onboarding-trace") == 0);
     std::uint32_t seed = digivice::kDevelopmentSeed;
     if ((!migrate && !snapshotReplay && !replay && !onboarding) ||
-        (!snapshotReplay && !migrateSnapshotV2 && !migrateSnapshotV3 && !migrateSnapshotV4 && !migrateSnapshotV5 && !migrateSnapshotV6 && !migrateSnapshotV7 && !migrateSnapshotV8 && !migrateSnapshotV9 && !migrateSnapshotV10 && !migrateSnapshotV11 && !migrateSnapshotV12 && !migrateSnapshotV13 && !migrateSnapshotV14 && !migrateSnapshotV15 && !migrateSnapshotV16 && !migrateSnapshotV17 && !migrateSnapshotV18 && !number(argv[2], argv[2] + std::strlen(argv[2]), seed)))
-        return fail(0, "usage: digivice-core --replay[-trace] <seed> | --replay-onboarding[-trace] <seed> | --migrate-v1 <seed> | --migrate-v2 <seed> | --migrate-v2-snapshot <base64> | --replay-snapshot[-trace] <base64> | --fold-v19[-onboarding|-snapshot] <seed|base64> | --migrate-v3 <seed> | --migrate-v3-onboarding <seed> | --migrate-v3-snapshot <base64> | --migrate-v4[-onboarding|-snapshot] <seed|base64> | --migrate-v5[-onboarding|-snapshot] <seed|base64> | --migrate-v6[-onboarding|-snapshot] <seed|base64> | --migrate-v7[-onboarding|-snapshot] <seed|base64> | --migrate-v8[-onboarding|-snapshot] <seed|base64> | --replay-v8[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v9[-onboarding|-snapshot] <seed|base64> | --replay-v9[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v10[-onboarding|-snapshot] <seed|base64> | --replay-v10[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v11[-onboarding|-snapshot] <seed|base64> | --replay-v11[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v12[-onboarding|-snapshot] <seed|base64> | --replay-v12[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v13[-onboarding|-snapshot] <seed|base64> | --replay-v13[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v14[-onboarding|-snapshot] <seed|base64> | --replay-v14[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v15[-onboarding|-snapshot] <seed|base64> | --replay-v15[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v16[-onboarding|-snapshot] <seed|base64> | --replay-v16[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v17[-onboarding|-snapshot] <seed|base64> | --replay-v17[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v18[-onboarding|-snapshot] <seed|base64> | --replay-v18[-onboarding|-snapshot]-trace <seed|base64> | --evolution-graph <formId> <offset> [limit] | --evolutions <species> | --starters | --roster | --budget");
+        (!snapshotReplay && !migrateSnapshotV2 && !migrateSnapshotV3 && !migrateSnapshotV4 && !migrateSnapshotV5 && !migrateSnapshotV6 && !migrateSnapshotV7 && !migrateSnapshotV8 && !migrateSnapshotV9 && !migrateSnapshotV10 && !migrateSnapshotV11 && !migrateSnapshotV12 && !migrateSnapshotV13 && !migrateSnapshotV14 && !migrateSnapshotV15 && !migrateSnapshotV16 && !migrateSnapshotV17 && !migrateSnapshotV18 && !migrateSnapshotV19 && !migrateSnapshotV20 && !migrateSnapshotV21 && !number(argv[2], argv[2] + std::strlen(argv[2]), seed)))
+        return fail(0, "usage: digivice-core --replay[-trace] <seed> | --replay-onboarding[-trace] <seed> | --migrate-v1 <seed> | --migrate-v2 <seed> | --migrate-v2-snapshot <base64> | --replay-snapshot[-trace] <base64> | --fold-v19[-onboarding|-snapshot] <seed|base64> | --migrate-v3 <seed> | --migrate-v3-onboarding <seed> | --migrate-v3-snapshot <base64> | --migrate-v4[-onboarding|-snapshot] <seed|base64> | --migrate-v5[-onboarding|-snapshot] <seed|base64> | --migrate-v6[-onboarding|-snapshot] <seed|base64> | --migrate-v7[-onboarding|-snapshot] <seed|base64> | --migrate-v8[-onboarding|-snapshot] <seed|base64> | --replay-v8[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v9[-onboarding|-snapshot] <seed|base64> | --replay-v9[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v10[-onboarding|-snapshot] <seed|base64> | --replay-v10[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v11[-onboarding|-snapshot] <seed|base64> | --replay-v11[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v12[-onboarding|-snapshot] <seed|base64> | --replay-v12[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v13[-onboarding|-snapshot] <seed|base64> | --replay-v13[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v14[-onboarding|-snapshot] <seed|base64> | --replay-v14[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v15[-onboarding|-snapshot] <seed|base64> | --replay-v15[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v16[-onboarding|-snapshot] <seed|base64> | --replay-v16[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v17[-onboarding|-snapshot] <seed|base64> | --replay-v17[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v18[-onboarding|-snapshot] <seed|base64> | --replay-v18[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v19[-onboarding|-snapshot] <seed|base64> | --replay-v19[-onboarding|-snapshot]-trace <seed|base64> | --replay-fold-v19[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v20[-onboarding|-snapshot] <seed|base64> | --replay-v20[-onboarding|-snapshot]-trace <seed|base64> | --migrate-v21[-onboarding|-snapshot] <seed|base64> | --replay-v21[-onboarding|-snapshot]-trace <seed|base64> | --evolution-graph <formId> <offset> [limit] | --evolutions <species> | --starters | --roster | --budget");
     auto state = onboarding ? digivice::newDevice(seed) : digivice::newGame(seed);
     auto legacy = digivice_v1::newGame(seed);
     auto previous = digivice_v2::newGame(seed);
@@ -263,15 +281,30 @@ int main(int argc, char** argv) {
     auto prior16=migrateOnboardingV16 ? digivice::legacy_v16::newDevice(seed) : digivice::legacy_v16::newGame(seed);
     auto prior17=migrateOnboardingV17 ? digivice::legacy_v17::newDevice(seed) : digivice::legacy_v17::newGame(seed);
     auto prior18=migrateOnboardingV18 ? digivice::legacy_v18::newDevice(seed) : digivice::legacy_v18::newGame(seed);
+    auto prior19=migrateOnboardingV19 ? digivice::legacy_v19::newDevice(seed) : digivice::legacy_v19::newGame(seed);
+    auto prior20=migrateOnboardingV20 ? digivice::legacy_v20::newDevice(seed) : digivice::legacy_v20::newGame(seed);
+    auto prior21=migrateOnboardingV21 ? digivice::legacy_v21::newDevice(seed) : digivice::legacy_v21::newGame(seed);
     digivice::autobattle::Trace lastTrace;
-    // A rules-19 log was recorded against a 60-Digimon box. Pin that cap before
-    // decode and before the saved actions, then encode the result as schema 27.
-    if (foldSnapshot || foldOnboarding || foldLegacy) digivice::setHistoricalRosterCap(digivice::kRoster60Capacity);
-    if (snapshotReplay || migrateSnapshotV2 || migrateSnapshotV3 || migrateSnapshotV4 || migrateSnapshotV5 || migrateSnapshotV6 || migrateSnapshotV7 || migrateSnapshotV8 || migrateSnapshotV9 || migrateSnapshotV10 || migrateSnapshotV11 || migrateSnapshotV12 || migrateSnapshotV13 || migrateSnapshotV14 || migrateSnapshotV15 || migrateSnapshotV16 || migrateSnapshotV17 || migrateSnapshotV18) {
+    // Capacity and gameplay both belong to the recorded epoch. Only old60 logs use the fold mode.
+    digivice::legacy_v19::setHistoricalRosterCap(frozen19Cap60 ? digivice::kRoster60Capacity : 0);
+    if (snapshotReplay || migrateSnapshotV2 || migrateSnapshotV3 || migrateSnapshotV4 || migrateSnapshotV5 || migrateSnapshotV6 || migrateSnapshotV7 || migrateSnapshotV8 || migrateSnapshotV9 || migrateSnapshotV10 || migrateSnapshotV11 || migrateSnapshotV12 || migrateSnapshotV13 || migrateSnapshotV14 || migrateSnapshotV15 || migrateSnapshotV16 || migrateSnapshotV17 || migrateSnapshotV18 || migrateSnapshotV19 || migrateSnapshotV20 || migrateSnapshotV21) {
         std::uint8_t bytes[digivice::kSnapshotSize];
         std::size_t length;
         if (!decodeBase64(argv[2], bytes, sizeof(bytes), length)) return fail(0, "invalid snapshot base64");
-        if(migrateSnapshotV18) {
+        if(migrateSnapshotV21) {
+            const auto status=digivice::legacy_v21::decodeSnapshot(bytes,length,prior21);
+            if(status!=digivice::legacy_v21::SnapshotStatus::Ok && status!=digivice::legacy_v21::SnapshotStatus::Migrated)
+                return fail(0,digivice::legacy_v21::snapshotStatusText(status));
+        } else if(migrateSnapshotV20) {
+            const auto status=digivice::legacy_v20::decodeSnapshot(bytes,length,prior20);
+            if(status!=digivice::legacy_v20::SnapshotStatus::Ok && status!=digivice::legacy_v20::SnapshotStatus::Migrated)
+                return fail(0,digivice::legacy_v20::snapshotStatusText(status));
+        } else if(migrateSnapshotV19) {
+            if (length >= 6 && (static_cast<unsigned>(bytes[4]) | (static_cast<unsigned>(bytes[5]) << 8)) <= 26) digivice::legacy_v19::setHistoricalRosterCap(digivice::kRoster60Capacity);
+            const auto status=digivice::legacy_v19::decodeSnapshot(bytes,length,prior19);
+            if(status!=digivice::legacy_v19::SnapshotStatus::Ok && status!=digivice::legacy_v19::SnapshotStatus::Migrated)
+                return fail(0,digivice::legacy_v19::snapshotStatusText(status));
+        } else if(migrateSnapshotV18) {
             const auto status=digivice::legacy_v18::decodeSnapshot(bytes,length,prior18);
             if(status!=digivice::legacy_v18::SnapshotStatus::Ok && status!=digivice::legacy_v18::SnapshotStatus::Migrated)
                 return fail(0,digivice::legacy_v18::snapshotStatusText(status));
@@ -376,7 +409,7 @@ int main(int argc, char** argv) {
         if (valueStart != valueEnd && !number(valueStart, valueEnd, value))
             return fail(lineNumber, "value must be an unsigned 32-bit integer");
         if (valueStart == valueEnd && (action == digivice::Action::AccrueSteps || action == digivice::Action::Explore || action == digivice::Action::EncounterRate || action == digivice::Action::EncounterSeed || action == digivice::Action::WorldSeed || action == digivice::Action::Walk || action == digivice::Action::Card ||
-                                      action == digivice::Action::Select || action == digivice::Action::Hatch || action == digivice::Action::Mode || action == digivice::Action::Evolve || action == digivice::Action::Release || action == digivice::Action::Flick || action == digivice::Action::RingCapture || action == digivice::Action::PartyAdd || action == digivice::Action::PartyRemove || action == digivice::Action::CareMinute || action == digivice::Action::EvolveMember || action == digivice::Action::Focus))
+                                      action == digivice::Action::Select || action == digivice::Action::Hatch || action == digivice::Action::Mode || action == digivice::Action::Evolve || action == digivice::Action::Release || action == digivice::Action::Flick || action == digivice::Action::RingCapture || action == digivice::Action::PartyAdd || action == digivice::Action::PartyRemove || action == digivice::Action::CareMinute || action == digivice::Action::EvolveMember || action == digivice::Action::Focus || action == digivice::Action::DigiModify || action == digivice::Action::AutoStep))
             return fail(lineNumber, "this action requires an explicit value");
         if (migrateV1) {
             digivice_v1::Action legacyAction;
@@ -388,6 +421,39 @@ int main(int argc, char** argv) {
             if (!digivice_v2::parseAction(name, previousAction)) return fail(lineNumber, "action unavailable in legacy rules");
             const auto error = digivice_v2::apply(previous, previousAction, value);
             if (error != digivice_v2::Error::None) return fail(lineNumber, digivice_v2::errorText(error));
+        } else if(migrateV21 || migrateOnboardingV21 || migrateSnapshotV21) {
+            digivice::legacy_v21::Action previousAction;
+            if(!digivice::legacy_v21::parseAction(name,previousAction)) return fail(lineNumber,"action unavailable in rules21");
+            const auto error=frozen21Trace && previousAction==digivice::legacy_v21::Action::Auto && value==0 ?
+                digivice::legacy_v21::applyAuto(prior21,&lastTrace) : frozen21Trace && previousAction==digivice::legacy_v21::Action::AutoFight && value==0 ?
+                digivice::legacy_v21::applyAutoFight(prior21,&lastTrace) : frozen21Trace && previousAction==digivice::legacy_v21::Action::AutoResume && value==0 ?
+                digivice::legacy_v21::applyAutoResume(prior21,&lastTrace) : frozen21Trace && previousAction==digivice::legacy_v21::Action::Focus ?
+                digivice::legacy_v21::applyFocus(prior21,value,&lastTrace) : digivice::legacy_v21::apply(prior21,previousAction,value);
+            if(error!=digivice::legacy_v21::Error::None) return fail(lineNumber,digivice::legacy_v21::errorText(error));
+            if(lastTrace.count && lastTrace.outcome==digivice::autobattle::Outcome::None &&
+               (prior21.autoCapture==digivice::legacy_v21::AutoCapture::None || lastTrace.endSequence!=prior21.foregroundSequence))lastTrace.count=0;
+        } else if(migrateV20 || migrateOnboardingV20 || migrateSnapshotV20) {
+            digivice::legacy_v20::Action previousAction;
+            if(!digivice::legacy_v20::parseAction(name,previousAction)) return fail(lineNumber,"action unavailable in rules20");
+            const auto error=frozen20Trace && previousAction==digivice::legacy_v20::Action::Auto && value==0 ?
+                digivice::legacy_v20::applyAuto(prior20,&lastTrace) : frozen20Trace && previousAction==digivice::legacy_v20::Action::AutoFight && value==0 ?
+                digivice::legacy_v20::applyAutoFight(prior20,&lastTrace) : frozen20Trace && previousAction==digivice::legacy_v20::Action::AutoResume && value==0 ?
+                digivice::legacy_v20::applyAutoResume(prior20,&lastTrace) : frozen20Trace && previousAction==digivice::legacy_v20::Action::Focus ?
+                digivice::legacy_v20::applyFocus(prior20,value,&lastTrace) : digivice::legacy_v20::apply(prior20,previousAction,value);
+            if(error!=digivice::legacy_v20::Error::None) return fail(lineNumber,digivice::legacy_v20::errorText(error));
+            if(lastTrace.count && lastTrace.outcome==digivice::autobattle::Outcome::None &&
+               (prior20.autoCapture==digivice::legacy_v20::AutoCapture::None || lastTrace.endSequence!=prior20.foregroundSequence))lastTrace.count=0;
+        } else if(migrateV19 || migrateOnboardingV19 || migrateSnapshotV19) {
+            digivice::legacy_v19::Action previousAction;
+            if(!digivice::legacy_v19::parseAction(name,previousAction)) return fail(lineNumber,"action unavailable in rules19");
+            const auto error=frozen19Trace && previousAction==digivice::legacy_v19::Action::Auto && value==0 ?
+                digivice::legacy_v19::applyAuto(prior19,&lastTrace) : frozen19Trace && previousAction==digivice::legacy_v19::Action::AutoFight && value==0 ?
+                digivice::legacy_v19::applyAutoFight(prior19,&lastTrace) : frozen19Trace && previousAction==digivice::legacy_v19::Action::AutoResume && value==0 ?
+                digivice::legacy_v19::applyAutoResume(prior19,&lastTrace) : frozen19Trace && previousAction==digivice::legacy_v19::Action::Focus ?
+                digivice::legacy_v19::applyFocus(prior19,value,&lastTrace) : digivice::legacy_v19::apply(prior19,previousAction,value);
+            if(error!=digivice::legacy_v19::Error::None) return fail(lineNumber,digivice::legacy_v19::errorText(error));
+            if(lastTrace.count && lastTrace.outcome==digivice::autobattle::Outcome::None &&
+               (prior19.autoCapture==digivice::legacy_v19::AutoCapture::None || lastTrace.endSequence!=prior19.foregroundSequence))lastTrace.count=0;
         } else if(migrateV18 || migrateOnboardingV18 || migrateSnapshotV18) {
             digivice::legacy_v18::Action previousAction;
             if(!digivice::legacy_v18::parseAction(name,previousAction)) return fail(lineNumber,"action unavailable in rules18");
@@ -505,14 +571,14 @@ int main(int argc, char** argv) {
             const auto error=digivice::legacy_v3::apply(prior,previousAction,value);
             if(error!=digivice::legacy_v3::Error::None) return fail(lineNumber,digivice::legacy_v3::errorText(error));
         } else {
-            const auto error = traceRequested && action == digivice::Action::Auto && value == 0 ?
+            const auto error = traceRequested && action == digivice::Action::AutoStep ? digivice::applyAutoStep(state,value,&lastTrace) : traceRequested && action == digivice::Action::Auto && value == 0 ?
                 digivice::applyAuto(state, &lastTrace) : traceRequested && action==digivice::Action::AutoFight && value==0 ?
                 digivice::applyAutoFight(state,&lastTrace) : traceRequested && action==digivice::Action::AutoResume && value==0 ?
                 digivice::applyAutoResume(state,&lastTrace) : traceRequested && action==digivice::Action::Focus ?
                 digivice::applyFocus(state,value,&lastTrace) : digivice::apply(state, action, value);
             if (error != digivice::Error::None) return fail(lineNumber, digivice::errorText(error));
             if(lastTrace.count && lastTrace.outcome==digivice::autobattle::Outcome::None &&
-               (state.autoCapture==digivice::AutoCapture::None || lastTrace.endSequence!=state.foregroundSequence))lastTrace.count=0;
+               ((state.autoCapture==digivice::AutoCapture::None && !lastTrace.partial) || lastTrace.endSequence!=state.foregroundSequence))lastTrace.count=0;
         }
     }
     if (std::ferror(stdin)) return fail(0, "failed to read replay input");
@@ -572,6 +638,36 @@ int main(int argc, char** argv) {
         if(lastTrace.count) {
             char traceJson[digivice::autobattle::kTraceJsonCapacity];
             if(!digivice::autobattle::writeJson(lastTrace,traceJson,sizeof(traceJson))) return fail(0,"failed to serialize frozen13 trace");
+            std::printf("{\"state\":%s,\"trace\":%s}\n",frozenJson,traceJson);
+        } else std::printf("{\"state\":%s,\"trace\":null}\n",frozenJson);
+        return 0;
+    }
+    if(frozen21Trace) {
+        char frozenJson[digivice::legacy_v21::kJsonCapacity];
+        if(!digivice::legacy_v21::writeJson(prior21,frozenJson,sizeof(frozenJson))) return fail(0,"failed to serialize frozen21 state");
+        if(lastTrace.count) {
+            char traceJson[digivice::autobattle::kTraceJsonCapacity];
+            if(!digivice::autobattle::writeJson(lastTrace,traceJson,sizeof(traceJson))) return fail(0,"failed to serialize frozen21 trace");
+            std::printf("{\"state\":%s,\"trace\":%s}\n",frozenJson,traceJson);
+        } else std::printf("{\"state\":%s,\"trace\":null}\n",frozenJson);
+        return 0;
+    }
+    if(frozen20Trace) {
+        char frozenJson[digivice::legacy_v20::kJsonCapacity];
+        if(!digivice::legacy_v20::writeJson(prior20,frozenJson,sizeof(frozenJson))) return fail(0,"failed to serialize frozen20 state");
+        if(lastTrace.count) {
+            char traceJson[digivice::autobattle::kTraceJsonCapacity];
+            if(!digivice::autobattle::writeJson(lastTrace,traceJson,sizeof(traceJson))) return fail(0,"failed to serialize frozen20 trace");
+            std::printf("{\"state\":%s,\"trace\":%s}\n",frozenJson,traceJson);
+        } else std::printf("{\"state\":%s,\"trace\":null}\n",frozenJson);
+        return 0;
+    }
+    if(frozen19Trace) {
+        char frozenJson[digivice::legacy_v19::kJsonCapacity];
+        if(!digivice::legacy_v19::writeJson(prior19,frozenJson,sizeof(frozenJson))) return fail(0,"failed to serialize frozen19 state");
+        if(lastTrace.count) {
+            char traceJson[digivice::autobattle::kTraceJsonCapacity];
+            if(!digivice::autobattle::writeJson(lastTrace,traceJson,sizeof(traceJson))) return fail(0,"failed to serialize frozen19 trace");
             std::printf("{\"state\":%s,\"trace\":%s}\n",frozenJson,traceJson);
         } else std::printf("{\"state\":%s,\"trace\":null}\n",frozenJson);
         return 0;
@@ -692,6 +788,21 @@ int main(int argc, char** argv) {
         digivice::legacy_v13::Snapshot old;
         if(!digivice::legacy_v13::encodeSnapshot(prior13,old)||digivice::decodeSnapshot(old.bytes,sizeof(old.bytes),state)!=digivice::SnapshotStatus::Migrated)
             return fail(0,"failed to migrate rules13 replay");
+    }
+    if(migrateV21 || migrateOnboardingV21 || migrateSnapshotV21) {
+        digivice::legacy_v21::Snapshot old;
+        if(!digivice::legacy_v21::encodeSnapshot(prior21,old)||digivice::decodeSnapshot(old.bytes,sizeof(old.bytes),state)!=digivice::SnapshotStatus::Migrated)
+            return fail(0,"failed to migrate rules21 replay");
+    }
+    if(migrateV20 || migrateOnboardingV20 || migrateSnapshotV20) {
+        digivice::legacy_v20::Snapshot old;
+        if(!digivice::legacy_v20::encodeSnapshot(prior20,old)||digivice::decodeSnapshot(old.bytes,sizeof(old.bytes),state)!=digivice::SnapshotStatus::Migrated)
+            return fail(0,"failed to migrate rules20 replay");
+    }
+    if(migrateV19 || migrateOnboardingV19 || migrateSnapshotV19) {
+        digivice::legacy_v19::Snapshot old;
+        if(!digivice::legacy_v19::encodeSnapshot(prior19,old)||digivice::decodeSnapshot(old.bytes,sizeof(old.bytes),state)!=digivice::SnapshotStatus::Migrated)
+            return fail(0,"failed to migrate rules19 replay");
     }
     if(migrateV18 || migrateOnboardingV18 || migrateSnapshotV18) {
         digivice::legacy_v18::Snapshot old;

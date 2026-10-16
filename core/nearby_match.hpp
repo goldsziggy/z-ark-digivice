@@ -5,7 +5,7 @@
 
 // Friendly, ephemeral two-person duels. Never applies a companion-game action.
 namespace digivice::nearby {
-constexpr std::uint32_t kRules = 12, kCatalog = 6, kMaxExchanges = 40;
+constexpr std::uint32_t kRules = 13, kCatalog = 6, kMaxExchanges = 40;
 constexpr std::size_t kMatchBytes = 116;
 enum class Mode : std::uint8_t { Tactical, Auto, Coop };
 enum class Status : std::uint8_t { Active, HostWon, GuestWon, Draw };

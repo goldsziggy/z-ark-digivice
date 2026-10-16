@@ -52,7 +52,7 @@ unsigned singleRouteForm() {
 unsigned routeLevel(unsigned formId, unsigned index) { return forms::evolutionNeed(*forms::outgoing(formId, index)).level; }
 
 void versions() {
-    CHECK(kSchemaVersion==27&&kRulesVersion==19 && kSnapshotSize == 6860);
+    CHECK(kSchemaVersion == 30&&kRulesVersion == 22 && kSnapshotSize == 6876);
     CHECK(legacy_v16::kSchemaVersion == 23 && legacy_v16::kRulesVersion == 16);
     Action a; CHECK(parseAction("treat", a) && a == Action::Treat);
 }
@@ -174,55 +174,19 @@ void routes() {
     std::printf("Branching examples: champion-from %u, mega-from %u, single-route %u\n", champ, mega, single);
     CHECK(cleanRouteMistakeLimit(forms::outgoing(champ, 0)->to) == 3 && cleanRouteMistakeLimit(forms::outgoing(mega, 0)->to) == 1);
 
-    // Clean route locks after too many mistakes; the second route stays open.
-    for (unsigned mistakes = 0; mistakes <= 4; ++mistakes) {
-        auto s = hatched();
-        const auto level = routeLevel(champ, 0) > routeLevel(champ, 1) ? routeLevel(champ, 0) : routeLevel(champ, 1);
-        become(s, champ, level);
-        partner(s).careState |= mistakes << 27;
-        const auto clean = forms::outgoing(champ, 0)->to, rough = forms::outgoing(champ, 1)->to;
-        CHECK(careRouteOpen(partner(s), 0) == (mistakes <= 3) && careRouteOpen(partner(s), 1));
+    // Rules20 removes care-point and mistake gates; the care system itself stays.
+    for (unsigned mistakes=0; mistakes<=7; ++mistakes) for(unsigned route=0; route<2; ++route) {
+        auto s=hatched(); const auto* edge=forms::outgoing(champ,route);
+        become(s,champ,routeLevel(champ,route));
+        partner(s).careState=mistakes<<27;
+        CHECK(careRouteOpen(partner(s),route));
         static char json[kJsonCapacity];
-        CHECK(writeJson(s, json, sizeof(json)) && std::strstr(json, "\"maxCareMistakes\":3") && std::strstr(json, "\"maxCareMistakes\":null"));
-        if (mistakes <= 3) {
-            step(s, Action::Evolve, clean);
-        } else {
-            reject(s, Action::Evolve, clean, Error::CareRouteLocked);
-            step(s, Action::Evolve, rough);
-        }
-        // Digivolution spends care and clears mistakes.
-        CHECK(carePoints(partner(s)) == 0 && careMistakes(partner(s)) == 0);
-        // The next stage needs care again.
-        const auto* next = forms::outgoing(partner(s).formId, 0);
-        if (next) {
-            become(s, partner(s).formId, s.level);
-            partner(s).careState = 0;
-            const auto need = forms::evolutionNeed(*next);
-            auto& m = partner(s); m.level = need.level; m.xp = xpForLevel(need.level); s.level = need.level;
-            m.hp = s.hp = combat::formProfile(m.formId, m.level).stats.maxHp;
-            CHECK(isValid(s));
-            reject(s, Action::Evolve, next->to, Error::EvolutionUnavailable);
-        }
+        CHECK(writeJson(s,json,sizeof(json)) && std::strstr(json,"\"requiredCare\":0") && std::strstr(json,"\"maxCareMistakes\":null"));
+        step(s,Action::Evolve,edge->to);
+        CHECK(carePoints(partner(s))==0 && careMistakes(partner(s))==0);
     }
-
-    // Mega limit is one mistake.
-    {
-        auto s = hatched();
-        const auto level = routeLevel(mega, 0) > routeLevel(mega, 1) ? routeLevel(mega, 0) : routeLevel(mega, 1);
-        become(s, mega, level);
-        partner(s).careState |= 2u << 27;
-        reject(s, Action::Evolve, forms::outgoing(mega, 0)->to, Error::CareRouteLocked);
-        partner(s).careState = 100u | (1u << 27);
-        step(s, Action::Evolve, forms::outgoing(mega, 0)->to);
-    }
-    // A single route is never care-locked.
-    {
-        auto s = hatched();
-        become(s, single, routeLevel(single, 0));
-        partner(s).careState |= 7u << 27;
-        CHECK(careRouteOpen(partner(s), 0));
-        step(s, Action::Evolve, forms::outgoing(single, 0)->to);
-    }
+    auto s=hatched();become(s,mega,routeLevel(mega,0));partner(s).careState=7u<<27;
+    step(s,Action::Evolve,forms::outgoing(mega,0)->to);
     // Injury blocks Digivolution until treated; benched members too.
     {
         auto s = hatched();

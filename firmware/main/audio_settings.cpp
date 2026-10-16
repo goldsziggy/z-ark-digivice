@@ -10,9 +10,9 @@ esp_err_t NvsSettings::read(SettingsRecord& record) {
     error=nvs_get_blob(handle_,"config",record.bytes,&bytes);
     return error!=ESP_OK?error:bytes==kSettingsBytes?ESP_OK:ESP_ERR_INVALID_SIZE;
 }
-esp_err_t NvsSettings::begin() {
+esp_err_t NvsSettings::begin(const char* name) {
     if(attempted_)return error_;
-    attempted_=true;error_=nvs_open("digi_audio",NVS_READWRITE,&handle_);
+    attempted_=true;error_=nvs_open(name,NVS_READWRITE,&handle_);
     if(error_!=ESP_OK)return error_;
     opened_=true;SettingsRecord record;error_=read(record);
     if(error_==ESP_ERR_NVS_NOT_FOUND){writable_=true;error_=ESP_OK;return error_;}

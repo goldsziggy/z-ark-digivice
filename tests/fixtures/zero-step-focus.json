@@ -1,0 +1,322 @@
+{
+  "description": "Legal native action history reproducing a zero-step focus pause, starting from newDevice(8). No device data.",
+  "seed": 8,
+  "commands": [
+    {
+      "a": "hatch",
+      "v": 1
+    },
+    {
+      "a": "mode",
+      "v": 1
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "demo-encounter",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "focus",
+      "v": 2400
+    },
+    {
+      "a": "auto-resume",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "rest",
+      "v": 0
+    },
+    {
+      "a": "feed",
+      "v": 0
+    },
+    {
+      "a": "play",
+      "v": 0
+    },
+    {
+      "a": "start-expedition",
+      "v": 0
+    },
+    {
+      "a": "auto-fight",
+      "v": 0
+    },
+    {
+      "a": "ring-capture",
+      "v": 360
+    }
+  ]
+}

@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
             char route[128];
             const auto need = f::evolutionNeed(*edge);
             std::snprintf(route, sizeof(route), "{\"toFormId\":%u,\"requiredLevel\":%u,\"requiredBond\":%u,\"requiredCare\":%u}",
-                static_cast<unsigned>(edge->to), static_cast<unsigned>(need.level), static_cast<unsigned>(need.bond), static_cast<unsigned>(need.care));
+                static_cast<unsigned>(edge->to), static_cast<unsigned>(need.level), static_cast<unsigned>(need.bond), 0u);
             check(std::strstr(storage.data() + 1, route) != nullptr, "published route preserves its destination and gates");
             ++expectedRoutes;
         }
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
         check(storage.front() == 'Z' && storage.back() == 'Z', "page canaries intact");
         char totalKey[32];
         std::snprintf(totalKey, sizeof(totalKey), "\"total\":%u,", f::kProductionFormCount);
-        check(std::strstr(storage.data() + 1, "\"rulesVersion\":19") && std::strstr(storage.data() + 1, totalKey), "page identifies the current production projection");
+        check(std::strstr(storage.data() + 1, "\"rulesVersion\":22") && std::strstr(storage.data() + 1, totalKey), "page identifies the current production projection");
         unsigned count = 0;
         for (const char* p = storage.data() + 1; (p = std::strstr(p, "\"formId\":")); ++p) {
             unsigned id = 0;
